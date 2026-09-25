@@ -35,3 +35,11 @@ The `presets/` folder holds ready-made restaurants to start from. Download one, 
 Each preset's world notes say which parts come from published sources (menus, prices, company filings, reviews) and which are estimated or invented, such as staff names, rent and local events.
 
 The Windows on the World preset begins in January 1999 and is written to stay in its own time.
+
+## License
+
+The game and the preset saves are released under the MIT License (see `LICENSE`).
+
+## Disclaimer
+
+Prime Cost is an unofficial fan project. It is not affiliated with, endorsed by, or sponsored by any restaurant, company or person named in it. All trademarks belong to their owners. Presets based on real restaurants use publicly available information (menus, prices, filings, press coverage) for simulation and commentary; figures marked as estimates or invented are not real data.
