@@ -1,0 +1,1184 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T19:42:04.101Z",
+ "state": {
+  "v": 2,
+  "seed": 345210310,
+  "ownerName": "You",
+  "bizName": "Eastside Burger Co.",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 11,
+  "year": 1,
+  "cash": 24452,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "Burger shop and virtual brand kitchen",
+   "blurb": "A strip-mall burger counter that nearly went under, now cooking for itself and for the most famous burger on the delivery apps.",
+   "check": 12,
+   "foodPct": 0.31,
+   "seats": 34,
+   "truckCap": 210,
+   "turns": 3.2,
+   "maxTurns": 8,
+   "elast": 1.35,
+   "hrsPerCover": 0.2,
+   "alcohol": 0,
+   "sqftSeat": 15,
+   "buildSqft": 0,
+   "equip": 0,
+   "chef": 0,
+   "gm": 0,
+   "counter": true,
+   "truck": false,
+   "items": 0,
+   "drinkAttach": 0,
+   "drinkRef": 0
+  },
+  "customMarket": {
+   "name": "East Orlando suburbs",
+   "blurb": "Your own market.",
+   "rentYr": 30,
+   "wage": 14,
+   "tipCredit": 0,
+   "traffic": 1.375,
+   "comp": 1.25,
+   "checkMult": 1,
+   "taxRate": 0.065,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "December 2020. A year ago this was a franchise burger unit that was losing money every week; you de-branded it, kept the grill and the fryers, and scraped through the spring on takeout. Last month you signed with Virtual Dining Concepts: from tonight your kitchen also cooks MrBeast Burger and Mariah's Cookies for the delivery apps. VDC handles the brand and the marketing and takes a cut of every order; the apps take theirs. The launch is going to be enormous. Nobody knows how long it lasts.",
+  "creditLine": {
+   "limit": 40000,
+   "drawn": 0,
+   "rate": 0.145
+  },
+  "locations": [
+   {
+    "id": "d0eedzv",
+    "name": "Eastside Burger Co.",
+    "market": "custom",
+    "seats": 34,
+    "sqft": 510,
+    "env": "suburb",
+    "envLive": true,
+    "rent": 6200,
+    "cam": 298,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 46,
+    "awareness": 30,
+    "morale": 58,
+    "skill": 54,
+    "equip": 64,
+    "health": 85,
+    "monthsOpen": 14,
+    "attention": 70,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "features": [],
+    "ambBase": 35,
+    "foh": 50,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "kit": [
+     {
+      "id": "koksotbi",
+      "type": "range",
+      "tier": 1,
+      "model": "Vulcan V-Series range line",
+      "price": 4500,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kl8uw68b",
+      "type": "hood",
+      "tier": 1,
+      "model": "CaptiveAire ND-2 canopy hood",
+      "price": 5500,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knm01tot",
+      "type": "vent",
+      "tier": 1,
+      "model": "Upblast fan, welded grease duct & untempered makeup air",
+      "price": 22500,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kiedp4ci",
+      "type": "suppression",
+      "tier": 1,
+      "model": "Ansul R-102 wet-chemical system",
+      "price": 2500,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzz2lh6k",
+      "type": "extinguisher",
+      "tier": 1,
+      "model": "Class K and ABC extinguishers, tagged",
+      "price": 900,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kccqr9ea",
+      "type": "sprinkler",
+      "tier": 1,
+      "model": "Wet-pipe sprinkler fit-out",
+      "price": 7500,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kvfxwrr7",
+      "type": "refrig",
+      "tier": 1,
+      "model": "Kolpak walk-in · True reach-ins",
+      "price": 10000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k4bk4xyl",
+      "type": "dish",
+      "tier": 0,
+      "model": "Hobart AM (used)",
+      "price": 4000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kfuuyn9k",
+      "type": "fryer",
+      "tier": 1,
+      "model": "Pitco gas fryers, pair",
+      "price": 1800,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kir0yewn",
+      "type": "plancha",
+      "tier": 1,
+      "model": "Flat-top griddle for smash burgers",
+      "price": 2600,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ku7rkde1",
+      "type": "preprail",
+      "tier": 1,
+      "model": "True TSSU-60 sandwich prep table",
+      "price": 3500,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kh1u33mb",
+      "type": "heatlamp",
+      "tier": 1,
+      "model": "Hatco Glo-Ray strip heater",
+      "price": 500,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kndcmybf",
+      "type": "holding",
+      "tier": 1,
+      "model": "Hatco Flav-R-Savor cabinet",
+      "price": 3500,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kl0lxaq3",
+      "type": "convection",
+      "tier": 0,
+      "model": "Used convection oven for the cookie brand",
+      "price": 2500,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kkr1lyqc",
+      "type": "fountain",
+      "tier": 1,
+      "model": "Lancer IBD 22-6 fountain",
+      "price": 5000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kto2db4s",
+      "type": "blender",
+      "tier": 0,
+      "model": "Spindle mixer for shakes",
+      "price": 300,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1vsvcv1",
+      "type": "pos",
+      "tier": 1,
+      "model": "POS terminal plus three delivery-app tablets",
+      "price": 0,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "kxkuoty9",
+      "type": "menus",
+      "tier": 1,
+      "model": "Menu board over the counter",
+      "price": 0,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "kyrex2w3",
+      "type": "booths",
+      "tier": 0,
+      "model": "Used vinyl booths",
+      "price": 2500,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "koleghhm",
+      "type": "stools",
+      "tier": 0,
+      "model": "Counter stools",
+      "price": 1200,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krtnq5zn",
+      "type": "sound",
+      "tier": 0,
+      "model": "A Bluetooth speaker behind the bar",
+      "price": 100,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "klxgm1ha",
+      "type": "greasetrap",
+      "tier": 1,
+      "model": "Under-sink hydromechanical trap, 50 gpm, installed",
+      "price": 1800,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kd9ot0c9",
+      "type": "smallwares",
+      "tier": 0,
+      "model": "Mismatched pans, dull knives and no probe thermometers",
+      "price": 1500,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9apk25c",
+      "type": "restroom",
+      "tier": 0,
+      "model": "Old restrooms that don't meet ADA standards",
+      "price": 0,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kxvmevjf",
+      "type": "hvac",
+      "tier": 0,
+      "model": "Old rooftop unit on its last legs",
+      "price": 2000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krewt5sz",
+      "type": "deliverytab",
+      "tier": 1,
+      "model": "One tablet running an order aggregator for all three apps",
+      "price": 900,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kn0vmtjg",
+      "type": "cameras",
+      "tier": 1,
+      "model": "Basic four-camera system",
+      "price": 1800,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ks7bvxl9",
+      "type": "safe",
+      "tier": 0,
+      "model": "Old floor safe",
+      "price": 300,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": true
+     }
+    },
+    "setting": {
+     "custom": true,
+     "name": "Strip mall, east Orlando",
+     "desc": "A burger counter in a tired strip mall off a six-lane road in east Orlando, between a vape shop and a tax preparer. Few people walk in; the parking lot is full of delivery drivers waiting for bags, and the tablets on the counter never stop chiming.",
+     "check": 0.95,
+     "traffic": 1,
+     "season": [
+      1,
+      1.02,
+      1.08,
+      1.05,
+      1,
+      0.96,
+      0.97,
+      0.95,
+      0.92,
+      0.96,
+      0.98,
+      1.02
+     ],
+     "seg": {
+      "regulars": 6,
+      "locals": 10,
+      "tourists": -4,
+      "business": -4,
+      "occasion": -8
+     },
+     "crime": 30,
+     "ev": [
+      {
+       "p": 0.2,
+       "m": [
+        7,
+        8,
+        9
+       ],
+       "tone": "warn",
+       "text": "A hurricane watch shut the region for two days. The apps went quiet, then flooded with orders the day after.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Hurricane closure",
+         "value": -0.03,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.08,
+       "m": null,
+       "tone": "warn",
+       "text": "Drivers are double-parking and blocking the vape shop; the landlord sent a letter about the parking lot.",
+       "fx": [
+        {
+         "op": "rep",
+         "delta": -1
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "desk": {
+        "title": "The licensor's quality audit",
+        "text": "A mystery-shopper report says two MrBeast Burger orders arrived with cold fries and one with an undercooked patty.",
+        "choices": [
+         {
+          "label": "Add a cook on the virtual line at dinner",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "mod",
+            "kind": "labor",
+            "label": "Extra cook for the app orders",
+            "value": 0.03,
+            "months": 0
+           },
+           {
+            "op": "health",
+            "delta": 2
+           }
+          ]
+         },
+         {
+          "label": "Blame the drivers",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "rep",
+            "delta": -2
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "mkt": {
+     "social": 150,
+     "search": 0,
+     "pr": 0,
+     "email": 0
+    },
+    "kitV3": true,
+    "kitDedup": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "full",
+   "marketing": 1800,
+   "draw": 2500,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": false,
+   "brunch": false,
+   "delivery": true,
+   "catering": false
+  },
+  "admin": 30,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Dec Y1",
+    "tone": "good",
+    "text": "December 2020. A year ago this was a franchise burger unit that was losing money every week; you de-branded it, kept the grill and the fryers, and scraped through the spring on takeout. Last month you signed with Virtual Dining Concepts: from tonight your kitchen also cooks MrBeast Burger and Mariah's Cookies for the delivery apps. VDC handles the brand and the marketing and takes a cut of every order; the apps take theirs. The launch is going to be enormous. Nobody knows how long it lasts."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 0,
+   "equip": 0,
+   "deposit": 18600,
+   "licences": 0,
+   "smallwares": 0,
+   "preopen": 0,
+   "openingInv": 1948,
+   "cellar": 0,
+   "total": 20548,
+   "sqft": 510
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790365324096,
+  "mods": [],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "MrBeast Burger was launched by Virtual Dining Concepts (Orlando) under a September 2020 endorsement agreement and went live in December 2020, cooked by existing restaurants for delivery and pickup only. It sold more than a million burgers in its first three months and reached about 1,700 locations worldwide by the end of 2022. In 2023 MrBeast sued VDC to end the deal over undercooked, cold and 'inedible' food, saying more than half the locations averaged under two stars and he hadn't received a dime; VDC countersued for more than $100 million. Operators paid VDC 35-40% of sales, which covered brand and delivery relations, leaving about 30% after food and packaging (Nation's Restaurant News); one VDC operator paid DoorDash 30% on its virtual orders and VDC covered the marketing (Food On Demand). DoorDash's merchant plans charge 15%, 25% or 30%. Ghost-kitchen units rent for about $2,500-5,500 a month with hood and utilities. The restaurant, its staff, the suppliers, rent and local events are invented; the licensing fee is an estimate within the reported range, and order volumes are modelled, not reported figures.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_broad",
+    "name": "Central Florida broadline distributor",
+    "cats": [
+     "produce",
+     "meat",
+     "seafood",
+     "dairy",
+     "pantry",
+     "luxury"
+    ],
+    "q": 50,
+    "price": 1,
+    "reliability": 0.96,
+    "terms": "net14",
+    "relation": 55,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "The ordinary foodservice truck twice a week. Credit terms came back only after you paid off what the franchise owed."
+   },
+   {
+    "id": "sp_depot",
+    "name": "Cash-and-carry warehouse",
+    "cats": [
+     "produce",
+     "meat",
+     "dairy",
+     "pantry"
+    ],
+    "q": 48,
+    "price": 0.93,
+    "reliability": 0.99,
+    "terms": "cod",
+    "relation": 60,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "A restaurant warehouse club across town: cheaper by the case, paid on the spot, loaded into your own car."
+   },
+   {
+    "id": "sp_vdc",
+    "name": "Licensor-specified brand items",
+    "cats": [
+     "pantry",
+     "meat"
+    ],
+    "q": 56,
+    "price": 1.08,
+    "reliability": 0.95,
+    "terms": "net30",
+    "relation": 70,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "The buns, sauces, seasonings and branded packaging the virtual brands' licensor specifies, ordered through its designated distributor."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_broad",
+   "meat": "sp_broad",
+   "seafood": "sp_broad",
+   "dairy": "sp_broad",
+   "pantry": "sp_broad",
+   "luxury": "sp_broad"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 0,
+   "dishes": [
+    {
+     "id": "8wp6omv",
+     "name": "Smash Cheeseburger",
+     "course": "main",
+     "desc": "Two smashed patties, American cheese, pickles and house sauce on a potato bun.",
+     "cats": {
+      "meat": 0.55,
+      "dairy": 0.15,
+      "pantry": 0.3
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 2.45,
+     "price": 8.49,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "smashed on the flat-top"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Smash Cheeseburger|Two smashed patties, American cheese, pickles and house sauce on a potato bun."
+    },
+    {
+     "id": "g3q02ut",
+     "name": "Bacon Cheeseburger",
+     "course": "main",
+     "desc": "The smash burger with thick-cut bacon.",
+     "cats": {
+      "meat": 0.6,
+      "dairy": 0.15,
+      "pantry": 0.25
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 2.85,
+     "price": 9.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "smashed on the flat-top"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Bacon Cheeseburger|The smash burger with thick-cut bacon."
+    },
+    {
+     "id": "mh67afz",
+     "name": "Crispy Chicken Sandwich",
+     "course": "main",
+     "desc": "Buttermilk-fried chicken thigh, slaw and pickles.",
+     "cats": {
+      "meat": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 2.6,
+     "price": 8.99,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "deep-fried"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Crispy Chicken Sandwich|Buttermilk-fried chicken thigh, slaw and pickles."
+    },
+    {
+     "id": "46vyylu",
+     "name": "Grilled Cheese",
+     "course": "main",
+     "desc": "American and cheddar on griddled sourdough.",
+     "cats": {
+      "dairy": 0.5,
+      "pantry": 0.5
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.5,
+     "price": 5.99,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill"
+       ],
+       "hard": false,
+       "loss": 0.15,
+       "why": "griddled"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Cheese|American and cheddar on griddled sourdough."
+    },
+    {
+     "id": "ykcszpr",
+     "name": "Fries",
+     "course": "side",
+     "desc": "Skin-on fries with seasoning salt.",
+     "cats": {
+      "produce": 0.7,
+      "pantry": 0.3
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.7,
+     "price": 3.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "deep-fried"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Fries|Skin-on fries with seasoning salt."
+    },
+    {
+     "id": "7ax510j",
+     "name": "Onion Rings",
+     "course": "side",
+     "desc": "Beer-battered rings.",
+     "cats": {
+      "produce": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1,
+     "price": 4.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "deep-fried"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Onion Rings|Beer-battered rings."
+    },
+    {
+     "id": "883lhz3",
+     "name": "Chocolate Shake",
+     "course": "side",
+     "desc": "Hand-spun chocolate shake.",
+     "cats": {
+      "dairy": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.4,
+     "price": 5.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "blender",
+        "mixer"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "spun to order"
+      }
+     ],
+     "sec": "drink",
+     "drink": "shake",
+     "kitJ": "Chocolate Shake|Hand-spun chocolate shake."
+    },
+    {
+     "id": "guqid43",
+     "name": "Fountain Drink",
+     "course": "side",
+     "desc": "Coca-Cola products from the fountain.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.35,
+     "price": 2.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "soft",
+     "kitJ": "Fountain Drink|Coca-Cola products from the fountain."
+    },
+    {
+     "id": "7s2qacy",
+     "name": "Kids' Cheeseburger",
+     "course": "main",
+     "desc": "A single patty with cheese.",
+     "cats": {
+      "meat": 0.5,
+      "dairy": 0.2,
+      "pantry": 0.3
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.4,
+     "price": 5.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "kids",
+     "kitJ": "Kids' Cheeseburger|A single patty with cheese."
+    },
+    {
+     "id": "8tha7k1",
+     "name": "Smash Burger Combo",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "combo",
+      "items": [
+       "8wp6omv",
+       "ykcszpr",
+       "guqid43"
+      ]
+     },
+     "desc": "The smash cheeseburger with fries and a drink.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 12.49,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "kitJ": "Smash Burger Combo|The smash cheeseburger with fries and a drink."
+    }
+   ],
+   "coherence": 55,
+   "identity": "",
+   "notes": "",
+   "creBonus": 0,
+   "pairing": false,
+   "pairingPrice": 0,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "fmlsl1z",
+    "role": "sous",
+    "name": "Andre Pierce",
+    "skill": 57,
+    "years": 6,
+    "salary": 41000,
+    "trait": "loyal",
+    "bio": "Kitchen manager. Stayed through the franchise's collapse when the paychecks were late, and now runs three brands off one flat-top.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 32,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "24t9gm6",
+    "role": "maitre",
+    "name": "Maribel Soto",
+    "skill": 52,
+    "years": 3,
+    "salary": 34500,
+    "trait": "restless",
+    "bio": "Shift lead who runs the counter and the tablets. Knows every DoorDash driver by name and which ones will wait.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 32,
+    "away": false,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 81869222,
+  "cellar": {
+   "value": 0,
+   "target": 0,
+   "ref": 1,
+   "markup": 4.2,
+   "standing": 12,
+   "rare": []
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "franchise": null,
+  "ghost": {
+   "brands": [
+    {
+     "id": "5gqllqk",
+     "months": 0,
+     "rating": 4.4,
+     "status": "live",
+     "hostType": "loc",
+     "hostId": "d0eedzv",
+     "name": "MrBeast Burger",
+     "cuisine": "smash burgers, fries and sandwiches",
+     "kind": "licensed",
+     "licensor": "Virtual Dining Concepts",
+     "fame": 95,
+     "fee": 0.1,
+     "ticket": 25,
+     "foodPct": 0.3,
+     "plan": "premier"
+    },
+    {
+     "id": "os3r4ln",
+     "months": 0,
+     "rating": 4.4,
+     "status": "live",
+     "hostType": "loc",
+     "hostId": "d0eedzv",
+     "name": "Mariah's Cookies",
+     "cuisine": "boxed cookies",
+     "kind": "licensed",
+     "licensor": "Virtual Dining Concepts",
+     "fame": 78,
+     "fee": 0.1,
+     "ticket": 18,
+     "foodPct": 0.24,
+     "plan": "premier"
+    }
+   ],
+   "units": []
+  },
+  "policies": [],
+  "slotName": "Eastside Burger Co. (starting save)"
+ }
+}

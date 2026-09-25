@@ -1,0 +1,1345 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T19:51:18.508Z",
+ "state": {
+  "v": 2,
+  "seed": 1010237979,
+  "ownerName": "You",
+  "bizName": "Heart Attack Grill",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 3,
+  "year": 1,
+  "cash": 95000,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "Heart Attack Grill",
+   "blurb": "Hospital gowns, nurse waitresses, burgers named after bypass surgery and fries fried in pure lard. The gimmick is the restaurant.",
+   "check": 34.48,
+   "foodPct": 0.215,
+   "seats": 110,
+   "truckCap": 210,
+   "turns": 1.7304979388412487,
+   "maxTurns": 5,
+   "elast": 0.8,
+   "hrsPerCover": 0.5,
+   "alcohol": 0.14,
+   "sqftSeat": 22,
+   "buildSqft": 180,
+   "equip": 120000,
+   "chef": 52000,
+   "gm": 0,
+   "counter": false,
+   "truck": false
+  },
+  "customMarket": {
+   "name": "Downtown Las Vegas",
+   "blurb": "Your own market.",
+   "rentYr": 0,
+   "wage": 12,
+   "tipCredit": 0,
+   "traffic": 1.35,
+   "comp": 1.4,
+   "checkMult": 1,
+   "taxRate": 0.08375,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "You run the Heart Attack Grill on Fremont Street, the most notorious burger restaurant in America. It's cash only, the staff are dressed as nurses, and the menu is built to offend nutritionists.",
+  "creditLine": {
+   "limit": 25000,
+   "drawn": 0,
+   "rate": 0.14
+  },
+  "locations": [
+   {
+    "id": "gqsvcki",
+    "name": "Heart Attack Grill",
+    "market": "custom",
+    "seats": 110,
+    "sqft": 2420,
+    "env": "tourist",
+    "envLive": true,
+    "rent": 21000,
+    "cam": 2400,
+    "leaseLeft": 96,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 61,
+    "awareness": 88,
+    "morale": 60,
+    "skill": 48,
+    "equip": 73.76,
+    "health": 74,
+    "monthsOpen": 100,
+    "attention": 80,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "ambBase": 52,
+    "features": [
+     {
+      "id": "f0iyc8xf",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "name": "The public scale by the door",
+      "pitch": "Where anyone over 350 pounds weighs in to eat free.",
+      "cost": 0,
+      "prestige": 2
+     },
+     {
+      "id": "ftl2osro",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "name": "Hospital-ward decor",
+      "pitch": "Gowns for every patient, nurse uniforms for the staff, a lab-coated doctor in charge.",
+      "cost": 0,
+      "ambience": 0,
+      "prestige": 3
+     }
+    ],
+    "foh": 55,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "setting": {
+     "custom": true,
+     "name": "Fremont Street, Downtown Las Vegas",
+     "desc": "Neonopolis, on Fremont Street at Las Vegas Boulevard, right at the entrance to the Fremont Street Experience canopy. Tourists with phones out, bachelor parties, zipliners overhead, and a steady flow of people who came specifically to be photographed in a hospital gown.",
+     "check": 1,
+     "traffic": 1.35,
+     "season": [
+      0.95,
+      1,
+      1.08,
+      1.05,
+      1.02,
+      0.95,
+      0.9,
+      0.9,
+      1,
+      1.05,
+      1.02,
+      1.08
+     ],
+     "seg": {
+      "regulars": -12,
+      "locals": -8,
+      "tourists": 22,
+      "occasion": 4
+     },
+     "crime": 40,
+     "ev": [
+      {
+       "p": 0.1,
+       "m": null,
+       "tone": "good",
+       "text": "A food YouTuber with millions of subscribers attempted the Octuple Bypass on camera and failed spectacularly. The video is everywhere.",
+       "fx": [
+        {
+         "op": "awareness",
+         "delta": 6
+        },
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Viral octuple attempt",
+         "value": 0.05,
+         "months": 2
+        }
+       ]
+      },
+      {
+       "p": 0.06,
+       "m": null,
+       "tone": "warn",
+       "text": "A health columnist wrote another piece calling the Grill irresponsible. Business went up.",
+       "fx": [
+        {
+         "op": "awareness",
+         "delta": 3
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "desk": {
+        "title": "A patient weighing 480 pounds wants a record",
+        "text": "A regular who eats free under the 350-pound rule wants to attempt four Single Bypasses in one sitting on a livestream. The crowd will be huge. So is the risk.",
+        "choices": [
+         {
+          "label": "Let him, with a medic on standby",
+          "blurb": "Enormous publicity, and a medic's fee.",
+          "effects": [
+           {
+            "op": "cash",
+            "amount": -800,
+            "why": "medic on standby"
+           },
+           {
+            "op": "awareness",
+            "delta": 5
+           }
+          ]
+         },
+         {
+          "label": "Refuse and tell the press why",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "rep",
+            "delta": 2
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "p": 0.9,
+       "m": [
+        11
+       ],
+       "tone": "good",
+       "text": "New Year's Eve on Fremont Street: a street party of tens of thousands outside the door.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "New Year's Eve",
+         "value": 0.08,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.3,
+       "m": [
+        2,
+        9
+       ],
+       "tone": "good",
+       "text": "A big convention week filled downtown with people looking for something to tell their coworkers about.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Convention week",
+         "value": 0.04,
+         "months": 1
+        }
+       ]
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "segBase": null,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": false
+     }
+    },
+    "kit": [
+     {
+      "id": "kj53anan",
+      "type": "range",
+      "tier": 0,
+      "model": "Southbend 6-burner range (used)",
+      "price": 3400,
+      "cond": 66,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1rkzder",
+      "type": "hood",
+      "tier": 0,
+      "model": "Used canopy hood, re-hung",
+      "price": 5500,
+      "cond": 76,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k22yjvho",
+      "type": "vent",
+      "tier": 0,
+      "model": "Existing exhaust fan & duct, no makeup air",
+      "price": 11000,
+      "cond": 70,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "km4rai29",
+      "type": "suppression",
+      "tier": 0,
+      "model": "Legacy dry-chemical system",
+      "price": 2100,
+      "cond": 64,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kq7kxkk7",
+      "type": "extinguisher",
+      "tier": 0,
+      "model": "A couple of old ABC extinguishers",
+      "price": 200,
+      "cond": 75,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kviuovil",
+      "type": "sprinkler",
+      "tier": 0,
+      "model": "Existing building sprinklers, unmodified",
+      "price": 3400,
+      "cond": 68,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kdiy0n5a",
+      "type": "refrig",
+      "tier": 0,
+      "model": "Used walk-in & reach-ins",
+      "price": 12400,
+      "cond": 63,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kjfw0tnm",
+      "type": "dish",
+      "tier": 0,
+      "model": "Hobart AM (used)",
+      "price": 4000,
+      "cond": 76,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k0fbekbf",
+      "type": "pos",
+      "tier": 1,
+      "model": "POS terminals & receipt printers",
+      "price": 0,
+      "cond": 95,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "k6d8inwo",
+      "type": "tableware",
+      "tier": 1,
+      "model": "Standard hotel china, flatware & glassware",
+      "price": 11000,
+      "cond": 95,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3juk2nw",
+      "type": "plancha",
+      "tier": 1,
+      "model": "Star Ultra-Max griddle",
+      "price": 2600,
+      "cond": 93,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kkrn507w",
+      "type": "fryer",
+      "tier": 2,
+      "model": "Frymaster filtration fryer bank",
+      "price": 9000,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k69kjvqj",
+      "type": "grill",
+      "tier": 1,
+      "model": "Vulcan charbroiler",
+      "price": 3500,
+      "cond": 91,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ki4lq53h",
+      "type": "hotdog",
+      "tier": 2,
+      "model": "APW Wyott roller with bun warmer",
+      "price": 1500,
+      "cond": 77,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k7nik4kh",
+      "type": "bar",
+      "tier": 1,
+      "model": "Perlick draft system & underbar",
+      "price": 25000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kh0hxtq4",
+      "type": "menus",
+      "tier": 1,
+      "model": "Printed paper menus",
+      "price": 0,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "k63oj9i2",
+      "type": "seating",
+      "tier": 0,
+      "model": "Mismatched second-hand chairs and laminate tables",
+      "price": 8300,
+      "cond": 92,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kecl3uqi",
+      "type": "stools",
+      "tier": 1,
+      "model": "Commercial swivel bar stools",
+      "price": 4000,
+      "cond": 76,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ke7288v3",
+      "type": "sound",
+      "tier": 1,
+      "model": "Wireless speakers ×4",
+      "price": 2500,
+      "cond": 92,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1dtxo23",
+      "type": "ice",
+      "tier": 1,
+      "model": "Manitowoc ice machine",
+      "price": 5000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krlf96s4",
+      "type": "blender",
+      "tier": 1,
+      "model": "Vitamix The Quiet One",
+      "price": 1300,
+      "cond": 75,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k4a5v1h8",
+      "type": "soupwell",
+      "tier": 0,
+      "model": "Used soup kettle",
+      "price": 200,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k16ejxe8",
+      "type": "greasetrap",
+      "tier": 1,
+      "model": "Under-sink grease trap working hard under the lard fryers",
+      "price": 1800,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1x274az",
+      "type": "restroom",
+      "tier": 1,
+      "model": "ADA-compliant restrooms, standard fixtures",
+      "price": 41300,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kcw97uhv",
+      "type": "hvac",
+      "tier": 1,
+      "model": "New 10-ton rooftop unit, installed",
+      "price": 30300,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k26okngj",
+      "type": "smallwares",
+      "tier": 1,
+      "model": "A standard set: hotel pans, sheet pans, knives and scales",
+      "price": 16500,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k4qqfbim",
+      "type": "safe",
+      "tier": 2,
+      "model": "Smart safe for a cash-only register",
+      "price": 4000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kj61htib",
+      "type": "cameras",
+      "tier": 2,
+      "model": "IP cameras with cloud recording",
+      "price": 5500,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "kitDedup": true,
+    "mkt": {
+     "social": 720,
+     "search": 540,
+     "pr": 360,
+     "email": 180
+    },
+    "cashOnly": true,
+    "kitV3": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "lean",
+   "marketing": 1800,
+   "draw": 6000,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": false,
+   "brunch": false,
+   "delivery": false,
+   "catering": false
+  },
+  "admin": 20,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Apr Y1",
+    "tone": "good",
+    "text": "You run the Heart Attack Grill on Fremont Street, the most notorious burger restaurant in America. It's cash only, the staff are dressed as nurses, and the menu is built to offend nutritionists."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 435600,
+   "equip": 120000,
+   "deposit": 63000,
+   "licences": 0,
+   "smallwares": 16800,
+   "preopen": 0,
+   "openingInv": 13213,
+   "cellar": 0,
+   "total": 648613,
+   "sqft": 2420
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790365878501,
+  "mods": [
+   {
+    "id": "5clk9js",
+    "label": "The 350-pound rule: free burgers",
+    "kind": "foodcost",
+    "value": 0.012,
+    "left": null,
+    "loc": -1,
+    "src": "Heart Attack Grill"
+   },
+   {
+    "id": "zk1vsds",
+    "label": "Merch, gowns and IV-bag wine",
+    "kind": "sideline",
+    "value": 0.05,
+    "left": null,
+    "loc": -1,
+    "src": "Heart Attack Grill"
+   },
+   {
+    "id": "kwj0sys",
+    "label": "Weigh-ins and spankings on camera",
+    "kind": "awareness",
+    "value": 1,
+    "left": null,
+    "loc": -1,
+    "src": "Heart Attack Grill"
+   }
+  ],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "This is the Heart Attack Grill in downtown Las Vegas: a hospital-themed burger restaurant where customers are \"patients\" in gowns, orders are \"prescriptions\", waitresses dress as nurses, and diners who don't finish are spanked. Anyone over 350 pounds eats free after a public weigh-in. It's cash only. The Quadruple Bypass Burger was once certified by Guinness as the world's most calorific burger. Menu prices are as recently listed. The Grill was founded in Arizona in 2005 and moved to Fremont Street in 2011. Two of its larger-than-life spokesmen died in 2011 and 2013, and the press still brings it up whenever something happens. In the real world the Grill closed in May 2026 when its lease ran out; this save starts earlier, while it's still open. Sales, seat count and rent are estimates. Staff names are invented, and the player is not the real founder. Keep this a business simulation, not a lecture: characters can criticise the concept, but the owner decides.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_broad",
+    "name": "Las Vegas broadline distributor",
+    "cats": [
+     "produce",
+     "meat",
+     "seafood",
+     "dairy",
+     "pantry",
+     "luxury"
+    ],
+    "q": 45,
+    "price": 0.97,
+    "reliability": 0.97,
+    "terms": "net14",
+    "relation": 62,
+    "green": false,
+    "monthsWith": 100,
+    "blurb": "Frozen patties by the pallet, lard by the bucket, and whatever else a burger joint on Fremont Street goes through."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_broad",
+   "meat": "sp_broad",
+   "seafood": "sp_broad",
+   "dairy": "sp_broad",
+   "pantry": "sp_broad",
+   "luxury": "sp_broad"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 0,
+   "pairing": false,
+   "pairingPrice": 0,
+   "dishes": [
+    {
+     "id": "0dhmoxj",
+     "name": "Single Bypass Burger",
+     "course": "main",
+     "desc": "One half-pound beef patty, the first rung of the Bypass ladder. Every step up adds another half-pound patty.",
+     "cats": {
+      "produce": 0.05,
+      "meat": 0.65,
+      "dairy": 0.1,
+      "pantry": 0.2
+     },
+     "grade": 1,
+     "technique": 1.5,
+     "presentation": 1.5,
+     "creativity": 22,
+     "cost": 2.75,
+     "price": 12.78,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill",
+        "clamshell",
+        "teppan"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "flat-top griddle"
+      }
+     ],
+     "kitJ": "Single Bypass Burger|One half-pound beef patty, the first rung of the Bypass ladder. Every step up adds another half-pound patty.",
+     "sec": "food"
+    },
+    {
+     "id": "r6eb185",
+     "name": "Double Bypass Burger",
+     "course": "main",
+     "desc": "Two half-pound beef patties, which makes a full pound of beef in one burger.",
+     "cats": {
+      "produce": 0.05,
+      "meat": 0.7,
+      "dairy": 0.1,
+      "pantry": 0.15
+     },
+     "grade": 1,
+     "technique": 1.5,
+     "presentation": 1.5,
+     "creativity": 26,
+     "cost": 3.9,
+     "price": 16.19,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill",
+        "clamshell",
+        "teppan"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "flat-top griddle"
+      }
+     ],
+     "kitJ": "Double Bypass Burger|Two half-pound beef patties, which makes a full pound of beef in one burger.",
+     "sec": "food"
+    },
+    {
+     "id": "i9fy8fv",
+     "name": "Triple Bypass Burger",
+     "course": "main",
+     "desc": "Three half-pound patties stacked into a pound and a half of beef, named like the rest of the series for heart surgery.",
+     "cats": {
+      "produce": 0.05,
+      "meat": 0.73,
+      "dairy": 0.1,
+      "pantry": 0.12
+     },
+     "grade": 1,
+     "technique": 1.5,
+     "presentation": 1.5,
+     "creativity": 30,
+     "cost": 4.35,
+     "price": 19.56,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill",
+        "clamshell",
+        "teppan"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "flat-top griddle"
+      }
+     ],
+     "kitJ": "Triple Bypass Burger|Three half-pound patties stacked into a pound and a half of beef, named like the rest of the series for heart surgery.",
+     "sec": "food"
+    },
+    {
+     "id": "ogyng2x",
+     "name": "Quadruple Bypass Burger",
+     "course": "main",
+     "desc": "Four half-pound patties, 20 slices of bacon, 8 slices of American cheese, onion caramelized in lard, 8 tomato slices, mayo, ketchup and mustard. Listed at 9,982 calories.",
+     "cats": {
+      "produce": 0.04,
+      "meat": 0.78,
+      "dairy": 0.1,
+      "pantry": 0.08
+     },
+     "grade": 1,
+     "technique": 1.5,
+     "presentation": 1.5,
+     "creativity": 38,
+     "cost": 5.28,
+     "price": 22.93,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill",
+        "clamshell",
+        "teppan"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "flat-top griddle"
+      }
+     ],
+     "kitJ": "Quadruple Bypass Burger|Four half-pound patties, 20 slices of bacon, 8 slices of American cheese, onion caramelized in lard, 8 tomato slices, mayo, ketchup and mustard. Listed at 9,982 calories.",
+     "sec": "food"
+    },
+    {
+     "id": "943vlfl",
+     "name": "Octuple Bypass Burger",
+     "course": "main",
+     "desc": "Eight half-pound patties, four pounds of beef in one stack and close to 20,000 calories. It's the top of the Bypass ladder.",
+     "cats": {
+      "produce": 0.03,
+      "meat": 0.82,
+      "dairy": 0.1,
+      "pantry": 0.05
+     },
+     "grade": 1,
+     "technique": 1.5,
+     "presentation": 1.5,
+     "creativity": 40,
+     "cost": 7.11,
+     "price": 33.77,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill",
+        "clamshell",
+        "teppan"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "flat-top griddle"
+      }
+     ],
+     "kitJ": "Octuple Bypass Burger|Eight half-pound patties, four pounds of beef in one stack and close to 20,000 calories. It's the top of the Bypass ladder.",
+     "sec": "food"
+    },
+    {
+     "id": "b6goxhe",
+     "name": "Coronary Dog",
+     "course": "main",
+     "desc": "The Grill's hot dog, ordered either with onions or with cheese.",
+     "cats": {
+      "produce": 0.05,
+      "meat": 0.65,
+      "dairy": 0.05,
+      "pantry": 0.25
+     },
+     "grade": 1,
+     "technique": 1,
+     "presentation": 1,
+     "creativity": 10,
+     "cost": 2.86,
+     "price": 12.78,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "grill",
+        "clamshell",
+        "teppan"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "flat-top griddle"
+      }
+     ],
+     "kitJ": "Coronary Dog|The Grill's hot dog, ordered either with onions or with cheese.",
+     "sec": "food"
+    },
+    {
+     "id": "bk599zb",
+     "name": "Flatliner Fries",
+     "course": "side",
+     "desc": "French fries deep-fried in pure lard, served all-you-can-eat.",
+     "cats": {
+      "produce": 0.55,
+      "meat": 0.15,
+      "pantry": 0.3
+     },
+     "grade": 1,
+     "technique": 1,
+     "presentation": 1,
+     "creativity": 18,
+     "cost": 0.53,
+     "price": 2.21,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "deep-fried"
+      }
+     ],
+     "kitJ": "Flatliner Fries|French fries deep-fried in pure lard, served all-you-can-eat.",
+     "sec": "food"
+    },
+    {
+     "id": "ilqizfp",
+     "name": "Chili Cheese Fries",
+     "course": "side",
+     "desc": "Flatliner Fries covered with chili and cheese.",
+     "cats": {
+      "produce": 0.35,
+      "meat": 0.3,
+      "dairy": 0.2,
+      "pantry": 0.15
+     },
+     "grade": 1,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 9,
+     "cost": 1.44,
+     "price": 7,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "deep-fried"
+      },
+      {
+       "any": [
+        "soupwell",
+        "kettle",
+        "steamtable",
+        "bigkettle"
+       ],
+       "hard": false,
+       "loss": 0.15,
+       "why": "kept hot for service"
+      }
+     ],
+     "kitJ": "Chili Cheese Fries|Flatliner Fries covered with chili and cheese.",
+     "sec": "food"
+    },
+    {
+     "id": "655l68f",
+     "name": "Onion Rings",
+     "course": "side",
+     "desc": "Beer-battered onion rings.",
+     "cats": {
+      "produce": 0.5,
+      "pantry": 0.5
+     },
+     "grade": 1,
+     "technique": 1.5,
+     "presentation": 1.5,
+     "creativity": 8,
+     "cost": 1.88,
+     "price": 8.86,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "deep-fried"
+      }
+     ],
+     "kitJ": "Onion Rings|Beer-battered onion rings.",
+     "sec": "food"
+    },
+    {
+     "id": "cfd3d7e",
+     "name": "Butterfat Milkshake",
+     "course": "dessert",
+     "desc": "A butterfat shake in chocolate or vanilla, served with a pat of butter.",
+     "cats": {
+      "dairy": 0.85,
+      "pantry": 0.15
+     },
+     "grade": 1,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 22,
+     "cost": 1.5,
+     "price": 7,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "blender"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "blended"
+      }
+     ],
+     "kitJ": "Butterfat Milkshake|A butterfat shake in chocolate or vanilla, served with a pat of butter.",
+     "sec": "drink",
+     "drink": "shake"
+    },
+    {
+     "id": "ezwmmxn",
+     "name": "Mexican Coca-Cola",
+     "course": "side",
+     "desc": "Coca-Cola bottled in Mexico, made with cane sugar.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 1,
+     "technique": 1,
+     "presentation": 1,
+     "creativity": 2,
+     "cost": 0.81,
+     "price": 4,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Mexican Coca-Cola|Coca-Cola bottled in Mexico, made with cane sugar.",
+     "sec": "drink",
+     "drink": "soft"
+    },
+    {
+     "id": "ap78m4b",
+     "name": "Beer",
+     "course": "side",
+     "desc": "A beer from the Grill's bar.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 1,
+     "technique": 1,
+     "presentation": 1,
+     "creativity": 1,
+     "cost": 1.67,
+     "price": 7,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "a working bar"
+      }
+     ],
+     "kitJ": "Beer|A beer from the Grill's bar.",
+     "sec": "drink",
+     "drink": "beer"
+    }
+   ],
+   "coherence": 85,
+   "identity": "Taste worth dying for: bypass burgers from single to octuple, lard fries, butterfat shakes, beer and wine served in IV bags.",
+   "notes": "",
+   "creBonus": 0,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "4aundaq",
+    "role": "maitre",
+    "name": "Candace Ruiz",
+    "skill": 58,
+    "years": 9,
+    "bio": "Head nurse. Runs the floor in a nurse's uniform, handles the weigh-ins, and does the spankings with conviction.",
+    "trait": "showman",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 39500,
+    "fame": 0
+   },
+   {
+    "id": "ygrxj1x",
+    "role": "chef",
+    "name": "Marco Delgado",
+    "skill": 50,
+    "years": 12,
+    "bio": "Grill cook who can stack an octuple without it falling over, and would prefer nobody asked him about the calories.",
+    "trait": "hothead",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 34500,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 1059026576,
+  "cellar": {
+   "value": 11000,
+   "target": 11000,
+   "ref": 11000,
+   "markup": 4.2,
+   "standing": 12,
+   "rare": []
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "backups": {},
+  "corrections": [],
+  "intl": {
+   "countries": {
+    "United States": {
+     "name": "United States",
+     "currency": {
+      "code": "USD",
+      "symbol": "$",
+      "perUSD": 1,
+      "decimals": 2
+     },
+     "payrollBurden": 0.168,
+     "cardFee": 0.0275,
+     "cashShare": 0.14,
+     "tipping": {
+      "norm": "tips",
+      "tipCredit": 0.45
+     },
+     "salesTax": {
+      "rate": null,
+      "included": false
+     },
+     "alcohol": {
+      "status": "allowed",
+      "note": "Licensed by the state; quotas in some cities."
+     },
+     "inspections": {
+      "system": "County or city health department inspections; letter grades posted in some cities.",
+      "public": true
+     },
+     "mealTimes": "Lunch around noon to 1pm, dinner from about 6 to 8pm.",
+     "customs": "Guests expect fast, attentive service, free tap water and refills, and a check brought on request. Tipping 18-22% is expected at table service.",
+     "labour": "At-will employment in most states; overtime after 40 hours a week; minimum wages set by state and city.",
+     "holidays": [],
+     "regionTag": "us",
+     "builtIn": true,
+     "source": ""
+    }
+   },
+   "home": "United States",
+   "fx": {}
+  },
+  "slotName": "Heart Attack Grill (starting save)"
+ }
+}

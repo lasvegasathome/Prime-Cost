@@ -1,0 +1,35 @@
+# Prime Cost
+
+A restaurant management game in a single HTML file. You run the books, the menu, the kitchen equipment, the staff and the suppliers, month by month, and the P&L tells you how it's going.
+
+## Playing
+
+Open `index.html` in a browser. Nothing needs installing and there's no server. Your game saves in the browser, and you can export it as a file at any time.
+
+## Preset saves
+
+The `presets/` folder holds ready-made restaurants to start from. Download one, then open the game and use **Import a save** to load it.
+
+| Preset | File | Setting |
+|---|---|---|
+| The Cheesecake Factory | `prime-cost-cheesecake-factory.json` | NorthPark, Dallas |
+| Chick-fil-A (operator) | `prime-cost-chick-fil-a.json` | Suburban Atlanta |
+| Crumbl (franchise) | `prime-cost-crumbl.json` | Lehi, Utah |
+| Heart Attack Grill | `prime-cost-heart-attack-grill.json` | Downtown Las Vegas |
+| Gordon Ramsay Hell's Kitchen | `prime-cost-hells-kitchen.json` | Las Vegas Strip |
+| Jumbo Kingdom | `prime-cost-jumbo-kingdom.json` | Aberdeen, Hong Kong |
+| Katz's Delicatessen | `prime-cost-katzs-delicatessen.json` | Lower East Side, Manhattan |
+| Los Pollos Hermanos | `prime-cost-los-pollos-hermanos.json` | Albuquerque |
+| McDonald's franchise | `prime-cost-mcdonalds-franchise.json` | Suburban highway exit |
+| Eastside Burger Co. (virtual brand kitchen) | `prime-cost-mrbeast-burger.json` | East Orlando |
+| Olive Garden | `prime-cost-olive-garden.json` | Suburban retail corridor |
+| POPS 66 | `prime-cost-pops-66.json` | Route 66, Arcadia, Oklahoma |
+| Robuchon au Dôme | `prime-cost-robuchon-au-dome.json` | Grand Lisboa, Macau |
+| Starbucks (company-operated) | `prime-cost-starbucks.json` | Phoenix metro |
+| The French Laundry | `prime-cost-the-french-laundry.json` | Yountville, Napa Valley |
+| Waffle House | `prime-cost-waffle-house.json` | Metro Atlanta |
+| Windows on the World | `prime-cost-windows-on-the-world.json` | World Trade Center, January 1999 |
+
+Each preset's world notes say which parts come from published sources (menus, prices, company filings, reviews) and which are estimated or invented, such as staff names, rent and local events.
+
+The Windows on the World preset begins in January 1999 and is written to stay in its own time.

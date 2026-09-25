@@ -1,0 +1,1466 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T19:42:01.215Z",
+ "state": {
+  "v": 2,
+  "seed": 143109791,
+  "ownerName": "You",
+  "bizName": "Starbucks #24417",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 8,
+  "year": 1,
+  "cash": 150638,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "Starbucks (company-operated)",
+   "blurb": "A drive-thru Starbucks where three cars in four never come inside, the mobile orders never stop, and a latte is the whole business.",
+   "check": 7.4,
+   "foodPct": 0.27,
+   "seats": 28,
+   "truckCap": 210,
+   "turns": 14,
+   "maxTurns": 30,
+   "elast": 0.9,
+   "hrsPerCover": 0.128,
+   "alcohol": 0,
+   "sqftSeat": 60,
+   "buildSqft": 0,
+   "equip": 0,
+   "chef": 0,
+   "gm": 0,
+   "counter": true,
+   "truck": false,
+   "items": 0.35,
+   "drinkAttach": 1.05,
+   "drinkRef": 5.2
+  },
+  "customMarket": {
+   "name": "Suburban arterial road, Phoenix metro",
+   "blurb": "Your own market.",
+   "rentYr": 38,
+   "wage": 17,
+   "tipCredit": 0,
+   "traffic": 2.095,
+   "comp": 1.3,
+   "checkMult": 1,
+   "taxRate": 0.081,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "You're the store manager of a company-operated Starbucks with a drive-thru on a busy road outside Phoenix. Starbucks owns the store, the menu, the equipment and the rota software; you run the partners, the drive-thru times and the mobile-order wall, and you're paid a salary and a bonus on the store's results.",
+  "creditLine": {
+   "limit": 40000,
+   "drawn": 0,
+   "rate": 0.145
+  },
+  "locations": [
+   {
+    "id": "sfit6q9",
+    "name": "Starbucks #24417",
+    "market": "custom",
+    "seats": 28,
+    "sqft": 1680,
+    "env": "suburb",
+    "envLive": true,
+    "rent": 9500,
+    "cam": 980,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 68,
+    "awareness": 96,
+    "morale": 56,
+    "skill": 62,
+    "equip": 80,
+    "health": 92,
+    "monthsOpen": 96,
+    "attention": 70,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "features": [
+     {
+      "id": "fh649pca",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Drive-thru lane with a digital menu board",
+      "pitch": "A single lane round the building with a pickup window; most of the store's orders go through it.",
+      "capacity": 0.45
+     },
+     {
+      "id": "fx7hub7j",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Mobile Order & Pay handoff plane",
+      "pitch": "A pickup counter for app orders placed ahead, with the Starbucks Rewards app driving repeat visits.",
+      "capacity": 0.12
+     }
+    ],
+    "ambBase": 35,
+    "foh": 50,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "kit": [
+     {
+      "id": "kog6bgtq",
+      "type": "espresso",
+      "tier": 2,
+      "model": "Thermoplan Mastrena II super-automatic espresso machines ×2",
+      "price": 26000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kuv7tsos",
+      "type": "batchbrew",
+      "tier": 1,
+      "model": "Batch brewers for the Pike Place and dark roast",
+      "price": 2800,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kj0lhtzf",
+      "type": "blender",
+      "tier": 2,
+      "model": "Blenders for Frappuccinos, pair",
+      "price": 3200,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwilc8gs",
+      "type": "ice",
+      "tier": 3,
+      "model": "Hoshizaki KM, pair with storage",
+      "price": 14000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzakzz46",
+      "type": "refrig",
+      "tier": 1,
+      "model": "Walk-in cooler · undercounter milk fridges on the bar",
+      "price": 10000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kyzk991d",
+      "type": "speedoven",
+      "tier": 2,
+      "model": "High-speed ovens for breakfast sandwiches, pair",
+      "price": 13400,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kf57ayqa",
+      "type": "pastrycase",
+      "tier": 2,
+      "model": "Refrigerated pastry case",
+      "price": 9000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kge97fel",
+      "type": "merch",
+      "tier": 1,
+      "model": "Grab-and-go cooler for bottled drinks and protein boxes",
+      "price": 3000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krty1q30",
+      "type": "dish",
+      "tier": 1,
+      "model": "Undercounter dish machine and three-compartment sink",
+      "price": 14000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ktzcx5pe",
+      "type": "pos",
+      "tier": 2,
+      "model": "POS with mobile-order ticket printers and a drive-thru headset system",
+      "price": 8000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "labor": -0.015,
+       "cap": 0.01,
+       "fee": 150
+      }
+     },
+     {
+      "id": "kmx4fhhp",
+      "type": "menus",
+      "tier": 2,
+      "model": "Digital menu boards and a drive-thru order-confirmation screen",
+      "price": 2500,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "pers": 1.5,
+       "fee": 150
+      }
+     },
+     {
+      "id": "km7zrn63",
+      "type": "sound",
+      "tier": 2,
+      "model": "Zoned in-store music",
+      "price": 12000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k7u8y82r",
+      "type": "seating",
+      "tier": 1,
+      "model": "Café chairs, soft seating and a communal table",
+      "price": 11000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krk88oew",
+      "type": "stools",
+      "tier": 1,
+      "model": "Window bar with stools",
+      "price": 4000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kujp947x",
+      "type": "tableware",
+      "tier": 1,
+      "model": "For-here ceramic mugs and glassware",
+      "price": 4000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kusa2cle",
+      "type": "extinguisher",
+      "tier": 1,
+      "model": "Class K and ABC extinguishers, tagged",
+      "price": 900,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kpsw87ka",
+      "type": "sprinkler",
+      "tier": 1,
+      "model": "Wet-pipe sprinkler fit-out",
+      "price": 7500,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3qwywim",
+      "type": "smallwares",
+      "tier": 1,
+      "model": "Pitchers, scoops, shakers, scales and thermometers for the bar",
+      "price": 6000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kogtgtav",
+      "type": "watertreat",
+      "tier": 2,
+      "model": "Water filtration for the espresso machines and ice",
+      "price": 3600,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kajp1kca",
+      "type": "restroom",
+      "tier": 1,
+      "model": "ADA-compliant restrooms, standard fixtures",
+      "price": 15000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kr4lqn4p",
+      "type": "hvac",
+      "tier": 1,
+      "model": "New 10-ton rooftop unit, installed",
+      "price": 11000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k61lqsum",
+      "type": "safe",
+      "tier": 2,
+      "model": "Smart safe with provisional bank credit",
+      "price": 4000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmnty0ln",
+      "type": "cameras",
+      "tier": 2,
+      "model": "IP cameras with cloud recording",
+      "price": 5500,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": true,
+      "lunch": true,
+      "dinner": true,
+      "late": false
+     }
+    },
+    "setting": {
+     "custom": true,
+     "name": "Arterial road, Phoenix suburbs",
+     "desc": "A freestanding drive-thru Starbucks on a six-lane arterial between a grocery-anchored plaza and a freeway on-ramp. Commuters from 5:30am, school-run parents, remote workers with laptops by ten, a heat-driven cold-drink rush every summer afternoon.",
+     "check": 1,
+     "traffic": 1.1,
+     "season": [
+      1.02,
+      1,
+      1.02,
+      1,
+      0.98,
+      0.96,
+      0.94,
+      0.95,
+      1,
+      1.02,
+      1.04,
+      1.08
+     ],
+     "seg": {
+      "regulars": 16,
+      "locals": 12,
+      "tourists": -6,
+      "business": 4,
+      "occasion": -10
+     },
+     "crime": 18,
+     "ev": [
+      {
+       "p": 0.25,
+       "m": [
+        5,
+        6,
+        7
+       ],
+       "tone": "warn",
+       "text": "Afternoons over 110°F. Hot-drink sales stop dead and the cold-bar can't keep up.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Heat wave",
+         "value": -0.02,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.06,
+       "m": null,
+       "tone": "warn",
+       "text": "A Dutch Bros opened a double drive-thru half a mile down the road.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "New drive-thru competitor",
+         "value": -0.03,
+         "months": 6
+        }
+       ]
+      },
+      {
+       "p": 0.06,
+       "m": null,
+       "desk": {
+        "title": "The drive-thru is backing onto the road",
+        "text": "At 7:30am the queue blocks a lane of the arterial and the city has noticed.",
+        "choices": [
+         {
+          "label": "Put a partner outside with a tablet to take orders down the line",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "mod",
+            "kind": "labor",
+            "label": "Line-buster at peak",
+            "value": 0.02,
+            "months": 0
+           },
+           {
+            "op": "rep",
+            "delta": 1
+           }
+          ]
+         },
+         {
+          "label": "Leave it; the queue is a sign of success",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "rep",
+            "delta": -2
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "mkt": {
+     "social": 0,
+     "search": 0,
+     "pr": 0,
+     "email": 0
+    },
+    "kitV3": true,
+    "kitDedup": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "full",
+   "marketing": 1800,
+   "draw": 2500,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": false,
+   "brunch": false,
+   "delivery": false,
+   "catering": false
+  },
+  "admin": 30,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Sep Y1",
+    "tone": "good",
+    "text": "You're the store manager of a company-operated Starbucks with a drive-thru on a busy road outside Phoenix. Starbucks owns the store, the menu, the equipment and the rota software; you run the partners, the drive-thru times and the mobile-order wall, and you're paid a salary and a bonus on the store's results."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 0,
+   "equip": 0,
+   "deposit": 28500,
+   "licences": 0,
+   "smallwares": 0,
+   "preopen": 0,
+   "openingInv": 862,
+   "cellar": 0,
+   "total": 29362,
+   "sqft": 1680
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790365321202,
+  "mods": [
+   {
+    "id": "xtcts8q",
+    "left": null,
+    "loc": -1,
+    "src": "Starbucks #24417",
+    "label": "Starbucks support center, technology and licensing",
+    "kind": "fixed",
+    "value": 2800
+   }
+  ],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "Starbucks FY2024 10-K: North America company-operated stores took $24.26 billion across about 10,900 stores on average (roughly $2.2 million a store). Company-operated sales are 74% beverages, 23% food, 3% other. Product and distribution costs were 27.7% of North America revenue and store operating expenses 51.4% of company-operated store revenue; North America operating margin was 19.8%. In FY2024 US comparable transactions fell 5% while average ticket rose 4%. Starbucks is expanding drive-thru formats. Grande prices (typical, 2025): brewed coffee $2.95, latte about $5.05, cold brew $4.45, chai latte $5.35, caramel macchiato $5.45, Frappuccinos about $6. The store's name and number, its staff, rent, district manager and local events are invented; menu food prices and the manager's pay are estimates.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_sbux",
+    "name": "Starbucks distribution center",
+    "cats": [
+     "produce",
+     "meat",
+     "seafood",
+     "dairy",
+     "pantry",
+     "luxury"
+    ],
+    "q": 62,
+    "price": 0.92,
+    "reliability": 0.985,
+    "terms": "net30",
+    "relation": 88,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Starbucks' own supply chain: coffee from its roasting plants, food, syrups, cups and lids on scheduled trucks from the regional distribution center. Store managers don't choose suppliers."
+   },
+   {
+    "id": "sp_dairy",
+    "name": "Regional dairy on Starbucks' contract",
+    "cats": [
+     "dairy"
+    ],
+    "q": 60,
+    "price": 0.95,
+    "reliability": 0.97,
+    "terms": "net30",
+    "relation": 80,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Milk and plant-based milks delivered several times a week by the dairy Starbucks contracts for the region."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_sbux",
+   "meat": "sp_sbux",
+   "seafood": "sp_sbux",
+   "dairy": "sp_sbux",
+   "pantry": "sp_sbux",
+   "luxury": "sp_sbux"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 0,
+   "dishes": [
+    {
+     "id": "1vudvxq",
+     "name": "Pike Place Roast (grande)",
+     "course": "side",
+     "desc": "The house medium roast, brewed every half hour.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.35,
+     "price": 2.95,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "batchbrew"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "brewed in batches"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Pike Place Roast (grande)|The house medium roast, brewed every half hour."
+    },
+    {
+     "id": "n1ce1pf",
+     "name": "Caffè Latte (grande)",
+     "course": "side",
+     "desc": "Two shots of espresso and steamed milk.",
+     "cats": {
+      "dairy": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.05,
+     "price": 5.05,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "espresso"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "pulled espresso"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Caffè Latte (grande)|Two shots of espresso and steamed milk."
+    },
+    {
+     "id": "evzn5yq",
+     "name": "Caramel Macchiato (grande)",
+     "course": "side",
+     "desc": "Vanilla syrup, steamed milk, espresso on top and a caramel drizzle.",
+     "cats": {
+      "dairy": 0.55,
+      "pantry": 0.45
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.15,
+     "price": 5.45,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "espresso"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "pulled espresso"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Caramel Macchiato (grande)|Vanilla syrup, steamed milk, espresso on top and a caramel drizzle."
+    },
+    {
+     "id": "rwfmyr3",
+     "name": "Iced Brown Sugar Oatmilk Shaken Espresso",
+     "course": "side",
+     "desc": "Blonde espresso shaken with brown sugar and cinnamon, topped with oat milk.",
+     "cats": {
+      "dairy": 0.4,
+      "pantry": 0.6
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.2,
+     "price": 5.75,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "espresso"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "pulled espresso"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Iced Brown Sugar Oatmilk Shaken Espresso|Blonde espresso shaken with brown sugar and cinnamon, topped with oat milk."
+    },
+    {
+     "id": "f4apawt",
+     "name": "Cold Brew (grande)",
+     "course": "side",
+     "desc": "Steeped for twenty hours, served over ice.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.7,
+     "price": 4.45,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Cold Brew (grande)|Steeped for twenty hours, served over ice."
+    },
+    {
+     "id": "pryrtnc",
+     "name": "Chai Tea Latte (grande)",
+     "course": "side",
+     "desc": "Black tea with cinnamon, clove and spices, and steamed milk.",
+     "cats": {
+      "dairy": 0.5,
+      "pantry": 0.5
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.1,
+     "price": 5.35,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Chai Tea Latte (grande)|Black tea with cinnamon, clove and spices, and steamed milk."
+    },
+    {
+     "id": "33mog48",
+     "name": "Caramel Frappuccino (grande)",
+     "course": "side",
+     "desc": "Coffee, milk and ice blended with caramel, whipped cream on top.",
+     "cats": {
+      "dairy": 0.5,
+      "pantry": 0.5
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.35,
+     "price": 6.05,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "blender"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "blended with ice"
+      }
+     ],
+     "sec": "drink",
+     "drink": "shake",
+     "kitJ": "Caramel Frappuccino (grande)|Coffee, milk and ice blended with caramel, whipped cream on top."
+    },
+    {
+     "id": "624k41e",
+     "name": "Strawberry Açaí Refresher (grande)",
+     "course": "side",
+     "desc": "Strawberry and açaí with green coffee extract, shaken with ice and freeze-dried strawberries.",
+     "cats": {
+      "produce": 0.4,
+      "pantry": 0.6
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.9,
+     "price": 5.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "juice",
+     "kitJ": "Strawberry Açaí Refresher (grande)|Strawberry and açaí with green coffee extract, shaken with ice and freeze-dried strawberries."
+    },
+    {
+     "id": "qitgogf",
+     "name": "Hot Chocolate (grande)",
+     "course": "side",
+     "desc": "Steamed milk and mocha sauce under whipped cream.",
+     "cats": {
+      "dairy": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.95,
+     "price": 4.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Hot Chocolate (grande)|Steamed milk and mocha sauce under whipped cream."
+    },
+    {
+     "id": "kg0jr8p",
+     "name": "Pumpkin Spice Latte (grande)",
+     "course": "side",
+     "desc": "Espresso, steamed milk and pumpkin-spice sauce. Back every autumn.",
+     "cats": {
+      "dairy": 0.55,
+      "pantry": 0.45
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.35,
+     "price": 6.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "espresso"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "pulled espresso"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "special": {
+      "type": "lto",
+      "left": 3
+     },
+     "kitJ": "Pumpkin Spice Latte (grande)|Espresso, steamed milk and pumpkin-spice sauce. Back every autumn."
+    },
+    {
+     "id": "hkk06gd",
+     "name": "Bacon, Gouda & Egg Sandwich",
+     "course": "main",
+     "desc": "Bacon, aged gouda and a frittata egg on an artisan roll, warmed to order.",
+     "cats": {
+      "meat": 0.35,
+      "dairy": 0.35,
+      "pantry": 0.3
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.95,
+     "price": 5.45,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "combi"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "warmed in the high-speed oven"
+      }
+     ],
+     "sec": "food",
+     "daypart": "breakfast",
+     "kitJ": "Bacon, Gouda & Egg Sandwich|Bacon, aged gouda and a frittata egg on an artisan roll, warmed to order."
+    },
+    {
+     "id": "79u7gzq",
+     "name": "Sous Vide Egg Bites (2)",
+     "course": "main",
+     "desc": "Two bacon and gruyère egg bites, cooked sous vide.",
+     "cats": {
+      "dairy": 0.6,
+      "meat": 0.4
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.85,
+     "price": 5.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "combi"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "warmed in the high-speed oven"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Sous Vide Egg Bites (2)|Two bacon and gruyère egg bites, cooked sous vide."
+    },
+    {
+     "id": "m55zaw0",
+     "name": "Butter Croissant",
+     "course": "dessert",
+     "desc": "A laminated butter croissant, warmed on request.",
+     "cats": {
+      "pantry": 0.7,
+      "dairy": 0.3
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.05,
+     "price": 3.65,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Butter Croissant|A laminated butter croissant, warmed on request."
+    },
+    {
+     "id": "v4969me",
+     "name": "Blueberry Muffin",
+     "course": "dessert",
+     "desc": "A blueberry muffin with a sugar crumb top.",
+     "cats": {
+      "pantry": 0.8,
+      "produce": 0.2
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.95,
+     "price": 3.45,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Blueberry Muffin|A blueberry muffin with a sugar crumb top."
+    },
+    {
+     "id": "iy6uuv0",
+     "name": "Banana Nut Bread",
+     "course": "dessert",
+     "desc": "A thick slice of banana bread with walnuts.",
+     "cats": {
+      "pantry": 0.8,
+      "produce": 0.2
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 1.1,
+     "price": 3.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Banana Nut Bread|A thick slice of banana bread with walnuts."
+    },
+    {
+     "id": "vjzaw1i",
+     "name": "Birthday Cake Pop",
+     "course": "dessert",
+     "desc": "Vanilla cake and icing on a stick, dipped in pink chocolate.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.75,
+     "price": 3.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Birthday Cake Pop|Vanilla cake and icing on a stick, dipped in pink chocolate."
+    },
+    {
+     "id": "zmwzfv5",
+     "name": "Turkey, Provolone & Pesto Panini",
+     "course": "main",
+     "desc": "Turkey, provolone and basil pesto on ciabatta, pressed hot.",
+     "cats": {
+      "meat": 0.45,
+      "dairy": 0.25,
+      "pantry": 0.3
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 2.7,
+     "price": 7.45,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "combi"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "warmed in the high-speed oven"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Turkey, Provolone & Pesto Panini|Turkey, provolone and basil pesto on ciabatta, pressed hot."
+    }
+   ],
+   "coherence": 55,
+   "identity": "",
+   "notes": "",
+   "creBonus": 0,
+   "pairing": false,
+   "pairingPrice": 0,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "jyef486",
+    "role": "maitre",
+    "name": "Denise Carrillo",
+    "skill": 64,
+    "years": 7,
+    "salary": 56000,
+    "trait": "steady",
+    "bio": "Assistant store manager. Came up as a barista at this store, writes the deployment chart for every peak and can hear a drive-thru timer from the back room.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 32,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "fi53wwi",
+    "role": "sous",
+    "name": "Marcus Tran",
+    "skill": 58,
+    "years": 4,
+    "salary": 41500,
+    "trait": "mentor",
+    "bio": "Shift supervisor who runs the bar at the morning peak and trains every new partner on milk steaming. Full-time, on the hourly scale.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 32,
+    "away": false,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 447663176,
+  "cellar": {
+   "value": 0,
+   "target": 0,
+   "ref": 1,
+   "markup": 4.2,
+   "standing": 12,
+   "rare": []
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "franchise": null,
+  "ownership": {
+   "type": "management",
+   "owner": "Starbucks Corporation",
+   "baseFee": 0.03,
+   "incentiveFee": 0.06,
+   "capexLimit": 10000,
+   "reserveFloor": 120000,
+   "budget": 0,
+   "yearEbitda": 0,
+   "earned": 0,
+   "yearFees": 0,
+   "distributed": 0,
+   "funded": 0,
+   "misses": 0,
+   "liquidity": 3000000000,
+   "profile": {
+    "name": "Starbucks Corporation",
+    "kind": "publicly traded coffee company based in Seattle",
+    "desc": "About 40,200 stores worldwide at the end of fiscal 2024, 18,400 of them in North America, 11,161 run by the company itself. Company-operated stores are about 74% beverages.",
+    "personality": "Run on standards, dashboards and a turnaround plan. Under Brian Niccol, CEO since September 2024, the 'Back to Starbucks' programme wants the café to feel like a coffeehouse again: faster handoffs, for-here mugs, handwritten names on cups, fewer menu items.",
+    "rep": {
+     "name": "Alicia Moreno",
+     "title": "District manager",
+     "style": "Covers a dozen stores, visits yours every couple of weeks, checks drive-thru times and the Customer Connection score before she says hello, and wants to know who you're developing into a shift supervisor."
+    },
+    "competence": 88,
+    "netWorth": 15000000000,
+    "liquidity": 3000000000,
+    "leverage": 0.5,
+    "patience": 55,
+    "involvement": 75,
+    "risk": 35,
+    "terms": {
+     "baseFee": 0.03,
+     "incentiveFee": 0.06,
+     "capexLimit": 10000,
+     "budgetGrowth": 0.03,
+     "tolerance": 0.88,
+     "missesAllowed": 2,
+     "reserveMonths": 1
+    },
+    "events": [
+     {
+      "p": 0.3,
+      "m": [
+       7,
+       8
+      ],
+      "tone": "good",
+      "text": "The Pumpkin Spice Latte came back for the autumn and the drive-thru line wrapped the building for a week.",
+      "fx": [
+       {
+        "op": "mod",
+        "kind": "demand",
+        "label": "Pumpkin Spice Latte launch",
+        "value": 0.05,
+        "months": 1
+       }
+      ]
+     },
+     {
+      "p": 0.3,
+      "m": [
+       10
+      ],
+      "tone": "good",
+      "text": "The holiday red cups arrived, and with them the busiest weeks of the year.",
+      "fx": [
+       {
+        "op": "mod",
+        "kind": "demand",
+        "label": "Holiday cups",
+        "value": 0.04,
+        "months": 1
+       }
+      ]
+     },
+     {
+      "p": 0.05,
+      "m": null,
+      "desk": {
+       "title": "A union election at your store",
+       "text": "A group of partners has filed with the labour board to join Starbucks Workers United, as hundreds of Starbucks stores have. Alicia reminds you what managers may and may not say.",
+       "choices": [
+        {
+         "label": "Stay strictly neutral and keep the store running",
+         "blurb": "The vote goes ahead; morale holds.",
+         "effects": [
+          {
+           "op": "morale",
+           "delta": 2
+          }
+         ]
+        },
+        {
+         "label": "Hold a 'listening session' about the company's benefits",
+         "blurb": "Some partners call it an anti-union meeting.",
+         "effects": [
+          {
+           "op": "morale",
+           "delta": -4
+          },
+          {
+           "op": "followup",
+           "inMonths": 2,
+           "hook": "the outcome of the union vote at the Starbucks store"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "p": 0.05,
+      "m": null,
+      "tone": "warn",
+      "text": "Corporate cut a batch of slow-selling drinks from the menu nationwide. Two regulars complained that their order no longer exists.",
+      "fx": [
+       {
+        "op": "rep",
+        "delta": -1
+       }
+      ]
+     },
+     {
+      "p": 0.04,
+      "m": null,
+      "desk": {
+       "title": "The district wants faster handoffs",
+       "text": "The new target is four minutes from order to handoff, and your store runs closer to six at the morning peak.",
+       "choices": [
+        {
+         "label": "Add a partner to the bar at peak",
+         "blurb": "More labour, faster handoffs.",
+         "effects": [
+          {
+           "op": "mod",
+           "kind": "labor",
+           "label": "Extra peak barista",
+           "value": 0.03,
+           "months": 0
+          },
+          {
+           "op": "mod",
+           "kind": "capacity",
+           "label": "Faster handoffs",
+           "value": 0.05,
+           "months": 0
+          }
+         ]
+        },
+        {
+         "label": "Coach the team and hope",
+         "blurb": "",
+         "effects": []
+        }
+       ]
+      }
+     }
+    ],
+    "source": ""
+   }
+  },
+  "policies": [
+   {
+    "id": "polhjeo35k",
+    "key": "health",
+    "name": "Health insurance for partners on 20+ hours",
+    "blurb": "Starbucks offers medical, dental and vision to partners averaging 20 hours a week; the company pays most of the premium.",
+    "monthly": 170,
+    "morale": 3,
+    "quit": -0.16,
+    "stress": -1,
+    "loyalty": 0.5,
+    "on": true
+   },
+   {
+    "id": "polzq34qmz",
+    "key": "college",
+    "name": "Starbucks College Achievement Plan",
+    "blurb": "Full tuition for a first bachelor's degree through Arizona State University's online programme, for partners working enough hours.",
+    "monthly": 25,
+    "morale": 2,
+    "quit": -0.08,
+    "stress": 0,
+    "loyalty": 0.4,
+    "custom": true,
+    "on": true
+   }
+  ],
+  "slotName": "Starbucks #24417 (starting save)"
+ }
+}

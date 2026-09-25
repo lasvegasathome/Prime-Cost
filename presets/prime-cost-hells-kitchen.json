@@ -1,0 +1,2579 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T19:51:19.177Z",
+ "state": {
+  "v": 2,
+  "seed": 1843305177,
+  "ownerName": "You",
+  "bizName": "Gordon Ramsay Hell's Kitchen",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 10,
+  "year": 1,
+  "cash": 6500000,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "Gordon Ramsay Hell's Kitchen",
+   "blurb": "A 300-seat room on the Strip built to look like the TV show's red and blue kitchens, where most tables order the Beef Wellington.",
+   "check": 116,
+   "foodPct": 0.25,
+   "seats": 300,
+   "truckCap": 210,
+   "turns": 1.5732,
+   "maxTurns": 5.5,
+   "elast": 0.6,
+   "hrsPerCover": 1.2,
+   "alcohol": 0.27,
+   "sqftSeat": 27,
+   "buildSqft": 600,
+   "equip": 2500000,
+   "chef": 165000,
+   "gm": 0,
+   "counter": false,
+   "truck": false
+  },
+  "customMarket": {
+   "name": "Las Vegas Strip",
+   "blurb": "Your own market.",
+   "rentYr": 0,
+   "wage": 24,
+   "tipCredit": 0,
+   "traffic": 1.4,
+   "comp": 1.5,
+   "checkMult": 1,
+   "taxRate": 0.08375,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "You're the general manager of Gordon Ramsay Hell's Kitchen at Caesars Palace. Caesars owns and runs the restaurant under a licence from Gordon Ramsay's company; you run the room, the kitchen and the numbers, and you're paid a salary and a bonus on profit.",
+  "creditLine": {
+   "limit": 0,
+   "drawn": 0,
+   "rate": 0.1
+  },
+  "locations": [
+   {
+    "id": "6a5m8ok",
+    "name": "Gordon Ramsay Hell's Kitchen",
+    "market": "custom",
+    "seats": 300,
+    "sqft": 11000,
+    "env": "megaresort",
+    "envLive": true,
+    "rent": 150000,
+    "cam": 20000,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 80,
+    "awareness": 97,
+    "morale": 57,
+    "skill": 72,
+    "equip": 83.80555555555556,
+    "health": 90,
+    "monthsOpen": 106,
+    "attention": 80,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "ambBase": 76,
+    "features": [
+     {
+      "id": "f2bxmka2",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The flaming pitchfork entrance",
+      "pitch": "The show's pitchfork at the door, gas-fired lamps and a life-size video of Ramsay greeting guests.",
+      "prestige": 4
+     },
+     {
+      "id": "f8qkrfdv",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The red and blue open kitchen",
+      "pitch": "An open kitchen framed in red and blue tile, with chefs in team jackets like the TV set.",
+      "prestige": 5
+     },
+     {
+      "id": "flpymk1x",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Chef's tables and private dining rooms",
+      "pitch": "A 20-seat Red & Blue Chef's Table and private rooms for 24 and 18, booked through Caesars group sales.",
+      "sideline": 0.03
+     },
+     {
+      "id": "fsg2uet6",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Strip-side windows",
+      "pitch": "Floor-to-ceiling windows onto Las Vegas Boulevard at the Flamingo Road corner.",
+      "prestige": 2
+     }
+    ],
+    "foh": 70,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "setting": {
+     "custom": true,
+     "name": "Caesars Palace, Las Vegas Strip",
+     "desc": "At the front of Caesars Palace on Las Vegas Boulevard, at the Flamingo Road corner. Tourists who planned the trip around this dinner, fans of the show in pitchfork T-shirts, convention groups and bachelor parties, with a line at the host stand most nights.",
+     "check": 1,
+     "traffic": 1.4,
+     "season": [
+      1.04,
+      1.04,
+      1.06,
+      1.02,
+      1,
+      0.95,
+      0.93,
+      0.93,
+      0.98,
+      1.02,
+      1.03,
+      1.04
+     ],
+     "seg": {
+      "tourists": 25,
+      "business": 8,
+      "occasion": 8,
+      "locals": -12,
+      "regulars": -10
+     },
+     "crime": 30,
+     "ev": [
+      {
+       "p": 0.9,
+       "m": [
+        0
+       ],
+       "tone": "good",
+       "text": "CES filled every hotel on the Strip, and the private rooms went to tech companies for a week.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "CES week",
+         "value": 0.04,
+         "months": 1
+        },
+        {
+         "op": "mod",
+         "kind": "check",
+         "label": "Expense accounts",
+         "value": 0.03,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.9,
+       "m": [
+        10
+       ],
+       "tone": "warn",
+       "text": "Formula 1 race week: the Strip closed to traffic at night. Guests who made it in spent heavily; walk-ins vanished.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "check",
+         "label": "Race week spending",
+         "value": 0.05,
+         "months": 1
+        },
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Strip closures",
+         "value": -0.03,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.9,
+       "m": [
+        11
+       ],
+       "tone": "good",
+       "text": "New Year's Eve on the Strip: every table booked from five o'clock and a line at the bar all night.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "New Year's Eve",
+         "value": 0.04,
+         "months": 1
+        },
+        {
+         "op": "mod",
+         "kind": "check",
+         "label": "New Year's Eve",
+         "value": 0.04,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.9,
+       "m": [
+        9
+       ],
+       "tone": "warn",
+       "text": "The next step of the Culinary Union contract took effect: raises for every union cook, server and dishwasher.",
+       "fx": [
+        {
+         "op": "wage",
+         "locIndex": 0,
+         "delta": 0.03
+        }
+       ]
+      },
+      {
+       "p": 0.15,
+       "m": null,
+       "tone": "good",
+       "text": "A new season of Hell's Kitchen premiered, and fans booked tables to see where the winner might end up.",
+       "fx": [
+        {
+         "op": "awareness",
+         "delta": 3
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "tone": "warn",
+       "text": "Visitor numbers to Las Vegas dipped again, and the Strip's restaurants felt it on weeknights.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Soft visitation",
+         "value": -0.03,
+         "months": 3
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "tone": "warn",
+       "text": "A guest's video complaining about the price of a Beef Wellington went viral. Bookings went up.",
+       "fx": [
+        {
+         "op": "awareness",
+         "delta": 2
+        }
+       ]
+      },
+      {
+       "p": 0.04,
+       "m": null,
+       "desk": {
+        "title": "Gordon Ramsay is in town",
+        "text": "Ramsay's office called: he'll be in Las Vegas on Thursday and wants to walk the kitchen during dinner service, with a camera crew for his social channels.",
+        "choices": [
+         {
+          "label": "Let him run the pass",
+          "blurb": "Huge publicity and a terrified brigade.",
+          "effects": [
+           {
+            "op": "awareness",
+            "delta": 5
+           },
+           {
+            "op": "morale",
+            "locIndex": 0,
+            "delta": -3
+           },
+           {
+            "op": "foh",
+            "locIndex": 0,
+            "delta": 6
+           }
+          ]
+         },
+         {
+          "label": "Show him round before service",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "awareness",
+            "delta": 2
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "segBase": null,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": true
+     }
+    },
+    "kit": [
+     {
+      "id": "kdzdtlj5",
+      "type": "range",
+      "tier": 2,
+      "model": "Montague Legend heavy-duty line",
+      "price": 78000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmco8bgd",
+      "type": "hood",
+      "tier": 2,
+      "model": "Halton KVI capture-jet hood",
+      "price": 60000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kipja3oi",
+      "type": "vent",
+      "tier": 2,
+      "model": "Variable-speed fans, welded duct & tempered makeup air",
+      "price": 270000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k5u3ed8m",
+      "type": "suppression",
+      "tier": 2,
+      "model": "Ansul Piranha dual-agent system",
+      "price": 33000,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "khnf2w2u",
+      "type": "extinguisher",
+      "tier": 2,
+      "model": "Class K, ABC and CO2 at every station, checked monthly",
+      "price": 1800,
+      "cond": 92,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3k4gr1o",
+      "type": "sprinkler",
+      "tier": 3,
+      "model": "Quick-response sprinklers, monitored alarm & dedicated fire pump",
+      "price": 180000,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1l6ew2s",
+      "type": "refrig",
+      "tier": 3,
+      "model": "Custom walk-ins · Traulsen Spec-Line",
+      "price": 195000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ku2iwbgm",
+      "type": "dish",
+      "tier": 3,
+      "model": "Meiko M-iQ flight-type",
+      "price": 110000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzyeuw2y",
+      "type": "combi",
+      "tier": 3,
+      "model": "Rational iCombi Pro 20-full, pair",
+      "price": 120000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kpb657n0",
+      "type": "grill",
+      "tier": 2,
+      "model": "Montague Legend steakhouse broiler",
+      "price": 14000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kt7hhxb6",
+      "type": "salamander",
+      "tier": 2,
+      "model": "Salvis Salamat Pro",
+      "price": 9000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kxj6476h",
+      "type": "fryer",
+      "tier": 2,
+      "model": "Frymaster filtration fryer bank",
+      "price": 9000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "korev79w",
+      "type": "kettle",
+      "tier": 2,
+      "model": "Cleveland steam kettle & skillet",
+      "price": 24000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3ec2hv7",
+      "type": "convection",
+      "tier": 2,
+      "model": "Blodgett DFG-100 double stack",
+      "price": 16000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kcdygsiz",
+      "type": "blast",
+      "tier": 2,
+      "model": "Irinox MultiFresh",
+      "price": 22000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kpph1a0r",
+      "type": "sousvide",
+      "tier": 1,
+      "model": "PolyScience circulators ×6",
+      "price": 7000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kraweo6o",
+      "type": "icecream",
+      "tier": 2,
+      "model": "Carpigiani Labotronic",
+      "price": 28000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k12eu3no",
+      "type": "mixer",
+      "tier": 2,
+      "model": "Hobart Legacy 60-qt & Rondo sheeter",
+      "price": 28000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzmq2udq",
+      "type": "preprail",
+      "tier": 2,
+      "model": "Traulsen UPT refrigerated prep table",
+      "price": 6500,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k4tds54o",
+      "type": "glasswasher",
+      "tier": 2,
+      "model": "Hobart LXeH undercounter",
+      "price": 9000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kc3kdvsh",
+      "type": "potwasher",
+      "tier": 2,
+      "model": "Hobart PW10 pot & pan washer",
+      "price": 45000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kyux1yte",
+      "type": "ice",
+      "tier": 3,
+      "model": "Hoshizaki KM, pair with storage",
+      "price": 14000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kn5sr4h5",
+      "type": "espresso",
+      "tier": 2,
+      "model": "La Marzocco Strada",
+      "price": 26000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kuxovdyl",
+      "type": "bar",
+      "tier": 3,
+      "model": "Custom bar build with Perlick & Krowne stations",
+      "price": 90000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kirevwwn",
+      "type": "winestore",
+      "tier": 2,
+      "model": "Custom racking & WhisperKOOL cooling",
+      "price": 45000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kw4rxyng",
+      "type": "tableware",
+      "tier": 2,
+      "model": "Steelite porcelain & Schott Zwiesel stems",
+      "price": 60000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kbt3vhu2",
+      "type": "seating",
+      "tier": 2,
+      "model": "Custom dining chairs and tables by Jeffrey Beers International",
+      "price": 180000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kw8wvvjz",
+      "type": "booths",
+      "tier": 3,
+      "model": "Custom leather banquettes and curved booths",
+      "price": 285000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kk2qbajo",
+      "type": "stools",
+      "tier": 2,
+      "model": "Upholstered bar stools with backs",
+      "price": 9000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kpwouy3o",
+      "type": "linens",
+      "tier": 1,
+      "model": "Cloth napkins from a linen service",
+      "price": 800,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ktj6urj3",
+      "type": "menus",
+      "tier": 1,
+      "model": "Printed paper menus",
+      "price": 0,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "kno4ptqw",
+      "type": "pos",
+      "tier": 3,
+      "model": "Full POS: handhelds, kitchen screens & online ordering",
+      "price": 25000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "labor": -0.02,
+       "cons": 1.5,
+       "cap": 0.015,
+       "fee": 400
+      }
+     },
+     {
+      "id": "kt5rlric",
+      "type": "hoststand",
+      "tier": 3,
+      "model": "Custom host stand, guest CRM & a reservations desk",
+      "price": 15000,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "cap": 0.015,
+       "pers": 2,
+       "fee": 1200
+      }
+     },
+     {
+      "id": "kjvygtty",
+      "type": "pager",
+      "tier": 2,
+      "model": "Text-message waitlist",
+      "price": 500,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "cap": 0.006,
+       "fee": 100
+      }
+     },
+     {
+      "id": "kkmjonra",
+      "type": "sound",
+      "tier": 2,
+      "model": "Zoned commercial audio system",
+      "price": 12000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kg06miwd",
+      "type": "waterservice",
+      "tier": 2,
+      "model": "Still & sparkling on tap",
+      "price": 5000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzcw3zu0",
+      "type": "greasetrap",
+      "tier": 3,
+      "model": "Automatic grease removal unit with an interceptor, installed",
+      "price": 26000,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kg435wnm",
+      "type": "restroom",
+      "tier": 3,
+      "model": "Designer restrooms",
+      "price": 394500,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1patuo7",
+      "type": "hvac",
+      "tier": 3,
+      "model": "Variable-refrigerant-flow system with energy recovery",
+      "price": 322800,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwrjnyv4",
+      "type": "smallwares",
+      "tier": 3,
+      "model": "A complete set with wireless temperature logging for HACCP",
+      "price": 114800,
+      "cond": 72,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kjamfndg",
+      "type": "watertreat",
+      "tier": 2,
+      "model": "Reverse-osmosis system for espresso and ice",
+      "price": 3600,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k536zwke",
+      "type": "microwave",
+      "tier": 2,
+      "model": "1,800 W heavy-duty microwave",
+      "price": 1300,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kuhkzsw0",
+      "type": "safe",
+      "tier": 2,
+      "model": "Smart safe with provisional bank credit",
+      "price": 4000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ks871f44",
+      "type": "cameras",
+      "tier": 3,
+      "model": "Caesars' casino surveillance covers the room and the cage",
+      "price": 9000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "kitDedup": true,
+    "mkt": {
+     "social": 0,
+     "search": 0,
+     "pr": 0,
+     "email": 0
+    },
+    "crew": {
+     "kitchen": {
+      "n": 90,
+      "skill": 64.8,
+      "morale": 57,
+      "lead": "Ingrid Marchetti"
+     },
+     "floor": {
+      "n": 86,
+      "skill": 64.8,
+      "morale": 57,
+      "lead": "Élodie Park"
+     },
+     "support": {
+      "n": 39,
+      "skill": 64.8,
+      "morale": 57,
+      "lead": "Tomás Iwu"
+     }
+    },
+    "lastForecast": 23911,
+    "kitV3": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "good",
+   "staffing": "full",
+   "marketing": 0,
+   "draw": 0,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": false,
+   "brunch": false,
+   "delivery": false,
+   "catering": false
+  },
+  "admin": 20,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Nov Y1",
+    "tone": "good",
+    "text": "You're the general manager of Gordon Ramsay Hell's Kitchen at Caesars Palace. Caesars owns and runs the restaurant under a licence from Gordon Ramsay's company; you run the room, the kitchen and the numbers, and you're paid a salary and a bonus on profit."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 6600000,
+   "equip": 2500000,
+   "deposit": 78000,
+   "licences": 0,
+   "smallwares": 91000,
+   "preopen": 0,
+   "openingInv": 24652,
+   "cellar": 0,
+   "total": 2902852,
+   "sqft": 11000
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790365879172,
+  "mods": [
+   {
+    "id": "sh88quo",
+    "left": null,
+    "loc": -1,
+    "src": "Gordon Ramsay Hell's Kitchen",
+    "label": "Caesars shared services (security, IT, laundry, marketing)",
+    "kind": "fixed",
+    "value": 45000
+   }
+  ],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "This is Gordon Ramsay Hell's Kitchen at Caesars Palace, Las Vegas, the first Hell's Kitchen restaurant, opened in January 2018 on the site of the old Serendipity 3 at the Flamingo Road corner of the Strip. It seats about 300 including a 20-seat chef's table and two private dining rooms, is open daily from 11am to 11:30pm, and is themed on the TV show: a flaming pitchfork at the door and an open kitchen in red and blue. Menu prices are from the current Caesars menu (a three-course dinner prix fixe is $135.95 and lunch $105.95, each built around the Wellington). Caesars runs it under a licence from Gordon Ramsay North America, and Caesars leases the Palace itself from VICI Properties. Sales are the game's estimate: Ramsay said in 2023 it was on track for about $55 million a year, and by then it had served two million guests and 783,000 Beef Wellingtons; an earlier Restaurant Business estimate for pandemic-hit 2021 was about $17 million. Las Vegas visitation fell 7.5% in 2025 to 38.5 million and began to recover in mid-2026. Staff here are Culinary Union members on the 2023-2028 contract. Winners of the TV show have been offered the head chef job here; the staff names in this game are invented, and the licence fee and rent are estimates.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "relation": 62,
+    "green": false,
+    "monthsWith": 120,
+    "id": "sp_czr",
+    "name": "Caesars central purchasing",
+    "cats": [
+     "produce",
+     "dairy",
+     "pantry",
+     "luxury"
+    ],
+    "q": 62,
+    "price": 0.97,
+    "reliability": 0.99,
+    "terms": "net30",
+    "blurb": "The resort's own buying and receiving dock, supplying every outlet at the Palace."
+   },
+   {
+    "relation": 62,
+    "green": false,
+    "monthsWith": 120,
+    "id": "sp_beef",
+    "name": "Prime beef purveyor",
+    "cats": [
+     "meat"
+    ],
+    "q": 80,
+    "price": 1.1,
+    "reliability": 0.97,
+    "terms": "net14",
+    "blurb": "Center-cut tenderloin for the Wellingtons by the case, plus dry-aged strips and ribeyes."
+   },
+   {
+    "relation": 62,
+    "green": false,
+    "monthsWith": 120,
+    "id": "sp_fish",
+    "name": "West Coast seafood distributor",
+    "cats": [
+     "seafood"
+    ],
+    "q": 76,
+    "price": 1.08,
+    "reliability": 0.96,
+    "terms": "net14",
+    "blurb": "Scallops, lobster tails, oysters and branzino flown in daily."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_czr",
+   "meat": "sp_beef",
+   "seafood": "sp_fish",
+   "dairy": "sp_czr",
+   "pantry": "sp_czr",
+   "luxury": "sp_czr"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 0,
+   "pairing": false,
+   "pairingPrice": 0,
+   "notes": "",
+   "dishes": [
+    {
+     "id": "fzrlfuv",
+     "name": "Oysters on the Half Shell",
+     "course": "starter",
+     "desc": "Chef's daily selection, HK mignonette, gin cocktail sauce. Half dozen.",
+     "cats": {
+      "seafood": 0.9,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 1.5,
+     "presentation": 3,
+     "creativity": 20,
+     "cost": 8.94,
+     "price": 27.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Oysters on the Half Shell|Chef's daily selection, HK mignonette, gin cocktail sauce. Half dozen.",
+     "sec": "food"
+    },
+    {
+     "id": "kqe8uxz",
+     "name": "Hamachi Crudo",
+     "course": "starter",
+     "desc": "Avocado, aji amarillo, fresno pepper, pineapple, chili oil.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.25,
+      "pantry": 0.05
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 4,
+     "creativity": 45,
+     "cost": 7.83,
+     "price": 27.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Hamachi Crudo|Avocado, aji amarillo, fresno pepper, pineapple, chili oil.",
+     "sec": "food"
+    },
+    {
+     "id": "0sl2yqx",
+     "name": "Shrimp Cocktail",
+     "course": "starter",
+     "desc": "Gin cocktail sauce.",
+     "cats": {
+      "seafood": 0.85,
+      "pantry": 0.15
+     },
+     "grade": 3,
+     "technique": 1.5,
+     "presentation": 3,
+     "creativity": 15,
+     "cost": 7.19,
+     "price": 23.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Shrimp Cocktail|Gin cocktail sauce.",
+     "sec": "food"
+    },
+    {
+     "id": "hch702y",
+     "name": "Steak Tartare",
+     "course": "starter",
+     "desc": "Piedmontese beef, dijon mustard aioli, black truffle caviar, sous vide egg yolk.",
+     "cats": {
+      "meat": 0.7,
+      "luxury": 0.15,
+      "dairy": 0.05,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 4,
+     "creativity": 40,
+     "cost": 7.55,
+     "price": 26.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "sousvide",
+        "combi"
+       ],
+       "hard": false,
+       "loss": 0.1,
+       "why": "sous vide egg yolk"
+      }
+     ],
+     "kitJ": "Steak Tartare|Piedmontese beef, dijon mustard aioli, black truffle caviar, sous vide egg yolk.",
+     "sec": "food"
+    },
+    {
+     "id": "tfg9yv8",
+     "name": "Onion Soup",
+     "course": "starter",
+     "desc": "Lobster, potato hash, black truffle.",
+     "cats": {
+      "produce": 0.35,
+      "seafood": 0.3,
+      "luxury": 0.1,
+      "dairy": 0.15,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3,
+     "creativity": 45,
+     "cost": 5.69,
+     "price": 18.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Onion Soup|Lobster, potato hash, black truffle.",
+     "sec": "food"
+    },
+    {
+     "id": "f8x8xk4",
+     "name": "Burrata & Heirloom Tomato Salad",
+     "course": "starter",
+     "desc": "Cucumbers, pickled onions, garlic croutons, arugula, green goddess.",
+     "cats": {
+      "dairy": 0.45,
+      "produce": 0.5,
+      "pantry": 0.05
+     },
+     "grade": 3,
+     "technique": 2,
+     "presentation": 3.5,
+     "creativity": 30,
+     "cost": 6.23,
+     "price": 23.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Burrata & Heirloom Tomato Salad|Cucumbers, pickled onions, garlic croutons, arugula, green goddess.",
+     "sec": "food"
+    },
+    {
+     "id": "nvbxq46",
+     "name": "Endive, Apple, Pear Salad",
+     "course": "starter",
+     "desc": "Pomegranate, candied walnuts, blue cheese, frisee, white balsamic vinaigrette.",
+     "cats": {
+      "produce": 0.65,
+      "dairy": 0.2,
+      "pantry": 0.15
+     },
+     "grade": 3,
+     "technique": 2,
+     "presentation": 3,
+     "creativity": 30,
+     "cost": 5.03,
+     "price": 20.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Endive, Apple, Pear Salad|Pomegranate, candied walnuts, blue cheese, frisee, white balsamic vinaigrette.",
+     "sec": "food"
+    },
+    {
+     "id": "2nq2agn",
+     "name": "Caesar Salad",
+     "course": "starter",
+     "desc": "Parmesan cheese frico, garlic croutons, lemon zest.",
+     "cats": {
+      "produce": 0.5,
+      "dairy": 0.35,
+      "pantry": 0.15
+     },
+     "grade": 3,
+     "technique": 2,
+     "presentation": 3,
+     "creativity": 20,
+     "cost": 4.19,
+     "price": 20.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Caesar Salad|Parmesan cheese frico, garlic croutons, lemon zest.",
+     "sec": "food"
+    },
+    {
+     "id": "2qyckqi",
+     "name": "Seared Foie Gras",
+     "course": "starter",
+     "desc": "Strawberry & rhubarb jam, black pepper biscuit, almond crunch.",
+     "cats": {
+      "luxury": 0.7,
+      "produce": 0.15,
+      "pantry": 0.15
+     },
+     "grade": 4,
+     "technique": 3.5,
+     "presentation": 4,
+     "creativity": 50,
+     "cost": 10.21,
+     "price": 30.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Seared Foie Gras|Strawberry & rhubarb jam, black pepper biscuit, almond crunch.",
+     "sec": "food"
+    },
+    {
+     "id": "usexrtz",
+     "name": "Pan Seared Scallops",
+     "course": "starter",
+     "desc": "English pea puree, bacon lardons, potato crisp, citrus beurre blanc.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.15,
+      "dairy": 0.1,
+      "meat": 0.05
+     },
+     "grade": 3,
+     "technique": 3.5,
+     "presentation": 4,
+     "creativity": 45,
+     "cost": 9.29,
+     "price": 30.95,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Pan Seared Scallops|English pea puree, bacon lardons, potato crisp, citrus beurre blanc.",
+     "sec": "food"
+    },
+    {
+     "id": "cnlv34u",
+     "name": "Smoked Crispy Pork Belly",
+     "course": "starter",
+     "desc": "Chili glaze, pickled fresnos.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.1,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 40,
+     "cost": 6.95,
+     "price": 28.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "coldsmoker",
+        "smoker",
+        "combi"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "smoked before it's crisped"
+      }
+     ],
+     "kitJ": "Smoked Crispy Pork Belly|Chili glaze, pickled fresnos.",
+     "sec": "food"
+    },
+    {
+     "id": "7oj1r30",
+     "name": "Roasted Shrimp",
+     "course": "starter",
+     "desc": "Polenta, capers, roasted garlic, lemon butter.",
+     "cats": {
+      "seafood": 0.65,
+      "pantry": 0.2,
+      "dairy": 0.15
+     },
+     "grade": 3,
+     "technique": 2.5,
+     "presentation": 3.5,
+     "creativity": 30,
+     "cost": 7.27,
+     "price": 25.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Roasted Shrimp|Polenta, capers, roasted garlic, lemon butter.",
+     "sec": "food"
+    },
+    {
+     "id": "0z5ya8x",
+     "name": "Lobster Risotto",
+     "course": "pasta",
+     "desc": "Butter poached lobster tail, truffle risotto, crispy onions.",
+     "cats": {
+      "seafood": 0.6,
+      "dairy": 0.2,
+      "luxury": 0.1,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.5,
+     "presentation": 4,
+     "creativity": 45,
+     "cost": 11.2,
+     "price": 33.95,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Lobster Risotto|Butter poached lobster tail, truffle risotto, crispy onions.",
+     "sec": "food"
+    },
+    {
+     "id": "hh1a4zr",
+     "name": "Oven Roasted Octopus",
+     "course": "starter",
+     "desc": "Crispy potatoes, pickled peppers, romesco, chimichurri.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.25,
+      "pantry": 0.05
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 40,
+     "cost": 8.68,
+     "price": 28.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Oven Roasted Octopus|Crispy potatoes, pickled peppers, romesco, chimichurri.",
+     "sec": "food"
+    },
+    {
+     "id": "fyx06ih",
+     "name": "Bone Marrow",
+     "course": "starter",
+     "desc": "Short rib marmalade, toasted brioche.",
+     "cats": {
+      "meat": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 2.5,
+     "presentation": 3.5,
+     "creativity": 40,
+     "cost": 7.25,
+     "price": 32.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "salamander",
+        "combi",
+        "convection"
+       ],
+       "hard": false,
+       "loss": 0.15,
+       "why": "roasted hard and fast"
+      }
+     ],
+     "kitJ": "Bone Marrow|Short rib marmalade, toasted brioche.",
+     "sec": "food"
+    },
+    {
+     "id": "1xu5hes",
+     "name": "Beef Wellington",
+     "course": "main",
+     "desc": "Potato puree, glazed root vegetables, red wine demi-glace.",
+     "cats": {
+      "meat": 0.72,
+      "pantry": 0.13,
+      "produce": 0.08,
+      "dairy": 0.07
+     },
+     "grade": 3,
+     "technique": 4,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 19.97,
+     "price": 73.95,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "combi",
+        "convection"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "hundreds a night baked evenly"
+      }
+     ],
+     "kitJ": "Beef Wellington|Potato puree, glazed root vegetables, red wine demi-glace.",
+     "sec": "food"
+    },
+    {
+     "id": "fjxja63",
+     "name": "Rib Eye",
+     "course": "main",
+     "desc": "16 ounces, grilled broccolini, peppercorn sauce.",
+     "cats": {
+      "meat": 0.85,
+      "produce": 0.1,
+      "dairy": 0.05
+     },
+     "grade": 3,
+     "technique": 2.5,
+     "presentation": 3.5,
+     "creativity": 15,
+     "cost": 30.01,
+     "price": 90.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "robata",
+        "parrilla",
+        "plancha"
+       ],
+       "hard": false,
+       "loss": 0.35,
+       "why": "broiler crust"
+      }
+     ],
+     "kitJ": "Rib Eye|16 ounces, grilled broccolini, peppercorn sauce.",
+     "sec": "food"
+    },
+    {
+     "id": "a9oo7nl",
+     "name": "Crispy Skin Salmon",
+     "course": "fish",
+     "desc": "Corn, pepperonata, chili oil.",
+     "cats": {
+      "seafood": 0.75,
+      "produce": 0.2,
+      "pantry": 0.05
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 25,
+     "cost": 12.59,
+     "price": 41.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Crispy Skin Salmon|Corn, pepperonata, chili oil.",
+     "sec": "food"
+    },
+    {
+     "id": "v35iakc",
+     "name": "Grilled Lamb Chops",
+     "course": "meat",
+     "desc": "Chili glaze, snap peas, spring onions.",
+     "cats": {
+      "meat": 0.85,
+      "produce": 0.15
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 4,
+     "creativity": 25,
+     "cost": 27.18,
+     "price": 84.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "robata",
+        "parrilla",
+        "plancha"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "grill char"
+      }
+     ],
+     "kitJ": "Grilled Lamb Chops|Chili glaze, snap peas, spring onions.",
+     "sec": "food"
+    },
+    {
+     "id": "9ci61nj",
+     "name": "Filet Mignon",
+     "course": "main",
+     "desc": "9 ounces, shishito peppers, bearnaise sauce.",
+     "cats": {
+      "meat": 0.85,
+      "produce": 0.08,
+      "dairy": 0.07
+     },
+     "grade": 3,
+     "technique": 2.5,
+     "presentation": 3.5,
+     "creativity": 15,
+     "cost": 23.78,
+     "price": 69.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "robata",
+        "parrilla",
+        "plancha"
+       ],
+       "hard": false,
+       "loss": 0.35,
+       "why": "broiler crust"
+      }
+     ],
+     "kitJ": "Filet Mignon|9 ounces, shishito peppers, bearnaise sauce.",
+     "sec": "food"
+    },
+    {
+     "id": "pm8avs9",
+     "name": "Dry Aged New York Strip",
+     "course": "main",
+     "desc": "14 ounces Creekstone beef, shishito peppers, red wine demi-glace.",
+     "cats": {
+      "meat": 0.9,
+      "produce": 0.05,
+      "pantry": 0.05
+     },
+     "grade": 4,
+     "technique": 2.5,
+     "presentation": 3.5,
+     "creativity": 20,
+     "cost": 26.05,
+     "price": 78.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "robata",
+        "parrilla",
+        "plancha"
+       ],
+       "hard": false,
+       "loss": 0.35,
+       "why": "broiler crust"
+      }
+     ],
+     "kitJ": "Dry Aged New York Strip|14 ounces Creekstone beef, shishito peppers, red wine demi-glace.",
+     "sec": "food"
+    },
+    {
+     "id": "t6sh0mt",
+     "name": "Jidori Chicken",
+     "course": "main",
+     "desc": "Artichokes, olives, pee wee potatoes, lemon butter sauce.",
+     "cats": {
+      "meat": 0.65,
+      "produce": 0.25,
+      "dairy": 0.1
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 25,
+     "cost": 11.03,
+     "price": 45.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Jidori Chicken|Artichokes, olives, pee wee potatoes, lemon butter sauce.",
+     "sec": "food"
+    },
+    {
+     "id": "rtiw3rb",
+     "name": "Roasted Branzino",
+     "course": "fish",
+     "desc": "Fregola, broccolini, tomato compote, salsa verde.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 30,
+     "cost": 15.29,
+     "price": 50.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Roasted Branzino|Fregola, broccolini, tomato compote, salsa verde.",
+     "sec": "food"
+    },
+    {
+     "id": "m60kefm",
+     "name": "Braised Short Rib",
+     "course": "main",
+     "desc": "Parmesan polenta, crispy shallots, maitake mushrooms, pearl onions, beef jus.",
+     "cats": {
+      "meat": 0.7,
+      "produce": 0.15,
+      "dairy": 0.1,
+      "pantry": 0.05
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 30,
+     "cost": 14.3,
+     "price": 52.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Braised Short Rib|Parmesan polenta, crispy shallots, maitake mushrooms, pearl onions, beef jus.",
+     "sec": "food"
+    },
+    {
+     "id": "suxtkaw",
+     "name": "Roasted Asparagus",
+     "course": "side",
+     "desc": "Parmesan, lemon.",
+     "cats": {
+      "produce": 0.8,
+      "dairy": 0.2
+     },
+     "grade": 3,
+     "technique": 1.5,
+     "presentation": 3,
+     "creativity": 10,
+     "cost": 3.95,
+     "price": 17.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Roasted Asparagus|Parmesan, lemon.",
+     "sec": "food"
+    },
+    {
+     "id": "s2ds81h",
+     "name": "Baked Macaroni & Cheese",
+     "course": "side",
+     "desc": "Smoked gouda, crispy prosciutto.",
+     "cats": {
+      "dairy": 0.6,
+      "pantry": 0.3,
+      "meat": 0.1
+     },
+     "grade": 3,
+     "technique": 2,
+     "presentation": 3,
+     "creativity": 20,
+     "cost": 3.59,
+     "price": 17.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Baked Macaroni & Cheese|Smoked gouda, crispy prosciutto.",
+     "sec": "food"
+    },
+    {
+     "id": "vgppoqf",
+     "name": "Potato Purée",
+     "course": "side",
+     "desc": "Crème fraîche, chives.",
+     "cats": {
+      "produce": 0.5,
+      "dairy": 0.5
+     },
+     "grade": 3,
+     "technique": 2,
+     "presentation": 3,
+     "creativity": 10,
+     "cost": 2.51,
+     "price": 17.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Potato Purée|Crème fraîche, chives.",
+     "sec": "food"
+    },
+    {
+     "id": "w962plx",
+     "name": "Roasted Corn",
+     "course": "side",
+     "desc": "Jalapeño aioli, queso fresco, pickled fresno peppers.",
+     "cats": {
+      "produce": 0.75,
+      "dairy": 0.2,
+      "pantry": 0.05
+     },
+     "grade": 3,
+     "technique": 2,
+     "presentation": 3,
+     "creativity": 25,
+     "cost": 2.87,
+     "price": 17.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Roasted Corn|Jalapeño aioli, queso fresco, pickled fresno peppers.",
+     "sec": "food"
+    },
+    {
+     "id": "n1qfys1",
+     "name": "Sticky Toffee Pudding",
+     "course": "dessert",
+     "desc": "Brown butter gelato.",
+     "cats": {
+      "dairy": 0.4,
+      "pantry": 0.6
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 35,
+     "cost": 2.55,
+     "price": 15.95,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "icecream",
+        "pacojet"
+       ],
+       "hard": false,
+       "loss": 0.15,
+       "why": "gelato churned in-house"
+      }
+     ],
+     "kitJ": "Sticky Toffee Pudding|Brown butter gelato.",
+     "sec": "food"
+    },
+    {
+     "id": "bo5jd75",
+     "name": "Chocolate Brownie Cheesecake",
+     "course": "dessert",
+     "desc": "Chocolate chunk brownie, vanilla bean cheesecake, mascarpone cream, coffee caramel sauce.",
+     "cats": {
+      "dairy": 0.55,
+      "pantry": 0.45
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 35,
+     "cost": 2.87,
+     "price": 15.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Chocolate Brownie Cheesecake|Chocolate chunk brownie, vanilla bean cheesecake, mascarpone cream, coffee caramel sauce.",
+     "sec": "food"
+    },
+    {
+     "id": "ca91zc0",
+     "name": "Banoffee Tart",
+     "course": "dessert",
+     "desc": "Caramelized banana and butterscotch pudding, vanilla tart shell, white chocolate mousse, salted caramel sauce, Heath bar crunch.",
+     "cats": {
+      "dairy": 0.4,
+      "produce": 0.15,
+      "pantry": 0.45
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 3.5,
+     "creativity": 40,
+     "cost": 2.87,
+     "price": 15.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [],
+     "kitJ": "Banoffee Tart|Caramelized banana and butterscotch pudding, vanilla tart shell, white chocolate mousse, salted caramel sauce, Heath bar crunch.",
+     "sec": "food"
+    },
+    {
+     "id": "nrxuabo",
+     "name": "Coconut 3-Ways",
+     "course": "dessert",
+     "desc": "Coconut sorbet, passion fruit caramel, coconut crouton.",
+     "cats": {
+      "produce": 0.5,
+      "pantry": 0.5
+     },
+     "grade": 3,
+     "technique": 3,
+     "presentation": 4,
+     "creativity": 45,
+     "cost": 2.87,
+     "price": 15.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "ai",
+     "needs": [
+      {
+       "any": [
+        "icecream",
+        "pacojet"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "sorbet churned in-house"
+      }
+     ],
+     "kitJ": "Coconut 3-Ways|Coconut sorbet, passion fruit caramel, coconut crouton.",
+     "sec": "food"
+    },
+    {
+     "id": "0epf91d",
+     "name": "Still or Sparkling Water",
+     "course": "side",
+     "desc": "A bottle of Acqua Panna or San Pellegrino for the table.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 5,
+     "cost": 1.4,
+     "price": 9.5,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "water",
+     "kitJ": "Still or Sparkling Water|A bottle of Acqua Panna or San Pellegrino for the table."
+    },
+    {
+     "id": "hodzdoc",
+     "name": "Soft Drinks",
+     "course": "side",
+     "desc": "Coca-Cola, Diet Coke, Sprite or ginger ale.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 5,
+     "cost": 0.7,
+     "price": 6.5,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "soft",
+     "kitJ": "Soft Drinks|Coca-Cola, Diet Coke, Sprite or ginger ale."
+    },
+    {
+     "id": "9is0j8h",
+     "name": "Espresso or Cappuccino",
+     "course": "side",
+     "desc": "Espresso, cappuccino or latte after dinner.",
+     "cats": {
+      "dairy": 0.4,
+      "pantry": 0.6
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 5,
+     "cost": 0.8,
+     "price": 7,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "espresso"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "pulled espresso"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Espresso or Cappuccino|Espresso, cappuccino or latte after dinner."
+    },
+    {
+     "id": "t9lgmxg",
+     "name": "Signature Cocktails",
+     "course": "side",
+     "desc": "The house cocktail list, built around the red and blue kitchens.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 5,
+     "cost": 4.3,
+     "price": 21,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "cocktail",
+     "kitJ": "Signature Cocktails|The house cocktail list, built around the red and blue kitchens."
+    },
+    {
+     "id": "9edn581",
+     "name": "Wine by the Glass",
+     "course": "side",
+     "desc": "A rotating list of reds, whites and sparkling from the cellar.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 5,
+     "cost": 5.2,
+     "price": 19,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Wine by the Glass|A rotating list of reds, whites and sparkling from the cellar."
+    },
+    {
+     "id": "u33xtpl",
+     "name": "Draft Beer",
+     "course": "side",
+     "desc": "Local and imported beer on tap.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 1.5,
+     "creativity": 5,
+     "cost": 2.1,
+     "price": 11,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "beer",
+     "kitJ": "Draft Beer|Local and imported beer on tap."
+    },
+    {
+     "id": "pft75v2",
+     "name": "Prix Fixe",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "prixfixe",
+      "items": [
+       "2nq2agn",
+       "1xu5hes",
+       "n1qfys1"
+      ]
+     },
+     "desc": "Three courses from the show: a first course, the Beef Wellington with potato purée and glazed root vegetables, and the sticky toffee pudding.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 135.95,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "kitJ": "Prix Fixe|Three courses from the show: a first course, the Beef Wellington with potato purée and glazed root vegetables, and the sticky toffee pudding."
+    }
+   ],
+   "coherence": 84,
+   "identity": "Beef Wellington, pan-seared scallops, lobster risotto and sticky toffee pudding, the show's signatures served to 300 seats a sitting.",
+   "creBonus": 0,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "e5whuyw",
+    "role": "chef",
+    "name": "Marcus Hale",
+    "skill": 84,
+    "years": 22,
+    "bio": "Executive chef. Came up through Ramsay's Las Vegas kitchens and runs the pass the way the show taught millions of people to expect.",
+    "trait": "perfectionist",
+    "certs": [
+     "servsafe",
+     "acf_cec"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 168000,
+    "fame": 20
+   },
+   {
+    "id": "oatam6k",
+    "role": "sous",
+    "name": "Priya Natarajan",
+    "skill": 76,
+    "years": 13,
+    "bio": "Executive sous chef, who keeps the Wellington station turning out several hundred a night that all look the same.",
+    "trait": "steady",
+    "certs": [
+     "servsafe",
+     "acf_csc"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 98000,
+    "fame": 0
+   },
+   {
+    "id": "5ny2otq",
+    "role": "pastry",
+    "name": "Colette Arnaud",
+    "skill": 74,
+    "years": 12,
+    "bio": "Pastry chef. The sticky toffee pudding is the most-ordered dessert in the building, and she guards the recipe.",
+    "trait": "perfectionist",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 86000,
+    "fame": 0
+   },
+   {
+    "id": "1hnoqsr",
+    "role": "somm",
+    "name": "Derek Okafor",
+    "skill": 72,
+    "years": 10,
+    "bio": "Beverage manager running a list of about ninety-five bottles and a cocktail programme built on show references.",
+    "trait": "connected",
+    "certs": [
+     "servsafe",
+     "cms_intro",
+     "cms_cert"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 88000,
+    "fame": 0
+   },
+   {
+    "id": "wypiswo",
+    "role": "maitre",
+    "name": "Lena Morales",
+    "skill": 78,
+    "years": 16,
+    "bio": "Director of service. Knows which tables are fans of the show and seats them where they can watch the kitchen.",
+    "trait": "showman",
+    "certs": [
+     "servsafe",
+     "ahlei_cfbe"
+    ],
+    "loyalty": 66,
+    "ambition": 45,
+    "stress": 30,
+    "away": false,
+    "salary": 96000,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 4163064,
+  "cellar": {
+   "value": 260000,
+   "target": 260000,
+   "ref": 260000,
+   "markup": 3.2,
+   "standing": 40,
+   "rare": [
+    {
+     "id": "wcegfjix",
+     "authed": true,
+     "name": "Hundred Acre, Napa Valley Cabernet Sauvignon 2010",
+     "qty": 6,
+     "cost": 700,
+     "price": 2100,
+     "prestige": 5,
+     "rarity": 3
+    },
+    {
+     "id": "w1u8qkti",
+     "authed": true,
+     "name": "Opus One",
+     "qty": 12,
+     "cost": 380,
+     "price": 1000,
+     "prestige": 4,
+     "rarity": 2
+    }
+   ]
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "backups": {},
+  "corrections": [],
+  "tipPolicy": "servers",
+  "uniform": {
+   "name": "Red and blue team jackets",
+   "desc": "Chefs in red or blue jackets like the show's two teams, servers in black.",
+   "perHead": 220,
+   "monthly": 22,
+   "foh": 3,
+   "morale": 1,
+   "amb": 2,
+   "custom": true
+  },
+  "policies": [
+   {
+    "id": "pol015i7z9",
+    "key": "health",
+    "name": "Health insurance for anyone on 30+ hours",
+    "blurb": "The Culinary Union's health plan, which Caesars pays into for union staff.",
+    "monthly": 180,
+    "morale": 3,
+    "quit": -0.18,
+    "stress": -1,
+    "loyalty": 0.5,
+    "on": true
+   },
+   {
+    "id": "poldz4k60q",
+    "key": "meal",
+    "name": "Family meal before every service",
+    "blurb": "Staff eat in the Caesars Palace employee dining room before their shift.",
+    "monthly": 55,
+    "morale": 2,
+    "quit": -0.08,
+    "stress": -1,
+    "loyalty": 0.2,
+    "on": true
+   }
+  ],
+  "franchise": {
+   "brand": "Gordon Ramsay North America",
+   "royalty": 0.06,
+   "adFund": 0,
+   "rentPct": 0,
+   "techFee": 0,
+   "rules": "Caesars, not the player, holds this licence. Gordon Ramsay's company owns the Hell's Kitchen name and recipes and signs off on menu changes; in return it takes a fee on gross sales. The actual Hell's Kitchen contract isn't public: reporting on earlier Ramsay deals with Caesars put the fee at 5 to 6% of sales, with a yearly visit from Ramsay built in."
+  },
+  "ownership": {
+   "type": "management",
+   "owner": "Caesars Entertainment",
+   "baseFee": 0.003,
+   "incentiveFee": 0.015,
+   "capexLimit": 150000,
+   "reserveFloor": 6500000,
+   "budget": 0,
+   "yearEbitda": 0,
+   "earned": 0,
+   "yearFees": 0,
+   "distributed": 0,
+   "funded": 0,
+   "misses": 0,
+   "liquidity": 900000000,
+   "profile": {
+    "name": "Caesars Entertainment",
+    "kind": "publicly traded casino-entertainment company (NASDAQ: CZR)",
+    "desc": "The company behind Caesars Palace and dozens of other casino resorts across the US. It leases the Caesars Palace buildings from VICI Properties and runs Hell's Kitchen as one of the resort's biggest food-and-beverage outlets.",
+    "personality": "Big, heavily indebted and run by quarterly numbers. Food and beverage is judged on covers, check and margin, and on whether it fills the hotel and the casino floor. A good outlet is left alone; a weak quarter elsewhere in the company lands on everyone's budget.",
+    "rep": {
+     "name": "Dana Kessler",
+     "title": "Vice president of food & beverage, Caesars Palace",
+     "style": "Walks the room on Friday nights, knows the cover count before you do, and asks about labour first."
+    },
+    "competence": 82,
+    "netWorth": 4000000000,
+    "liquidity": 900000000,
+    "leverage": 0.85,
+    "patience": 50,
+    "involvement": 65,
+    "risk": 40,
+    "terms": {
+     "baseFee": 0.003,
+     "incentiveFee": 0.015,
+     "capexLimit": 150000,
+     "budgetGrowth": 0.03,
+     "tolerance": 0.88,
+     "missesAllowed": 2,
+     "reserveMonths": 1
+    },
+    "events": [
+     {
+      "p": 0.07,
+      "m": null,
+      "tone": "good",
+      "text": "Caesars Rewards ran a points promotion for dinner at Hell's Kitchen, and the booking sheet filled with loyalty members.",
+      "fx": [
+       {
+        "op": "mod",
+        "kind": "demand",
+        "label": "Caesars Rewards promotion",
+        "value": 0.03,
+        "months": 2
+       }
+      ]
+     },
+     {
+      "p": 0.05,
+      "m": null,
+      "tone": "warn",
+      "text": "Caesars had a weak quarter across its regional casinos, and every outlet at the Palace was asked to trim spending.",
+      "fx": [
+       {
+        "op": "mod",
+        "kind": "labor",
+        "label": "Corporate cost trim",
+        "value": -0.03,
+        "months": 3
+       },
+       {
+        "op": "morale",
+        "locIndex": 0,
+        "delta": -3
+       }
+      ]
+     },
+     {
+      "p": 0.05,
+      "m": null,
+      "desk": {
+       "title": "A convention group wants the whole room",
+       "text": "A pharmaceutical conference wants to buy out Hell's Kitchen for a Tuesday dinner: 300 guests, set menu, open bar. Group sales has already told them yes, pending you.",
+       "choices": [
+        {
+         "label": "Take the buyout",
+         "blurb": "A very good night, and the regulars' bookings moved.",
+         "effects": [
+          {
+           "op": "cash",
+           "amount": 210000,
+           "why": "private buyout"
+          },
+          {
+           "op": "rep",
+           "delta": -1
+          }
+         ]
+        },
+        {
+         "label": "Offer the private rooms only",
+         "blurb": "",
+         "effects": [
+          {
+           "op": "cash",
+           "amount": 40000,
+           "why": "private dining"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "source": ""
+   }
+  },
+  "intl": {
+   "countries": {
+    "United States": {
+     "name": "United States",
+     "currency": {
+      "code": "USD",
+      "symbol": "$",
+      "perUSD": 1,
+      "decimals": 2
+     },
+     "payrollBurden": 0.168,
+     "cardFee": 0.0275,
+     "cashShare": 0.14,
+     "tipping": {
+      "norm": "tips",
+      "tipCredit": 0.45
+     },
+     "salesTax": {
+      "rate": null,
+      "included": false
+     },
+     "alcohol": {
+      "status": "allowed",
+      "note": "Licensed by the state; quotas in some cities."
+     },
+     "inspections": {
+      "system": "County or city health department inspections; letter grades posted in some cities.",
+      "public": true
+     },
+     "mealTimes": "Lunch around noon to 1pm, dinner from about 6 to 8pm.",
+     "customs": "Guests expect fast, attentive service, free tap water and refills, and a check brought on request. Tipping 18-22% is expected at table service.",
+     "labour": "At-will employment in most states; overtime after 40 hours a week; minimum wages set by state and city.",
+     "holidays": [],
+     "regionTag": "us",
+     "builtIn": true,
+     "source": ""
+    }
+   },
+   "home": "United States",
+   "fx": {}
+  },
+  "slotName": "Gordon Ramsay Hell's Kitchen (starting save)"
+ }
+}

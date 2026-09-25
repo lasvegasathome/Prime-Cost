@@ -1,0 +1,2455 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T20:34:34.242Z",
+ "state": {
+  "v": 2,
+  "seed": 922349512,
+  "ownerName": "You",
+  "bizName": "Windows on the World",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 0,
+  "year": 1,
+  "cash": 1006576,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "Windows on the World",
+   "blurb": "The 107th floor of the World Trade Center: a tiered dining room facing north and east over Manhattan, a bar with the best view in the city, and the biggest wine list New York has ever seen.",
+   "check": 45,
+   "foodPct": 0.28,
+   "seats": 600,
+   "truckCap": 210,
+   "turns": 2.2,
+   "maxTurns": 3.6,
+   "elast": 0.6,
+   "hrsPerCover": 2.45,
+   "alcohol": 0.34,
+   "sqftSeat": 100,
+   "buildSqft": 0,
+   "equip": 0,
+   "chef": 0,
+   "gm": 0,
+   "counter": false,
+   "truck": false,
+   "items": 1.9,
+   "drinkAttach": 0,
+   "drinkRef": 0
+  },
+  "customMarket": {
+   "name": "World Trade Center, Lower Manhattan (1999)",
+   "blurb": "Your own market.",
+   "rentYr": 30,
+   "wage": 8.5,
+   "tipCredit": 0.36,
+   "traffic": 0.468,
+   "comp": 1.2,
+   "checkMult": 1,
+   "taxRate": 0.0825,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "January 1999. You run Windows on the World, the restaurant complex on the 106th and 107th floors of the North Tower of the World Trade Center, under a lease from the Port Authority. It reopened in June 1996 after a $25 million renovation; this year the Cellar in the Sky room becomes Wild Blue, a 60-seat steakhouse. There are about 450 people on the payroll, Kevin Zraly's wine school, banquet and conference rooms on the 106th floor, and tourists who ride 107 floors to see the view and stay for a drink. Money here is in 1999 dollars.",
+  "creditLine": {
+   "limit": 40000,
+   "drawn": 0,
+   "rate": 0.145
+  },
+  "locations": [
+   {
+    "id": "w64i10n",
+    "name": "Windows on the World",
+    "market": "custom",
+    "seats": 600,
+    "sqft": 60000,
+    "env": "cbd",
+    "envLive": true,
+    "rent": 140000,
+    "cam": 35000,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 74,
+    "awareness": 97,
+    "morale": 66,
+    "skill": 66,
+    "equip": 88,
+    "health": 90,
+    "monthsOpen": 31,
+    "attention": 70,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "features": [
+     {
+      "id": "fw8va8o3",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The view from the 107th floor",
+      "pitch": "Floor-to-ceiling windows facing north and east over Manhattan, from the Empire State Building to the bridges.",
+      "prestige": 8
+     },
+     {
+      "id": "f1qurax7",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The Greatest Bar on Earth",
+      "pitch": "A 300-person room of chef stations rolling sushi, shucking oysters and stirring shabu-shabu, loud and a little wild, with Latin bands on Thursday nights.",
+      "capacity": 0.15,
+      "bev": 0.12
+     },
+     {
+      "id": "f399iymg",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Banquet and conference rooms on the 106th floor",
+      "pitch": "Private rooms for weddings, Wall Street dinners, corporate breakfasts and conferences.",
+      "sideline": 0.25
+     },
+     {
+      "id": "f1tsr7j5",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Windows on the World Wine School",
+      "pitch": "Kevin Zraly's evening wine classes, which send students straight to the list.",
+      "sideline": 0.02,
+      "prestige": 2
+     }
+    ],
+    "ambBase": 35,
+    "foh": 50,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "kit": [
+     {
+      "id": "kv9jkc12",
+      "type": "range",
+      "tier": 2,
+      "model": "Jade Titan heavy-duty line",
+      "price": 137400,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9sg2a68",
+      "type": "range",
+      "tier": 2,
+      "model": "Banquet range line on the 106th floor",
+      "price": 137400,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzpz9rxf",
+      "type": "hood",
+      "tier": 2,
+      "model": "Halton KVI capture-jet hood",
+      "price": 124900,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kgfespye",
+      "type": "vent",
+      "tier": 2,
+      "model": "Variable-speed fans, welded duct & tempered makeup air",
+      "price": 562000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krg400nw",
+      "type": "suppression",
+      "tier": 1,
+      "model": "Ansul R-102 wet-chemical system",
+      "price": 31200,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kgtm3pmm",
+      "type": "extinguisher",
+      "tier": 2,
+      "model": "Class K, ABC and CO2 at every station, checked monthly",
+      "price": 1800,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kfofw14a",
+      "type": "sprinkler",
+      "tier": 2,
+      "model": "Quick-response sprinklers with a monitored alarm",
+      "price": 174800,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k5oojm1g",
+      "type": "greasetrap",
+      "tier": 2,
+      "model": "In-ground grease interceptor, 1,000 gallons, installed",
+      "price": 18000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k368rlr7",
+      "type": "refrig",
+      "tier": 3,
+      "model": "Custom walk-ins · Traulsen Spec-Line",
+      "price": 405900,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kuzastud",
+      "type": "dish",
+      "tier": 3,
+      "model": "Meiko M-iQ flight-type",
+      "price": 110000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k6dl4r6p",
+      "type": "dish",
+      "tier": 2,
+      "model": "Banquet dish machine",
+      "price": 42000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kp50jgur",
+      "type": "fryer",
+      "tier": 1,
+      "model": "Pitco SG14 gas fryer",
+      "price": 1800,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmtq9r1i",
+      "type": "grill",
+      "tier": 2,
+      "model": "Montague Legend broiler",
+      "price": 11000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kraz0di7",
+      "type": "salamander",
+      "tier": 2,
+      "model": "Salvis Salamat Pro",
+      "price": 9000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k77fh3x8",
+      "type": "combi",
+      "tier": 1,
+      "model": "Convotherm maxx 6.10",
+      "price": 14000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kuntfyfn",
+      "type": "convection",
+      "tier": 2,
+      "model": "Blodgett DFG-100 double stack",
+      "price": 16000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k2ve0sh6",
+      "type": "kettle",
+      "tier": 2,
+      "model": "Cleveland steam kettle & skillet",
+      "price": 24000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzyl822g",
+      "type": "steamtable",
+      "tier": 2,
+      "model": "Banquet hot boxes and holding",
+      "price": 7000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwurtspm",
+      "type": "blast",
+      "tier": 1,
+      "model": "Traulsen blast chiller",
+      "price": 12000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k5zcqt4h",
+      "type": "bakery",
+      "tier": 1,
+      "model": "Blodgett deck oven & proofer",
+      "price": 14000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmf3ws78",
+      "type": "mixer",
+      "tier": 2,
+      "model": "Hobart Legacy 60-qt & Rondo sheeter",
+      "price": 28000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knsays3z",
+      "type": "pastrycase",
+      "tier": 1,
+      "model": "Federal Industries 48\" refrigerated case",
+      "price": 5500,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3skgmfl",
+      "type": "ice",
+      "tier": 3,
+      "model": "Hoshizaki KM, pair with storage",
+      "price": 14000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k396b267",
+      "type": "bar",
+      "tier": 3,
+      "model": "Custom bar build with Perlick & Krowne stations",
+      "price": 90000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kfiwfo2u",
+      "type": "bar",
+      "tier": 2,
+      "model": "The Greatest Bar on Earth",
+      "price": 45000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kqakr8ot",
+      "type": "glasswasher",
+      "tier": 2,
+      "model": "Hobart LXeH undercounter",
+      "price": 9000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwagv4ne",
+      "type": "winestore",
+      "tier": 3,
+      "model": "The wine cellar",
+      "price": 120000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kaoe0bjg",
+      "type": "espresso",
+      "tier": 1,
+      "model": "La Marzocco Linea PB",
+      "price": 18000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ktd4c1fy",
+      "type": "pos",
+      "tier": 1,
+      "model": "POS terminals & receipt printers",
+      "price": 0,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "k89lt6tr",
+      "type": "menus",
+      "tier": 2,
+      "model": "Letterpress menus on cotton paper",
+      "price": 2500,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "pers": 1.5,
+       "fee": 150
+      }
+     },
+     {
+      "id": "kxzewnsf",
+      "type": "hoststand",
+      "tier": 1,
+      "model": "Tablet host stand with an online booking system",
+      "price": 1500,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "cap": 0.005,
+       "fee": 300
+      }
+     },
+     {
+      "id": "kft43ins",
+      "type": "sound",
+      "tier": 2,
+      "model": "Zoned commercial audio system",
+      "price": 12000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kra8903y",
+      "type": "seating",
+      "tier": 3,
+      "model": "Tiered banquettes facing the windows",
+      "price": 936600,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kxy289st",
+      "type": "tableware",
+      "tier": 3,
+      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
+      "price": 374600,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9kv6x6m",
+      "type": "linens",
+      "tier": 2,
+      "model": "Tablecloths and cloth napkins from a linen service",
+      "price": 2500,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ke9krtkl",
+      "type": "waterservice",
+      "tier": 1,
+      "model": "Glass carafes & filtered water",
+      "price": 800,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kp931f0c",
+      "type": "smallwares",
+      "tier": 2,
+      "model": "A full set with calibrated scales and probe thermometers",
+      "price": 124900,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kutfo3zc",
+      "type": "restroom",
+      "tier": 2,
+      "model": "Renovated restrooms with touchless fixtures",
+      "price": 374600,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kyal2j2a",
+      "type": "hvac",
+      "tier": 2,
+      "model": "Building HVAC on the 106th and 107th floors",
+      "price": 249800,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kbzjtcyy",
+      "type": "safe",
+      "tier": 1,
+      "model": "Drop safe",
+      "price": 1200,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k09shxua",
+      "type": "cameras",
+      "tier": 1,
+      "model": "Basic four-camera system",
+      "price": 1800,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": true
+     }
+    },
+    "setting": {
+     "custom": true,
+     "name": "107th floor, North Tower, World Trade Center",
+     "desc": "The top of the North Tower in Lower Manhattan, 1999. Brokers and bankers from the Financial District at lunch, tourists from everywhere who come up for the view, weddings and Wall Street dinners in the banquet rooms, and a bar where the city lights stretch to the horizon.",
+     "check": 1,
+     "traffic": 1.7,
+     "season": [
+      0.9,
+      0.92,
+      1,
+      1,
+      1.04,
+      1.02,
+      1.02,
+      1,
+      1,
+      1.04,
+      1.06,
+      1.18
+     ],
+     "seg": {
+      "regulars": 4,
+      "locals": 4,
+      "tourists": 14,
+      "business": 12,
+      "occasion": 10
+     },
+     "crime": 10,
+     "ev": [
+      {
+       "p": 0.12,
+       "m": null,
+       "tone": "warn",
+       "text": "Cloud sat on the top of the tower for three days. Diners booked for the view looked out at white.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Clouds over the view",
+         "value": -0.03,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.35,
+       "m": [
+        11
+       ],
+       "tone": "good",
+       "text": "Wall Street bonus season: every banquet room is booked for holiday parties through New Year's.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Bonus season",
+         "value": 0.06,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.08,
+       "m": null,
+       "tone": "good",
+       "text": "A fashion magazine shot its spring issue in the dining room at dawn.",
+       "fx": [
+        {
+         "op": "awareness",
+         "delta": 2
+        },
+        {
+         "op": "rep",
+         "delta": 1
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "desk": {
+        "title": "New Year's Eve 1999",
+        "text": "Every party planner in the city wants the room for the millennium. You could sell it as one private event, or keep it open at a very high prix fixe.",
+        "choices": [
+         {
+          "label": "Sell it as one private party",
+          "blurb": "A single enormous cheque.",
+          "effects": [
+           {
+            "op": "mod",
+            "kind": "demand",
+            "label": "Millennium buyout",
+            "value": 0.08,
+            "months": 1
+           }
+          ]
+         },
+         {
+          "label": "Keep it open at a millennium prix fixe",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "mod",
+            "kind": "demand",
+            "label": "Millennium night",
+            "value": 0.05,
+            "months": 1
+           },
+           {
+            "op": "awareness",
+            "delta": 2
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "mkt": {
+     "social": 0,
+     "search": 0,
+     "pr": 6000,
+     "email": 1500
+    },
+    "kitV3": true,
+    "kitDedup": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "full",
+   "marketing": 1800,
+   "draw": 2500,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": true,
+   "brunch": true,
+   "delivery": false,
+   "catering": true
+  },
+  "admin": 30,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Jan Y1",
+    "tone": "good",
+    "text": "January 1999. You run Windows on the World, the restaurant complex on the 106th and 107th floors of the North Tower of the World Trade Center, under a lease from the Port Authority. It reopened in June 1996 after a $25 million renovation; this year the Cellar in the Sky room becomes Wild Blue, a 60-seat steakhouse. There are about 450 people on the payroll, Kevin Zraly's wine school, banquet and conference rooms on the 106th floor, and tourists who ride 107 floors to see the view and stay for a drink. Money here is in 1999 dollars."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 0,
+   "equip": 0,
+   "deposit": 420000,
+   "licences": 0,
+   "smallwares": 0,
+   "preopen": 0,
+   "openingInv": 116424,
+   "cellar": 257000,
+   "total": 793424,
+   "sqft": 60000
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790368474237,
+  "mods": [
+   {
+    "id": "ohgszg1",
+    "left": null,
+    "loc": -1,
+    "src": "Windows on the World",
+    "label": "Port Authority building services, elevators and security",
+    "kind": "fixed",
+    "value": 18000
+   }
+  ],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "Windows on the World occupied the 106th and 107th floors of the North Tower of the World Trade Center, about 50,000 square feet, developed by Joe Baum and first opened in 1976. After the February 1993 bombing it closed; the Port Authority chose a new operator in 1994 and it reopened on June 27, 1996 after a $25 million renovation designed by Hugh Hardy, with jackets still required in the main dining room (neckties optional) and the Greatest Bar on Earth in place of the old City Lights Bar and Hors d'Oeuvrerie: a 300-person room of chef stations for sushi, oysters and shabu-shabu, microbrews, vodkas, wines by the glass and about 25 international dishes, with Latin bands on Thursday nights. In 1999 Cellar in the Sky became Wild Blue, a 60-seat American steakhouse. Joe Baum died in 1998. Michael Lomonaco became executive chef in 1997 and replaced the old menus with American cooking from the region: Hudson Valley venison, Montauk lobster, herbs from the World Trade Center greenmarket, beef Wellington, and lunch specials and smaller dishes to bring in tourists alongside the executives. Kevin Zraly ran the wine programme from 1976; Veuve Clicquot Yellow Label was the house Champagne. About 450 people worked across the three rooms. In 2000 it reported $37 million in revenue, the highest-grossing restaurant in the United States. Ruth Reichl gave it two stars in The New York Times on December 31, 1997. THIS SAVE BEGINS IN JANUARY 1999: keep the story in its own time, among the people and events of the late 1990s, and do not foreshadow or depict later events. Money is in 1999 dollars. The dining-room appetizers and main courses, with their prices, are from a Lomonaco-era Windows on the World dinner menu (1997-2001, summer); the bar dishes are from the Greatest Bar on Earth's 1996 opening menu and beef Wellington from a later account of his Windows dishes; the desserts, cheeses and all other prices are stand-ins or estimates, and staff names, rent and the local events are invented; the history above is from published sources.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_broad",
+    "name": "Metropolitan foodservice distributor",
+    "cats": [
+     "produce",
+     "meat",
+     "dairy",
+     "pantry"
+    ],
+    "q": 58,
+    "price": 1,
+    "reliability": 0.96,
+    "terms": "net30",
+    "relation": 65,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "The big-city broadline truck, up the freight elevator every morning before the building opens."
+   },
+   {
+    "id": "sp_fish",
+    "name": "Fulton Fish Market purveyor",
+    "cats": [
+     "seafood"
+    ],
+    "q": 72,
+    "price": 1.04,
+    "reliability": 0.94,
+    "terms": "net14",
+    "relation": 75,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Fish and shellfish bought at the Fulton Street market a few blocks away before dawn."
+   },
+   {
+    "id": "sp_meat",
+    "name": "Prime meat purveyor",
+    "cats": [
+     "meat",
+     "luxury"
+    ],
+    "q": 76,
+    "price": 1.1,
+    "reliability": 0.97,
+    "terms": "net30",
+    "relation": 70,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Dry-aged beef, lamb and game from a meatpacking district purveyor."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_broad",
+   "meat": "sp_broad",
+   "seafood": "sp_fish",
+   "dairy": "sp_broad",
+   "pantry": "sp_broad",
+   "luxury": "sp_meat"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 0,
+   "dishes": [
+    {
+     "id": "vcwpewc",
+     "name": "Salad of Asparagus, Tender Greens and Old Chatham Camembert",
+     "course": "starter",
+     "desc": "From the dining-room menu.",
+     "cats": {
+      "produce": 0.6,
+      "dairy": 0.4
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.1,
+     "price": 11,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Salad of Asparagus, Tender Greens and Old Chatham Camembert|From the dining-room menu."
+    },
+    {
+     "id": "mlwzdiq",
+     "name": "Giant White Gulf Shrimp",
+     "course": "starter",
+     "desc": "With a black bean grilled-sesame vinaigrette.",
+     "cats": {
+      "seafood": 0.7,
+      "pantry": 0.2,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 5.4,
+     "price": 18,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Giant White Gulf Shrimp|With a black bean grilled-sesame vinaigrette."
+    },
+    {
+     "id": "zw25e3f",
+     "name": "Maine Hard Shell Lobster Salad",
+     "course": "starter",
+     "desc": "With a smoked chili dressing.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.3
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 5.6,
+     "price": 16,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Maine Hard Shell Lobster Salad|With a smoked chili dressing."
+    },
+    {
+     "id": "2p95svn",
+     "name": "A Mixture of Local Lettuces and Herbs",
+     "course": "starter",
+     "desc": "Dijon mustard vinaigrette.",
+     "cats": {
+      "produce": 0.9,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 2,
+     "price": 9,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "A Mixture of Local Lettuces and Herbs|Dijon mustard vinaigrette."
+    },
+    {
+     "id": "qhp0vlw",
+     "name": "Duck Prosciutto",
+     "course": "starter",
+     "desc": "With lamb's lettuce salad and roasted fig relish.",
+     "cats": {
+      "meat": 0.6,
+      "produce": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.6,
+     "price": 12,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Duck Prosciutto|With lamb's lettuce salad and roasted fig relish."
+    },
+    {
+     "id": "0cxlrhv",
+     "name": "Oak Smoked Salmon with Corn Cakes",
+     "course": "starter",
+     "desc": "With American caviar.",
+     "cats": {
+      "seafood": 0.6,
+      "pantry": 0.2,
+      "luxury": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 4.5,
+     "price": 15,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Oak Smoked Salmon with Corn Cakes|With American caviar."
+    },
+    {
+     "id": "9vybiuy",
+     "name": "Beluga Caviar Service",
+     "course": "starter",
+     "desc": "With the traditional garnishes and toast.",
+     "cats": {
+      "luxury": 0.85,
+      "pantry": 0.15
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 27.5,
+     "price": 55,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Beluga Caviar Service|With the traditional garnishes and toast."
+    },
+    {
+     "id": "s9c57g1",
+     "name": "Yellow Tomato Gazpacho with Jumbo Lump Crab Meat",
+     "course": "starter",
+     "desc": "A chilled soup.",
+     "cats": {
+      "produce": 0.6,
+      "seafood": 0.4
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.6,
+     "price": 12,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Yellow Tomato Gazpacho with Jumbo Lump Crab Meat|A chilled soup."
+    },
+    {
+     "id": "82ufoh9",
+     "name": "Maine Lobster Bisque",
+     "course": "starter",
+     "desc": "With lobster chunks.",
+     "cats": {
+      "seafood": 0.6,
+      "dairy": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.6,
+     "price": 12,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Maine Lobster Bisque|With lobster chunks."
+    },
+    {
+     "id": "zka44tn",
+     "name": "Oyster Pan Roast",
+     "course": "starter",
+     "desc": "With apple-smoked bacon and tarragon cream on brioche toast.",
+     "cats": {
+      "seafood": 0.6,
+      "meat": 0.1,
+      "dairy": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 4.1,
+     "price": 14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Oyster Pan Roast|With apple-smoked bacon and tarragon cream on brioche toast."
+    },
+    {
+     "id": "27q6o1k",
+     "name": "Seared Diver Scallop Salad",
+     "course": "starter",
+     "desc": "With a ginger, sherry and wasabi caviar sauce.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.2,
+      "luxury": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 4.3,
+     "price": 14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Seared Diver Scallop Salad|With a ginger, sherry and wasabi caviar sauce."
+    },
+    {
+     "id": "v78zyfc",
+     "name": "Grilled Tamarind Quail",
+     "course": "starter",
+     "desc": "With watercress and scallion cakes and papaya relish.",
+     "cats": {
+      "meat": 0.6,
+      "produce": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 4.6,
+     "price": 16,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Tamarind Quail|With watercress and scallion cakes and papaya relish."
+    },
+    {
+     "id": "hf8idzs",
+     "name": "Hudson Valley Foie Gras",
+     "course": "starter",
+     "desc": "With caramelized rhubarb and cracked black pepper.",
+     "cats": {
+      "luxury": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 5.2,
+     "price": 15,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Hudson Valley Foie Gras|With caramelized rhubarb and cracked black pepper."
+    },
+    {
+     "id": "jek4osc",
+     "name": "Daily Pasta or Risotto",
+     "course": "pasta",
+     "desc": "Changes daily.",
+     "cats": {
+      "pantry": 0.6,
+      "dairy": 0.2,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 2.9,
+     "price": 12,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Daily Pasta or Risotto|Changes daily."
+    },
+    {
+     "id": "c6mgjrz",
+     "name": "Roast Catskill Trout",
+     "course": "fish",
+     "desc": "With Jonah crab and pine nut stuffing and lobster butter.",
+     "cats": {
+      "seafood": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 8.1,
+     "price": 29,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Roast Catskill Trout|With Jonah crab and pine nut stuffing and lobster butter."
+    },
+    {
+     "id": "lopm1r1",
+     "name": "Cedar Roasted Pacific Salmon",
+     "course": "fish",
+     "desc": "With green onion horseradish potatoes and a Pinot Noir sauce.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.3
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 9.2,
+     "price": 33,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Cedar Roasted Pacific Salmon|With green onion horseradish potatoes and a Pinot Noir sauce."
+    },
+    {
+     "id": "drj67hd",
+     "name": "Maine Lobster with Summer Truffles",
+     "course": "fish",
+     "desc": "With asparagus, sugar snap peas and parsley cream.",
+     "cats": {
+      "seafood": 0.7,
+      "luxury": 0.2,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 12.6,
+     "price": 34,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Maine Lobster with Summer Truffles|With asparagus, sugar snap peas and parsley cream."
+    },
+    {
+     "id": "fi79oe0",
+     "name": "Grilled Mirin-Glazed Tuna",
+     "course": "fish",
+     "desc": "With bok choy, coconut rice and a ginger-beet vinaigrette.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 9.3,
+     "price": 32,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Mirin-Glazed Tuna|With bok choy, coconut rice and a ginger-beet vinaigrette."
+    },
+    {
+     "id": "uo9hede",
+     "name": "Mahi-Mahi with Mashed Boniato",
+     "course": "fish",
+     "desc": "With bacon, tomato sofrito and a chili-coriander broth.",
+     "cats": {
+      "seafood": 0.6,
+      "produce": 0.3,
+      "meat": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 7.8,
+     "price": 28,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Mahi-Mahi with Mashed Boniato|With bacon, tomato sofrito and a chili-coriander broth."
+    },
+    {
+     "id": "9wpoa6s",
+     "name": "Daily Market Fish or Seafood",
+     "course": "fish",
+     "desc": "Changes daily.",
+     "cats": {
+      "seafood": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 8.7,
+     "price": 30,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Daily Market Fish or Seafood|Changes daily."
+    },
+    {
+     "id": "u84m484",
+     "name": "Potato 'Lasagne' of Mushrooms",
+     "course": "main",
+     "desc": "With young vegetables, roasted shallots and white truffle oil.",
+     "cats": {
+      "produce": 0.8,
+      "dairy": 0.1,
+      "luxury": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 6.5,
+     "price": 26,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Potato 'Lasagne' of Mushrooms|With young vegetables, roasted shallots and white truffle oil."
+    },
+    {
+     "id": "w4peyrn",
+     "name": "Roasted Organic Chicken",
+     "course": "main",
+     "desc": "With quinoa herb risotto and wild mushroom pan gravy.",
+     "cats": {
+      "meat": 0.6,
+      "produce": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 7.3,
+     "price": 28,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Roasted Organic Chicken|With quinoa herb risotto and wild mushroom pan gravy."
+    },
+    {
+     "id": "6t7135a",
+     "name": "Sliced Magret Duck Steak",
+     "course": "meat",
+     "desc": "With roasted beets, curry pearl couscous and a balsamic glaze.",
+     "cats": {
+      "meat": 0.7,
+      "produce": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 8.7,
+     "price": 30,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Sliced Magret Duck Steak|With roasted beets, curry pearl couscous and a balsamic glaze."
+    },
+    {
+     "id": "8da7g2b",
+     "name": "Grilled Venison Chops",
+     "course": "meat",
+     "desc": "In a sauce of Cabernet, with whisky pecan yams and roasted shallots.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 10.9,
+     "price": 34,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Venison Chops|In a sauce of Cabernet, with whisky pecan yams and roasted shallots."
+    },
+    {
+     "id": "cgl0o45",
+     "name": "Rack of Lamb in a Rosemary-Mustard Crust",
+     "course": "meat",
+     "desc": "With twice-cooked potatoes.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 10.9,
+     "price": 34,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Rack of Lamb in a Rosemary-Mustard Crust|With twice-cooked potatoes."
+    },
+    {
+     "id": "96lmgsw",
+     "name": "Filet Mignon",
+     "course": "meat",
+     "desc": "With seared greens, Colby cheese potatoes, coffee BBQ sauce and onion jam.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.1,
+      "dairy": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 11.6,
+     "price": 35,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Filet Mignon|With seared greens, Colby cheese potatoes, coffee BBQ sauce and onion jam."
+    },
+    {
+     "id": "p19y0h6",
+     "name": "Grilled Black Angus Sirloin",
+     "course": "meat",
+     "desc": "With chipotle butter and Catskill fingerling potatoes.",
+     "cats": {
+      "meat": 0.85,
+      "produce": 0.15
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 11.2,
+     "price": 34,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Black Angus Sirloin|With chipotle butter and Catskill fingerling potatoes."
+    },
+    {
+     "id": "6eqwhdq",
+     "name": "Oysters on the Half Shell",
+     "course": "starter",
+     "desc": "Shucked to order at the oyster station in the Greatest Bar on Earth.",
+     "cats": {
+      "seafood": 0.9,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.64,
+     "price": 13,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Oysters on the Half Shell|Shucked to order at the oyster station in the Greatest Bar on Earth."
+    },
+    {
+     "id": "4hgewrm",
+     "name": "Barbecued 'Hot Tips' Oysters",
+     "course": "starter",
+     "desc": "From the bar's grill, glazed with barbecue sauce.",
+     "cats": {
+      "seafood": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.36,
+     "price": 12,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Barbecued 'Hot Tips' Oysters|From the bar's grill, glazed with barbecue sauce."
+    },
+    {
+     "id": "qp9p3du",
+     "name": "Sushi",
+     "course": "starter",
+     "desc": "Rolled to order at the sushi station in the Greatest Bar on Earth.",
+     "cats": {
+      "seafood": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 4.48,
+     "price": 16,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "sushirobot",
+        "slicer"
+       ],
+       "hard": false,
+       "loss": 0.05,
+       "why": "cut to order"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Sushi|Rolled to order at the sushi station in the Greatest Bar on Earth."
+    },
+    {
+     "id": "730fp2g",
+     "name": "Siberian Pelmeni",
+     "course": "starter",
+     "desc": "Meat dumplings from the bar menu.",
+     "cats": {
+      "meat": 0.5,
+      "pantry": 0.4,
+      "dairy": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 2.8,
+     "price": 10,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Siberian Pelmeni|Meat dumplings from the bar menu."
+    },
+    {
+     "id": "pgp09na",
+     "name": "Grilled Quail Wrapped in Vine Leaves",
+     "course": "starter",
+     "desc": "From the bar menu.",
+     "cats": {
+      "meat": 0.7,
+      "produce": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.64,
+     "price": 13,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Quail Wrapped in Vine Leaves|From the bar menu."
+    },
+    {
+     "id": "72lcpot",
+     "name": "Grilled Jerk Pork Skewers",
+     "course": "starter",
+     "desc": "From the bar menu.",
+     "cats": {
+      "meat": 0.7,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.08,
+     "price": 11,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "grill",
+        "plancha",
+        "parrilla"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Grilled Jerk Pork Skewers|From the bar menu."
+    },
+    {
+     "id": "atjj625",
+     "name": "Charcuterie Board",
+     "course": "starter",
+     "desc": "Slabs of charcuterie on a wooden board.",
+     "cats": {
+      "meat": 0.7,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.92,
+     "price": 14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Charcuterie Board|Slabs of charcuterie on a wooden board."
+    },
+    {
+     "id": "2078ns9",
+     "name": "Personal Pizza",
+     "course": "main",
+     "desc": "From the bar menu.",
+     "cats": {
+      "dairy": 0.4,
+      "produce": 0.2,
+      "pantry": 0.4
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.36,
+     "price": 12,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "pizza",
+        "bakery",
+        "convection"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "a hot oven"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Personal Pizza|From the bar menu."
+    },
+    {
+     "id": "y0v3165",
+     "name": "Tagine",
+     "course": "main",
+     "desc": "Served in colourful pottery at the bar.",
+     "cats": {
+      "meat": 0.5,
+      "produce": 0.3,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 5.04,
+     "price": 18,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Tagine|Served in colourful pottery at the bar."
+    },
+    {
+     "id": "etp37hc",
+     "name": "Shabu-Shabu",
+     "course": "main",
+     "desc": "Stirred at the bar's station on stone induction cookers.",
+     "cats": {
+      "meat": 0.6,
+      "produce": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 5.32,
+     "price": 19,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Shabu-Shabu|Stirred at the bar's station on stone induction cookers."
+    },
+    {
+     "id": "n9mn6r7",
+     "name": "Fish and Chips",
+     "course": "fish",
+     "desc": "Piled in a silver basket at the bar.",
+     "cats": {
+      "seafood": 0.5,
+      "produce": 0.2,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 4.48,
+     "price": 16,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": false,
+       "loss": 0.25,
+       "why": "a fryer"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Fish and Chips|Piled in a silver basket at the bar."
+    },
+    {
+     "id": "we65hdd",
+     "name": "Beef Wellington",
+     "course": "meat",
+     "desc": "With Bordelaise sauce, pommes dauphinoise and a bouquetière of vegetables.",
+     "cats": {
+      "meat": 0.65,
+      "pantry": 0.2,
+      "produce": 0.15
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 10.08,
+     "price": 36,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Beef Wellington|With Bordelaise sauce, pommes dauphinoise and a bouquetière of vegetables."
+    },
+    {
+     "id": "br6mct0",
+     "name": "Chocolate Soufflé",
+     "course": "dessert",
+     "desc": "Baked to order.",
+     "cats": {
+      "dairy": 0.4,
+      "pantry": 0.6
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.08,
+     "price": 11,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Chocolate Soufflé|Baked to order."
+    },
+    {
+     "id": "oih9k6p",
+     "name": "New York Cheesecake",
+     "course": "dessert",
+     "desc": "With a berry compote.",
+     "cats": {
+      "dairy": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 2.52,
+     "price": 9,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "New York Cheesecake|With a berry compote."
+    },
+    {
+     "id": "akjojvy",
+     "name": "Selection of Cheeses",
+     "course": "cheese",
+     "desc": "American and European cheeses.",
+     "cats": {
+      "dairy": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.92,
+     "price": 14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Selection of Cheeses|American and European cheeses."
+    },
+    {
+     "id": "fl8l3iq",
+     "name": "Veuve Clicquot Yellow Label",
+     "course": "side",
+     "desc": "The house Champagne: Windows sold more of it than any restaurant on earth, by Kevin Zraly's account.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 3.36,
+     "price": 14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Veuve Clicquot Yellow Label|The house Champagne: Windows sold more of it than any restaurant on earth, by Kevin Zraly's account."
+    },
+    {
+     "id": "cj4yq8r",
+     "name": "Wine by the Glass",
+     "course": "side",
+     "desc": "Dozens of wines by the glass from Kevin Zraly's list.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 2.4,
+     "price": 10,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Wine by the Glass|Dozens of wines by the glass from Kevin Zraly's list."
+    },
+    {
+     "id": "7t7ksjz",
+     "name": "Microbrew on Tap",
+     "course": "side",
+     "desc": "From the bar's taps.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 1.3,
+     "price": 6,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "beer",
+     "kitJ": "Microbrew on Tap|From the bar's taps."
+    },
+    {
+     "id": "4wkjazd",
+     "name": "Vodka",
+     "course": "side",
+     "desc": "From a long shelf of vodkas at the bar.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 1.6,
+     "price": 9,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "spirit",
+     "kitJ": "Vodka|From a long shelf of vodkas at the bar."
+    },
+    {
+     "id": "f5a4i7j",
+     "name": "Classic Martini",
+     "course": "side",
+     "desc": "Gin or vodka, stirred.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 1.8,
+     "price": 10,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "cocktail",
+     "kitJ": "Classic Martini|Gin or vodka, stirred."
+    },
+    {
+     "id": "k2l3x6q",
+     "name": "Mineral Water",
+     "course": "side",
+     "desc": "Still or sparkling.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 0.9,
+     "price": 6,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "water",
+     "kitJ": "Mineral Water|Still or sparkling."
+    },
+    {
+     "id": "c2yr0qr",
+     "name": "Espresso or Cappuccino",
+     "course": "side",
+     "desc": "After dinner.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.2,
+     "presentation": 4,
+     "creativity": 55,
+     "cost": 0.5,
+     "price": 4.5,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "espresso"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "pulled espresso"
+      }
+     ],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Espresso or Cappuccino|After dinner."
+    }
+   ],
+   "coherence": 74,
+   "identity": "Michael Lomonaco's American cooking from Hudson Valley and Long Island farms in the dining room, an international menu from the chef stations in the Greatest Bar on Earth, and Kevin Zraly's wine list.",
+   "notes": "",
+   "creBonus": 0,
+   "pairing": false,
+   "pairingPrice": 0,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "uozf1p5",
+    "role": "chef",
+    "name": "Anthony Ruggiero",
+    "skill": 76,
+    "years": 14,
+    "salary": 125000,
+    "trait": "steady",
+    "bio": "Executive chef's number two in the kitchen: runs a brigade of more than a hundred through lunch, dinner, the bar menu and a five-hundred-cover banquet on the same night.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "9h6f3q0",
+    "role": "sous",
+    "name": "Marisol Reyes",
+    "skill": 66,
+    "years": 7,
+    "salary": 68000,
+    "trait": "mentor",
+    "bio": "Sous chef on the dining-room line; came up through the banquet kitchen on the 106th floor.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "1sswo0u",
+    "role": "pastry",
+    "name": "Henri Lacaze",
+    "skill": 70,
+    "years": 11,
+    "salary": 72000,
+    "trait": "perfectionist",
+    "bio": "Pastry chef. The soufflés go out on the minute, and the wedding cakes go up in the freight elevator.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "opmcd83",
+    "role": "somm",
+    "name": "Paul Whitcombe",
+    "skill": 74,
+    "years": 12,
+    "salary": 85000,
+    "trait": "connected",
+    "bio": "Cellar master for one of the biggest wine lists in America, and a teacher at the wine school two nights a week.",
+    "certs": [
+     "servsafe",
+     "csw"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "izmptqu",
+    "role": "maitre",
+    "name": "Evelyn Park",
+    "skill": 72,
+    "years": 10,
+    "salary": 92000,
+    "trait": "showman",
+    "bio": "Director of the dining room. Seats the tourists by the window, the regulars where they like, and never lets a jacket-and-tie rule start an argument.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 587490927,
+  "cellar": {
+   "value": 2400000,
+   "target": 2400000,
+   "ref": 2400000,
+   "markup": 2.6,
+   "standing": 88,
+   "rare": []
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "franchise": null,
+  "policies": [
+   {
+    "id": "polokya9s5",
+    "key": "health",
+    "name": "Union health and welfare fund",
+    "blurb": "Most of the staff belong to the hotel and restaurant workers' union, and the contract pays into its health fund.",
+    "monthly": 190,
+    "morale": 3,
+    "quit": -0.18,
+    "stress": -1,
+    "loyalty": 0.5,
+    "on": true
+   },
+   {
+    "id": "pol6q5sk72",
+    "key": "meal",
+    "name": "Family meal before service",
+    "blurb": "Staff eat together in the employee dining room before lunch and dinner.",
+    "monthly": 50,
+    "morale": 2,
+    "quit": -0.08,
+    "stress": -1,
+    "loyalty": 0.2,
+    "on": true
+   }
+  ],
+  "tipPolicy": "servers",
+  "license": {
+   "type": "full"
+  }
+ }
+}

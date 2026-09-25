@@ -1,0 +1,1282 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T19:42:02.772Z",
+ "state": {
+  "v": 2,
+  "seed": 401025051,
+  "ownerName": "You",
+  "bizName": "Crumbl Lehi",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 2,
+  "year": 1,
+  "cash": 95000,
+  "equityInvestor": 0,
+  "loans": [
+   {
+    "id": "m8r201j",
+    "kind": "sba",
+    "principal": 620000,
+    "rate": 0.1075,
+    "term": 120,
+    "remaining": 620000,
+    "monthsLeft": 120,
+    "payment": 8452.998190632352
+   }
+  ],
+  "origin": "",
+  "customConcept": {
+   "name": "Crumbl (franchise)",
+   "blurb": "A glass-fronted cookie bakery in a strip centre: six cookies that never change, four that change every Monday, and a pink box for all of them.",
+   "check": 20,
+   "foodPct": 0.22,
+   "seats": 10,
+   "truckCap": 210,
+   "turns": 17,
+   "maxTurns": 45,
+   "elast": 1.1,
+   "hrsPerCover": 0.31,
+   "alcohol": 0,
+   "sqftSeat": 160,
+   "buildSqft": 0,
+   "equip": 0,
+   "chef": 0,
+   "gm": 42000,
+   "counter": true,
+   "truck": false,
+   "items": 2.6,
+   "drinkAttach": 0.12,
+   "drinkRef": 3
+  },
+  "customMarket": {
+   "name": "Lehi, Utah County",
+   "blurb": "Your own market.",
+   "rentYr": 32,
+   "wage": 14,
+   "tipCredit": 0,
+   "traffic": 0.741,
+   "comp": 1.1,
+   "checkMult": 1,
+   "taxRate": 0.0725,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "You own a Crumbl franchise in a strip centre in Lehi, Utah, a few miles from where the chain started. You paid the franchise fee and built the store; Crumbl takes 8% of every sale in royalties and 2% for the marketing fund, sets the weekly menu, and runs the app most of your orders come through. Like every Crumbl, you're closed on Sundays.",
+  "creditLine": {
+   "limit": 40000,
+   "drawn": 0,
+   "rate": 0.145
+  },
+  "locations": [
+   {
+    "id": "bg999ed",
+    "name": "Crumbl Lehi",
+    "market": "custom",
+    "seats": 10,
+    "sqft": 1600,
+    "env": "suburb",
+    "envLive": true,
+    "rent": 5200,
+    "cam": 933,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 68,
+    "awareness": 74,
+    "morale": 62,
+    "skill": 56,
+    "equip": 90,
+    "health": 93,
+    "monthsOpen": 30,
+    "attention": 70,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "features": [
+     {
+      "id": "f6pgftun",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Open bakery line",
+      "pitch": "The mixing, scooping and baking happen behind glass in full view of the queue, as the franchise requires.",
+      "prestige": 2
+     },
+     {
+      "id": "fhs9pr2c",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "Crumbl app ordering and pickup",
+      "pitch": "Most orders are placed in the app for pickup or delivery.",
+      "capacity": 0.1
+     }
+    ],
+    "ambBase": 35,
+    "foh": 50,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "kit": [
+     {
+      "id": "ko4snw7r",
+      "type": "convection",
+      "tier": 2,
+      "model": "Double-stack convection ovens, pair",
+      "price": 16000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kseux9vq",
+      "type": "mixer",
+      "tier": 2,
+      "model": "Hobart 60-qt mixers for dough and frosting",
+      "price": 28000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knmmr77c",
+      "type": "refrig",
+      "tier": 1,
+      "model": "Walk-in cooler for dough and frosting · reach-ins",
+      "price": 10000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kda4smm6",
+      "type": "pastrycase",
+      "tier": 1,
+      "model": "Chilled display for the chilled cookies",
+      "price": 5500,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ko534lbr",
+      "type": "merch",
+      "tier": 1,
+      "model": "Glass-door cooler for milk and water",
+      "price": 3000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "koe5vihe",
+      "type": "dish",
+      "tier": 1,
+      "model": "Undercounter dish machine, sheet-pan racks and a three-compartment sink",
+      "price": 14000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kvfvsqsi",
+      "type": "hood",
+      "tier": 1,
+      "model": "Type II hood over the ovens",
+      "price": 5500,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kpfmgivx",
+      "type": "vent",
+      "tier": 1,
+      "model": "Upblast fan, welded grease duct & untempered makeup air",
+      "price": 22500,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmvhiiel",
+      "type": "kiosk",
+      "tier": 1,
+      "model": "Tablet self-order kiosks ×2",
+      "price": 4000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "labor": -0.015,
+       "side": 0.003,
+       "fee": 100
+      }
+     },
+     {
+      "id": "k9u7pirv",
+      "type": "pos",
+      "tier": 2,
+      "model": "POS with app-order printers and a pickup shelf",
+      "price": 8000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "labor": -0.015,
+       "cap": 0.01,
+       "fee": 150
+      }
+     },
+     {
+      "id": "k0nnj9al",
+      "type": "menus",
+      "tier": 2,
+      "model": "Digital menu board with the week's lineup",
+      "price": 2500,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "pers": 1.5,
+       "fee": 150
+      }
+     },
+     {
+      "id": "kcjhy137",
+      "type": "sound",
+      "tier": 1,
+      "model": "Wireless speakers ×4",
+      "price": 2500,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9i9fp0r",
+      "type": "stools",
+      "tier": 1,
+      "model": "A window counter with stools",
+      "price": 4000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kfr3ixlo",
+      "type": "extinguisher",
+      "tier": 1,
+      "model": "Class K and ABC extinguishers, tagged",
+      "price": 900,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kvk9g9v5",
+      "type": "sprinkler",
+      "tier": 1,
+      "model": "Wet-pipe sprinkler fit-out",
+      "price": 7500,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k8fn02w0",
+      "type": "smallwares",
+      "tier": 1,
+      "model": "Sheet pans, portion scoops, scales and probe thermometers",
+      "price": 6000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ku3rc7lm",
+      "type": "restroom",
+      "tier": 1,
+      "model": "ADA-compliant restrooms, standard fixtures",
+      "price": 15000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knq3k64t",
+      "type": "hvac",
+      "tier": 1,
+      "model": "New 10-ton rooftop unit, installed",
+      "price": 11000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kgq8ertw",
+      "type": "deliverytab",
+      "tier": 2,
+      "model": "App and delivery orders printed straight to the packing line",
+      "price": 2000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kjnuaikc",
+      "type": "safe",
+      "tier": 1,
+      "model": "Drop safe",
+      "price": 1200,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knmw3xdm",
+      "type": "cameras",
+      "tier": 1,
+      "model": "Basic four-camera system",
+      "price": 1800,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": true
+     }
+    },
+    "setting": {
+     "custom": true,
+     "name": "Strip centre, Lehi, Utah",
+     "desc": "An end-cap unit in a new strip centre off the freeway in Lehi, between a Costco and three new subdivisions. Families with big households, BYU and UVU students on weekend nights, office parties from the tech campuses of Silicon Slopes, and a queue every Monday when the new flavours drop.",
+     "check": 1,
+     "traffic": 1.05,
+     "season": [
+      0.85,
+      1.05,
+      0.95,
+      0.95,
+      1.05,
+      1,
+      0.95,
+      0.95,
+      1,
+      1,
+      1.1,
+      1.25
+     ],
+     "seg": {
+      "regulars": 12,
+      "locals": 14,
+      "tourists": -8,
+      "business": 0,
+      "occasion": 4
+     },
+     "crime": 10,
+     "ev": [
+      {
+       "p": 0.12,
+       "m": null,
+       "tone": "good",
+       "text": "This week's rotating flavour went viral on TikTok and the store sold out of it by Wednesday.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Viral flavour",
+         "value": 0.05,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "tone": "warn",
+       "text": "A copycat cookie shop with a pink-ish box opened two exits down the freeway.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Copycat cookie shop",
+         "value": -0.03,
+         "months": 6
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "tone": "warn",
+       "text": "Butter prices jumped again, and every cookie on the menu uses a lot of it.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "foodcost",
+         "label": "Butter prices",
+         "value": 0.012,
+         "months": 3
+        }
+       ]
+      },
+      {
+       "p": 0.05,
+       "m": null,
+       "desk": {
+        "title": "Corporate wants a Sunday opening test",
+        "text": "Crumbl asks a handful of Utah stores to trial Sunday hours. Your team has always had Sundays off.",
+        "choices": [
+         {
+          "label": "Volunteer for the test",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "mod",
+            "kind": "demand",
+            "label": "Sunday trial",
+            "value": 0.04,
+            "months": 3
+           },
+           {
+            "op": "morale",
+            "delta": -5
+           }
+          ]
+         },
+         {
+          "label": "Keep Sundays closed",
+          "blurb": "",
+          "effects": [
+           {
+            "op": "morale",
+            "delta": 2
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "mkt": {
+     "social": 320,
+     "search": 120,
+     "pr": 0,
+     "email": 60
+    },
+    "kitV3": true,
+    "kitDedup": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "full",
+   "marketing": 1800,
+   "draw": 2500,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": false,
+   "brunch": false,
+   "delivery": true,
+   "catering": true
+  },
+  "admin": 30,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Mar Y1",
+    "tone": "good",
+    "text": "You own a Crumbl franchise in a strip centre in Lehi, Utah, a few miles from where the chain started. You paid the franchise fee and built the store; Crumbl takes 8% of every sale in royalties and 2% for the marketing fund, sets the weekly menu, and runs the app most of your orders come through. Like every Crumbl, you're closed on Sundays."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 0,
+   "equip": 0,
+   "deposit": 15600,
+   "licences": 0,
+   "smallwares": 0,
+   "preopen": 0,
+   "openingInv": 678,
+   "cellar": 0,
+   "total": 16278,
+   "sqft": 1600
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790365322766,
+  "mods": [],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "Crumbl's 2024 franchise disclosure document: the average store took nearly $1.36 million (up 17% on 2023) and made an average net profit of $251,706, about 18%; the median, restated, was $223,236 on just over $1.3 million. Royalty 8% of gross sales plus 2% to the marketing fund; total investment $816,066 to $1,442,533. The chain had 1,059 shops at the end of 2024, slowed growth to 81-87 new stores that year, added catering, cakes and pies. Menu: six permanent flavours and four that rotate every Monday. Typical prices: a single cookie $4-5, a 4-pack $14-16, a 6-pack $22-25, a 12-cookie party box $35-49. Stores are closed on Sundays. The store, its staff, the distributor's name, the rent and the local events are invented; per-item costs are estimates consistent with the 20-25% cost of goods commonly cited for the chain.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_crumbl",
+    "name": "Crumbl-approved distributor",
+    "cats": [
+     "produce",
+     "meat",
+     "seafood",
+     "dairy",
+     "pantry",
+     "luxury"
+    ],
+    "q": 58,
+    "price": 0.96,
+    "reliability": 0.975,
+    "terms": "net14",
+    "relation": 75,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "The distributor Crumbl approves for its franchisees: flour, sugar, butter, chocolate, the week's mix-ins and the pink boxes, on a set delivery day."
+   },
+   {
+    "id": "sp_local",
+    "name": "Local grocery run",
+    "cats": [
+     "dairy",
+     "produce"
+    ],
+    "q": 52,
+    "price": 1.12,
+    "reliability": 0.99,
+    "terms": "cod",
+    "relation": 50,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "When the week's flavour needs more cream cheese or berries than the truck brought, someone drives to the store."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_crumbl",
+   "meat": "sp_crumbl",
+   "seafood": "sp_crumbl",
+   "dairy": "sp_crumbl",
+   "pantry": "sp_crumbl",
+   "luxury": "sp_crumbl"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 0,
+   "dishes": [
+    {
+     "id": "lr2qulh",
+     "name": "Milk Chocolate Chip",
+     "course": "dessert",
+     "desc": "The original: a thick, warm milk chocolate chip cookie.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.62,
+     "price": 4.49,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked all day in view of the line"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Milk Chocolate Chip|The original: a thick, warm milk chocolate chip cookie."
+    },
+    {
+     "id": "fqxcwl7",
+     "name": "Pink Sugar",
+     "course": "dessert",
+     "desc": "A chilled sugar cookie under pink almond frosting.",
+     "cats": {
+      "dairy": 0.35,
+      "pantry": 0.65
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.6,
+     "price": 4.49,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Pink Sugar|A chilled sugar cookie under pink almond frosting."
+    },
+    {
+     "id": "ri9x3cq",
+     "name": "Snickerdoodle",
+     "course": "dessert",
+     "desc": "Cinnamon sugar, soft in the middle.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.58,
+     "price": 4.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Snickerdoodle|Cinnamon sugar, soft in the middle."
+    },
+    {
+     "id": "jjzhi0z",
+     "name": "Chocolate Crumb",
+     "course": "dessert",
+     "desc": "Chocolate cookie with a crushed-cookie topping.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.66,
+     "price": 4.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Chocolate Crumb|Chocolate cookie with a crushed-cookie topping."
+    },
+    {
+     "id": "64yfzzv",
+     "name": "Brownie Batter",
+     "course": "dessert",
+     "desc": "Fudgy chocolate cookie with brownie-batter frosting.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.68,
+     "price": 4.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Brownie Batter|Fudgy chocolate cookie with brownie-batter frosting."
+    },
+    {
+     "id": "vb9heb5",
+     "name": "Celebration Cake",
+     "course": "dessert",
+     "desc": "Vanilla cake cookie with buttercream and sprinkles.",
+     "cats": {
+      "dairy": 0.35,
+      "pantry": 0.65
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.66,
+     "price": 4.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Celebration Cake|Vanilla cake cookie with buttercream and sprinkles."
+    },
+    {
+     "id": "vt50lx4",
+     "name": "This week's rotating flavour #1",
+     "course": "dessert",
+     "desc": "One of four flavours that change every Monday, often a collaboration with a candy or cereal brand.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.72,
+     "price": 4.79,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "special": {
+      "type": "rotating",
+      "left": null
+     },
+     "kitJ": "This week's rotating flavour #1|One of four flavours that change every Monday, often a collaboration with a candy or cereal brand."
+    },
+    {
+     "id": "83rr5w6",
+     "name": "This week's rotating flavour #2",
+     "course": "dessert",
+     "desc": "A second rotating slot: a pie, a cake cookie or a frosted special.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.72,
+     "price": 4.79,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "special": {
+      "type": "rotating",
+      "left": null
+     },
+     "kitJ": "This week's rotating flavour #2|A second rotating slot: a pie, a cake cookie or a frosted special."
+    },
+    {
+     "id": "sungwaf",
+     "name": "This week's rotating flavour #3",
+     "course": "dessert",
+     "desc": "A third rotating slot, announced on social media every Sunday night.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.72,
+     "price": 4.79,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "special": {
+      "type": "rotating",
+      "left": null
+     },
+     "kitJ": "This week's rotating flavour #3|A third rotating slot, announced on social media every Sunday night."
+    },
+    {
+     "id": "w3xd7qv",
+     "name": "This week's rotating flavour #4",
+     "course": "dessert",
+     "desc": "The fourth rotating slot, often the one people queue for.",
+     "cats": {
+      "dairy": 0.3,
+      "pantry": 0.7
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.74,
+     "price": 4.79,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "convection",
+        "bakery"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "baked in-store"
+      }
+     ],
+     "sec": "food",
+     "special": {
+      "type": "rotating",
+      "left": null
+     },
+     "kitJ": "This week's rotating flavour #4|The fourth rotating slot, often the one people queue for."
+    },
+    {
+     "id": "pony2h2",
+     "name": "Ice-Cold Milk",
+     "course": "side",
+     "desc": "A carton of whole or chocolate milk from the cooler.",
+     "cats": {
+      "dairy": 1
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.55,
+     "price": 2.99,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "soft",
+     "kitJ": "Ice-Cold Milk|A carton of whole or chocolate milk from the cooler."
+    },
+    {
+     "id": "db4wpds",
+     "name": "Bottled Water",
+     "course": "side",
+     "desc": "A bottle of water from the cooler.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1.5,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0.3,
+     "price": 1.99,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "water",
+     "kitJ": "Bottled Water|A bottle of water from the cooler."
+    },
+    {
+     "id": "fzza70h",
+     "name": "4-Pack",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "pack",
+      "items": [
+       "lr2qulh",
+       "fqxcwl7",
+       "vt50lx4",
+       "83rr5w6"
+      ]
+     },
+     "desc": "Any four cookies in the pink box.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 15.49,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "kitJ": "4-Pack|Any four cookies in the pink box."
+    },
+    {
+     "id": "0up1g1w",
+     "name": "6-Pack",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "pack",
+      "items": [
+       "lr2qulh",
+       "fqxcwl7",
+       "ri9x3cq",
+       "vt50lx4",
+       "sungwaf",
+       "w3xd7qv"
+      ]
+     },
+     "desc": "Any six cookies.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 23.49,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "kitJ": "6-Pack|Any six cookies."
+    },
+    {
+     "id": "wylf1w4",
+     "name": "Party Box (12)",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "pack",
+      "items": [
+       "lr2qulh",
+       "fqxcwl7",
+       "ri9x3cq",
+       "jjzhi0z",
+       "64yfzzv",
+       "vb9heb5",
+       "vt50lx4",
+       "83rr5w6",
+       "sungwaf",
+       "w3xd7qv",
+       "lr2qulh",
+       "fqxcwl7"
+      ]
+     },
+     "desc": "Twelve cookies for the office, the party or the car ride home.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 42.99,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "kitJ": "Party Box (12)|Twelve cookies for the office, the party or the car ride home."
+    }
+   ],
+   "coherence": 55,
+   "identity": "",
+   "notes": "",
+   "creBonus": 0,
+   "pairing": false,
+   "pairingPrice": 0,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "mjrwd5c",
+    "role": "maitre",
+    "name": "Kayla Jensen",
+    "skill": 60,
+    "years": 3,
+    "salary": 46000,
+    "trait": "steady",
+    "bio": "General manager. Opened the store with you, schedules around the Monday flavour drop and the Saturday party-box orders, and answers every one-star review herself.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 32,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "18pj0v7",
+    "role": "pastry",
+    "name": "Tanner Olsen",
+    "skill": 58,
+    "years": 2,
+    "salary": 38500,
+    "trait": "perfectionist",
+    "bio": "Baking lead. Weighs every scoop, pulls a tray that's thirty seconds over, and knows which rotating flavour will sell out by Thursday.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 32,
+    "away": false,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 769519633,
+  "cellar": {
+   "value": 0,
+   "target": 0,
+   "ref": 1,
+   "markup": 4.2,
+   "standing": 12,
+   "rare": []
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "franchise": {
+   "brand": "Crumbl",
+   "royalty": 0.08,
+   "adFund": 0.02,
+   "rentPct": 0,
+   "techFee": 0,
+   "rules": "Crumbl sets the menu, the weekly rotation, the recipes, the pink box and the app; franchisees pay 8% of gross sales in royalties and 2% to the marketing fund, and must bake in view of the customer."
+  },
+  "policies": [],
+  "slotName": "Crumbl Lehi (starting save)"
+ }
+}

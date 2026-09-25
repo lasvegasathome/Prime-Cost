@@ -1,0 +1,1448 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T20:34:36.055Z",
+ "state": {
+  "v": 2,
+  "seed": 311645830,
+  "ownerName": "You",
+  "bizName": "Robuchon au Dôme",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 9,
+  "year": 1,
+  "cash": 1024,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "Robuchon au Dôme",
+   "blurb": "Seventy seats in the dome at the top of the Grand Lisboa, under a chandelier of 131,500 Swarovski crystals, with the largest wine list in Asia and three Michelin stars every year since 2009.",
+   "check": 640,
+   "foodPct": 0.3,
+   "seats": 70,
+   "truckCap": 210,
+   "turns": 0.95,
+   "maxTurns": 1.9,
+   "elast": 0.35,
+   "hrsPerCover": 12,
+   "alcohol": 0.42,
+   "sqftSeat": 70,
+   "buildSqft": 0,
+   "equip": 0,
+   "chef": 0,
+   "gm": 0,
+   "counter": false,
+   "truck": false,
+   "items": 0,
+   "drinkAttach": 0,
+   "drinkRef": 0
+  },
+  "customMarket": {
+   "name": "Grand Lisboa, Macau",
+   "blurb": "Your own market.",
+   "rentYr": 0,
+   "wage": 15,
+   "tipCredit": 0,
+   "traffic": 0.294,
+   "comp": 1.3,
+   "checkMult": 1,
+   "taxRate": 0,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "You're the general manager of Robuchon au Dôme, at the top of SJM's Grand Lisboa in Macau. Joël Robuchon, the most-starred chef in the world, opened it; he died in 2018, and the kitchen keeps his repertoire alive under executive chef Julien Tongourian. SJM owns the hotel, the restaurant and a cellar of more than 17,000 labels; you run the room, the kitchen's budget and the three stars, and you answer to SJM's food and beverage leadership.",
+  "creditLine": {
+   "limit": 40000,
+   "drawn": 0,
+   "rate": 0.145
+  },
+  "locations": [
+   {
+    "id": "rr4mvdo",
+    "name": "Robuchon au Dôme",
+    "market": "custom",
+    "seats": 70,
+    "sqft": 4900,
+    "env": "megaresort",
+    "envLive": true,
+    "rent": 55000,
+    "cam": 2858,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 95,
+    "awareness": 88,
+    "morale": 72,
+    "skill": 88,
+    "equip": 92,
+    "health": 96,
+    "monthsOpen": 210,
+    "attention": 70,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "features": [
+     {
+      "id": "f6eunqv8",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The crystal chandelier",
+      "pitch": "More than 131,500 Swarovski crystals cascading from the centre of the dome.",
+      "prestige": 5
+     },
+     {
+      "id": "fg2ihhwc",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The view from the dome",
+      "pitch": "From the 43rd floor of the Grand Lisboa, looking over the peninsula and the Pearl River Delta.",
+      "prestige": 4
+     },
+     {
+      "id": "fkiv31ld",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The Grand Lisboa wine collection",
+      "pitch": "More than 17,000 labels, much of it displayed along the entrance corridor; a Wine Spectator Grand Award every year since 2005.",
+      "bev": 0.2,
+      "prestige": 4
+     }
+    ],
+    "ambBase": 35,
+    "foh": 50,
+    "closedWeeks": 0,
+    "stars": 3,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "kit": [
+     {
+      "id": "kex90e5q",
+      "type": "range",
+      "tier": 3,
+      "model": "Molteni custom French suite",
+      "price": 157500,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kbo9uitd",
+      "type": "hood",
+      "tier": 3,
+      "model": "Halton Capture Jet hood with UV and integrated lighting",
+      "price": 33300,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kic01fek",
+      "type": "vent",
+      "tier": 3,
+      "model": "Demand-controlled ventilation with heat recovery",
+      "price": 140000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kcj4b03w",
+      "type": "suppression",
+      "tier": 3,
+      "model": "Hybrid water-mist & wet-chemical system with remote monitoring",
+      "price": 24500,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kf2ody5c",
+      "type": "extinguisher",
+      "tier": 3,
+      "model": "Full set with fire blankets, wall cabinets and a staff-training contract",
+      "price": 4000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmbaityn",
+      "type": "sprinkler",
+      "tier": 3,
+      "model": "Quick-response sprinklers, monitored alarm & dedicated fire pump",
+      "price": 52500,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ke9prlpn",
+      "type": "greasetrap",
+      "tier": 3,
+      "model": "Automatic grease removal unit with an interceptor, installed",
+      "price": 26000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kf8rwczi",
+      "type": "refrig",
+      "tier": 3,
+      "model": "Custom walk-ins · Traulsen Spec-Line",
+      "price": 56900,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k7ztgvk4",
+      "type": "dish",
+      "tier": 2,
+      "model": "Hobart CL44e conveyor",
+      "price": 42000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kdmg533u",
+      "type": "combi",
+      "tier": 3,
+      "model": "Rational iCombi Pro 20-full, pair",
+      "price": 120000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kcxo8b7k",
+      "type": "salamander",
+      "tier": 3,
+      "model": "Montague Legend salamander pair",
+      "price": 14000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kf1cc0mz",
+      "type": "sousvide",
+      "tier": 2,
+      "model": "PolyScience circulators ×12 with chamber sealer",
+      "price": 16000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kh6wm1xy",
+      "type": "pacojet",
+      "tier": 2,
+      "model": "Pacojet 4",
+      "price": 8000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "klum4n32",
+      "type": "blast",
+      "tier": 2,
+      "model": "Irinox MultiFresh",
+      "price": 22000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kv9xjq00",
+      "type": "icecream",
+      "tier": 2,
+      "model": "Carpigiani Labotronic",
+      "price": 28000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k5dfobsu",
+      "type": "bakery",
+      "tier": 2,
+      "model": "Bongard deck oven & proofer",
+      "price": 48000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kf55cdtm",
+      "type": "mixer",
+      "tier": 2,
+      "model": "Hobart Legacy 60-qt & Rondo sheeter",
+      "price": 28000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k6r1e35p",
+      "type": "chocolate",
+      "tier": 1,
+      "model": "Mol d'Art tempering melter",
+      "price": 4000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kiu4s91k",
+      "type": "plancha",
+      "tier": 2,
+      "model": "Evo commercial plancha",
+      "price": 9000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kw3bq61x",
+      "type": "winestore",
+      "tier": 3,
+      "model": "The Grand Lisboa cellar",
+      "price": 120000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9vy2dtj",
+      "type": "glasswasher",
+      "tier": 2,
+      "model": "Hobart LXeH undercounter",
+      "price": 9000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1kt5b92",
+      "type": "espresso",
+      "tier": 2,
+      "model": "La Marzocco Strada",
+      "price": 26000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k6v4fibg",
+      "type": "ice",
+      "tier": 2,
+      "model": "Hoshizaki KM series",
+      "price": 7000,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kofjkhwd",
+      "type": "gueridon",
+      "tier": 3,
+      "model": "The bread, cheese and dessert trolleys",
+      "price": 60000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k8tf04dm",
+      "type": "pos",
+      "tier": 2,
+      "model": "POS with handheld order tablets",
+      "price": 8000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "labor": -0.015,
+       "cap": 0.01,
+       "fee": 150
+      }
+     },
+     {
+      "id": "kad10tgc",
+      "type": "menus",
+      "tier": 3,
+      "model": "Leather-bound menus and a bound wine list",
+      "price": 9000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "pers": 2
+      }
+     },
+     {
+      "id": "kanooooo",
+      "type": "hoststand",
+      "tier": 3,
+      "model": "Custom host stand, guest CRM & a reservations desk",
+      "price": 15000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "cap": 0.015,
+       "pers": 2,
+       "fee": 1200
+      }
+     },
+     {
+      "id": "kfixwq0s",
+      "type": "sound",
+      "tier": 3,
+      "model": "A grand piano, played at lunch and dinner",
+      "price": 60000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k7a6cj87",
+      "type": "seating",
+      "tier": 3,
+      "model": "Custom upholstered dining chairs and hand-finished stone tables",
+      "price": 131300,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9y59sk4",
+      "type": "tableware",
+      "tier": 3,
+      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
+      "price": 52500,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmsuph36",
+      "type": "linens",
+      "tier": 3,
+      "model": "Pressed damask linens, changed between every seating",
+      "price": 6000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ksgr9bvn",
+      "type": "waterservice",
+      "tier": 3,
+      "model": "Filtered still & sparkling in the restaurant's own bottles",
+      "price": 12000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kkrzq319",
+      "type": "smallwares",
+      "tier": 3,
+      "model": "A complete set with wireless temperature logging for HACCP",
+      "price": 28000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3nh0run",
+      "type": "watertreat",
+      "tier": 3,
+      "model": "Whole-building softening with reverse osmosis",
+      "price": 12000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k4l6omed",
+      "type": "restroom",
+      "tier": 3,
+      "model": "Designer restrooms",
+      "price": 96300,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k2qhlktn",
+      "type": "hvac",
+      "tier": 3,
+      "model": "Variable-refrigerant-flow system with energy recovery",
+      "price": 78800,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kiqd13d1",
+      "type": "safe",
+      "tier": 1,
+      "model": "Drop safe",
+      "price": 1200,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kq223v2e",
+      "type": "cameras",
+      "tier": 3,
+      "model": "The casino hotel's surveillance covers the floor",
+      "price": 9000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "hours": {
+     "days": [
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": false
+     }
+    },
+    "setting": {
+     "custom": true,
+     "name": "The dome of the Grand Lisboa, Macau",
+     "desc": "The golden lotus-shaped tower at the heart of the Macau peninsula. Mainland collectors on weekend trips, high rollers sent up from the gaming floors, Hong Kong families marking an anniversary, and wine pilgrims who come for the list as much as the food.",
+     "check": 1,
+     "traffic": 1.4,
+     "season": [
+      1,
+      1.12,
+      0.95,
+      0.95,
+      1.02,
+      0.9,
+      0.92,
+      0.95,
+      0.98,
+      1.12,
+      1.05,
+      1.08
+     ],
+     "seg": {
+      "regulars": 4,
+      "locals": -4,
+      "tourists": 16,
+      "business": 6,
+      "occasion": 12
+     },
+     "crime": 8,
+     "ev": [
+      {
+       "p": 0.3,
+       "m": [
+        9
+       ],
+       "tone": "good",
+       "text": "National Day Golden Week: the city is full, and so is the dome.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Golden Week",
+         "value": 0.06,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.25,
+       "m": [
+        10
+       ],
+       "tone": "good",
+       "text": "Grand Prix weekend: the street circuit brings the fans and the high rollers.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Macau Grand Prix",
+         "value": 0.04,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.2,
+       "m": [
+        7,
+        8
+       ],
+       "tone": "warn",
+       "text": "A typhoon signal 8 closed the ferries and the bridge for a day and a half.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Typhoon",
+         "value": -0.03,
+         "months": 1
+        }
+       ]
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "mkt": {
+     "social": 0,
+     "search": 0,
+     "pr": 0,
+     "email": 0
+    },
+    "kitV3": true,
+    "kitDedup": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "full",
+   "marketing": 1800,
+   "draw": 2500,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": true,
+   "brunch": false,
+   "delivery": false,
+   "catering": false
+  },
+  "admin": 30,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Oct Y1",
+    "tone": "good",
+    "text": "You're the general manager of Robuchon au Dôme, at the top of SJM's Grand Lisboa in Macau. Joël Robuchon, the most-starred chef in the world, opened it; he died in 2018, and the kitchen keeps his repertoire alive under executive chef Julien Tongourian. SJM owns the hotel, the restaurant and a cellar of more than 17,000 labels; you run the room, the kitchen's budget and the three stars, and you answer to SJM's food and beverage leadership."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 0,
+   "equip": 0,
+   "deposit": 165000,
+   "licences": 0,
+   "smallwares": 0,
+   "preopen": 0,
+   "openingInv": 206976,
+   "cellar": 527000,
+   "total": 898976,
+   "sqft": 4900
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790368476049,
+  "mods": [],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "Robuchon au Dôme is in the dome on the 43rd floor of SJM's Grand Lisboa hotel in Macau, under a chandelier of more than 131,500 Swarovski crystals. It has held three Michelin stars every year from 2009 to 2026, five stars from Forbes Travel Guide and three diamonds from the Black Pearl guide, and has won Wine Spectator's Grand Award every year since 2005 for a list of more than 17,000 labels, the largest in Asia. About 70 seats; lunch 12:00-2:30 and dinner 6:30-10:30, closed Tuesday and Wednesday; the August 2026 menus: at lunch, Menu Découverte MOP 998, Plaisir 1,398 and Gourmet 1,898, with a sommelier's selection of two, three or four 90ml glasses at MOP 588, 688 and 888; at dinner, the summer Menu de Saison (L'Été) at MOP 3,388 and the Menu Signature of Robuchon's emblematic dishes at MOP 3,888, both for the whole table only, and an à la carte from MOP 288 (cheese, desserts) to MOP 3,488 (Bresse chicken for two); all subject to a 10% service charge. Breads are baked in house. The wine list's foreword says wines are priced slightly above cost. The executive chef is Julien Tongourian; Joël Robuchon, who opened it, died in 2018. Most restaurants in Macau add a 10% service charge; restaurants have been exempt from Macau's 5% tourism tax since 2002; the pataca is pegged to the Hong Kong dollar at about 8.08 to the US dollar. The single tasting price here is the Menu de Saison at MOP 3,388 and its courses are that menu; lunch guests really pay less. The pairing price is the four-glass lunch selection, since the dinner pairing price isn't published. The menu, prices, hours and chef are from the restaurant's own published menus and page (August 2026); staff names below the executive chef, revenue, rent and the local events are estimates or invented.",
+   "living": true,
+   "guide": true,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_sjm",
+    "name": "SJM Resorts central purchasing",
+    "cats": [
+     "produce",
+     "meat",
+     "dairy",
+     "pantry"
+    ],
+    "q": 70,
+    "price": 1.02,
+    "reliability": 0.98,
+    "terms": "net30",
+    "relation": 85,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "The Grand Lisboa's purchasing and receiving, shared with the hotel's other restaurants."
+   },
+   {
+    "id": "sp_air",
+    "name": "Air-freighted French produce",
+    "cats": [
+     "produce",
+     "dairy",
+     "luxury"
+    ],
+    "q": 90,
+    "price": 1.35,
+    "reliability": 0.95,
+    "terms": "net30",
+    "relation": 80,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Rungis produce, cheese, butter and truffles flown in several times a week via Hong Kong."
+   },
+   {
+    "id": "sp_sea",
+    "name": "Imported seafood specialist",
+    "cats": [
+     "seafood",
+     "luxury"
+    ],
+    "q": 88,
+    "price": 1.3,
+    "reliability": 0.95,
+    "terms": "net30",
+    "relation": 78,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Brittany langoustine, blue lobster, sea urchin and caviar, cleared through customs the same day."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_sjm",
+   "meat": "sp_sjm",
+   "seafood": "sp_sea",
+   "dairy": "sp_sjm",
+   "pantry": "sp_sjm",
+   "luxury": "sp_air"
+  },
+  "menu": {
+   "format": "tasting",
+   "tastingPrice": 419.31,
+   "dishes": [
+    {
+     "id": "wjbwztp",
+     "name": "La Gariguette",
+     "course": "snack",
+     "desc": "Pour commencer: a strawberry gazpacho with frozen ricotta and pistachio flakes.",
+     "cats": {
+      "produce": 0.6,
+      "dairy": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 3.5,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "La Gariguette|Pour commencer: a strawberry gazpacho with frozen ricotta and pistachio flakes."
+    },
+    {
+     "id": "k6e4w0v",
+     "name": "Le Saumon Fumé",
+     "course": "starter",
+     "desc": "Smoked salmon en frivolité with a light horseradish cream and caviar de Sologne.",
+     "cats": {
+      "seafood": 0.7,
+      "dairy": 0.15,
+      "luxury": 0.15
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 16,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Le Saumon Fumé|Smoked salmon en frivolité with a light horseradish cream and caviar de Sologne."
+    },
+    {
+     "id": "3tcln2v",
+     "name": "La Langoustine",
+     "course": "starter",
+     "desc": "Langoustine ravioli with black truffle and braised green Savoy cabbage.",
+     "cats": {
+      "seafood": 0.7,
+      "luxury": 0.2,
+      "produce": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 16,
+     "price": 0,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "La Langoustine|Langoustine ravioli with black truffle and braised green Savoy cabbage."
+    },
+    {
+     "id": "5xhn3wr",
+     "name": "Les Cuisses de Grenouille",
+     "course": "starter",
+     "desc": "Pan-fried frog legs with a parsley and shallot cream and a persillade of matsutake.",
+     "cats": {
+      "meat": 0.6,
+      "produce": 0.3,
+      "dairy": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 9,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Les Cuisses de Grenouille|Pan-fried frog legs with a parsley and shallot cream and a persillade of matsutake."
+    },
+    {
+     "id": "aazsbt9",
+     "name": "Le Homard Bleu",
+     "course": "fish",
+     "desc": "Blue lobster roasted with salted butter, stewed green peas and a spicy bisque in the style of bouillabaisse.",
+     "cats": {
+      "seafood": 0.8,
+      "produce": 0.1,
+      "dairy": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 26,
+     "price": 0,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Le Homard Bleu|Blue lobster roasted with salted butter, stewed green peas and a spicy bisque in the style of bouillabaisse."
+    },
+    {
+     "id": "rbn4b4o",
+     "name": "Le Black Cod",
+     "course": "fish",
+     "desc": "Black cod caramelised with miso, with a pearly shellfish butter jus.",
+     "cats": {
+      "seafood": 0.7,
+      "pantry": 0.2,
+      "dairy": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 12,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Le Black Cod|Black cod caramelised with miso, with a pearly shellfish butter jus."
+    },
+    {
+     "id": "4mn5oj0",
+     "name": "Le Pigeon de Bretagne",
+     "course": "meat",
+     "desc": "Brittany pigeon and foie gras en duo, steamed with farm bacon.",
+     "cats": {
+      "meat": 0.6,
+      "luxury": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 17,
+     "price": 0,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Le Pigeon de Bretagne|Brittany pigeon and foie gras en duo, steamed with farm bacon."
+    },
+    {
+     "id": "m4txz57",
+     "name": "La Crêpe Soufflée",
+     "course": "dessert",
+     "desc": "The traditional soufflé crêpe with lime and a fromage blanc sorbet.",
+     "cats": {
+      "dairy": 0.5,
+      "pantry": 0.4,
+      "produce": 0.1
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 4,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "La Crêpe Soufflée|The traditional soufflé crêpe with lime and a fromage blanc sorbet."
+    },
+    {
+     "id": "4dgz7d3",
+     "name": "La Symphonie des Douceurs",
+     "course": "dessert",
+     "desc": "The dessert trolley: the guest chooses.",
+     "cats": {
+      "pantry": 0.6,
+      "dairy": 0.4
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 6,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "La Symphonie des Douceurs|The dessert trolley: the guest chooses."
+    },
+    {
+     "id": "psvztzo",
+     "name": "Le Café ou le Thé",
+     "course": "mignardise",
+     "desc": "Coffee or tea with mignardises.",
+     "cats": {
+      "pantry": 0.8,
+      "dairy": 0.2
+     },
+     "grade": 4,
+     "technique": 4.5,
+     "presentation": 5,
+     "creativity": 82,
+     "cost": 3.5,
+     "price": 0,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Le Café ou le Thé|Coffee or tea with mignardises."
+    }
+   ],
+   "coherence": 97,
+   "identity": "Joël Robuchon's French cooking carried on by his disciples: the summer Menu de Saison of caviar, langoustine ravioli with truffle, blue lobster, pigeon with foie gras, the soufflé crêpe and the dessert trolley.",
+   "notes": "",
+   "creBonus": 0,
+   "pairing": true,
+   "pairingPrice": 109.9,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "t60u37t",
+    "role": "chef",
+    "name": "Mathieu Garnier",
+    "skill": 90,
+    "years": 19,
+    "salary": 260000,
+    "trait": "perfectionist",
+    "bio": "Chef de cuisine under the executive chef. Trained in Robuchon's kitchens in Paris and Tokyo, and still weighs the butter for the purée himself.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "4mymlkb",
+    "role": "sous",
+    "name": "Kenji Morita",
+    "skill": 82,
+    "years": 11,
+    "salary": 140000,
+    "trait": "steady",
+    "bio": "Sous chef who runs the pass on a full Saturday and the langoustine station the rest of the week.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "cld1peh",
+    "role": "pastry",
+    "name": "Claire Dubois",
+    "skill": 86,
+    "years": 13,
+    "salary": 150000,
+    "trait": "perfectionist",
+    "bio": "Pastry chef in charge of the dessert trolley, the sugar work and the bread trolley.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "b7adkt1",
+    "role": "somm",
+    "name": "Wong Ka-lok",
+    "skill": 88,
+    "years": 16,
+    "salary": 170000,
+    "trait": "connected",
+    "bio": "Head sommelier for a list of more than 17,000 labels; knows which mainland collectors will want the 1961s before they sit down.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "y8fe44i",
+    "role": "maitre",
+    "name": "Sophie Laurent",
+    "skill": 86,
+    "years": 14,
+    "salary": 160000,
+    "trait": "showman",
+    "bio": "Restaurant manager: runs a room of seventy seats and nearly as many staff, in four languages.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 55,
+  "fohTrain": 50,
+  "capex": 0,
+  "rngState": 4087507250,
+  "cellar": {
+   "value": 9000000,
+   "target": 9000000,
+   "ref": 9000000,
+   "markup": 1.8,
+   "standing": 95,
+   "rare": []
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "franchise": null,
+  "ownership": {
+   "type": "management",
+   "owner": "SJM Resorts",
+   "baseFee": 0.01,
+   "incentiveFee": 0.03,
+   "capexLimit": 120000,
+   "reserveFloor": 1500000,
+   "budget": 0,
+   "yearEbitda": 0,
+   "earned": 0,
+   "yearFees": 0,
+   "distributed": 0,
+   "funded": 0,
+   "misses": 0,
+   "liquidity": 1000000000,
+   "profile": {
+    "name": "SJM Resorts",
+    "kind": "Macau casino and resort operator, the company Stanley Ho built",
+    "desc": "Owns and runs the Grand Lisboa and Grand Lisboa Palace; Robuchon au Dôme is the jewel of its restaurants.",
+    "personality": "Treats the restaurant as a flagship rather than a profit centre: the stars and the wine awards matter more than the margin, but the budget is watched.",
+    "rep": {
+     "name": "Vincent Leong",
+     "title": "Vice president, food and beverage",
+     "style": "Comes up for lunch once a month with a guest, asks about the Michelin inspectors before the numbers, and wants to know which high rollers dined last week."
+    },
+    "competence": 85,
+    "netWorth": 6000000000,
+    "liquidity": 1000000000,
+    "leverage": 0.6,
+    "patience": 75,
+    "involvement": 55,
+    "risk": 25,
+    "terms": {
+     "baseFee": 0.01,
+     "incentiveFee": 0.03,
+     "capexLimit": 120000,
+     "budgetGrowth": 0.03,
+     "tolerance": 0.9,
+     "missesAllowed": 2,
+     "reserveMonths": 1
+    },
+    "events": [
+     {
+      "p": 0.1,
+      "m": null,
+      "tone": "good",
+      "text": "A VIP gaming room booked the whole dome for a private dinner, and the cellar sold three bottles of 1982 Pétrus.",
+      "fx": [
+       {
+        "op": "mod",
+        "kind": "demand",
+        "label": "VIP private dinner",
+        "value": 0.05,
+        "months": 1
+       }
+      ]
+     },
+     {
+      "p": 0.05,
+      "m": null,
+      "tone": "warn",
+      "text": "Mainland visitor numbers dipped after new travel rules, and the lunch sets went half empty for a month.",
+      "fx": [
+       {
+        "op": "mod",
+        "kind": "demand",
+        "label": "Fewer mainland visitors",
+        "value": -0.05,
+        "months": 2
+       }
+      ]
+     }
+    ],
+    "source": ""
+   }
+  },
+  "policies": [
+   {
+    "id": "polsuxq9x9",
+    "key": "health",
+    "name": "Medical cover for all staff",
+    "blurb": "SJM's staff medical scheme, including non-resident workers.",
+    "monthly": 120,
+    "morale": 2,
+    "quit": -0.12,
+    "stress": -1,
+    "loyalty": 0.4,
+    "on": true
+   },
+   {
+    "id": "pol8ecsw5w",
+    "key": "meal",
+    "name": "Staff canteen",
+    "blurb": "Meals in the Grand Lisboa's staff canteen every shift.",
+    "monthly": 40,
+    "morale": 2,
+    "quit": -0.06,
+    "stress": 0,
+    "loyalty": 0.2,
+    "on": true
+   }
+  ],
+  "tipPolicy": "service",
+  "license": {
+   "type": "full"
+  },
+  "intl": {
+   "home": "Macau",
+   "fx": {},
+   "countries": {
+    "Macau": {
+     "name": "Macau",
+     "currency": {
+      "code": "MOP",
+      "symbol": "MOP",
+      "perUSD": 8.08,
+      "decimals": 0
+     },
+     "payrollBurden": 0.04,
+     "cardFee": 0.019,
+     "cashShare": 0.08,
+     "tipping": {
+      "norm": "service charge",
+      "tipCredit": 0
+     },
+     "salesTax": {
+      "rate": 0,
+      "included": true
+     },
+     "alcohol": {
+      "status": "allowed",
+      "note": "Restaurants and bars serve alcohol under their Municipal Affairs Bureau licence; the casino hotels hold their own."
+     },
+     "inspections": {
+      "system": "The Municipal Affairs Bureau (IAM) licenses restaurants and its food safety centre inspects them.",
+      "public": false
+     },
+     "mealTimes": "Lunch from about 12:30pm; dinner from 7pm, with the casino hotels busiest late into the night and on holiday weekends.",
+     "customs": "Most restaurants add a 10% service charge, and tipping beyond it is rare. Much of the clientele is mainland Chinese, arriving for the weekend or a holiday; guests entertain, share and order big, and the wine list is a status symbol. UnionPay, Alipay and WeChat Pay are expected as well as cards.",
+     "labour": "Labour law sets working hours, rest days and severance by years of service. Many hospitality staff are non-resident workers hired under government quotas, and resident workers must make up a set share.",
+     "holidays": [
+      {
+       "month": 1,
+       "name": "Chinese New Year",
+       "note": "The busiest weeks of the year: mainland visitors fill every hotel."
+      },
+      {
+       "month": 9,
+       "name": "National Day Golden Week",
+       "note": "A week-long mainland holiday; the city is full."
+      },
+      {
+       "month": 10,
+       "name": "Macau Grand Prix",
+       "note": "The street circuit brings a weekend of high rollers and fans."
+      },
+      {
+       "month": 8,
+       "name": "Mid-Autumn Festival",
+       "note": "Family dinners and mooncakes; banquets book out."
+      },
+      {
+       "month": 11,
+       "name": "Christmas and year end",
+       "note": "Set menus and New Year's Eve at full price."
+      }
+     ],
+     "regionTag": "other",
+     "builtIn": false,
+     "source": "Written by hand for the Robuchon au Dôme preset."
+    }
+   }
+  }
+ }
+}
