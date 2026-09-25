@@ -818,7 +818,10 @@ function applyCashflow(S,R){
 
   // purchases: you buy inventory, you don't buy "cost of goods sold"
   const foodBuy = pl.foodCogs*rnd(1.0,1.06);
-  const restock = Math.max(0, S.cellar.target - S.cellar.value);   // the cellar is cash sitting on a shelf
+  const capB = cellarCapacity()*48;
+  const restock = Math.max(0, Math.min(S.cellar.target, capB) - S.cellar.value);   // the cellar is cash sitting on a shelf, and only as much shelf as you have
+  if(S.cellar.value>capB*1.02){ const lost=(S.cellar.value-capB)*.06; S.cellar.value-=lost;
+    R.events.push({tone:"bad",text:`About ${Math.round((S.cellar.value-capB)/48).toLocaleString()} bottles are stacked outside proper storage. Heat and light spoiled roughly ${money(lost)} of wine this month.`}); }
   S.cellar.value += restock;
   S.cellar.standing = clamp(S.cellar.standing + Math.min(3, restock/3000) + .3 - (S.flags.distress?4:0), 0, 100);
   const purchases = foodBuy + restock;
@@ -931,6 +934,7 @@ function rollEvents(S,R){
     if(Math.random()<0.30) continue;
     const text=typeof chosen.text==="function"?chosen.text(S):chosen.text;
     const detail=chosen.apply(S);
+    for(const l of S.locations){ l.rep=clamp(l.rep,3,99); l.awareness=clamp(l.awareness,2,99); l.morale=clamp(l.morale,3,99); l.health=clamp(l.health,10,100); }
     R.events.push({tone:chosen.tone,text,detail:typeof detail==="string"?detail:""});
   }
 }
@@ -3468,7 +3472,20 @@ function prestigeMult(loc){
 }
 function relPrice(st,loc){ const ms=menuStats(); return clamp((ms.valueCheck||ms.foodCheck)*st.dials.price/(refFoodCheck(loc)*prestigeMult(loc)),.3,4); }
 
-function cellarCapacity(){ const l=S.locations[0]; return Math.round((l?Math.max(l.seats,12):20)*30 + featSum(l,"cellar")); }
+// bottles each tier of wine storage holds: EuroCave-size cabinets, a cooled racking room, a glass-walled wine room
+const WINE_BOTTLES=[0,200,2000,6000];
+function wineStoreBottles(q){ return q.bottles||WINE_BOTTLES[q.tier]||0; }
+function wineStorage(l){ if(!l) return 60;
+  let v=Math.max(60,(l.seats||0)*4);   // a cool corner and the back bar hold a few cases whatever you own
+  for(const q of Array.isArray(l.kit)?l.kit:[]) if(q.type==="winestore"&&!q.broken) v+=wineStoreBottles(q)*clamp(.55+.45*(q.cond||0)/100,.55,1);
+  return v; }
+function cellarCapacity(){ const l=S.locations[0]; cellarMigrate(l); return Math.round(wineStorage(l) + featSum(l,"cellar")); }
+// saves from before storage mattered keep the wine they already hold: the space it sits in is written into the records
+function cellarMigrate(l){ if(!l||!S.cellar||S.cellar.v2) return; S.cellar.v2=1;
+  const need=S.cellar.value/48*1.05, have=wineStorage(l)+featSum(l,"cellar"); if(need<=have) return;
+  const ws=(Array.isArray(l.kit)?l.kit:[]).filter(q=>q.type==="winestore").sort((a,b)=>wineStoreBottles(b)-wineStoreBottles(a))[0];
+  if(ws) ws.bottles=Math.ceil((wineStoreBottles(ws)+(need-have)/clamp(.55+.45*(ws.cond||0)/100,.55,1))/100)*100;
+  else { l.features=l.features||[]; l.features.push({id:"f"+uid(),name:"Existing wine storage",pitch:"The racks and cool rooms the wine already sits in.",when:"before you took over",weeks:0,original:true,cost:0,cellar:Math.ceil((need-have)/100)*100}); } }
 function listScore(){
   const c=S.cellar, ref=Math.max(c.ref||1,1);
   const cap=cellarCapacity()*48;
@@ -3582,7 +3599,7 @@ function crewTick(loc,R){
   if(quits>=Math.max(4,need*.2)) R.events.push({tone:"warn",text:`${quits} hourly staff quit at ${loc.name} this month. Replacing and training them cost ${money(cost)}, and the new people are still learning.`});
 }
 /* salaried pay tracks local wages, less steeply than hourly pay does */
-function localPay(loc){ const M=MARKETS[(loc||(S&&S.locations[0])||{}).market]||{}; return clamp((M.wage||17)/17,.7,1.35); }
+function localPay(loc){ const M=MARKETS[(loc||(S&&S.locations[0])||{}).market]||{}; return clamp(Math.pow((M.wage||17)/17,.6),.7,1.25); }
 function teamPayroll(){ return S.team.reduce((a,m)=>a+m.salary,0)+(S.office||[]).reduce((a,o)=>a+o.salary,0); }
 function marketSalary(role,skill){
   // what this kind of restaurant pays: a diner's cook isn't priced like a starred kitchen's
@@ -3590,7 +3607,8 @@ function marketSalary(role,skill){
   const C=CONCEPTS[S.concept]||{}; const raw=C.chef>0? C.chef/ROLES.chef.base : .7;
   const scale=role==="chef"? Math.min(2.2,raw) : clamp(1+(raw-1)*.35,.7,1.35);
   const stars=S.locations[0]?S.locations[0].stars||0:0;   // a star on your jacket is worth money elsewhere
-  return Math.round(ROLES[role].base*scale*localPay()*(0.65+skill*0.007)/(0.65+60*0.007)*(1+.12*stars)/500)*500;
+  const lp=(role==="chef"&&C.chef>0&&S.concept==="custom")?1:localPay();   // a custom concept's chef salary was set for this market already
+  return Math.round(ROLES[role].base*scale*lp*(0.65+skill*0.007)/(0.65+60*0.007)*(1+.12*stars)/500)*500;
 }
 function staffAt(loc){ const l0=S.locations[0]; loc=loc||l0; return S.team.filter(t=>(t.locId||(l0&&l0.id))===loc.id); }
 function teamTargets(loc){
@@ -4915,7 +4933,7 @@ const KIT_FLAVOR={
   chocolate:["A secondhand melter.","A tempering melter for bonbons and décor.","A continuous tempering machine that holds temperature for hours.","A tempering machine with an enrobing belt for serious chocolate programs."],
   rotisserie:["A used rotisserie, missing one spit.","A countertop rotisserie for chickens.","A French flame rotisserie that turns birds and joints in front of real fire.","A custom rotisserie centrepiece, visible from the dining room."],
   bar:["A used back bar with a kegerator.","A draft system and underbar stations built to NSF standards.","A custom back bar with glass washers and speed rails where bartenders need them.","A bespoke bar built around how your bartenders work."],
-  winestore:["Wine stacked in a cool corner.","EuroCave cabinets that hold wine at cellar temperature.","Custom racking with dedicated cooling and humidity control.","A glass-walled wine room guests can see into, which lifts both the list and the room."],
+  winestore:["Wine stacked in a cool corner.","EuroCave cabinets that hold wine at cellar temperature, about 200 bottles each.","Custom racking with dedicated cooling and humidity control, room for about 2,000 bottles.","A glass-walled wine room guests can see into, about 6,000 bottles, which lifts both the list and the room."],
   generator:["A used generator, loud and thirsty.","An inverter generator quiet enough for most sites.","A commercial generator for full service.","Generator plus lithium battery bank: silent operation and allowed almost anywhere."],
   softserve:["A used machine with worn seals.","A soft-serve machine that freezes and dispenses from mix.","Heat-treatment models that sanitize overnight, so they aren't broken down daily.","Twin-twist machines built for a line at the counter all day."],
   induction:["A single ex-demo hob with a scratched glass top and a fan that's started to rattle.","Two countertop hobs: heat that starts and stops the instant you move the pan, no flame and a cooler station.","Coils hidden under a stone counter, so the surface itself becomes the hob and the pass looks empty until a pan lands.","A French-built induction island with zoned plates, holding shelves and no open flame anywhere: silent, precise and very cool to stand at."],
@@ -5803,8 +5821,10 @@ function otherGuides(R){
       if(lvl>=0){
         const name=g.levels[lvl][0], up=!prev||lvl>prev.level;
         loc.awards[g.key]={level:lvl,name,guide:guideName(g),when:`${MONTHS[R.calMonth]} Y${R.year}`,score:Math.round(sc),retired:g.retireAt!=null&&lvl>=g.retireAt};
-        const w=g.p*(lvl+1);
-        if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${g.name}: ${name}`.slice(0,48),kind:"demand",value:Math.round(w*.012*100)/100,left:12,loc:S.locations.length<2?-1:li,src:"guide"});
+        const w=g.p*(lvl+1), mLoc=S.locations.length<2?-1:li, pre=`${g.name}: `.slice(0,48);
+        S.mods=S.mods.filter(m=>!(m.src==="guide"&&m.kind==="demand"&&m.loc===mLoc&&m.label.startsWith(pre)));   // a renewal or a step up replaces the old bonus
+        const fame=clamp(1.3-loc.awareness/100,.3,1);
+        if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${g.name}: ${name}`.slice(0,48),kind:"demand",value:Math.round(w*.012*fame*100)/100,left:12,loc:mLoc,src:"guide"});
         if(up){ loc.awareness=clamp(loc.awareness+w*1.2,2,99); loc.rep=clamp(loc.rep+w*.4,3,99);
           if(lvl===g.levels.length-1&&g.levels.length>1&&S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${name} cheque lift`.slice(0,48),kind:"check",value:Math.round(g.p*.012*100)/100,left:12,loc:S.locations.length<2?-1:li,src:"guide"}); }
         R.events.push({tone:"good",text:`${ucf(guideName(g))}: ${loc.name} ${up?(prev?`moved up to ${name}`:g.levels.length===1?"made the list":`earned ${name}`):`kept ${name}`}.${loc.awards[g.key].retired?" It joins the Best of the Best and won't be ranked again.":""}`});
@@ -8452,7 +8472,7 @@ function sourcingHTML(){
     <div class="panel"><div class="hd"><h3>The cellar</h3></div><div class="bd tight">
       <div class="dial"><div class="lab"><b>Wine on hand, at cost</b><span class="val">${money(c.value)}</span></div>
         <div class="meter ${ls>66?"g":ls>40?"w":"b"}" style="margin-top:4px"><i style="width:${ls}%"></i></div>
-        <div class="hint">List score <b class="num">${Math.round(ls)}</b>/100 · room for ${cap.toLocaleString()} bottles (about ${money(cap*48)} at cost)${c.value>cap*48?" — <b>the cellar is full; the extra adds nothing</b>":""}. A deeper list sells more wine; it's also cash sitting on a shelf.</div></div>
+        <div class="hint">List score <b class="num">${Math.round(ls)}</b>/100 · room for ${cap.toLocaleString()} bottles (about ${money(cap*48)} at cost)${c.value>cap*48*1.02?". <b>The cellar is over capacity: the extra adds nothing to the list and some of it spoils each month</b>":""}. Space comes from your wine storage (a cabinet holds about 200 bottles, a cooled racking room about 2,000, a glass-walled wine room about 6,000), less when it's in poor repair and none from a broken unit; restocking stops at the capacity. A deeper list sells more wine; it's also cash sitting on a shelf.</div></div>
       <div class="dial"><div class="lab"><b>Cellar target</b><span class="val">${money(c.target)}</span></div>
         <div class="numf"><button type="button" class="nfb" data-nf="-1" aria-label="less">−</button><input type="number" inputmode="numeric" id="cTarget" data-cur min="0" max="${lc(1000000000,0)}" step="${lc(1000,0)||1}" value="${lc(c.target,0)}"><button type="button" class="nfb" data-nf="1" aria-label="more">+</button></div>
         <div class="hint">Each month you restock to this figure. Raising it spends the difference next month.</div></div>
