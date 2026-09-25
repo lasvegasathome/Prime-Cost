@@ -1,10 +1,10 @@
 {
  "game": "prime-cost",
  "format": 3,
- "exportedAt": "2026-09-25T21:11:15.932Z",
+ "exportedAt": "2026-09-25T21:48:31.989Z",
  "state": {
   "v": 2,
-  "seed": 817827570,
+  "seed": 743032939,
   "ownerName": "You",
   "bizName": "Crumbl Lehi",
   "concept": "custom",
@@ -17,7 +17,7 @@
   "equityInvestor": 0,
   "loans": [
    {
-    "id": "4kobs6w",
+    "id": "n1hwnkw",
     "kind": "sba",
     "principal": 620000,
     "rate": 0.1075,
@@ -84,7 +84,7 @@
   },
   "locations": [
    {
-    "id": "1yi3q0t",
+    "id": "2wfpw9l",
     "name": "Crumbl Lehi",
     "market": "custom",
     "seats": 10,
@@ -112,7 +112,7 @@
     "wagePremium": 0,
     "features": [
      {
-      "id": "fwli4r3w",
+      "id": "f7hc1mpf",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -122,7 +122,7 @@
       "prestige": 2
      },
      {
-      "id": "fmufzyce",
+      "id": "fmiejo06",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -145,11 +145,24 @@
     },
     "kit": [
      {
-      "id": "k8klwkft",
+      "id": "kf2w95dw",
       "type": "convection",
       "tier": 2,
       "model": "Double-stack convection ovens, pair",
       "price": 16000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "klhxvysr",
+      "type": "mixer",
+      "tier": 2,
+      "model": "Hobart 60-qt mixers for dough and frosting",
+      "price": 28000,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -158,37 +171,11 @@
       "broken": false
      },
      {
-      "id": "kygi0z1a",
-      "type": "mixer",
-      "tier": 2,
-      "model": "Hobart 60-qt mixers for dough and frosting",
-      "price": 28000,
-      "cond": 81,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k89kz12o",
+      "id": "katqp488",
       "type": "refrig",
       "tier": 1,
       "model": "Walk-in cooler for dough and frosting · reach-ins",
       "price": 10000,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kdxewf2s",
-      "type": "pastrycase",
-      "tier": 1,
-      "model": "Chilled display for the chilled cookies",
-      "price": 5500,
       "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
@@ -197,12 +184,25 @@
       "broken": false
      },
      {
-      "id": "kwlqy3ag",
+      "id": "k1tso10o",
+      "type": "pastrycase",
+      "tier": 1,
+      "model": "Chilled display for the chilled cookies",
+      "price": 5500,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kd1018c9",
       "type": "merch",
       "tier": 1,
       "model": "Glass-door cooler for milk and water",
       "price": 3000,
-      "cond": 80,
+      "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -210,12 +210,12 @@
       "broken": false
      },
      {
-      "id": "ki6p4435",
+      "id": "kak3ue5s",
       "type": "dish",
       "tier": 1,
       "model": "Undercounter dish machine, sheet-pan racks and a three-compartment sink",
       "price": 14000,
-      "cond": 85,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -223,7 +223,7 @@
       "broken": false
      },
      {
-      "id": "ku9n5z10",
+      "id": "kkw3x9zo",
       "type": "hood",
       "tier": 1,
       "model": "Type II hood over the ovens",
@@ -236,12 +236,12 @@
       "broken": false
      },
      {
-      "id": "kbdv560b",
+      "id": "k4duqk2d",
       "type": "vent",
       "tier": 1,
       "model": "Upblast fan, welded grease duct & untempered makeup air",
       "price": 22500,
-      "cond": 79,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -249,12 +249,12 @@
       "broken": false
      },
      {
-      "id": "kw1si3bk",
+      "id": "kk1l21q1",
       "type": "kiosk",
       "tier": 1,
       "model": "Tablet self-order kiosks ×2",
       "price": 4000,
-      "cond": 80,
+      "cond": 79,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -267,12 +267,12 @@
       }
      },
      {
-      "id": "k3uffh1p",
+      "id": "ko6hey51",
       "type": "pos",
       "tier": 2,
       "model": "POS with app-order printers and a pickup shelf",
       "price": 8000,
-      "cond": 89,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -285,12 +285,12 @@
       }
      },
      {
-      "id": "k6rwl5fk",
+      "id": "k6b6v7rn",
       "type": "menus",
       "tier": 2,
       "model": "Digital menu board with the week's lineup",
       "price": 2500,
-      "cond": 89,
+      "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -302,7 +302,7 @@
       }
      },
      {
-      "id": "kichjswm",
+      "id": "k3cdrscu",
       "type": "sound",
       "tier": 1,
       "model": "Wireless speakers ×4",
@@ -315,12 +315,12 @@
       "broken": false
      },
      {
-      "id": "kb3rst26",
+      "id": "kpvlxmn1",
       "type": "stools",
       "tier": 1,
       "model": "A window counter with stools",
       "price": 4000,
-      "cond": 80,
+      "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -328,11 +328,37 @@
       "broken": false
      },
      {
-      "id": "kh4t5d3d",
+      "id": "khq4f3q8",
       "type": "extinguisher",
       "tier": 1,
       "model": "Class K and ABC extinguishers, tagged",
       "price": 900,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kxbb77yy",
+      "type": "sprinkler",
+      "tier": 1,
+      "model": "Wet-pipe sprinkler fit-out",
+      "price": 7500,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krxa998l",
+      "type": "smallwares",
+      "tier": 1,
+      "model": "Sheet pans, portion scoops, scales and probe thermometers",
+      "price": 6000,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -341,38 +367,12 @@
       "broken": false
      },
      {
-      "id": "ky35ce56",
-      "type": "sprinkler",
-      "tier": 1,
-      "model": "Wet-pipe sprinkler fit-out",
-      "price": 7500,
-      "cond": 81,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "ku4is73r",
-      "type": "smallwares",
-      "tier": 1,
-      "model": "Sheet pans, portion scoops, scales and probe thermometers",
-      "price": 6000,
-      "cond": 78,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k4fh9znr",
+      "id": "kuv5ulzj",
       "type": "restroom",
       "tier": 1,
       "model": "ADA-compliant restrooms, standard fixtures",
       "price": 15000,
-      "cond": 87,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -380,7 +380,7 @@
       "broken": false
      },
      {
-      "id": "k9krrp66",
+      "id": "kckosgui",
       "type": "hvac",
       "tier": 1,
       "model": "New 10-ton rooftop unit, installed",
@@ -393,12 +393,12 @@
       "broken": false
      },
      {
-      "id": "kfk4uy1l",
+      "id": "k0c3ia5g",
       "type": "deliverytab",
       "tier": 2,
       "model": "App and delivery orders printed straight to the packing line",
       "price": 2000,
-      "cond": 79,
+      "cond": 90,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -406,12 +406,12 @@
       "broken": false
      },
      {
-      "id": "k1ilwdhb",
+      "id": "k32oh1u4",
       "type": "safe",
       "tier": 1,
       "model": "Drop safe",
       "price": 1200,
-      "cond": 80,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -419,12 +419,12 @@
       "broken": false
      },
      {
-      "id": "khuw3sg5",
+      "id": "kqvbugoj",
       "type": "cameras",
       "tier": 1,
       "model": "Basic four-camera system",
       "price": 1800,
-      "cond": 87,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -629,7 +629,7 @@
   },
   "ap": 0,
   "ar": 0,
-  "savedAt": 1790370675925,
+  "savedAt": 1790372911984,
   "mods": [],
   "threads": [],
   "aiMemory": [],
@@ -708,7 +708,7 @@
    "tastingPrice": 0,
    "dishes": [
     {
-     "id": "2st54of",
+     "id": "7tt0bf7",
      "name": "Milk Chocolate Chip",
      "course": "dessert",
      "desc": "The original: a thick, warm milk chocolate chip cookie.",
@@ -741,7 +741,7 @@
      "kitJ": "Milk Chocolate Chip|The original: a thick, warm milk chocolate chip cookie."
     },
     {
-     "id": "sq9b7vp",
+     "id": "5vb8gc9",
      "name": "Pink Sugar",
      "course": "dessert",
      "desc": "A chilled sugar cookie under pink almond frosting.",
@@ -774,7 +774,7 @@
      "kitJ": "Pink Sugar|A chilled sugar cookie under pink almond frosting."
     },
     {
-     "id": "fjfq7ut",
+     "id": "rxzz6o7",
      "name": "Snickerdoodle",
      "course": "dessert",
      "desc": "Cinnamon sugar, soft in the middle.",
@@ -807,7 +807,7 @@
      "kitJ": "Snickerdoodle|Cinnamon sugar, soft in the middle."
     },
     {
-     "id": "w1xh3nn",
+     "id": "0o7c5hl",
      "name": "Chocolate Crumb",
      "course": "dessert",
      "desc": "Chocolate cookie with a crushed-cookie topping.",
@@ -840,7 +840,7 @@
      "kitJ": "Chocolate Crumb|Chocolate cookie with a crushed-cookie topping."
     },
     {
-     "id": "dog73wm",
+     "id": "po8zm6y",
      "name": "Brownie Batter",
      "course": "dessert",
      "desc": "Fudgy chocolate cookie with brownie-batter frosting.",
@@ -873,7 +873,7 @@
      "kitJ": "Brownie Batter|Fudgy chocolate cookie with brownie-batter frosting."
     },
     {
-     "id": "xhnw1qa",
+     "id": "95bo56f",
      "name": "Celebration Cake",
      "course": "dessert",
      "desc": "Vanilla cake cookie with buttercream and sprinkles.",
@@ -906,7 +906,7 @@
      "kitJ": "Celebration Cake|Vanilla cake cookie with buttercream and sprinkles."
     },
     {
-     "id": "hg8tkth",
+     "id": "gdqugjd",
      "name": "This week's rotating flavour #1",
      "course": "dessert",
      "desc": "One of four flavours that change every Monday, often a collaboration with a candy or cereal brand.",
@@ -943,7 +943,7 @@
      "kitJ": "This week's rotating flavour #1|One of four flavours that change every Monday, often a collaboration with a candy or cereal brand."
     },
     {
-     "id": "nbl17u0",
+     "id": "sjy059a",
      "name": "This week's rotating flavour #2",
      "course": "dessert",
      "desc": "A second rotating slot: a pie, a cake cookie or a frosted special.",
@@ -980,7 +980,7 @@
      "kitJ": "This week's rotating flavour #2|A second rotating slot: a pie, a cake cookie or a frosted special."
     },
     {
-     "id": "aseipsw",
+     "id": "fhhlawi",
      "name": "This week's rotating flavour #3",
      "course": "dessert",
      "desc": "A third rotating slot, announced on social media every Sunday night.",
@@ -1017,7 +1017,7 @@
      "kitJ": "This week's rotating flavour #3|A third rotating slot, announced on social media every Sunday night."
     },
     {
-     "id": "q9oy4vy",
+     "id": "bjp9bey",
      "name": "This week's rotating flavour #4",
      "course": "dessert",
      "desc": "The fourth rotating slot, often the one people queue for.",
@@ -1054,7 +1054,7 @@
      "kitJ": "This week's rotating flavour #4|The fourth rotating slot, often the one people queue for."
     },
     {
-     "id": "6mbopgm",
+     "id": "dbgobn9",
      "name": "Ice-Cold Milk",
      "course": "side",
      "desc": "A carton of whole or chocolate milk from the cooler.",
@@ -1077,7 +1077,7 @@
      "kitJ": "Ice-Cold Milk|A carton of whole or chocolate milk from the cooler."
     },
     {
-     "id": "87st79r",
+     "id": "1h6qmq1",
      "name": "Bottled Water",
      "course": "side",
      "desc": "A bottle of water from the cooler.",
@@ -1100,17 +1100,17 @@
      "kitJ": "Bottled Water|A bottle of water from the cooler."
     },
     {
-     "id": "94k62a9",
+     "id": "mo9e6uv",
      "name": "4-Pack",
      "course": "main",
      "sec": "bundle",
      "bundle": {
       "style": "pack",
       "items": [
-       "2st54of",
-       "sq9b7vp",
-       "hg8tkth",
-       "nbl17u0"
+       "7tt0bf7",
+       "5vb8gc9",
+       "gdqugjd",
+       "sjy059a"
       ]
      },
      "desc": "Any four cookies in the pink box.",
@@ -1131,19 +1131,19 @@
      "kitJ": "4-Pack|Any four cookies in the pink box."
     },
     {
-     "id": "bt208x0",
+     "id": "7rs2faz",
      "name": "6-Pack",
      "course": "main",
      "sec": "bundle",
      "bundle": {
       "style": "pack",
       "items": [
-       "2st54of",
-       "sq9b7vp",
-       "fjfq7ut",
-       "hg8tkth",
-       "aseipsw",
-       "q9oy4vy"
+       "7tt0bf7",
+       "5vb8gc9",
+       "rxzz6o7",
+       "gdqugjd",
+       "fhhlawi",
+       "bjp9bey"
       ]
      },
      "desc": "Any six cookies.",
@@ -1164,25 +1164,25 @@
      "kitJ": "6-Pack|Any six cookies."
     },
     {
-     "id": "e8vv10p",
+     "id": "p92btxj",
      "name": "Party Box (12)",
      "course": "main",
      "sec": "bundle",
      "bundle": {
       "style": "pack",
       "items": [
-       "2st54of",
-       "sq9b7vp",
-       "fjfq7ut",
-       "w1xh3nn",
-       "dog73wm",
-       "xhnw1qa",
-       "hg8tkth",
-       "nbl17u0",
-       "aseipsw",
-       "q9oy4vy",
-       "2st54of",
-       "sq9b7vp"
+       "7tt0bf7",
+       "5vb8gc9",
+       "rxzz6o7",
+       "0o7c5hl",
+       "po8zm6y",
+       "95bo56f",
+       "gdqugjd",
+       "sjy059a",
+       "fhhlawi",
+       "bjp9bey",
+       "7tt0bf7",
+       "5vb8gc9"
       ]
      },
      "desc": "Twelve cookies for the office, the party or the car ride home.",
@@ -1213,7 +1213,7 @@
   },
   "team": [
    {
-    "id": "dz9si5o",
+    "id": "5z4nnnp",
     "role": "maitre",
     "name": "Kayla Jensen",
     "skill": 60,
@@ -1231,7 +1231,7 @@
     "fame": 0
    },
    {
-    "id": "9hi64on",
+    "id": "gcboxgt",
     "role": "pastry",
     "name": "Tanner Olsen",
     "skill": 58,
@@ -1253,7 +1253,7 @@
   "brigade": 55,
   "fohTrain": 50,
   "capex": 0,
-  "rngState": 1186322152,
+  "rngState": 1111527521,
   "cellar": {
    "value": 0,
    "target": 0,

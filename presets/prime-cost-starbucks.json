@@ -1,10 +1,10 @@
 {
  "game": "prime-cost",
  "format": 3,
- "exportedAt": "2026-09-25T21:11:14.570Z",
+ "exportedAt": "2026-09-25T21:48:30.644Z",
  "state": {
   "v": 2,
-  "seed": 276590069,
+  "seed": 539816333,
   "ownerName": "You",
   "bizName": "Starbucks #24417",
   "concept": "custom",
@@ -46,7 +46,7 @@
    "rentYr": 38,
    "wage": 17,
    "tipCredit": 0,
-   "traffic": 2.047,
+   "traffic": 2.048,
    "comp": 1.3,
    "checkMult": 1,
    "taxRate": 0.081,
@@ -73,7 +73,7 @@
   },
   "locations": [
    {
-    "id": "oq7kgp9",
+    "id": "287ixcy",
     "name": "Starbucks #24417",
     "market": "custom",
     "seats": 28,
@@ -101,7 +101,7 @@
     "wagePremium": 0,
     "features": [
      {
-      "id": "fa0xlta1",
+      "id": "fy8g8o2h",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -111,7 +111,7 @@
       "capacity": 0.45
      },
      {
-      "id": "fk2j3xoj",
+      "id": "flybfwrh",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -134,76 +134,11 @@
     },
     "kit": [
      {
-      "id": "k9j6y0mg",
+      "id": "kzodsjb9",
       "type": "espresso",
       "tier": 2,
       "model": "Thermoplan Mastrena II super-automatic espresso machines ×2",
       "price": 26000,
-      "cond": 90,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k900qx53",
-      "type": "batchbrew",
-      "tier": 1,
-      "model": "Batch brewers for the Pike Place and dark roast",
-      "price": 2800,
-      "cond": 84,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k49nrufh",
-      "type": "blender",
-      "tier": 2,
-      "model": "Blenders for Frappuccinos, pair",
-      "price": 3200,
-      "cond": 84,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kqg9inri",
-      "type": "ice",
-      "tier": 3,
-      "model": "Hoshizaki KM, pair with storage",
-      "price": 14000,
-      "cond": 90,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k6jaizqf",
-      "type": "refrig",
-      "tier": 1,
-      "model": "Walk-in cooler · undercounter milk fridges on the bar",
-      "price": 10000,
-      "cond": 89,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k7bjirg0",
-      "type": "speedoven",
-      "tier": 2,
-      "model": "High-speed ovens for breakfast sandwiches, pair",
-      "price": 13400,
       "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
@@ -212,11 +147,11 @@
       "broken": false
      },
      {
-      "id": "kqbasfnf",
-      "type": "pastrycase",
-      "tier": 2,
-      "model": "Refrigerated pastry case",
-      "price": 9000,
+      "id": "kf4l24tc",
+      "type": "batchbrew",
+      "tier": 1,
+      "model": "Batch brewers for the Pike Place and dark roast",
+      "price": 2800,
       "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
@@ -225,12 +160,77 @@
       "broken": false
      },
      {
-      "id": "ky7vhv1x",
+      "id": "kaegdx2z",
+      "type": "blender",
+      "tier": 2,
+      "model": "Blenders for Frappuccinos, pair",
+      "price": 3200,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k4vugzhm",
+      "type": "ice",
+      "tier": 3,
+      "model": "Hoshizaki KM, pair with storage",
+      "price": 14000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kszy39tj",
+      "type": "refrig",
+      "tier": 1,
+      "model": "Walk-in cooler · undercounter milk fridges on the bar",
+      "price": 10000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k50e2mjn",
+      "type": "speedoven",
+      "tier": 2,
+      "model": "High-speed ovens for breakfast sandwiches, pair",
+      "price": 13400,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k0wbfgep",
+      "type": "pastrycase",
+      "tier": 2,
+      "model": "Refrigerated pastry case",
+      "price": 9000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k42cowgu",
       "type": "merch",
       "tier": 1,
       "model": "Grab-and-go cooler for bottled drinks and protein boxes",
       "price": 3000,
-      "cond": 87,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -238,12 +238,12 @@
       "broken": false
      },
      {
-      "id": "kmrjso05",
+      "id": "kkpbdvx4",
       "type": "dish",
       "tier": 1,
       "model": "Undercounter dish machine and three-compartment sink",
       "price": 14000,
-      "cond": 85,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -251,12 +251,12 @@
       "broken": false
      },
      {
-      "id": "kcrazolc",
+      "id": "kvb9kl18",
       "type": "pos",
       "tier": 2,
       "model": "POS with mobile-order ticket printers and a drive-thru headset system",
       "price": 8000,
-      "cond": 79,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -269,12 +269,12 @@
       }
      },
      {
-      "id": "ktssfs48",
+      "id": "kf0qzaxs",
       "type": "menus",
       "tier": 2,
       "model": "Digital menu boards and a drive-thru order-confirmation screen",
       "price": 2500,
-      "cond": 88,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -286,12 +286,12 @@
       }
      },
      {
-      "id": "ktalfokh",
+      "id": "ku5itwae",
       "type": "sound",
       "tier": 2,
       "model": "Zoned in-store music",
       "price": 12000,
-      "cond": 89,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -299,7 +299,7 @@
       "broken": false
      },
      {
-      "id": "kmdabpzm",
+      "id": "k1mhzazl",
       "type": "seating",
       "tier": 1,
       "model": "Café chairs, soft seating and a communal table",
@@ -312,12 +312,12 @@
       "broken": false
      },
      {
-      "id": "kokhgdqp",
+      "id": "ku4al42w",
       "type": "stools",
       "tier": 1,
       "model": "Window bar with stools",
       "price": 4000,
-      "cond": 84,
+      "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -325,7 +325,7 @@
       "broken": false
      },
      {
-      "id": "kjkbbwfh",
+      "id": "kv0i837w",
       "type": "tableware",
       "tier": 1,
       "model": "For-here ceramic mugs and glassware",
@@ -338,12 +338,12 @@
       "broken": false
      },
      {
-      "id": "klvvanm8",
+      "id": "k7d2acwe",
       "type": "extinguisher",
       "tier": 1,
       "model": "Class K and ABC extinguishers, tagged",
       "price": 900,
-      "cond": 89,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -351,37 +351,11 @@
       "broken": false
      },
      {
-      "id": "k136ypmt",
+      "id": "kwatqlsn",
       "type": "sprinkler",
       "tier": 1,
       "model": "Wet-pipe sprinkler fit-out",
       "price": 7500,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kean0k90",
-      "type": "smallwares",
-      "tier": 1,
-      "model": "Pitchers, scoops, shakers, scales and thermometers for the bar",
-      "price": 6000,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kft73dpt",
-      "type": "watertreat",
-      "tier": 2,
-      "model": "Water filtration for the espresso machines and ice",
-      "price": 3600,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -390,11 +364,11 @@
       "broken": false
      },
      {
-      "id": "kngwr1nt",
-      "type": "restroom",
+      "id": "k244vvzk",
+      "type": "smallwares",
       "tier": 1,
-      "model": "ADA-compliant restrooms, standard fixtures",
-      "price": 15000,
+      "model": "Pitchers, scoops, shakers, scales and thermometers for the bar",
+      "price": 6000,
       "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
@@ -403,12 +377,38 @@
       "broken": false
      },
      {
-      "id": "kqo9vy5w",
+      "id": "k3koyarq",
+      "type": "watertreat",
+      "tier": 2,
+      "model": "Water filtration for the espresso machines and ice",
+      "price": 3600,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ko3r3iqv",
+      "type": "restroom",
+      "tier": 1,
+      "model": "ADA-compliant restrooms, standard fixtures",
+      "price": 15000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kawp3q97",
       "type": "hvac",
       "tier": 1,
       "model": "New 10-ton rooftop unit, installed",
       "price": 11000,
-      "cond": 78,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -416,12 +416,12 @@
       "broken": false
      },
      {
-      "id": "ktajf4w0",
+      "id": "k2lenyn9",
       "type": "safe",
       "tier": 2,
       "model": "Smart safe with provisional bank credit",
       "price": 4000,
-      "cond": 84,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -429,12 +429,12 @@
       "broken": false
      },
      {
-      "id": "kn3x77d0",
+      "id": "krnxx7b2",
       "type": "cameras",
       "tier": 2,
       "model": "IP cameras with cloud recording",
       "price": 5500,
-      "cond": 86,
+      "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -628,10 +628,10 @@
   },
   "ap": 0,
   "ar": 0,
-  "savedAt": 1790370674565,
+  "savedAt": 1790372910639,
   "mods": [
    {
-    "id": "udntlh4",
+    "id": "b0gp462",
     "left": null,
     "loc": -1,
     "src": "Starbucks #24417",
@@ -716,7 +716,7 @@
    "tastingPrice": 0,
    "dishes": [
     {
-     "id": "ud3btc0",
+     "id": "n55m6y9",
      "name": "Pike Place Roast (grande)",
      "course": "side",
      "desc": "The house medium roast, brewed every half hour.",
@@ -748,7 +748,7 @@
      "kitJ": "Pike Place Roast (grande)|The house medium roast, brewed every half hour."
     },
     {
-     "id": "gfcpezt",
+     "id": "3cnhbtm",
      "name": "Caffè Latte (grande)",
      "course": "side",
      "desc": "Two shots of espresso and steamed milk.",
@@ -781,7 +781,7 @@
      "kitJ": "Caffè Latte (grande)|Two shots of espresso and steamed milk."
     },
     {
-     "id": "m86xua0",
+     "id": "lvqbf68",
      "name": "Caramel Macchiato (grande)",
      "course": "side",
      "desc": "Vanilla syrup, steamed milk, espresso on top and a caramel drizzle.",
@@ -814,7 +814,7 @@
      "kitJ": "Caramel Macchiato (grande)|Vanilla syrup, steamed milk, espresso on top and a caramel drizzle."
     },
     {
-     "id": "rtwc99a",
+     "id": "1dmbgeu",
      "name": "Iced Brown Sugar Oatmilk Shaken Espresso",
      "course": "side",
      "desc": "Blonde espresso shaken with brown sugar and cinnamon, topped with oat milk.",
@@ -847,7 +847,7 @@
      "kitJ": "Iced Brown Sugar Oatmilk Shaken Espresso|Blonde espresso shaken with brown sugar and cinnamon, topped with oat milk."
     },
     {
-     "id": "klr306t",
+     "id": "gfikmil",
      "name": "Cold Brew (grande)",
      "course": "side",
      "desc": "Steeped for twenty hours, served over ice.",
@@ -870,7 +870,7 @@
      "kitJ": "Cold Brew (grande)|Steeped for twenty hours, served over ice."
     },
     {
-     "id": "6bmphnc",
+     "id": "w9lgq3i",
      "name": "Chai Tea Latte (grande)",
      "course": "side",
      "desc": "Black tea with cinnamon, clove and spices, and steamed milk.",
@@ -894,7 +894,7 @@
      "kitJ": "Chai Tea Latte (grande)|Black tea with cinnamon, clove and spices, and steamed milk."
     },
     {
-     "id": "h9mv4yq",
+     "id": "tmpkcec",
      "name": "Caramel Frappuccino (grande)",
      "course": "side",
      "desc": "Coffee, milk and ice blended with caramel, whipped cream on top.",
@@ -927,7 +927,7 @@
      "kitJ": "Caramel Frappuccino (grande)|Coffee, milk and ice blended with caramel, whipped cream on top."
     },
     {
-     "id": "2qiqnoq",
+     "id": "nrp9vzc",
      "name": "Strawberry Açaí Refresher (grande)",
      "course": "side",
      "desc": "Strawberry and açaí with green coffee extract, shaken with ice and freeze-dried strawberries.",
@@ -951,7 +951,7 @@
      "kitJ": "Strawberry Açaí Refresher (grande)|Strawberry and açaí with green coffee extract, shaken with ice and freeze-dried strawberries."
     },
     {
-     "id": "1vvhn58",
+     "id": "v571tjw",
      "name": "Hot Chocolate (grande)",
      "course": "side",
      "desc": "Steamed milk and mocha sauce under whipped cream.",
@@ -975,7 +975,7 @@
      "kitJ": "Hot Chocolate (grande)|Steamed milk and mocha sauce under whipped cream."
     },
     {
-     "id": "4kqc34n",
+     "id": "xoiopki",
      "name": "Pumpkin Spice Latte (grande)",
      "course": "side",
      "desc": "Espresso, steamed milk and pumpkin-spice sauce. Back every autumn.",
@@ -1012,7 +1012,7 @@
      "kitJ": "Pumpkin Spice Latte (grande)|Espresso, steamed milk and pumpkin-spice sauce. Back every autumn."
     },
     {
-     "id": "pxe4hph",
+     "id": "hv9yj6k",
      "name": "Bacon, Gouda & Egg Sandwich",
      "course": "main",
      "desc": "Bacon, aged gouda and a frittata egg on an artisan roll, warmed to order.",
@@ -1047,7 +1047,7 @@
      "kitJ": "Bacon, Gouda & Egg Sandwich|Bacon, aged gouda and a frittata egg on an artisan roll, warmed to order."
     },
     {
-     "id": "s3197q6",
+     "id": "i3mzp65",
      "name": "Sous Vide Egg Bites (2)",
      "course": "main",
      "desc": "Two bacon and gruyère egg bites, cooked sous vide.",
@@ -1080,7 +1080,7 @@
      "kitJ": "Sous Vide Egg Bites (2)|Two bacon and gruyère egg bites, cooked sous vide."
     },
     {
-     "id": "3fgc6s6",
+     "id": "m7lzo6j",
      "name": "Butter Croissant",
      "course": "dessert",
      "desc": "A laminated butter croissant, warmed on request.",
@@ -1103,7 +1103,7 @@
      "kitJ": "Butter Croissant|A laminated butter croissant, warmed on request."
     },
     {
-     "id": "7ih32cb",
+     "id": "ipynm8u",
      "name": "Blueberry Muffin",
      "course": "dessert",
      "desc": "A blueberry muffin with a sugar crumb top.",
@@ -1126,7 +1126,7 @@
      "kitJ": "Blueberry Muffin|A blueberry muffin with a sugar crumb top."
     },
     {
-     "id": "qxiy2ao",
+     "id": "n6wo4ma",
      "name": "Banana Nut Bread",
      "course": "dessert",
      "desc": "A thick slice of banana bread with walnuts.",
@@ -1149,7 +1149,7 @@
      "kitJ": "Banana Nut Bread|A thick slice of banana bread with walnuts."
     },
     {
-     "id": "8ohyjcc",
+     "id": "9gvhj9q",
      "name": "Birthday Cake Pop",
      "course": "dessert",
      "desc": "Vanilla cake and icing on a stick, dipped in pink chocolate.",
@@ -1171,7 +1171,7 @@
      "kitJ": "Birthday Cake Pop|Vanilla cake and icing on a stick, dipped in pink chocolate."
     },
     {
-     "id": "a187o30",
+     "id": "e3yygaa",
      "name": "Turkey, Provolone & Pesto Panini",
      "course": "main",
      "desc": "Turkey, provolone and basil pesto on ciabatta, pressed hot.",
@@ -1215,7 +1215,7 @@
   },
   "team": [
    {
-    "id": "w3xj6lz",
+    "id": "6hyh2xe",
     "role": "maitre",
     "name": "Denise Carrillo",
     "skill": 64,
@@ -1233,7 +1233,7 @@
     "fame": 0
    },
    {
-    "id": "k98qiuy",
+    "id": "p79atbl",
     "role": "sous",
     "name": "Marcus Tran",
     "skill": 58,
@@ -1255,7 +1255,7 @@
   "brigade": 55,
   "fohTrain": 50,
   "capex": 0,
-  "rngState": 581143454,
+  "rngState": 844369718,
   "cellar": {
    "value": 0,
    "target": 0,
@@ -1436,7 +1436,7 @@
   },
   "policies": [
    {
-    "id": "pol3rimk2n",
+    "id": "pol97sq3t7",
     "key": "health",
     "name": "Health insurance for partners on 20+ hours",
     "blurb": "Starbucks offers medical, dental and vision to partners averaging 20 hours a week; the company pays most of the premium.",
@@ -1448,7 +1448,7 @@
     "on": true
    },
    {
-    "id": "polch8j6u2",
+    "id": "poln3oe4ki",
     "key": "college",
     "name": "Starbucks College Achievement Plan",
     "blurb": "Full tuition for a first bachelor's degree through Arizona State University's online programme, for partners working enough hours.",

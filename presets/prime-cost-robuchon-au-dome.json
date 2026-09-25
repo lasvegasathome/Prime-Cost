@@ -1,10 +1,10 @@
 {
  "game": "prime-cost",
  "format": 3,
- "exportedAt": "2026-09-25T21:11:12.388Z",
+ "exportedAt": "2026-09-25T21:48:24.182Z",
  "state": {
   "v": 2,
-  "seed": 425890649,
+  "seed": 509035412,
   "ownerName": "You",
   "bizName": "Robuchon au Dôme",
   "concept": "custom",
@@ -46,7 +46,7 @@
    "rentYr": 0,
    "wage": 15,
    "tipCredit": 0,
-   "traffic": 0.31,
+   "traffic": 0.333,
    "comp": 1.3,
    "checkMult": 1,
    "taxRate": 0,
@@ -73,7 +73,7 @@
   },
   "locations": [
    {
-    "id": "kybbo11",
+    "id": "6w63hmr",
     "name": "Robuchon au Dôme",
     "market": "custom",
     "seats": 70,
@@ -101,7 +101,7 @@
     "wagePremium": 0,
     "features": [
      {
-      "id": "frrtak0o",
+      "id": "f1u0jzv4",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -112,7 +112,7 @@
       "ambience": 6
      },
      {
-      "id": "fhk6bqle",
+      "id": "fiz882u4",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -123,7 +123,7 @@
       "prestige": 1
      },
      {
-      "id": "fdnyzjjm",
+      "id": "fusq25mk",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -134,7 +134,7 @@
       "ambience": 7
      },
      {
-      "id": "ff7fqa18",
+      "id": "f06v0903",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -158,12 +158,12 @@
     },
     "kit": [
      {
-      "id": "k41qzcem",
+      "id": "kv2dqvep",
       "type": "range",
       "tier": 3,
       "model": "Molteni custom French suite",
       "price": 157500,
-      "cond": 84,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -171,12 +171,12 @@
       "broken": false
      },
      {
-      "id": "kl4k9afv",
+      "id": "k5haffzk",
       "type": "hood",
       "tier": 3,
       "model": "Halton Capture Jet hood with UV and integrated lighting",
       "price": 33300,
-      "cond": 82,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -184,12 +184,12 @@
       "broken": false
      },
      {
-      "id": "k34i6rfc",
+      "id": "k7g3p1q5",
       "type": "vent",
       "tier": 3,
       "model": "Demand-controlled ventilation with heat recovery",
       "price": 140000,
-      "cond": 88,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -197,12 +197,12 @@
       "broken": false
      },
      {
-      "id": "ktyo23bn",
+      "id": "kego2qbw",
       "type": "suppression",
       "tier": 3,
       "model": "Hybrid water-mist & wet-chemical system with remote monitoring",
       "price": 24500,
-      "cond": 86,
+      "cond": 79,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -210,7 +210,7 @@
       "broken": false
      },
      {
-      "id": "keunp02l",
+      "id": "kntl7c8j",
       "type": "extinguisher",
       "tier": 3,
       "model": "Full set with fire blankets, wall cabinets and a staff-training contract",
@@ -223,12 +223,12 @@
       "broken": false
      },
      {
-      "id": "kmn2vgte",
+      "id": "kdtd8wg1",
       "type": "sprinkler",
       "tier": 3,
       "model": "Quick-response sprinklers, monitored alarm & dedicated fire pump",
       "price": 52500,
-      "cond": 90,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -236,12 +236,12 @@
       "broken": false
      },
      {
-      "id": "kiepytid",
+      "id": "knptsa3j",
       "type": "greasetrap",
       "tier": 3,
       "model": "Automatic grease removal unit with an interceptor, installed",
       "price": 26000,
-      "cond": 90,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -249,12 +249,12 @@
       "broken": false
      },
      {
-      "id": "kawf7kli",
+      "id": "k4j5jacb",
       "type": "refrig",
       "tier": 3,
       "model": "Custom walk-ins · Traulsen Spec-Line",
       "price": 56900,
-      "cond": 84,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -262,7 +262,7 @@
       "broken": false
      },
      {
-      "id": "k5javqf8",
+      "id": "kuf97w3x",
       "type": "dish",
       "tier": 2,
       "model": "Hobart CL44e conveyor",
@@ -275,12 +275,12 @@
       "broken": false
      },
      {
-      "id": "kzj9aonf",
+      "id": "kllyjbj6",
       "type": "combi",
       "tier": 3,
       "model": "Rational iCombi Pro 20-full, pair",
       "price": 120000,
-      "cond": 90,
+      "cond": 87,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -288,12 +288,12 @@
       "broken": false
      },
      {
-      "id": "kfhacwlq",
+      "id": "kgqpj6uh",
       "type": "salamander",
       "tier": 3,
       "model": "Montague Legend salamander pair",
       "price": 14000,
-      "cond": 79,
+      "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -301,7 +301,7 @@
       "broken": false
      },
      {
-      "id": "kyrhw1kf",
+      "id": "kz0gie9i",
       "type": "sousvide",
       "tier": 2,
       "model": "PolyScience circulators ×12 with chamber sealer",
@@ -314,12 +314,12 @@
       "broken": false
      },
      {
-      "id": "kjf1255h",
+      "id": "k548saw9",
       "type": "pacojet",
       "tier": 2,
       "model": "Pacojet 4",
       "price": 8000,
-      "cond": 83,
+      "cond": 86,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -327,12 +327,12 @@
       "broken": false
      },
      {
-      "id": "kagwi51p",
+      "id": "k4k910av",
       "type": "blast",
       "tier": 2,
       "model": "Irinox MultiFresh",
       "price": 22000,
-      "cond": 81,
+      "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -340,7 +340,7 @@
       "broken": false
      },
      {
-      "id": "k6vcjq2s",
+      "id": "k9vftqrt",
       "type": "icecream",
       "tier": 2,
       "model": "Carpigiani Labotronic",
@@ -353,12 +353,12 @@
       "broken": false
      },
      {
-      "id": "kw482xo9",
+      "id": "kaabh7cd",
       "type": "bakery",
       "tier": 2,
       "model": "Bongard deck oven & proofer",
       "price": 48000,
-      "cond": 85,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -366,11 +366,37 @@
       "broken": false
      },
      {
-      "id": "keqnbnwd",
+      "id": "kp31ewoo",
       "type": "mixer",
       "tier": 2,
       "model": "Hobart Legacy 60-qt & Rondo sheeter",
       "price": 28000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kfc6le1r",
+      "type": "chocolate",
+      "tier": 1,
+      "model": "Mol d'Art tempering melter",
+      "price": 4000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kkcbbzd9",
+      "type": "plancha",
+      "tier": 2,
+      "model": "Evo commercial plancha",
+      "price": 9000,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -379,24 +405,11 @@
       "broken": false
      },
      {
-      "id": "k172mg73",
-      "type": "chocolate",
-      "tier": 1,
-      "model": "Mol d'Art tempering melter",
-      "price": 4000,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "ky0c9hqv",
-      "type": "plancha",
-      "tier": 2,
-      "model": "Evo commercial plancha",
-      "price": 9000,
+      "id": "kyifqedf",
+      "type": "winestore",
+      "tier": 3,
+      "model": "The Grand Lisboa cellar",
+      "price": 120000,
       "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
@@ -405,25 +418,12 @@
       "broken": false
      },
      {
-      "id": "kqbzpsbj",
-      "type": "winestore",
-      "tier": 3,
-      "model": "The Grand Lisboa cellar",
-      "price": 120000,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kn4sbmmc",
+      "id": "klrbfucq",
       "type": "glasswasher",
       "tier": 2,
       "model": "Hobart LXeH undercounter",
       "price": 9000,
-      "cond": 83,
+      "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -431,11 +431,24 @@
       "broken": false
      },
      {
-      "id": "kasle65w",
+      "id": "kdxa6n2r",
       "type": "espresso",
       "tier": 2,
       "model": "La Marzocco Strada",
       "price": 26000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kqibgjr5",
+      "type": "ice",
+      "tier": 2,
+      "model": "Hoshizaki KM series",
+      "price": 7000,
       "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
@@ -444,25 +457,12 @@
       "broken": false
      },
      {
-      "id": "k6mmtc8m",
-      "type": "ice",
-      "tier": 2,
-      "model": "Hoshizaki KM series",
-      "price": 7000,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k2v6ns0d",
+      "id": "k9rondx4",
       "type": "gueridon",
       "tier": 3,
       "model": "The bread, cheese and dessert trolleys",
       "price": 60000,
-      "cond": 81,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -470,12 +470,12 @@
       "broken": false
      },
      {
-      "id": "kdaym615",
+      "id": "kf2zfyva",
       "type": "pos",
       "tier": 2,
       "model": "POS with handheld order tablets",
       "price": 8000,
-      "cond": 83,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -488,12 +488,12 @@
       }
      },
      {
-      "id": "kuhr58vt",
+      "id": "k5qjkz9z",
       "type": "menus",
       "tier": 3,
       "model": "Leather-bound menus and a bound wine list",
       "price": 9000,
-      "cond": 80,
+      "cond": 87,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -504,12 +504,12 @@
       }
      },
      {
-      "id": "kxylu2pm",
+      "id": "k4j02pjs",
       "type": "hoststand",
       "tier": 3,
       "model": "Custom host stand, guest CRM & a reservations desk",
       "price": 15000,
-      "cond": 88,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -522,11 +522,24 @@
       }
      },
      {
-      "id": "krk10c74",
+      "id": "kb2l9zso",
       "type": "sound",
       "tier": 3,
       "model": "A grand piano, played at lunch and dinner",
       "price": 60000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k5hxmpg4",
+      "type": "seating",
+      "tier": 3,
+      "model": "Custom upholstered dining chairs and hand-finished stone tables",
+      "price": 131300,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -535,50 +548,11 @@
       "broken": false
      },
      {
-      "id": "kcjbuhei",
-      "type": "seating",
-      "tier": 3,
-      "model": "Custom upholstered dining chairs and hand-finished stone tables",
-      "price": 131300,
-      "cond": 84,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kgawpwvv",
+      "id": "kirs0zd7",
       "type": "tableware",
       "tier": 3,
       "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
       "price": 52500,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kivf8c0u",
-      "type": "linens",
-      "tier": 3,
-      "model": "Pressed damask linens, changed between every seating",
-      "price": 6000,
-      "cond": 83,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kvrzbljg",
-      "type": "waterservice",
-      "tier": 3,
-      "model": "Filtered still & sparkling in the restaurant's own bottles",
-      "price": 12000,
       "cond": 90,
       "own": "owned",
       "leaseLeft": 0,
@@ -587,12 +561,38 @@
       "broken": false
      },
      {
-      "id": "kj9lkwbi",
+      "id": "klt9fzy0",
+      "type": "linens",
+      "tier": 3,
+      "model": "Pressed damask linens, changed between every seating",
+      "price": 6000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kgkuz2xz",
+      "type": "waterservice",
+      "tier": 3,
+      "model": "Filtered still & sparkling in the restaurant's own bottles",
+      "price": 12000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k14k1f26",
       "type": "smallwares",
       "tier": 3,
       "model": "A complete set with wireless temperature logging for HACCP",
       "price": 28000,
-      "cond": 83,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -600,12 +600,12 @@
       "broken": false
      },
      {
-      "id": "k16pe3yg",
+      "id": "kftzs9dj",
       "type": "watertreat",
       "tier": 3,
       "model": "Whole-building softening with reverse osmosis",
       "price": 12000,
-      "cond": 84,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -613,12 +613,12 @@
       "broken": false
      },
      {
-      "id": "kkik7bb5",
+      "id": "k72nsjca",
       "type": "restroom",
       "tier": 3,
       "model": "Designer restrooms",
       "price": 96300,
-      "cond": 82,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -626,12 +626,12 @@
       "broken": false
      },
      {
-      "id": "kzixbots",
+      "id": "kodxx0er",
       "type": "hvac",
       "tier": 3,
       "model": "Variable-refrigerant-flow system with energy recovery",
       "price": 78800,
-      "cond": 84,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -639,12 +639,12 @@
       "broken": false
      },
      {
-      "id": "knowcm46",
+      "id": "k6zz6l7k",
       "type": "safe",
       "tier": 1,
       "model": "Drop safe",
       "price": 1200,
-      "cond": 84,
+      "cond": 79,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -652,12 +652,12 @@
       "broken": false
      },
      {
-      "id": "k7i9xjl7",
+      "id": "k5c2m9xd",
       "type": "cameras",
       "tier": 3,
       "model": "The casino hotel's surveillance covers the floor",
       "price": 9000,
-      "cond": 82,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -832,7 +832,7 @@
   },
   "ap": 0,
   "ar": 0,
-  "savedAt": 1790370672383,
+  "savedAt": 1790372904177,
   "mods": [],
   "threads": [],
   "aiMemory": [],
@@ -926,7 +926,7 @@
    "tastingPrice": 419.31,
    "dishes": [
     {
-     "id": "fl97dib",
+     "id": "3tcqmnv",
      "name": "La Gariguette",
      "course": "snack",
      "desc": "Pour commencer: a strawberry gazpacho with frozen ricotta and pistachio flakes.",
@@ -950,7 +950,7 @@
      "kitJ": "La Gariguette|Pour commencer: a strawberry gazpacho with frozen ricotta and pistachio flakes."
     },
     {
-     "id": "44wtl31",
+     "id": "9j2nan1",
      "name": "Le Saumon Fumé",
      "course": "starter",
      "desc": "Smoked salmon en frivolité with a light horseradish cream and caviar de Sologne.",
@@ -974,7 +974,7 @@
      "kitJ": "Le Saumon Fumé|Smoked salmon en frivolité with a light horseradish cream and caviar de Sologne."
     },
     {
-     "id": "4lmxdbj",
+     "id": "hgbke98",
      "name": "La Langoustine",
      "course": "starter",
      "desc": "Langoustine ravioli with black truffle and braised green Savoy cabbage.",
@@ -998,7 +998,7 @@
      "kitJ": "La Langoustine|Langoustine ravioli with black truffle and braised green Savoy cabbage."
     },
     {
-     "id": "msnv2jz",
+     "id": "entb5qv",
      "name": "Les Cuisses de Grenouille",
      "course": "starter",
      "desc": "Pan-fried frog legs with a parsley and shallot cream and a persillade of matsutake.",
@@ -1022,7 +1022,7 @@
      "kitJ": "Les Cuisses de Grenouille|Pan-fried frog legs with a parsley and shallot cream and a persillade of matsutake."
     },
     {
-     "id": "z49dp1r",
+     "id": "6lzkdr0",
      "name": "Le Homard Bleu",
      "course": "fish",
      "desc": "Blue lobster roasted with salted butter, stewed green peas and a spicy bisque in the style of bouillabaisse.",
@@ -1046,7 +1046,7 @@
      "kitJ": "Le Homard Bleu|Blue lobster roasted with salted butter, stewed green peas and a spicy bisque in the style of bouillabaisse."
     },
     {
-     "id": "c5y4hru",
+     "id": "j6z9t6o",
      "name": "Le Black Cod",
      "course": "fish",
      "desc": "Black cod caramelised with miso, with a pearly shellfish butter jus.",
@@ -1070,7 +1070,7 @@
      "kitJ": "Le Black Cod|Black cod caramelised with miso, with a pearly shellfish butter jus."
     },
     {
-     "id": "oadqbo4",
+     "id": "4m24jd5",
      "name": "Le Pigeon de Bretagne",
      "course": "meat",
      "desc": "Brittany pigeon and foie gras en duo, steamed with farm bacon.",
@@ -1094,7 +1094,7 @@
      "kitJ": "Le Pigeon de Bretagne|Brittany pigeon and foie gras en duo, steamed with farm bacon."
     },
     {
-     "id": "7q63qu3",
+     "id": "072dn3h",
      "name": "La Crêpe Soufflée",
      "course": "dessert",
      "desc": "The traditional soufflé crêpe with lime and a fromage blanc sorbet.",
@@ -1118,7 +1118,7 @@
      "kitJ": "La Crêpe Soufflée|The traditional soufflé crêpe with lime and a fromage blanc sorbet."
     },
     {
-     "id": "hunvmzo",
+     "id": "ecv3sk6",
      "name": "La Symphonie des Douceurs",
      "course": "dessert",
      "desc": "The dessert trolley: the guest chooses.",
@@ -1141,7 +1141,7 @@
      "kitJ": "La Symphonie des Douceurs|The dessert trolley: the guest chooses."
     },
     {
-     "id": "0ytomnr",
+     "id": "bpbypcr",
      "name": "Le Café ou le Thé",
      "course": "mignardise",
      "desc": "Coffee or tea with mignardises.",
@@ -1164,7 +1164,7 @@
      "kitJ": "Le Café ou le Thé|Coffee or tea with mignardises."
     },
     {
-     "id": "tgbprgo",
+     "id": "7su7sw8",
      "name": "Taittinger Brut Réserve NV",
      "course": "side",
      "desc": "Champagne, by the bottle (MOP 750).",
@@ -1187,7 +1187,7 @@
      "kitJ": "Taittinger Brut Réserve NV|Champagne, by the bottle (MOP 750)."
     },
     {
-     "id": "w4kjdtc",
+     "id": "nwhhd8l",
      "name": "Moët & Chandon Brut Impérial NV",
      "course": "side",
      "desc": "Champagne, by the bottle (MOP 850).",
@@ -1210,7 +1210,7 @@
      "kitJ": "Moët & Chandon Brut Impérial NV|Champagne, by the bottle (MOP 850)."
     },
     {
-     "id": "nvos8yp",
+     "id": "va16nbb",
      "name": "Laurent-Perrier Grand Siècle Iteration No. 24",
      "course": "side",
      "desc": "Champagne, by the bottle (MOP 1,800).",
@@ -1233,7 +1233,7 @@
      "kitJ": "Laurent-Perrier Grand Siècle Iteration No. 24|Champagne, by the bottle (MOP 1,800)."
     },
     {
-     "id": "utybab4",
+     "id": "owr218a",
      "name": "Dom Pérignon 2015",
      "course": "side",
      "desc": "Champagne, by the bottle (MOP 2,600).",
@@ -1256,7 +1256,7 @@
      "kitJ": "Dom Pérignon 2015|Champagne, by the bottle (MOP 2,600)."
     },
     {
-     "id": "hf6muop",
+     "id": "99q2sgk",
      "name": "Louis Roederer Cristal 2002",
      "course": "side",
      "desc": "Champagne, by the bottle (MOP 3,500).",
@@ -1279,7 +1279,7 @@
      "kitJ": "Louis Roederer Cristal 2002|Champagne, by the bottle (MOP 3,500)."
     },
     {
-     "id": "wm5jelc",
+     "id": "ujixfyy",
      "name": "Krug Brut 1996",
      "course": "side",
      "desc": "Champagne, by the bottle (MOP 5,500).",
@@ -1302,7 +1302,7 @@
      "kitJ": "Krug Brut 1996|Champagne, by the bottle (MOP 5,500)."
     },
     {
-     "id": "wpv00mz",
+     "id": "984mdyi",
      "name": "Chablis Grand Cru Les Clos, Simonnet-Febvre 2015",
      "course": "side",
      "desc": "White Burgundy, by the bottle (MOP 800).",
@@ -1325,7 +1325,7 @@
      "kitJ": "Chablis Grand Cru Les Clos, Simonnet-Febvre 2015|White Burgundy, by the bottle (MOP 800)."
     },
     {
-     "id": "f8hoth8",
+     "id": "46my2n4",
      "name": "Bâtard-Montrachet, Domaine Bouchard 2010",
      "course": "side",
      "desc": "White Burgundy, by the bottle (MOP 4,200).",
@@ -1348,7 +1348,7 @@
      "kitJ": "Bâtard-Montrachet, Domaine Bouchard 2010|White Burgundy, by the bottle (MOP 4,200)."
     },
     {
-     "id": "5zbxnbs",
+     "id": "h9k11lu",
      "name": "Gevrey-Chambertin Lavaux St.-Jacques, Faiveley 2016",
      "course": "side",
      "desc": "Red Burgundy, by the bottle (MOP 1,100).",
@@ -1371,7 +1371,7 @@
      "kitJ": "Gevrey-Chambertin Lavaux St.-Jacques, Faiveley 2016|Red Burgundy, by the bottle (MOP 1,100)."
     },
     {
-     "id": "i6w6s4h",
+     "id": "vnlbral",
      "name": "Château Latour-Martillac 2010",
      "course": "side",
      "desc": "Pessac-Léognan, by the bottle (MOP 800).",
@@ -1394,7 +1394,7 @@
      "kitJ": "Château Latour-Martillac 2010|Pessac-Léognan, by the bottle (MOP 800)."
     },
     {
-     "id": "x5g3qde",
+     "id": "7sb9cal",
      "name": "Château L'Hermitage 2000",
      "course": "side",
      "desc": "By the bottle (MOP 1,000).",
@@ -1417,7 +1417,7 @@
      "kitJ": "Château L'Hermitage 2000|By the bottle (MOP 1,000)."
     },
     {
-     "id": "use3pok",
+     "id": "3i686t8",
      "name": "Antinori Tignanello 1997",
      "course": "side",
      "desc": "Tuscany, by the bottle (MOP 3,500).",
@@ -1440,7 +1440,7 @@
      "kitJ": "Antinori Tignanello 1997|Tuscany, by the bottle (MOP 3,500)."
     },
     {
-     "id": "nlbuqzk",
+     "id": "1uipg16",
      "name": "Sommelier's selection, four glasses",
      "course": "side",
      "desc": "Four 90ml glasses chosen by the sommelier (MOP 888).",
@@ -1473,7 +1473,7 @@
   },
   "team": [
    {
-    "id": "p70z7yl",
+    "id": "psaztw7",
     "role": "chef",
     "name": "Mathieu Garnier",
     "skill": 90,
@@ -1491,7 +1491,7 @@
     "fame": 0
    },
    {
-    "id": "emjcq5g",
+    "id": "foc6irw",
     "role": "sous",
     "name": "Kenji Morita",
     "skill": 82,
@@ -1509,7 +1509,7 @@
     "fame": 0
    },
    {
-    "id": "ik6fw19",
+    "id": "ob86d85",
     "role": "pastry",
     "name": "Claire Dubois",
     "skill": 86,
@@ -1527,7 +1527,7 @@
     "fame": 0
    },
    {
-    "id": "txaxgl7",
+    "id": "45suz1v",
     "role": "somm",
     "name": "Wong Ka-lok",
     "skill": 88,
@@ -1545,7 +1545,7 @@
     "fame": 0
    },
    {
-    "id": "y4h2s26",
+    "id": "s9thy6v",
     "role": "maitre",
     "name": "Sophie Laurent",
     "skill": 86,
@@ -1567,7 +1567,7 @@
   "brigade": 88,
   "fohTrain": 90,
   "capex": 0,
-  "rngState": 4073869675,
+  "rngState": 4157014438,
   "cellar": {
    "value": 9000000,
    "target": 9000000,
@@ -1779,7 +1779,7 @@
   },
   "policies": [
    {
-    "id": "pol54cv31o",
+    "id": "pol0cm0tld",
     "key": "health",
     "name": "Medical cover for all staff",
     "blurb": "SJM's staff medical scheme, including non-resident workers.",
@@ -1791,7 +1791,7 @@
     "on": true
    },
    {
-    "id": "polvv5sjbt",
+    "id": "polzk81vvz",
     "key": "meal",
     "name": "Staff canteen",
     "blurb": "Meals in the Grand Lisboa's staff canteen every shift.",

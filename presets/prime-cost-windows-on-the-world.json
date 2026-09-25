@@ -1,10 +1,10 @@
 {
  "game": "prime-cost",
  "format": 3,
- "exportedAt": "2026-09-25T21:11:10.595Z",
+ "exportedAt": "2026-09-25T21:48:22.200Z",
  "state": {
   "v": 2,
-  "seed": 22144480,
+  "seed": 731529153,
   "ownerName": "You",
   "bizName": "Windows on the World",
   "concept": "custom",
@@ -46,7 +46,7 @@
    "rentYr": 30,
    "wage": 8.5,
    "tipCredit": 0.36,
-   "traffic": 0.418,
+   "traffic": 0.375,
    "comp": 1.2,
    "checkMult": 1,
    "taxRate": 0.0825,
@@ -73,7 +73,7 @@
   },
   "locations": [
    {
-    "id": "eoriqcj",
+    "id": "4um0qxl",
     "name": "Windows on the World",
     "market": "custom",
     "seats": 600,
@@ -86,10 +86,10 @@
     "escalator": 0.03,
     "status": "open",
     "buildLeft": 0,
-    "rep": 74,
+    "rep": 86,
     "awareness": 97,
     "morale": 66,
-    "skill": 66,
+    "skill": 68,
     "equip": 88,
     "health": 90,
     "monthsOpen": 31,
@@ -101,7 +101,7 @@
     "wagePremium": 0,
     "features": [
      {
-      "id": "ftbzzo3r",
+      "id": "f1nfrp2f",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -112,7 +112,7 @@
       "ambience": 12
      },
      {
-      "id": "fdm54kxt",
+      "id": "fa6hqvc9",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -123,7 +123,7 @@
       "bev": 0.12
      },
      {
-      "id": "fseg94kw",
+      "id": "fspr3kzi",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -133,7 +133,7 @@
       "sideline": 0.25
      },
      {
-      "id": "ff1tme6i",
+      "id": "fa480r5x",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -157,12 +157,12 @@
     },
     "kit": [
      {
-      "id": "k2qus3mk",
+      "id": "kcim2hld",
       "type": "range",
       "tier": 2,
       "model": "Jade Titan heavy-duty line",
       "price": 137400,
-      "cond": 84,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -170,12 +170,12 @@
       "broken": false
      },
      {
-      "id": "kpu8jngk",
+      "id": "kxfppu9f",
       "type": "range",
       "tier": 2,
       "model": "Banquet range line on the 106th floor",
       "price": 137400,
-      "cond": 88,
+      "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -183,24 +183,11 @@
       "broken": false
      },
      {
-      "id": "kuwxyrob",
+      "id": "kimr3zx9",
       "type": "hood",
       "tier": 2,
       "model": "Halton KVI capture-jet hood",
       "price": 124900,
-      "cond": 87,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k6ktjvnw",
-      "type": "vent",
-      "tier": 2,
-      "model": "Variable-speed fans, welded duct & tempered makeup air",
-      "price": 562000,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -209,12 +196,12 @@
       "broken": false
      },
      {
-      "id": "kt08bxbp",
-      "type": "suppression",
-      "tier": 1,
-      "model": "Ansul R-102 wet-chemical system",
-      "price": 31200,
-      "cond": 81,
+      "id": "kmead0ip",
+      "type": "vent",
+      "tier": 2,
+      "model": "Variable-speed fans, welded duct & tempered makeup air",
+      "price": 562000,
+      "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -222,7 +209,20 @@
       "broken": false
      },
      {
-      "id": "khntnc1l",
+      "id": "ka51qgkj",
+      "type": "suppression",
+      "tier": 1,
+      "model": "Ansul R-102 wet-chemical system",
+      "price": 31200,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kdb1hnga",
       "type": "extinguisher",
       "tier": 2,
       "model": "Class K, ABC and CO2 at every station, checked monthly",
@@ -235,12 +235,12 @@
       "broken": false
      },
      {
-      "id": "k84ntf56",
+      "id": "kqyhczjj",
       "type": "sprinkler",
       "tier": 2,
       "model": "Quick-response sprinklers with a monitored alarm",
       "price": 174800,
-      "cond": 82,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -248,11 +248,24 @@
       "broken": false
      },
      {
-      "id": "kyp989d9",
+      "id": "k8jgyuxx",
       "type": "greasetrap",
       "tier": 2,
       "model": "In-ground grease interceptor, 1,000 gallons, installed",
       "price": 18000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzoucm52",
+      "type": "refrig",
+      "tier": 3,
+      "model": "Custom walk-ins · Traulsen Spec-Line",
+      "price": 405900,
       "cond": 87,
       "own": "owned",
       "leaseLeft": 0,
@@ -261,37 +274,11 @@
       "broken": false
      },
      {
-      "id": "kdglu4u1",
-      "type": "refrig",
-      "tier": 3,
-      "model": "Custom walk-ins · Traulsen Spec-Line",
-      "price": 405900,
-      "cond": 78,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kyycfh66",
+      "id": "k8llav6s",
       "type": "dish",
       "tier": 3,
       "model": "Meiko M-iQ flight-type",
       "price": 110000,
-      "cond": 83,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "ktperunn",
-      "type": "dish",
-      "tier": 2,
-      "model": "Banquet dish machine",
-      "price": 42000,
       "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
@@ -300,24 +287,11 @@
       "broken": false
      },
      {
-      "id": "ko55g514",
-      "type": "fryer",
-      "tier": 1,
-      "model": "Pitco SG14 gas fryer",
-      "price": 1800,
-      "cond": 87,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k3uo4lzh",
-      "type": "grill",
+      "id": "kmalukxs",
+      "type": "dish",
       "tier": 2,
-      "model": "Montague Legend broiler",
-      "price": 11000,
+      "model": "Banquet dish machine",
+      "price": 42000,
       "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
@@ -326,10 +300,192 @@
       "broken": false
      },
      {
-      "id": "k3qkhs6t",
+      "id": "klsxxvsb",
+      "type": "fryer",
+      "tier": 1,
+      "model": "Pitco SG14 gas fryer",
+      "price": 1800,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krhv7i7s",
+      "type": "grill",
+      "tier": 2,
+      "model": "Montague Legend broiler",
+      "price": 11000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kqur5ida",
       "type": "salamander",
       "tier": 2,
       "model": "Salvis Salamat Pro",
+      "price": 9000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "koskxjjk",
+      "type": "combi",
+      "tier": 1,
+      "model": "Convotherm maxx 6.10",
+      "price": 14000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kr8wc9q9",
+      "type": "convection",
+      "tier": 2,
+      "model": "Blodgett DFG-100 double stack",
+      "price": 16000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3uz9yrk",
+      "type": "kettle",
+      "tier": 2,
+      "model": "Cleveland steam kettle & skillet",
+      "price": 24000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kse7fu88",
+      "type": "steamtable",
+      "tier": 2,
+      "model": "Banquet hot boxes and holding",
+      "price": 7000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krx05w2o",
+      "type": "blast",
+      "tier": 1,
+      "model": "Traulsen blast chiller",
+      "price": 12000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kgq0zibc",
+      "type": "bakery",
+      "tier": 1,
+      "model": "Blodgett deck oven & proofer",
+      "price": 14000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kau6bqt0",
+      "type": "mixer",
+      "tier": 2,
+      "model": "Hobart Legacy 60-qt & Rondo sheeter",
+      "price": 28000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knaw0dwp",
+      "type": "pastrycase",
+      "tier": 1,
+      "model": "Federal Industries 48\" refrigerated case",
+      "price": 5500,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knt4zl27",
+      "type": "ice",
+      "tier": 3,
+      "model": "Hoshizaki KM, pair with storage",
+      "price": 14000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k57b6kxt",
+      "type": "bar",
+      "tier": 3,
+      "model": "Custom bar build with Perlick & Krowne stations",
+      "price": 90000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "khxyvh4k",
+      "type": "bar",
+      "tier": 2,
+      "model": "The Greatest Bar on Earth",
+      "price": 45000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kge1dpx3",
+      "type": "glasswasher",
+      "tier": 2,
+      "model": "Hobart LXeH undercounter",
       "price": 9000,
       "cond": 81,
       "own": "owned",
@@ -339,168 +495,12 @@
       "broken": false
      },
      {
-      "id": "kkbfrqau",
-      "type": "combi",
-      "tier": 1,
-      "model": "Convotherm maxx 6.10",
-      "price": 14000,
-      "cond": 87,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kjlgskr8",
-      "type": "convection",
-      "tier": 2,
-      "model": "Blodgett DFG-100 double stack",
-      "price": 16000,
-      "cond": 85,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "knb12bwz",
-      "type": "kettle",
-      "tier": 2,
-      "model": "Cleveland steam kettle & skillet",
-      "price": 24000,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kifg717f",
-      "type": "steamtable",
-      "tier": 2,
-      "model": "Banquet hot boxes and holding",
-      "price": 7000,
-      "cond": 89,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k1mkxy1a",
-      "type": "blast",
-      "tier": 1,
-      "model": "Traulsen blast chiller",
-      "price": 12000,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kqve0my6",
-      "type": "bakery",
-      "tier": 1,
-      "model": "Blodgett deck oven & proofer",
-      "price": 14000,
-      "cond": 90,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k5j30gyl",
-      "type": "mixer",
-      "tier": 2,
-      "model": "Hobart Legacy 60-qt & Rondo sheeter",
-      "price": 28000,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kh61ofe7",
-      "type": "pastrycase",
-      "tier": 1,
-      "model": "Federal Industries 48\" refrigerated case",
-      "price": 5500,
-      "cond": 86,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kwtbmu4m",
-      "type": "ice",
-      "tier": 3,
-      "model": "Hoshizaki KM, pair with storage",
-      "price": 14000,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kjpg4p8b",
-      "type": "bar",
-      "tier": 3,
-      "model": "Custom bar build with Perlick & Krowne stations",
-      "price": 90000,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kd425w83",
-      "type": "bar",
-      "tier": 2,
-      "model": "The Greatest Bar on Earth",
-      "price": 45000,
-      "cond": 87,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kbggd3dj",
-      "type": "glasswasher",
-      "tier": 2,
-      "model": "Hobart LXeH undercounter",
-      "price": 9000,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kntanmdc",
+      "id": "kodp3bby",
       "type": "winestore",
       "tier": 3,
       "model": "The wine cellar",
       "price": 120000,
-      "cond": 85,
+      "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -508,12 +508,12 @@
       "broken": false
      },
      {
-      "id": "kjkrwiwt",
+      "id": "kqviyk39",
       "type": "espresso",
       "tier": 1,
       "model": "La Marzocco Linea PB",
       "price": 18000,
-      "cond": 88,
+      "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -521,12 +521,12 @@
       "broken": false
      },
      {
-      "id": "k8t9m21x",
+      "id": "ku94rma3",
       "type": "pos",
       "tier": 1,
       "model": "POS terminals & receipt printers",
       "price": 0,
-      "cond": 85,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -535,12 +535,12 @@
       "fx": {}
      },
      {
-      "id": "kb2jtlcl",
+      "id": "kicxnbh0",
       "type": "menus",
       "tier": 2,
       "model": "Letterpress menus on cotton paper",
       "price": 2500,
-      "cond": 83,
+      "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -552,12 +552,12 @@
       }
      },
      {
-      "id": "knebz1py",
+      "id": "kkd3ravp",
       "type": "hoststand",
       "tier": 1,
       "model": "Tablet host stand with an online booking system",
       "price": 1500,
-      "cond": 90,
+      "cond": 86,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -569,102 +569,11 @@
       }
      },
      {
-      "id": "kgukgkgf",
+      "id": "krjwr63a",
       "type": "sound",
       "tier": 2,
       "model": "Zoned commercial audio system",
       "price": 12000,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kmkw558e",
-      "type": "seating",
-      "tier": 3,
-      "model": "Tiered banquettes facing the windows",
-      "price": 936600,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "ktf75ppk",
-      "type": "tableware",
-      "tier": 3,
-      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
-      "price": 374600,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k8he6s4o",
-      "type": "linens",
-      "tier": 2,
-      "model": "Tablecloths and cloth napkins from a linen service",
-      "price": 2500,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k5xgwi77",
-      "type": "waterservice",
-      "tier": 1,
-      "model": "Glass carafes & filtered water",
-      "price": 800,
-      "cond": 84,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kvrfwelz",
-      "type": "smallwares",
-      "tier": 2,
-      "model": "A full set with calibrated scales and probe thermometers",
-      "price": 124900,
-      "cond": 85,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kprdgymy",
-      "type": "restroom",
-      "tier": 2,
-      "model": "Renovated restrooms with touchless fixtures",
-      "price": 374600,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k2yqyw2q",
-      "type": "hvac",
-      "tier": 2,
-      "model": "Building HVAC on the 106th and 107th floors",
-      "price": 249800,
       "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
@@ -673,12 +582,12 @@
       "broken": false
      },
      {
-      "id": "kmpfzj6h",
-      "type": "safe",
-      "tier": 1,
-      "model": "Drop safe",
-      "price": 1200,
-      "cond": 85,
+      "id": "k56hrrn7",
+      "type": "seating",
+      "tier": 3,
+      "model": "Tiered banquettes facing the windows",
+      "price": 936600,
+      "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -686,12 +595,103 @@
       "broken": false
      },
      {
-      "id": "k0bluznn",
+      "id": "kawpsozo",
+      "type": "tableware",
+      "tier": 3,
+      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
+      "price": 374600,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzsy092d",
+      "type": "linens",
+      "tier": 2,
+      "model": "Tablecloths and cloth napkins from a linen service",
+      "price": 2500,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kssfi43c",
+      "type": "waterservice",
+      "tier": 1,
+      "model": "Glass carafes & filtered water",
+      "price": 800,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzu60wr4",
+      "type": "smallwares",
+      "tier": 2,
+      "model": "A full set with calibrated scales and probe thermometers",
+      "price": 124900,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kj1khj3p",
+      "type": "restroom",
+      "tier": 2,
+      "model": "Renovated restrooms with touchless fixtures",
+      "price": 374600,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kqg77o2b",
+      "type": "hvac",
+      "tier": 2,
+      "model": "Building HVAC on the 106th and 107th floors",
+      "price": 249800,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kozuaevx",
+      "type": "safe",
+      "tier": 1,
+      "model": "Drop safe",
+      "price": 1200,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "komes5sa",
       "type": "cameras",
       "tier": 1,
       "model": "Basic four-camera system",
       "price": 1800,
-      "cond": 88,
+      "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -902,10 +902,10 @@
   },
   "ap": 0,
   "ar": 0,
-  "savedAt": 1790370670590,
+  "savedAt": 1790372902195,
   "mods": [
    {
-    "id": "45rtzpr",
+    "id": "2ex4r9n",
     "left": null,
     "loc": -1,
     "src": "Windows on the World",
@@ -921,7 +921,7 @@
   "upgrades": [],
   "chronicle": [],
   "world": {
-   "notes": "Windows on the World occupied the 106th and 107th floors of the North Tower of the World Trade Center, about 50,000 square feet, developed by Joe Baum and first opened in 1976. After the February 1993 bombing it closed; the Port Authority chose a new operator in 1994 and it reopened on June 27, 1996 after a $25 million renovation designed by Hugh Hardy, with jackets still required in the main dining room (neckties optional) and the Greatest Bar on Earth in place of the old City Lights Bar and Hors d'Oeuvrerie: a 300-person room of chef stations for sushi, oysters and shabu-shabu, microbrews, vodkas, wines by the glass and about 25 international dishes, with Latin bands on Thursday nights. In 1999 Cellar in the Sky became Wild Blue, a 60-seat American steakhouse. Joe Baum died in 1998. Michael Lomonaco became executive chef in 1997 and replaced the old menus with American cooking from the region: Hudson Valley venison, Montauk lobster, herbs from the World Trade Center greenmarket, beef Wellington, and lunch specials and smaller dishes to bring in tourists alongside the executives. Kevin Zraly ran the wine programme from 1976; Veuve Clicquot Yellow Label was the house Champagne. About 450 people worked across the three rooms. In 2000 it reported $37 million in revenue, the highest-grossing restaurant in the United States. Ruth Reichl gave it two stars in The New York Times on December 31, 1997. THIS SAVE BEGINS IN JANUARY 1999: keep the story in its own time, among the people and events of the late 1990s, and do not foreshadow or depict later events. Money is in 1999 dollars. The dining-room appetizers and main courses, with their prices, are from a Lomonaco-era Windows on the World dinner menu (1997-2001, summer); the bar dishes are from the Greatest Bar on Earth's 1996 opening menu and beef Wellington from a later account of his Windows dishes; the desserts, cheeses and all other prices are stand-ins or estimates, and staff names, rent and the local events are invented; the history above is from published sources.",
+   "notes": "Windows on the World occupied the 106th and 107th floors of the North Tower of the World Trade Center, about 50,000 square feet, developed by Joe Baum and first opened in 1976. After the February 1993 bombing it closed; the Port Authority chose a new operator in 1994 and it reopened on June 27, 1996 after a $25 million renovation designed by Hugh Hardy, with jackets still required in the main dining room (neckties optional) and the Greatest Bar on Earth in place of the old City Lights Bar and Hors d'Oeuvrerie: a 300-person room of chef stations for sushi, oysters and shabu-shabu, microbrews, vodkas, wines by the glass and about 25 international dishes, with Latin bands on Thursday nights. In 1999 Cellar in the Sky became Wild Blue, a 60-seat American steakhouse. Joe Baum died in 1998. Michael Lomonaco became executive chef in 1997 and replaced the old menus with American cooking from the region: Hudson Valley venison, Montauk lobster, herbs from the World Trade Center greenmarket, beef Wellington, and lunch specials and smaller dishes to bring in tourists alongside the executives. Kevin Zraly ran the wine programme from 1976; Veuve Clicquot Yellow Label was the house Champagne. About 450 people worked across the three rooms. In 2000 it reported $37 million in revenue, the highest-grossing restaurant in the United States. Ruth Reichl gave it two stars in The New York Times on December 31, 1997. THIS SAVE BEGINS IN JANUARY 1999: keep the story in its own time, among the people and events of the late 1990s, and do not foreshadow or depict later events. Money is in 1999 dollars. The dining-room appetizers and main courses, with their prices, are from a Lomonaco-era Windows on the World dinner menu (1997-2001, summer); the bar dishes are from the Greatest Bar on Earth's 1996 opening menu and beef Wellington from a later account of his Windows dishes; the desserts, cheeses and all other prices are stand-ins or estimates; the trophy bottles in the cellar are invented for the game (real wines that existed in 1999, at plausible 1999 list prices, not Windows' actual list); and staff names, rent and the local events are invented; the history above is from published sources.",
    "living": true,
    "guide": false,
    "guideMonth": 10
@@ -1004,7 +1004,7 @@
    "tastingPrice": 0,
    "dishes": [
     {
-     "id": "kiaab7p",
+     "id": "qh2u5rb",
      "name": "Salad of Asparagus, Tender Greens and Old Chatham Camembert",
      "course": "starter",
      "desc": "From the dining-room menu.",
@@ -1027,7 +1027,7 @@
      "kitJ": "Salad of Asparagus, Tender Greens and Old Chatham Camembert|From the dining-room menu."
     },
     {
-     "id": "zfbqnz3",
+     "id": "s3i30on",
      "name": "Giant White Gulf Shrimp",
      "course": "starter",
      "desc": "With a black bean grilled-sesame vinaigrette.",
@@ -1062,7 +1062,7 @@
      "kitJ": "Giant White Gulf Shrimp|With a black bean grilled-sesame vinaigrette."
     },
     {
-     "id": "kuclus5",
+     "id": "bp2aip5",
      "name": "Maine Hard Shell Lobster Salad",
      "course": "starter",
      "desc": "With a smoked chili dressing.",
@@ -1085,7 +1085,7 @@
      "kitJ": "Maine Hard Shell Lobster Salad|With a smoked chili dressing."
     },
     {
-     "id": "xj99q3a",
+     "id": "25wz4jt",
      "name": "A Mixture of Local Lettuces and Herbs",
      "course": "starter",
      "desc": "Dijon mustard vinaigrette.",
@@ -1108,7 +1108,7 @@
      "kitJ": "A Mixture of Local Lettuces and Herbs|Dijon mustard vinaigrette."
     },
     {
-     "id": "1acb9xx",
+     "id": "nt57yrw",
      "name": "Duck Prosciutto",
      "course": "starter",
      "desc": "With lamb's lettuce salad and roasted fig relish.",
@@ -1132,7 +1132,7 @@
      "kitJ": "Duck Prosciutto|With lamb's lettuce salad and roasted fig relish."
     },
     {
-     "id": "b0tx678",
+     "id": "p9czqco",
      "name": "Oak Smoked Salmon with Corn Cakes",
      "course": "starter",
      "desc": "With American caviar.",
@@ -1156,7 +1156,7 @@
      "kitJ": "Oak Smoked Salmon with Corn Cakes|With American caviar."
     },
     {
-     "id": "jxuu54t",
+     "id": "vrl9x53",
      "name": "Beluga Caviar Service",
      "course": "starter",
      "desc": "With the traditional garnishes and toast.",
@@ -1179,7 +1179,7 @@
      "kitJ": "Beluga Caviar Service|With the traditional garnishes and toast."
     },
     {
-     "id": "j22mv5r",
+     "id": "uurc4ok",
      "name": "Yellow Tomato Gazpacho with Jumbo Lump Crab Meat",
      "course": "starter",
      "desc": "A chilled soup.",
@@ -1202,7 +1202,7 @@
      "kitJ": "Yellow Tomato Gazpacho with Jumbo Lump Crab Meat|A chilled soup."
     },
     {
-     "id": "ttd3rk2",
+     "id": "6qzyulf",
      "name": "Maine Lobster Bisque",
      "course": "starter",
      "desc": "With lobster chunks.",
@@ -1226,7 +1226,7 @@
      "kitJ": "Maine Lobster Bisque|With lobster chunks."
     },
     {
-     "id": "u6xh44j",
+     "id": "54u41hy",
      "name": "Oyster Pan Roast",
      "course": "starter",
      "desc": "With apple-smoked bacon and tarragon cream on brioche toast.",
@@ -1251,7 +1251,7 @@
      "kitJ": "Oyster Pan Roast|With apple-smoked bacon and tarragon cream on brioche toast."
     },
     {
-     "id": "myab5wn",
+     "id": "lknvf6k",
      "name": "Seared Diver Scallop Salad",
      "course": "starter",
      "desc": "With a ginger, sherry and wasabi caviar sauce.",
@@ -1275,7 +1275,7 @@
      "kitJ": "Seared Diver Scallop Salad|With a ginger, sherry and wasabi caviar sauce."
     },
     {
-     "id": "b3mdd90",
+     "id": "3c82rpk",
      "name": "Grilled Tamarind Quail",
      "course": "starter",
      "desc": "With watercress and scallion cakes and papaya relish.",
@@ -1310,7 +1310,7 @@
      "kitJ": "Grilled Tamarind Quail|With watercress and scallion cakes and papaya relish."
     },
     {
-     "id": "9sbd508",
+     "id": "l7hx1yj",
      "name": "Hudson Valley Foie Gras",
      "course": "starter",
      "desc": "With caramelized rhubarb and cracked black pepper.",
@@ -1333,7 +1333,7 @@
      "kitJ": "Hudson Valley Foie Gras|With caramelized rhubarb and cracked black pepper."
     },
     {
-     "id": "x1ue2mu",
+     "id": "nf7rcls",
      "name": "Daily Pasta or Risotto",
      "course": "pasta",
      "desc": "Changes daily.",
@@ -1357,7 +1357,7 @@
      "kitJ": "Daily Pasta or Risotto|Changes daily."
     },
     {
-     "id": "9ala6xu",
+     "id": "ljsihks",
      "name": "Roast Catskill Trout",
      "course": "fish",
      "desc": "With Jonah crab and pine nut stuffing and lobster butter.",
@@ -1380,7 +1380,7 @@
      "kitJ": "Roast Catskill Trout|With Jonah crab and pine nut stuffing and lobster butter."
     },
     {
-     "id": "rk3kazv",
+     "id": "oj6o21d",
      "name": "Cedar Roasted Pacific Salmon",
      "course": "fish",
      "desc": "With green onion horseradish potatoes and a Pinot Noir sauce.",
@@ -1403,7 +1403,7 @@
      "kitJ": "Cedar Roasted Pacific Salmon|With green onion horseradish potatoes and a Pinot Noir sauce."
     },
     {
-     "id": "u1g5bgo",
+     "id": "pk62123",
      "name": "Maine Lobster with Summer Truffles",
      "course": "fish",
      "desc": "With asparagus, sugar snap peas and parsley cream.",
@@ -1427,7 +1427,7 @@
      "kitJ": "Maine Lobster with Summer Truffles|With asparagus, sugar snap peas and parsley cream."
     },
     {
-     "id": "2yi3gl6",
+     "id": "15yrc4x",
      "name": "Grilled Mirin-Glazed Tuna",
      "course": "fish",
      "desc": "With bok choy, coconut rice and a ginger-beet vinaigrette.",
@@ -1462,7 +1462,7 @@
      "kitJ": "Grilled Mirin-Glazed Tuna|With bok choy, coconut rice and a ginger-beet vinaigrette."
     },
     {
-     "id": "ny7x7wx",
+     "id": "bbe96kt",
      "name": "Mahi-Mahi with Mashed Boniato",
      "course": "fish",
      "desc": "With bacon, tomato sofrito and a chili-coriander broth.",
@@ -1486,7 +1486,7 @@
      "kitJ": "Mahi-Mahi with Mashed Boniato|With bacon, tomato sofrito and a chili-coriander broth."
     },
     {
-     "id": "qu4ktvo",
+     "id": "ani9rag",
      "name": "Daily Market Fish or Seafood",
      "course": "fish",
      "desc": "Changes daily.",
@@ -1509,7 +1509,7 @@
      "kitJ": "Daily Market Fish or Seafood|Changes daily."
     },
     {
-     "id": "wk5v8os",
+     "id": "qj8k87x",
      "name": "Potato 'Lasagne' of Mushrooms",
      "course": "main",
      "desc": "With young vegetables, roasted shallots and white truffle oil.",
@@ -1533,7 +1533,7 @@
      "kitJ": "Potato 'Lasagne' of Mushrooms|With young vegetables, roasted shallots and white truffle oil."
     },
     {
-     "id": "hd3qu8t",
+     "id": "x4480gv",
      "name": "Roasted Organic Chicken",
      "course": "main",
      "desc": "With quinoa herb risotto and wild mushroom pan gravy.",
@@ -1557,7 +1557,7 @@
      "kitJ": "Roasted Organic Chicken|With quinoa herb risotto and wild mushroom pan gravy."
     },
     {
-     "id": "4bkb0gg",
+     "id": "ccj8hv5",
      "name": "Sliced Magret Duck Steak",
      "course": "meat",
      "desc": "With roasted beets, curry pearl couscous and a balsamic glaze.",
@@ -1581,7 +1581,7 @@
      "kitJ": "Sliced Magret Duck Steak|With roasted beets, curry pearl couscous and a balsamic glaze."
     },
     {
-     "id": "jlfa70m",
+     "id": "0c645w4",
      "name": "Grilled Venison Chops",
      "course": "meat",
      "desc": "In a sauce of Cabernet, with whisky pecan yams and roasted shallots.",
@@ -1615,7 +1615,7 @@
      "kitJ": "Grilled Venison Chops|In a sauce of Cabernet, with whisky pecan yams and roasted shallots."
     },
     {
-     "id": "u1me87f",
+     "id": "n5lw5w9",
      "name": "Rack of Lamb in a Rosemary-Mustard Crust",
      "course": "meat",
      "desc": "With twice-cooked potatoes.",
@@ -1638,7 +1638,7 @@
      "kitJ": "Rack of Lamb in a Rosemary-Mustard Crust|With twice-cooked potatoes."
     },
     {
-     "id": "xi6ftyw",
+     "id": "vh4mmvq",
      "name": "Filet Mignon",
      "course": "meat",
      "desc": "With seared greens, Colby cheese potatoes, coffee BBQ sauce and onion jam.",
@@ -1673,7 +1673,7 @@
      "kitJ": "Filet Mignon|With seared greens, Colby cheese potatoes, coffee BBQ sauce and onion jam."
     },
     {
-     "id": "47fqua5",
+     "id": "69vtqr9",
      "name": "Grilled Black Angus Sirloin",
      "course": "meat",
      "desc": "With chipotle butter and Catskill fingerling potatoes.",
@@ -1707,7 +1707,7 @@
      "kitJ": "Grilled Black Angus Sirloin|With chipotle butter and Catskill fingerling potatoes."
     },
     {
-     "id": "fq3a6pl",
+     "id": "wnvapdw",
      "name": "Oysters on the Half Shell",
      "course": "starter",
      "desc": "Shucked to order at the oyster station in the Greatest Bar on Earth.",
@@ -1730,7 +1730,7 @@
      "kitJ": "Oysters on the Half Shell|Shucked to order at the oyster station in the Greatest Bar on Earth."
     },
     {
-     "id": "toyghqy",
+     "id": "2bdc4st",
      "name": "Barbecued 'Hot Tips' Oysters",
      "course": "starter",
      "desc": "From the bar's grill, glazed with barbecue sauce.",
@@ -1753,7 +1753,7 @@
      "kitJ": "Barbecued 'Hot Tips' Oysters|From the bar's grill, glazed with barbecue sauce."
     },
     {
-     "id": "7qa2vmd",
+     "id": "rqp9aru",
      "name": "Sushi",
      "course": "starter",
      "desc": "Rolled to order at the sushi station in the Greatest Bar on Earth.",
@@ -1786,7 +1786,7 @@
      "kitJ": "Sushi|Rolled to order at the sushi station in the Greatest Bar on Earth."
     },
     {
-     "id": "a0bxeyj",
+     "id": "kcut61i",
      "name": "Siberian Pelmeni",
      "course": "starter",
      "desc": "Meat dumplings from the bar menu.",
@@ -1810,7 +1810,7 @@
      "kitJ": "Siberian Pelmeni|Meat dumplings from the bar menu."
     },
     {
-     "id": "8amqeq8",
+     "id": "5j3tjg5",
      "name": "Grilled Quail Wrapped in Vine Leaves",
      "course": "starter",
      "desc": "From the bar menu.",
@@ -1845,7 +1845,7 @@
      "kitJ": "Grilled Quail Wrapped in Vine Leaves|From the bar menu."
     },
     {
-     "id": "mo8knua",
+     "id": "zwifiya",
      "name": "Grilled Jerk Pork Skewers",
      "course": "starter",
      "desc": "From the bar menu.",
@@ -1879,7 +1879,7 @@
      "kitJ": "Grilled Jerk Pork Skewers|From the bar menu."
     },
     {
-     "id": "ovl8hnk",
+     "id": "6libdjd",
      "name": "Charcuterie Board",
      "course": "starter",
      "desc": "Slabs of charcuterie on a wooden board.",
@@ -1902,7 +1902,7 @@
      "kitJ": "Charcuterie Board|Slabs of charcuterie on a wooden board."
     },
     {
-     "id": "7vjxyv0",
+     "id": "mddx6gc",
      "name": "Personal Pizza",
      "course": "main",
      "desc": "From the bar menu.",
@@ -1937,7 +1937,7 @@
      "kitJ": "Personal Pizza|From the bar menu."
     },
     {
-     "id": "n71auz8",
+     "id": "9hkwgar",
      "name": "Tagine",
      "course": "main",
      "desc": "Served in colourful pottery at the bar.",
@@ -1961,7 +1961,7 @@
      "kitJ": "Tagine|Served in colourful pottery at the bar."
     },
     {
-     "id": "mq09bf4",
+     "id": "nuvp9if",
      "name": "Shabu-Shabu",
      "course": "main",
      "desc": "Stirred at the bar's station on stone induction cookers.",
@@ -1985,7 +1985,7 @@
      "kitJ": "Shabu-Shabu|Stirred at the bar's station on stone induction cookers."
     },
     {
-     "id": "88wsdan",
+     "id": "5n62d7m",
      "name": "Fish and Chips",
      "course": "fish",
      "desc": "Piled in a silver basket at the bar.",
@@ -2020,7 +2020,7 @@
      "kitJ": "Fish and Chips|Piled in a silver basket at the bar."
     },
     {
-     "id": "f3wf5oq",
+     "id": "5bkfe7u",
      "name": "Beef Wellington",
      "course": "meat",
      "desc": "With Bordelaise sauce, pommes dauphinoise and a bouquetière of vegetables.",
@@ -2044,7 +2044,7 @@
      "kitJ": "Beef Wellington|With Bordelaise sauce, pommes dauphinoise and a bouquetière of vegetables."
     },
     {
-     "id": "sdqzfbu",
+     "id": "k4qogkw",
      "name": "Chocolate Soufflé",
      "course": "dessert",
      "desc": "Baked to order.",
@@ -2067,7 +2067,7 @@
      "kitJ": "Chocolate Soufflé|Baked to order."
     },
     {
-     "id": "r5qxaxa",
+     "id": "rmfup2b",
      "name": "New York Cheesecake",
      "course": "dessert",
      "desc": "With a berry compote.",
@@ -2090,7 +2090,7 @@
      "kitJ": "New York Cheesecake|With a berry compote."
     },
     {
-     "id": "nx26etx",
+     "id": "qdlmabw",
      "name": "Selection of Cheeses",
      "course": "cheese",
      "desc": "American and European cheeses.",
@@ -2113,7 +2113,7 @@
      "kitJ": "Selection of Cheeses|American and European cheeses."
     },
     {
-     "id": "psrg3aw",
+     "id": "fvdanr5",
      "name": "Veuve Clicquot Yellow Label",
      "course": "side",
      "desc": "The house Champagne: Windows sold more of it than any restaurant on earth, by Kevin Zraly's account.",
@@ -2136,7 +2136,7 @@
      "kitJ": "Veuve Clicquot Yellow Label|The house Champagne: Windows sold more of it than any restaurant on earth, by Kevin Zraly's account."
     },
     {
-     "id": "vhpn9s8",
+     "id": "g9ahfcx",
      "name": "Wine by the Glass",
      "course": "side",
      "desc": "Dozens of wines by the glass from Kevin Zraly's list.",
@@ -2159,7 +2159,7 @@
      "kitJ": "Wine by the Glass|Dozens of wines by the glass from Kevin Zraly's list."
     },
     {
-     "id": "zbn77e8",
+     "id": "a72ya80",
      "name": "Microbrew on Tap",
      "course": "side",
      "desc": "From the bar's taps.",
@@ -2182,7 +2182,7 @@
      "kitJ": "Microbrew on Tap|From the bar's taps."
     },
     {
-     "id": "qyevbx4",
+     "id": "c9fhh7e",
      "name": "Vodka",
      "course": "side",
      "desc": "From a long shelf of vodkas at the bar.",
@@ -2214,7 +2214,7 @@
      "kitJ": "Vodka|From a long shelf of vodkas at the bar."
     },
     {
-     "id": "a8cll5s",
+     "id": "ovu80m2",
      "name": "Classic Martini",
      "course": "side",
      "desc": "Gin or vodka, stirred.",
@@ -2246,7 +2246,7 @@
      "kitJ": "Classic Martini|Gin or vodka, stirred."
     },
     {
-     "id": "xtet5o9",
+     "id": "c2b9qcb",
      "name": "Mineral Water",
      "course": "side",
      "desc": "Still or sparkling.",
@@ -2269,7 +2269,7 @@
      "kitJ": "Mineral Water|Still or sparkling."
     },
     {
-     "id": "4d0gou2",
+     "id": "03gnvk3",
      "name": "Espresso or Cappuccino",
      "course": "side",
      "desc": "After dinner.",
@@ -2311,7 +2311,7 @@
   },
   "team": [
    {
-    "id": "y3lb1vv",
+    "id": "3nnl8xm",
     "role": "chef",
     "name": "Anthony Ruggiero",
     "skill": 76,
@@ -2329,7 +2329,7 @@
     "fame": 0
    },
    {
-    "id": "f4dbk0x",
+    "id": "3yiz23a",
     "role": "sous",
     "name": "Marisol Reyes",
     "skill": 66,
@@ -2347,7 +2347,7 @@
     "fame": 0
    },
    {
-    "id": "jz0g3d3",
+    "id": "qvs569x",
     "role": "pastry",
     "name": "Henri Lacaze",
     "skill": 70,
@@ -2365,7 +2365,7 @@
     "fame": 0
    },
    {
-    "id": "bmwmwqw",
+    "id": "h7645oi",
     "role": "somm",
     "name": "Paul Whitcombe",
     "skill": 74,
@@ -2384,7 +2384,7 @@
     "fame": 0
    },
    {
-    "id": "3x7c929",
+    "id": "6hg709o",
     "role": "maitre",
     "name": "Evelyn Park",
     "skill": 72,
@@ -2406,14 +2406,132 @@
   "brigade": 70,
   "fohTrain": 68,
   "capex": 0,
-  "rngState": 3982253191,
+  "rngState": 396670568,
   "cellar": {
    "value": 2400000,
    "target": 2400000,
    "ref": 2400000,
    "markup": 2.6,
    "standing": 88,
-   "rare": []
+   "rare": [
+    {
+     "id": "wowchteaumout",
+     "name": "Château Mouton-Rothschild 1945",
+     "cost": 3864,
+     "price": 8500,
+     "prestige": 10,
+     "qty": 1,
+     "rarity": 5
+    },
+    {
+     "id": "wowdomainedel",
+     "name": "Domaine de la Romanée-Conti, Romanée-Conti 1990",
+     "cost": 2500,
+     "price": 5500,
+     "prestige": 10,
+     "qty": 1,
+     "rarity": 5
+    },
+    {
+     "id": "wowchteaulafi",
+     "name": "Château Lafite-Rothschild 1961",
+     "cost": 1455,
+     "price": 3200,
+     "prestige": 9,
+     "qty": 2,
+     "rarity": 5
+    },
+    {
+     "id": "wowchteaulato",
+     "name": "Château Latour 1961",
+     "cost": 1364,
+     "price": 3000,
+     "prestige": 9,
+     "qty": 2,
+     "rarity": 5
+    },
+    {
+     "id": "wowchteauptru",
+     "name": "Château Pétrus 1982",
+     "cost": 1091,
+     "price": 2400,
+     "prestige": 9,
+     "qty": 2,
+     "rarity": 4
+    },
+    {
+     "id": "wowdomainedel",
+     "name": "Domaine de la Romanée-Conti, La Tâche 1990",
+     "cost": 818,
+     "price": 1800,
+     "prestige": 8,
+     "qty": 3,
+     "rarity": 4
+    },
+    {
+     "id": "wowchteaudyqu",
+     "name": "Château d'Yquem 1967",
+     "cost": 636,
+     "price": 1400,
+     "prestige": 8,
+     "qty": 2,
+     "rarity": 4
+    },
+    {
+     "id": "wowheitzcella",
+     "name": "Heitz Cellar Martha's Vineyard Cabernet Sauvignon 1974",
+     "cost": 341,
+     "price": 750,
+     "prestige": 7,
+     "qty": 3,
+     "rarity": 4
+    },
+    {
+     "id": "wowchteaumarg",
+     "name": "Château Margaux 1990",
+     "cost": 295,
+     "price": 650,
+     "prestige": 7,
+     "qty": 4,
+     "rarity": 3
+    },
+    {
+     "id": "wowdomprignon",
+     "name": "Dom Pérignon Rosé 1985",
+     "cost": 273,
+     "price": 600,
+     "prestige": 6,
+     "qty": 4,
+     "rarity": 3
+    },
+    {
+     "id": "wowbeaulieuvi",
+     "name": "Beaulieu Vineyard Georges de Latour Private Reserve 1970",
+     "cost": 227,
+     "price": 500,
+     "prestige": 6,
+     "qty": 3,
+     "rarity": 4
+    },
+    {
+     "id": "wowkrug1985",
+     "name": "Krug 1985",
+     "cost": 205,
+     "price": 450,
+     "prestige": 6,
+     "qty": 6,
+     "rarity": 3
+    },
+    {
+     "id": "wowopusone198",
+     "name": "Opus One 1985",
+     "cost": 182,
+     "price": 400,
+     "prestige": 5,
+     "qty": 6,
+     "rarity": 3
+    }
+   ]
   },
   "lots": [],
   "candidates": [],
@@ -2424,7 +2542,7 @@
   "franchise": null,
   "policies": [
    {
-    "id": "polw1aqbrp",
+    "id": "polbe10djl",
     "key": "health",
     "name": "Union health and welfare fund",
     "blurb": "Most of the staff belong to the hotel and restaurant workers' union, and the contract pays into its health fund.",
@@ -2436,7 +2554,7 @@
     "on": true
    },
    {
-    "id": "pole8gwg4e",
+    "id": "polwuca326",
     "key": "meal",
     "name": "Family meal before service",
     "blurb": "Staff eat together in the employee dining room before lunch and dinner.",

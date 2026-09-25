@@ -513,6 +513,8 @@ function profileKey(){ const C=CONCEPTS[S.concept]||{}; if(WEEK_PROFILES[S.conce
   if(C.truck) return "truck"; if(genreTags().has("pizza")) return "pizza"; if(C.counter) return "fast";
   const t=S.locations[0]?locTier(S.locations[0]):"mid"; return t==="high"?"fine":t==="low"?"diner":"bistro"; }
 function weekProfile(){ const P=WEEK_PROFILES[profileKey()], C=CONCEPTS[S.concept]||{}, part=P.part.slice();
+  // a fine-dining room that opens for lunch does a real, smaller lunch trade (set lunches, the tasting menu at noon)
+  { const h=S.locations&&S.locations[0]&&S.locations[0].hours; if(h&&h.svc&&h.svc.lunch&&!part[1]&&part[2]>0){ part[1]=.3; const t=part.reduce((x,y)=>x+y,0); for(let i=0;i<4;i++) part[i]/=t; } }
   if((C.alcohol||0)>.35&&!part[3]&&profileKey()!=="fine"&&!(S.menu&&S.menu.format==="tasting")){ part[3]=.1; const t=part.reduce((a,b)=>a+b,0); for(let i=0;i<4;i++) part[i]/=t; }
   const ds=P.day.reduce((a,b)=>a+b,0); return {day:P.day.map(v=>v*7/ds),part}; }
 function hoursOf(loc){ if(loc.hours) return loc.hours; const _c=enterLoc(loc); try{ return hoursOfInner(loc); } finally { exitLoc(_c); } }
@@ -585,7 +587,7 @@ function demandCoreInner(S,loc,calMonth){
     for(let k=0;k<4;k++){ const sv=SVCS[k], share=P.day[d]/7*P.part[k]; if(share<=0) continue;
       const dem=weekly*share;
       if(!H.days[d]||!H.svc[sv]){ dayLost+=dem; continue; }
-      const turns=tasting? (sv==="dinner"?Math.min(2,turnCap):0) : turnCap*capShare[k]/cs*(P.part.filter(x=>x>0).length>1?1.25:1);
+      const turns=tasting? (sv==="dinner"?Math.min(2,turnCap):sv==="lunch"?1:0) : turnCap*capShare[k]/cs*(P.part.filter(x=>x>0).length>1?1.25:1);
       let cap=(C.seats>0? loc.seats*turns : C.truckCap*1.25*capShare[k]/cs)*capMult;
       if(tasting&&C.seats>0) cap=Math.min(cap,loc.seats*2*(1-closed));   // two full seatings is the physical ceiling
       daySlots.push({d,sv,dem,cap}); }
@@ -2644,7 +2646,7 @@ function recipeDerive(d){
   d.ticket=Math.round(Math.max(0,...Object.values(byStation),0)+ (toOrder.some(x=>x.station==="pass")?0:1));
   d.prepMin=Math.round((R.steps||[]).filter(x=>x.when==="ahead").reduce((a,x)=>a+(+x.minutes||0),0)*10)/10;
   d.technique=Math.round(clamp(1+Object.keys(byStation).length*.45+toOrder.reduce((a,x)=>a+(+x.minutes||0),0)/12,1,5)*2)/2;
-  const mass=ings.reduce((a,i)=>a+ingKg(i),0), exp=(PORTION_KG[d.course]||.2)*(S&&S.menu&&S.menu.format==="tasting"?.45:1);
+  const mass=ings.reduce((a,i)=>a+ingKg(i),0), exp=(PORTION_KG[d.course]||.2)*(S&&S.menu&&S.menu.format==="tasting"?.45:S&&S.menu&&S.menu.format==="buffet"?.6:1);
   d.portionKg=Math.round(mass*1000)/1000;
   if(!d.taste||d.taste.by!=="claude"||d.taste.stale) d.taste=estimateTaste(d,mass/exp,d.cost/Math.max(.01,exp*10*gradeOf(d.grade).mult));
   d.presentation=Math.round(clamp(1+d.taste.plating/25,1,5)*2)/2; d.creativity=Math.round(d.taste.originality);
@@ -2823,7 +2825,7 @@ const ME_GROUPS=[["Snacks",["snack"]],["Starters",["starter"]],["Pasta",["pasta"
 function meGroupOf(r){ if(r.kind==="bundle") return "Combos & set menus"; if(r.kind==="kids") return "Kids"; if(r.kind==="drink") return "Drinks";
   const c=mixCourse(r.d), g=ME_GROUPS.find(x=>x[1].includes(c)); return g?g[0]:"Mains"; }
 function menuEngineering(){
-  if(!S.menu||S.menu.format==="tasting") return null; const OM=orderModel(), R0=OM.rows; if(!R0.length) return null;
+  if(!S.menu||S.menu.format==="tasting"||S.menu.format==="buffet") return null; const OM=orderModel(), R0=OM.rows; if(!R0.length) return null;
   const tot=R0.reduce((a,r)=>a+r.orders,0)||1;
   const rows=R0.map(r=>({d:r.d,grp:meGroupOf(r),orders:r.orders,share:r.orders/tot,price:r.price,cost:r.cost,cm:r.price*S.dials.price-r.cost,fc:r.price>0?r.cost/(r.price*S.dials.price):0}));
   const avgCM=rows.reduce((a,r)=>a+r.cm*r.share,0), groups={};
@@ -2836,8 +2838,8 @@ function menuEngineering(){
 function menuStats(){
   const Mn=S.menu, C=CONCEPTS[S.concept];
   const L=((Mn&&Mn.dishes)||[]).filter(dishLive), D=L.filter(d=>itemSec(d)==="food"||itemSec(d)==="kids");
-  const tasting=!!(Mn&&Mn.format==="tasting");
-  const out={n:L.length,nFood:D.length,tasting,cats:{},q:45,tech:2,pres:2.5,cre:40,sig:0,breadth:.5,laborMult:1,naShare:0,kids:0};
+  const buffet=!!(Mn&&Mn.format==="buffet"), tasting=!!(Mn&&Mn.format==="tasting");
+  const out={n:L.length,nFood:D.length,tasting,buffet,cats:{},q:45,tech:2,pres:2.5,cre:40,sig:0,breadth:.5,laborMult:1,naShare:0,kids:0};
   if(!D.length){ out.foodCheck=C.check*(1-C.alcohol); out.plate=out.foodCheck*C.foodPct; out.foodPct=C.foodPct; out.valueCheck=out.foodCheck; return out; }
   let q=0,t=0,pr=0,cr=0;
   for(const d of D){ q+=dishQ(d); t+=d.technique; pr+=d.presentation; cr+=d.creativity; if(d.signature) out.sig++;
@@ -2852,8 +2854,9 @@ function menuStats(){
   out.foodPct=out.plate/out.foodCheck;
   const n=D.length, nf=D.filter(d=>itemSec(d)==="food").length;
   out.q=q/n; out.tech=t/n; out.pres=pr/n; out.cre=clamp(cr/n+(Mn.creBonus||0),0,100);
-  out.breadth = tasting? .12 : clamp((nf-6)/22,0,1);
-  out.laborMult = (0.87+0.065*out.tech)*(0.85+0.15*clamp(n/(tasting?11:12),.5,2.2));
+  out.breadth = tasting? .12 : buffet? 1 : clamp((nf-6)/22,0,1);
+  // a buffet line is batch-cooked in hotel pans: many dishes, few tickets
+  out.laborMult = (0.87+0.065*out.tech)*(0.85+0.15*clamp(n/(tasting?11:buffet?40:12),.5,2.2));
   const rd=D.filter(d=>d.recipe); if(rd.length){ const prep=rd.reduce((a,d)=>a+(d.prepMin||0),0)/rd.length; out.laborMult*=1+clamp(prep/30,0,1)*.3;
     out.ticket=rd.reduce((a,d)=>a+(d.ticket||0),0)/rd.length; }
   return out;
@@ -2896,14 +2899,20 @@ function familyFactor(){ const L=menuLocNow(); if(!L) return .5; const t=locTier
   const e=ENV_FAM[L.env]; return clamp(base*(e==null?1:e),0,1.4); }
 
 /* the whole-menu order model, per cover */
+/* a buffet: one price at the door, set by the service (lunch is cheaper than dinner), and guests take a few plates from the line */
+function buffetOf(Mn){ Mn=Mn||S.menu; const B=Object.assign({breakfast:0,lunch:0,dinner:0,late:0,kids:0,plates:4.5},(Mn&&Mn.buffet)||{}); return B; }
+function buffetPrice(Mn){ const B=buffetOf(Mn), L=menuLocNow(); let H=null; try{ H=L?hoursOf(L):null; }catch(e){}
+  const P=weekProfile(); let w=0,t=0;
+  SVCS.forEach((sv,k)=>{ const p=Number(B[sv])||0; if(!(p>0)) return; if(H&&H.svc&&H.svc[sv]===false) return; const wt=Math.max(.05,P.part[k]||0); w+=wt; t+=wt*p; });
+  return w>0? t/w : Math.max(1,Number(B.dinner)||Number(B.lunch)||15); }
 function orderModel(opt){
-  const Mn=S.menu, C=CONCEPTS[S.concept]||{}, tasting=!!(Mn&&Mn.format==="tasting"), counter=!!(C.counter||C.truck);
+  const Mn=S.menu, C=CONCEPTS[S.concept]||{}, buffet=!!(Mn&&Mn.format==="buffet"), tasting=!!(Mn&&Mn.format==="tasting")||buffet, counter=!!(C.counter||C.truck);
   const all=((Mn&&Mn.dishes)||[]).filter(dishLive);
   const food=all.filter(d=>itemSec(d)==="food"||isTreat(d)), kids=all.filter(d=>itemSec(d)==="kids"), na=all.filter(d=>itemSec(d)==="drink"&&!isAlc(d)&&!isTreat(d)), alc=all.filter(d=>isAlc(d));
   const isPack=d=>d.bundle&&d.bundle.style==="pack", bundles=tasting?[]:all.filter(d=>itemSec(d)==="bundle"&&!isKidsMeal(d)&&(!(opt&&opt.noDeals)||isPack(d))), kidMeals=tasting?[]:all.filter(isKidsMeal);
   const rows=[], add=(d,orders,price,cost,kind)=>{ if(orders>0) rows.push({d,orders,price,cost,kind}); };
   // kids: a share of covers eats from the kids' list, and only when there is one
-  const fam=familyFactor(), k=!tasting&&(kids.length||kidMeals.length)? clamp(.12*fam,0,.18) : 0, adult=1-k;
+  const fam=familyFactor(), k=buffet&&buffetOf(Mn).kids>0? clamp(.16*fam,0,.22) : !tasting&&(kids.length||kidMeals.length)? clamp(.12*fam,0,.18) : 0, adult=1-k;
   // bundles: take rates from style and discount; they cover the courses and sections of their parts
   // at a counter the drink is one of the things everyone buys; with drinks listed on their own, food is about 1.85 items a guest, not 2.4
   // a coffee shop sells a drink and sometimes a pastry; a bakery sells by the piece: a concept can say how many items a guest buys
@@ -2924,12 +2933,17 @@ function orderModel(opt){
     const groups=new Set(x.parts.filter(p=>p!==x.anchor).map(p=>itemSec(p)==="drink"&&!isTreat(p)?"drink":mixCourse(p))); for(const g of groups) T[g]=Math.min(.95,(T[g]||0)+x.t); }
   // food
   let foodSpend=0, plate=0;
-  if(tasting){ foodSpend=Math.max(1,Number(Mn.tastingPrice)||0); for(const d of food){ add(d,1,0,dishCost(d),"food"); plate+=dishCost(d); } }
+  if(buffet){ const B=buffetOf(Mn), line=food.filter(d=>!isTreat(d));
+    foodSpend=Math.max(1,buffetPrice(Mn)*adult+(Number(B.kids)||0)*k);
+    // plates are shared across the line by what people reach for; a child eats about 60% of an adult's plates
+    const w=line.map(d=>Math.pow(Math.max(5,dishQ(d))/60,1.1)*(d.signature?1.4:1)*dishAppeal(d)), sw=w.reduce((a,b)=>a+b,0)||1, pl=(Number(B.plates)||4.5)*(adult+.6*k);
+    line.forEach((d,i)=>{ const o=pl*w[i]/sw; add(d,o,0,dishCost(d),"food"); plate+=o*dishCost(d); }); }
+  else if(tasting){ foodSpend=Math.max(1,Number(Mn.tastingPrice)||0); for(const d of food){ add(d,1,0,dishCost(d),"food"); plate+=dishCost(d); } }
   else if(food.length){ for(const d of food){ const o=Math.max(0,fo*(mix.get(d.id)||0)*(1-(T[mixCourse(d)]||0))-(cut.get(d.id)||0))*adult; add(d,o,Number(d.price)||0,dishCost(d),isTreat(d)?"treat":"food"); } }
   // bundles
   for(const b of bundles){ const x=takes.get(b.id); if(!x) continue; add(b,x.t*adult,Number(b.price)||0,x.parts.reduce((a,p)=>a+dishCost(p),0),"bundle"); }
   // kids: one main and a bit more; a kids' meal takes some of them
-  if(k>0){ let tk=0; const km=new Map();
+  if(k>0&&!buffet){ let tk=0; const km=new Map();
     for(const b of kidMeals){ const parts=bundleParts(b,all); if(parts.length<2) continue; const list=parts.reduce((a,x)=>a+(Number(x.price)||0),0)||1;
       const t=BUNDLE_STYLES.kids[counter?"counter":"seated"]*clamp(1+3*(1-(Number(b.price)||0)/list),.2,1.8); km.set(b.id,{t,parts}); tk+=t; }
     const ks=tk>.85?.85/tk:1; tk=Math.min(.85,tk);
@@ -2941,7 +2955,7 @@ function orderModel(opt){
   if(na.length){ const L=menuLocNow(), M=MARKETS[L&&L.market]||{};
     const w=na.map(d=>Math.pow(Math.max(5,dishQ(d))/60,1)*(d.signature?1.3:1)*(d.special?SPECIAL_TYPES[d.special.type].boost:1)*dishAppeal(d)), sw=w.reduce((a,b)=>a+b,0)||1;
     const avg=na.reduce((a,d,i)=>a+(Number(d.price)||0)*w[i]/sw,0), ref=C.drinkAttach>0? (C.drinkRef||C.check*.6)*(S.guestIdx||1)*(M.checkMult||1) : 3.2*(S.guestIdx||1)*(M.checkMult||1)*(counter?.85:1.1)*(C.check>=85?1.8:1);
-    const base=C.drinkAttach>0?C.drinkAttach:tasting?.35:C.check>=85?.3:counter?.6:C.truck?.5:.42;
+    const base=C.drinkAttach>0?C.drinkAttach:buffet?.7:tasting?.35:C.check>=85?.3:counter?.6:C.truck?.5:.42;
     naAttach=clamp(base*clamp(Math.pow(Math.max(.2,avg)/ref,-1.1),.3,1.4)*(C.drinkAttach>0?1:1+Math.min(.25,(na.length-1)*.05)),0,C.drinkAttach>0?1.6:1.1)*(1-(T.drink||0));
     na.forEach((d,i)=>add(d,naAttach*w[i]/sw,Number(d.price)||0,dishCost(d),"drink")); }
   let spend=0; for(const r of rows){ if(r.kind!=="food"||!tasting) spend+=r.orders*r.price; plate+=tasting&&r.kind==="food"?0:r.orders*r.cost; }
@@ -2951,7 +2965,7 @@ function orderModel(opt){
   // what the deals save the guests who take them
   // (a box of cookies isn't a saving on cookies you'd have bought anyway: people buy the box)
   const saved=rows.filter(r=>r.kind==="bundle"&&!isPack(r.d)).reduce((a,r)=>{ const x=takes.get(r.d.id); return a+r.orders*Math.max(0,x.parts.reduce((q,p)=>q+(Number(p.price)||0),0)-r.price); },0);
-  return {rows,saved,spend:Math.max(1,spend),plate,naSpend,kidSpend,naShare:spend>0?naSpend/spend:0,kids:k,fam,naAttach,T,takes,alc,counter,tasting};
+  return {rows,saved,spend:Math.max(1,spend),plate,naSpend,kidSpend:buffet?(Number(buffetOf(Mn).kids)||0)*k:kidSpend,naShare:spend>0?naSpend/spend:0,kids:k,fam,naAttach,T,takes,alc,counter,tasting,buffet};
 }
 /* what the menu does to demand: a kids' list draws families, limited-time offers draw the curious */
 function menuDemandMult(){ if(!S.menu) return 1; const all=(S.menu.dishes||[]).filter(dishLive);
@@ -3031,6 +3045,7 @@ function sectionGroups(Mn){
   const take=(title,f,note)=>{ const xs=items.filter(d=>!used.has(d.id)&&f(d)); xs.forEach(d=>used.add(d.id)); if(xs.length) g.push({title,xs,note}); };
   take("Specials",d=>!!d.special);
   if(tasting) take("The tasting menu",d=>itemSec(d)==="food");
+  else if(Mn.format==="buffet") for(const [t,cs] of FOOD_BANDS) take("The buffet line: "+t.toLowerCase(),d=>itemSec(d)==="food"&&cs.includes(d.course));
   else for(const [t,cs] of FOOD_BANDS) take(t,d=>itemSec(d)==="food"&&cs.includes(d.course));
   take("Food",d=>itemSec(d)==="food");
   take("Kids",d=>itemSec(d)==="kids"||isKidsMeal(d));
@@ -5823,7 +5838,7 @@ function otherGuides(R){
         loc.awards[g.key]={level:lvl,name,guide:guideName(g),when:`${MONTHS[R.calMonth]} Y${R.year}`,score:Math.round(sc),retired:g.retireAt!=null&&lvl>=g.retireAt};
         const w=g.p*(lvl+1), mLoc=S.locations.length<2?-1:li, pre=`${g.name}: `.slice(0,48);
         S.mods=S.mods.filter(m=>!(m.src==="guide"&&m.kind==="demand"&&m.loc===mLoc&&m.label.startsWith(pre)));   // a renewal or a step up replaces the old bonus
-        const fame=clamp(1.3-loc.awareness/100,.3,1);
+        const fame=clamp((1-loc.awareness/100)*3.3,.08,1);   // an award barely moves a place everyone already knows
         if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${g.name}: ${name}`.slice(0,48),kind:"demand",value:Math.round(w*.012*fame*100)/100,left:12,loc:mLoc,src:"guide"});
         if(up){ loc.awareness=clamp(loc.awareness+w*1.2,2,99); loc.rep=clamp(loc.rep+w*.4,3,99);
           if(lvl===g.levels.length-1&&g.levels.length>1&&S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${name} cheque lift`.slice(0,48),kind:"check",value:Math.round(g.p*.012*100)/100,left:12,loc:S.locations.length<2?-1:li,src:"guide"}); }
@@ -6014,7 +6029,7 @@ function highEndDigest(){
   const rooms=S.locations.map(l=>`  - ${l.name}: ambience ${Math.round(ambience(l))}/100, ${l.seats} seats, front-of-house polish ${Math.round(l.foh)}/100; features: ${l.features.map(f=>f.name).join(", ")||"none beyond the original fit-out"}`).join("\n");
   const press=S.locations.map(l=>`  - ${l.name}: ${Object.values(l.awards||{}).map(a=>`${a.guide}: ${a.name}`).join("; ")||"no other guide awards"}; ${l.stars?`${l.stars} Michelin star${l.stars>1?"s":""}`:"no stars"}${l.bib?", Bib Gourmand":""}${l.green?", Green Star":""}${l.selected&&!l.stars?", recommended in the Guide":""}; guest rating ${guestRating(l).toFixed(1)}/5; last critic review: ${l.press.reviews[0]?`${l.press.reviews[0].src}, ${CRITIC_WORDS[l.press.reviews[0].stars]} (${l.press.reviews[0].when})`:"none yet"}`).join("\n");
   return `
-MENU (${S.menu.format==="tasting"?`tasting menu at ${money(S.menu.tastingPrice)} per guest${S.menu.pairing?`, wine pairing ${money(S.menu.pairingPrice)}`:""}`:"à la carte"}; food spend per guest ${money1(ms.foodCheck*S.dials.price)}, plate cost ${money1(ms.plate)} = ${pct(ms.foodPct)} food cost; coherence ${Math.round(S.menu.coherence)}/100${S.menu.identity?`; identity: ${S.menu.identity}`:""}):
+MENU (${S.menu.format==="tasting"?`tasting menu at ${money(S.menu.tastingPrice)} per guest${S.menu.pairing?`, wine pairing ${money(S.menu.pairingPrice)}`:""}`:S.menu.format==="buffet"?`all-you-can-eat buffet, ${SVCS.filter(v=>buffetOf()[v]>0).map(v=>`${SVC_NAMES[v].toLowerCase()} ${money(buffetOf()[v])}`).join(", ")}${buffetOf().kids>0?`, kids ${money(buffetOf().kids)}`:""}, about ${buffetOf().plates} plates a guest`:"à la carte"}; food spend per guest ${money1(ms.foodCheck*S.dials.price)}, plate cost ${money1(ms.plate)} = ${pct(ms.foodPct)} food cost; coherence ${Math.round(S.menu.coherence)}/100${S.menu.identity?`; identity: ${S.menu.identity}`:""}):
 ${dishes||"  (no dishes)"}${menuExtrasDigest()}
 THE KITCHEN'S OWN READ OF THE FOOD${cr?`: ingredients ${Math.round(cr.ingredients)}, technique ${Math.round(cr.technique)}, harmony ${Math.round(cr.harmony)}, personality ${Math.round(cr.personality)}, consistency ${Math.round(cr.consistency)}, overall ${Math.round(cr.overall)} (a Michelin star needs about 77 held across repeated visits, two stars 86, three 93)`:": no service yet"}.
 SUPPLIERS:
@@ -6148,7 +6163,7 @@ Check the KITCHEN line first. A dish that depends on equipment this kitchen does
 const MENU_RULES=`You are the chef writing a complete new menu for this restaurant inside a realistic simulation. Follow the owner's brief exactly: its theme, season, format and price point. Build a menu that reads as one point of view, with a real progression. Cost every dish honestly (plate cost = raw ingredient cost of one portion at its grade). A tasting menu usually has 8-14 courses with small portions; à la carte usually has 10-18 dishes, priced 3-4× plate cost. Keep food cost realistic for the format: fine dining lands around 28-36% of the food price.
 
 Reply with ONLY JSON:
-{"format":"tasting"|"carte","tastingPrice":dollars per guest (0 for carte),"pairingPrice":wine pairing dollars (0 if none),
+{"format":"tasting"|"carte"|"buffet","tastingPrice":dollars per guest (0 for carte),"buffet":{"breakfast","lunch","dinner","late","kids":adult door price per service in dollars (0 = not offered),"plates":portions an adult takes, about 4-5} (buffet only; dish prices 0),"pairingPrice":wine pairing dollars (0 if none),
  "identity":"one line: what this menu is","coherence":0-100 (how clearly it reads as one idea),
  "dishes":[{"name","course","desc","cats":{...},"grade","technique","presentation","creativity","cost","price","signature":true|false}]}
 Courses are one of snack|starter|pasta|fish|meat|main|side|cheese|pre-dessert|dessert|mignardise. cats are shares of ingredient cost across produce, meat, seafood, dairy, pantry, luxury, summing to 1.
@@ -8157,7 +8172,7 @@ function critBars(c,label){
     <div class="kv" style="margin-top:4px"><b>Overall</b><span class="n"><b>${Math.round(c.overall)}</b> <span class="note">· star territory starts near ${STAR_TH[1]}</span></span></div>`;
 }
 function dishCardHTML(d){
-  const tasting=S.menu.format==="tasting";
+  const tasting=S.menu.format==="tasting"||S.menu.format==="buffet";
   const c=dishCost(d), fc=!tasting&&d.price>0? c/(d.price*S.dials.price) : null;
   const kitOut=Array.isArray(d.needs)&&d.needs.length&&dishKitLocs().length&&dishKitLocs().every(l=>dishKit(d,l).blocked.length);
   return `<div class="dish ${d.off||kitOut?"off":""}">
@@ -8249,8 +8264,8 @@ function menuHTML(){ const L=menuLocOf(), c=enterLoc(L); try{ return menuPickerH
 function wrapHandlers(root,L){ if(!L) return; root.querySelectorAll("*").forEach(el=>{ for(const ev of ["onclick","onchange","oninput"]){ const f=el[ev]; if(!f||f.__loc) continue;
   const g=function(e){ const c=enterLoc(L); let r; try{ r=f.call(this,e); }catch(x){ exitLoc(c); throw x; } if(r&&typeof r.then==="function") return r.finally(()=>exitLoc(c)); exitLoc(c); return r; }; g.__loc=1; el[ev]=g; } }); }
 function menuHTMLInner(){
-  const Mn=S.menu, ms=menuStats(), tasting=Mn.format==="tasting", off=!sampleFn;
-  const l0=S.locations[0];
+  const Mn=S.menu, ms=menuStats(), tasting=Mn.format==="tasting", buffet=Mn.format==="buffet", off=!sampleFn;
+  const l0=S.locations[0], B=buffetOf(Mn);
   const byCourse=[...Mn.dishes].sort((a,b)=>COURSES.indexOf(a.course)-COURSES.indexOf(b.course));
   const ME=exp("menueng")?menuEngineering():null;
   const meHTML=ME?`<div class="panel" style="margin-top:14px"><div class="hd"><h3>Menu engineering</h3><span class="spacer"></span><span class="note">average contribution ${money(ME.avgCM)} a dish</span></div><div class="bd"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">
@@ -8264,9 +8279,16 @@ function menuHTMLInner(){
     <div class="stack">
       <div class="panel"><div class="hd"><h3>Format &amp; price</h3></div><div class="bd tight">
         <div class="dial"><div class="lab"><b>Format</b></div>
-          <div class="seg" id="mFormat"><button data-fmt="tasting" aria-pressed="${tasting}">Tasting menu</button><button data-fmt="carte" aria-pressed="${!tasting}">À la carte</button></div>
-          <div class="hint">${tasting?"Everyone eats every course at one price. Predictable ordering, less waste, more labour per guest, and the format serious guides expect.":"Guests order about 2.4 dishes each. Wider menus bring people in and cost you in waste and prep."}</div></div>
-        ${tasting?`<div class="dial"><div class="lab"><b>Tasting menu price</b><span class="val">${money(Mn.tastingPrice*S.dials.price)}</span></div>
+          <div class="seg" id="mFormat"><button data-fmt="tasting" aria-pressed="${tasting}">Tasting menu</button><button data-fmt="carte" aria-pressed="${!tasting&&!buffet}">À la carte</button><button data-fmt="buffet" aria-pressed="${buffet}">Buffet</button></div>
+          <div class="hint">${tasting?"Everyone eats every course at one price. Predictable ordering, less waste, more labour per guest, and the format serious guides expect.":buffet?"One price at the door for each service, and guests help themselves from the line. Every dish is cooked in batches whether it's eaten or not, so the line's breadth and what people pile on their plates decide the food cost.":"Guests order about 2.4 dishes each. Wider menus bring people in and cost you in waste and prep."}</div></div>
+        ${buffet?`${SVCS.filter(sv=>B[sv]>0||hoursOf(l0).svc[sv]).map(sv=>`<div class="dial"><div class="lab"><b>${SVC_NAMES[sv]} buffet, adult</b><span class="val">${B[sv]>0?money1(B[sv]*S.dials.price)+(hoursOf(l0).svc[sv]?"":sv==="breakfast"&&S.programs.brunch?" · weekends, as brunch":" · service closed"):"not offered"}</span></div>
+            <input type="number" data-bp="${sv}" value="${lc(B[sv]||0,2)}" step="any" min="0"></div>`).join("")}
+          <div class="dial"><div class="lab"><b>Kids' buffet</b><span class="val">${B.kids>0?money1(B.kids*S.dials.price):"no kids' price"}</span></div>
+            <input type="number" data-bp="kids" value="${lc(B.kids||0,2)}" step="any" min="0"></div>
+          <div class="dial"><div class="lab"><b>Plates a guest takes</b><span class="val">${Number(B.plates).toFixed(1)}</span></div>
+            <input type="number" data-bp="plates" value="${B.plates}" step="0.1" min="1" max="12">
+            <div class="hint">Portions from the line per adult; children eat about 60% as much. Blended door price ${money1(buffetPrice(Mn)*S.dials.price)}; guests here expect about ${money(refFoodCheck(l0)*prestigeMult(l0))}.</div></div>`
+        :tasting?`<div class="dial"><div class="lab"><b>Tasting menu price</b><span class="val">${money(Mn.tastingPrice*S.dials.price)}</span></div>
           <input type="number" id="mTP" value="${lc(Mn.tastingPrice,0)}" step="any" min="0">
           <div class="hint">Before the price adjustment on the Operate tab (${S.dials.price>1?"+":""}${pct(S.dials.price-1,0)}). Guests here expect about ${money(refFoodCheck(l0)*prestigeMult(l0))} for what you are right now.</div></div>
           <div class="dial"><div class="lab"><b>Wine pairing</b><span class="val">${Mn.pairing?money(Mn.pairingPrice):"off"}</span></div>
@@ -8279,7 +8301,7 @@ function menuHTMLInner(){
 
       <div class="panel"><div class="hd"><h3>What the menu adds up to</h3></div>
         <table class="led">
-          <tr><td>${tasting?"Price per guest":"Food spend per guest"}</td><td class="n">${money1(ms.foodCheck*S.dials.price)}</td></tr>
+          <tr><td>${tasting?"Price per guest":buffet?"Door price per guest, blended":"Food spend per guest"}</td><td class="n">${money1(ms.foodCheck*S.dials.price)}</td></tr>
           <tr><td>Plate cost per guest <button class="help" title="What the ingredients cost for everything one guest eats, at your suppliers' prices and today's inflation.">?</button></td><td class="n">${money1(ms.plate*S.inflation)}</td></tr>
           <tr class="tot"><td>Theoretical food cost</td><td class="n ${ms.foodPct*S.inflation/S.dials.price>.36?"neg":ms.foodPct*S.inflation/S.dials.price<.33?"pos":""}">${pct(ms.foodPct*S.inflation/S.dials.price)}</td></tr>
           <tr><td>Dishes live</td><td class="n">${ms.n}</td></tr>
@@ -8314,7 +8336,7 @@ function menuHTMLInner(){
         <p class="note" style="margin:8px 0 0">A rewrite replaces every dish and costs a month's R&amp;D (${money(menuRewriteCost())}). A critique is free and sets coherence.</p>
         <div id="menuOut" style="margin-top:10px"></div>
         ${S.pendingMenu?`<div class="choice" style="cursor:default;margin-top:8px"><b>${esc(S.pendingMenu.identity||"The new menu")}</b>
-          <span>${S.pendingMenu.format==="tasting"?`Tasting menu, ${money(S.pendingMenu.tastingPrice)}${S.pendingMenu.pairingPrice?`, pairing ${money(S.pendingMenu.pairingPrice)}`:""}`:"À la carte"} · ${S.pendingMenu.dishes.length} dishes · coherence ${S.pendingMenu.coherence}</span>
+          <span>${S.pendingMenu.format==="tasting"?`Tasting menu, ${money(S.pendingMenu.tastingPrice)}${S.pendingMenu.pairingPrice?`, pairing ${money(S.pendingMenu.pairingPrice)}`:""}`:S.pendingMenu.format==="buffet"?"Buffet":"À la carte"} · ${S.pendingMenu.dishes.length} dishes · coherence ${S.pendingMenu.coherence}</span>
           <div class="dtags" style="margin-top:6px">${S.pendingMenu.dishes.map(d=>`${esc(d.course)} — ${esc(d.name)}${S.pendingMenu.format==="carte"?` ${money1(d.price)}`:""}`).join("<br>")}</div>
           <div class="row" style="margin-top:9px"><button class="btn sm" id="menuAdopt">Adopt it · ${money(menuRewriteCost())}</button><button class="btn sm sec" id="menuToss">Discard</button></div></div>`:""}
       </div></div>
@@ -8338,7 +8360,10 @@ function wireMenu(){ wireMenuSections();
     const f=b.dataset.fmt; if(f===S.menu.format) return;
     if(f==="tasting"&&!S.menu.tastingPrice) S.menu.tastingPrice=Math.round(menuStats().foodCheck*1.25/5)*5;
     if(f==="carte") for(const d of S.menu.dishes) if(!d.price) d.price=Math.max(4,Math.round(d.cost*3.6*2)/2);
-    S.menu.format=f; logIt("warn",`Switched the menu to ${f==="tasting"?"a tasting menu":"à la carte"}.`); keepY(); });
+    if(f==="buffet"&&!(S.menu.buffet&&(S.menu.buffet.dinner||S.menu.buffet.lunch))){ const p=Math.round(menuStats().foodCheck*.9*2)/2; S.menu.buffet={breakfast:0,lunch:Math.round(p*.75*2)/2,dinner:p,late:0,kids:Math.round(p*.5*2)/2,plates:4.5}; }
+    S.menu.format=f; logIt("warn",`Switched the menu to ${f==="tasting"?"a tasting menu":f==="buffet"?"a buffet":"à la carte"}.`); keepY(); });
+  document.querySelectorAll("[data-bp]").forEach(inp=>inp.onchange=()=>{ const k=inp.dataset.bp; S.menu.buffet=buffetOf();
+    S.menu.buffet[k]=k==="plates"?clamp(+inp.value||4.5,1,12):clamp(Math.round(toUSD(+inp.value||0)*100)/100,0,500); keepY(); });
   const tp=$("#mTP"); if(tp) tp.onchange=()=>{ S.menu.tastingPrice=clamp(Math.round(toUSD(+tp.value||0)),10,2500); keepY(); };
   const pr=$("#mPair"); if(pr) pr.onchange=()=>{ S.menu.pairing=pr.checked; keepY(); };
   const pp=$("#mPP"); if(pp) pp.onchange=()=>{ S.menu.pairingPrice=clamp(Math.round(toUSD(+pp.value||0)),0,3000); keepY(); };
@@ -8358,7 +8383,7 @@ function wireMenu(){ wireMenuSections();
   const rai=$("#rAddI"); if(rai) rai.onclick=()=>{ recipeDraft.ingredients.push({name:"",qty:0,unit:"g",unitCost:0,cat:"produce"}); keepY(); };
   const ras=$("#rAddS"); if(ras) ras.onclick=()=>{ recipeDraft.steps.push({task:"",station:"sauté",minutes:3,when:"to order"}); keepY(); };
   const rw=$("#rWrite"); if(rw) rw.onclick=async()=>{ const d=byId(editDish); if(!d) return; rw.disabled=true;
-    const r=await claudeJSON(DISH_RULES,`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":"à la carte"}\n\nWRITE OUT THE FULL RECIPE FOR THIS EXISTING DISH, keeping it the same dish: ${d.name} (${d.course}). Menu line: ${d.desc}. Ingredient grade: ${gradeOf(d.grade).name}.`,$("#de_out"),"recipe","Writing it out…");
+    const r=await claudeJSON(DISH_RULES,`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":S.menu.format==="buffet"?"buffet (price 0: guests pay at the door; batch-cooked in hotel pans, buffet portions)":"à la carte"}\n\nWRITE OUT THE FULL RECIPE FOR THIS EXISTING DISH, keeping it the same dish: ${d.name} (${d.course}). Menu line: ${d.desc}. Ingredient grade: ${gradeOf(d.grade).name}.`,$("#de_out"),"recipe","Writing it out…");
     rw.disabled=false; if(!r||!r.recipe) return; recipeDraft=sanitizeRecipe(r.recipe); d.taste=sanitizeTaste(r.taste); keepY(); };
   const ds=$("#de_save"); if(ds) ds.onclick=async()=>{
     const isNew=editDish==="new"; const d=isNew? sanitizeDish({}) : byId(editDish); if(!d) return;
@@ -8380,9 +8405,9 @@ function wireMenu(){ wireMenuSections();
   const dg=$("#dishGo"); if(dg) dg.onclick=async()=>{
     const t=$("#dishIdea").value.trim(); if(!t){ $("#dishOut").textContent="Describe the dish first."; return; }
     dg.disabled=true;
-    const r=await claudeJSON(DISH_RULES,`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":"à la carte"}\n\nTHE OWNER'S IDEA:\n${t}`,$("#dishOut"),"dish","In the development kitchen…");
+    const r=await claudeJSON(DISH_RULES,`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":S.menu.format==="buffet"?"buffet (price 0: guests pay at the door; batch-cooked in hotel pans, buffet portions)":"à la carte"}\n\nTHE OWNER'S IDEA:\n${t}`,$("#dishOut"),"dish","In the development kitchen…");
     dg.disabled=false; if(!r) return;
-    S.pendingDish=sanitizeDish(r, S.menu.format==="tasting"?"starter":"main"); if(S.menu.format==="tasting") S.pendingDish.price=0;
+    S.pendingDish=sanitizeDish(r, S.menu.format==="tasting"?"starter":"main"); if(S.menu.format==="tasting"||S.menu.format==="buffet") S.pendingDish.price=0;
     keepY(); };
   const da=$("#dishAdd"); if(da) da.onclick=()=>{ const err=addDish(S.pendingDish); if(err){ $("#dishOut").textContent=err; return; } S.pendingDish=null; keepY(); };
   const dt=$("#dishToss"); if(dt) dt.onclick=()=>{ S.pendingDish=null; keepY(); };
@@ -8391,17 +8416,19 @@ function wireMenu(){ wireMenuSections();
     mg.disabled=true;
     const r=await claudeJSON(MENU_RULES,`\n\nTHE OWNER'S BRIEF:\n${t}`,$("#menuOut"),"menu","Writing the menu…");
     mg.disabled=false; if(!r) return;
-    const fmt=r.format==="carte"?"carte":"tasting";
-    const dishes=(Array.isArray(r.dishes)?r.dishes:[]).slice(0,48).map(x=>{const d=sanitizeDish(x); if(fmt==="tasting"&&itemSec(d)==="food") d.price=0; return d;});
+    const fmt=r.format==="carte"?"carte":r.format==="buffet"?"buffet":"tasting";
+    const dishes=(Array.isArray(r.dishes)?r.dishes:[]).slice(0,fmt==="buffet"?60:48).map(x=>{const d=sanitizeDish(x); if(fmt!=="carte"&&itemSec(d)==="food") d.price=0; return d;});
     if(fmt==="carte") for(const b of (Array.isArray(r.bundles)?r.bundles:[]).slice(0,6)){ const x=bundleFromNames(b||{},dishes); if(x.bundle.items.length>=2) dishes.push(x); }
     if(!dishes.length){ $("#menuOut").textContent="That came back without any dishes. Try again."; return; }
     S.pendingMenu={format:fmt,tastingPrice:fmt==="tasting"?Math.round(nnum(r.tastingPrice,1,1e8,120)):0,pairingPrice:Math.round(nnum(r.pairingPrice,0,1e8,0)),
       identity:clip(String(r.identity||""),600),coherence:Math.round(nnum(r.coherence,0,100,60)),dishes};
+    if(fmt==="buffet"){ const b=r.buffet||{}; S.pendingMenu.buffet={breakfast:nnum(b.breakfast,0,500,0),lunch:nnum(b.lunch,0,500,0),dinner:nnum(b.dinner,0,500,0),late:nnum(b.late,0,500,0),kids:nnum(b.kids,0,500,0),plates:nnum(b.plates,1,12,4.5)};
+      if(!(S.pendingMenu.buffet.lunch||S.pendingMenu.buffet.dinner)) S.pendingMenu.buffet.dinner=20; }
     keepY(); };
   const ma=$("#menuAdopt"); if(ma) ma.onclick=()=>{
     const cost=menuRewriteCost(); if(S.cash<cost){ $("#menuOut").textContent=`A rewrite costs ${money(cost)} and it isn't in the account.`; return; }
     S.cash-=cost; const P=S.pendingMenu;
-    Object.assign(S.menu,{format:P.format,tastingPrice:P.tastingPrice||S.menu.tastingPrice,pairingPrice:P.pairingPrice||S.menu.pairingPrice,dishes:P.dishes,
+    if(P.buffet) S.menu.buffet=P.buffet; Object.assign(S.menu,{format:P.format,tastingPrice:P.tastingPrice||S.menu.tastingPrice,pairingPrice:P.pairingPrice||S.menu.pairingPrice,dishes:P.dishes,
       identity:P.identity,coherence:clamp(Math.round(P.coherence*.85),0,100),notes:""});
     S.pendingMenu=null; logIt("good",`New menu: ${P.identity||"rewritten from scratch"} (${money(cost)} in R&D).`); chronicle(`Launched a new menu: ${P.identity}`);
     keepY(); };

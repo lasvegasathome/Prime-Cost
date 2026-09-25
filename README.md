@@ -15,10 +15,12 @@ The `presets/` folder holds ready-made restaurants to start from. Download one, 
 | The Cheesecake Factory | `prime-cost-cheesecake-factory.json` | NorthPark, Dallas |
 | Chick-fil-A (operator) | `prime-cost-chick-fil-a.json` | Suburban Atlanta |
 | Crumbl (franchise) | `prime-cost-crumbl.json` | Lehi, Utah |
+| Golden Corral (franchise, buffet) | `prime-cost-golden-corral.json` | Raleigh suburbs |
 | Heart Attack Grill | `prime-cost-heart-attack-grill.json` | Downtown Las Vegas |
 | Gordon Ramsay Hell's Kitchen | `prime-cost-hells-kitchen.json` | Las Vegas Strip |
 | Jumbo Kingdom | `prime-cost-jumbo-kingdom.json` | Aberdeen, Hong Kong |
 | Katz's Delicatessen | `prime-cost-katzs-delicatessen.json` | Lower East Side, Manhattan |
+| KOMA | `prime-cost-koma-singapore.json` | Marina Bay Sands, Singapore |
 | Los Pollos Hermanos | `prime-cost-los-pollos-hermanos.json` | Albuquerque |
 | McDonald's franchise | `prime-cost-mcdonalds-franchise.json` | Suburban highway exit |
 | Eastside Burger Co. (virtual brand kitchen) | `prime-cost-mrbeast-burger.json` | East Orlando |

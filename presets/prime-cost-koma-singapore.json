@@ -1,0 +1,2761 @@
+{
+ "game": "prime-cost",
+ "format": 3,
+ "exportedAt": "2026-09-25T21:48:27.979Z",
+ "state": {
+  "v": 2,
+  "seed": 770119191,
+  "ownerName": "You",
+  "bizName": "KOMA Singapore",
+  "concept": "custom",
+  "market": "custom",
+  "traits": [],
+  "monthIdx": 0,
+  "calMonth": 9,
+  "year": 1,
+  "cash": 1100000,
+  "equityInvestor": 0,
+  "loans": [],
+  "origin": "",
+  "customConcept": {
+   "name": "KOMA (Tao Group Hospitality)",
+   "blurb": "A Japanese restaurant and sushi bar reached through a twenty-metre passage of orange torii arches, with a two-and-a-half-metre bell over a wooden footbridge and a robata grill, at The Shoppes at Marina Bay Sands.",
+   "check": 98,
+   "foodPct": 0.3,
+   "seats": 230,
+   "truckCap": 210,
+   "turns": 1.15,
+   "maxTurns": 2.6,
+   "elast": 0.7,
+   "hrsPerCover": 1.7,
+   "alcohol": 0.26,
+   "sqftSeat": 45,
+   "buildSqft": 0,
+   "equip": 0,
+   "chef": 135000,
+   "gm": 98000,
+   "counter": false,
+   "truck": false,
+   "items": 2,
+   "drinkAttach": 0,
+   "drinkRef": 0
+  },
+  "customMarket": {
+   "name": "The Shoppes at Marina Bay Sands, Singapore",
+   "blurb": "Your own market.",
+   "rentYr": 0,
+   "wage": 12.5,
+   "tipCredit": 0,
+   "traffic": 0.462,
+   "comp": 1.3,
+   "checkMult": 1,
+   "taxRate": 0,
+   "season": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "circumstances": "You're the general manager of KOMA, Tao Group Hospitality's Japanese restaurant at The Shoppes at Marina Bay Sands, open since July 2019. Tao Group runs it with Marina Bay Sands; you run the sushi bar, the robata, the lounge and 230 seats, and report to Tao Group's Singapore leadership. Prices on the menu are before the 10% service charge and 9% GST, as Singapore restaurants print them.",
+  "creditLine": {
+   "limit": 40000,
+   "drawn": 0,
+   "rate": 0.145
+  },
+  "locations": [
+   {
+    "id": "988c0bv",
+    "name": "KOMA Singapore",
+    "market": "custom",
+    "seats": 230,
+    "sqft": 10350,
+    "env": "megaresort",
+    "envLive": true,
+    "rent": 117000,
+    "cam": 6038,
+    "leaseLeft": 120,
+    "escalator": 0.03,
+    "status": "open",
+    "buildLeft": 0,
+    "rep": 88,
+    "awareness": 96,
+    "morale": 64,
+    "skill": 76,
+    "equip": 88,
+    "health": 94,
+    "monthsOpen": 86,
+    "attention": 70,
+    "trafficMod": 1,
+    "compMod": 1,
+    "tempFood": 0,
+    "tempFoodLeft": 0,
+    "wagePremium": 0,
+    "features": [
+     {
+      "id": "fzo0nak6",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The torii passage",
+      "pitch": "A twenty-metre passage of orange arches modelled on the Fushimi Inari Shrine in Kyoto, from the mall to the lounge.",
+      "ambience": 6,
+      "prestige": 2
+     },
+     {
+      "id": "f1sl80s5",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The bell and the bridge",
+      "pitch": "A one-of-a-kind Japanese bell, two and a half metres tall, over a traditional footbridge in the high-ceilinged main room, by Rockwell Group.",
+      "ambience": 7,
+      "prestige": 2
+     },
+     {
+      "id": "fylg54mw",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The bar and lounge",
+      "pitch": "Cocktails, sake and Japanese whisky from 11.30am until late, before and after dinner.",
+      "capacity": 0.08,
+      "bev": 0.12
+     },
+     {
+      "id": "fy7n3lw0",
+      "when": "before you took over",
+      "weeks": 0,
+      "original": true,
+      "cost": 0,
+      "name": "The mezzanine private dining room",
+      "pitch": "A private room above the main floor for corporate dinners and celebrations.",
+      "sideline": 0.04
+     }
+    ],
+    "ambBase": 74,
+    "foh": 74,
+    "closedWeeks": 0,
+    "stars": 0,
+    "press": {
+     "inspections": [],
+     "suspected": 0,
+     "lastCritic": null,
+     "reviews": [],
+     "history": []
+    },
+    "kit": [
+     {
+      "id": "k0o2phuz",
+      "type": "range",
+      "tier": 3,
+      "model": "Molteni custom French suite",
+      "price": 517500,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k9dgp28e",
+      "type": "hood",
+      "tier": 3,
+      "model": "Halton Capture Jet hood with UV and integrated lighting",
+      "price": 109300,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1gi615d",
+      "type": "vent",
+      "tier": 3,
+      "model": "Demand-controlled ventilation with heat recovery",
+      "price": 460000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1mrvvw6",
+      "type": "suppression",
+      "tier": 3,
+      "model": "Hybrid water-mist & wet-chemical system with remote monitoring",
+      "price": 80500,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kk42tj9l",
+      "type": "extinguisher",
+      "tier": 3,
+      "model": "Full set with fire blankets, wall cabinets and a staff-training contract",
+      "price": 4000,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kkolrnex",
+      "type": "sprinkler",
+      "tier": 3,
+      "model": "Quick-response sprinklers, monitored alarm & dedicated fire pump",
+      "price": 172500,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kt5p32hs",
+      "type": "greasetrap",
+      "tier": 3,
+      "model": "Automatic grease removal unit with an interceptor, installed",
+      "price": 26000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "khqj18tk",
+      "type": "refrig",
+      "tier": 3,
+      "model": "Sushi bar cases and walk-ins",
+      "price": 186900,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krjknsxe",
+      "type": "dish",
+      "tier": 3,
+      "model": "Meiko M-iQ flight-type",
+      "price": 110000,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmhpf82d",
+      "type": "robata",
+      "tier": 2,
+      "model": "The robata grill",
+      "price": 18000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ksgnv0fz",
+      "type": "fryer",
+      "tier": 2,
+      "model": "Tempura fryers",
+      "price": 9000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwzs4hxc",
+      "type": "fryer",
+      "tier": 2,
+      "model": "Frymaster filtration fryer bank",
+      "price": 9000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kbi02qx1",
+      "type": "ricecooker",
+      "tier": 3,
+      "model": "Sushi rice cookers",
+      "price": 12000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kjld014w",
+      "type": "wok",
+      "tier": 2,
+      "model": "Jade three-hole wok range",
+      "price": 16000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kqeop9uf",
+      "type": "plancha",
+      "tier": 2,
+      "model": "Evo commercial plancha",
+      "price": 9000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kkkdf9y9",
+      "type": "combi",
+      "tier": 2,
+      "model": "Rational iCombi Pro 10-full",
+      "price": 24000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krke4ls6",
+      "type": "salamander",
+      "tier": 2,
+      "model": "Salvis Salamat Pro",
+      "price": 9000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ksz559on",
+      "type": "sousvide",
+      "tier": 1,
+      "model": "PolyScience circulators ×6",
+      "price": 7000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kmwe9g22",
+      "type": "blast",
+      "tier": 2,
+      "model": "Irinox MultiFresh",
+      "price": 22000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "km69e8y5",
+      "type": "icecream",
+      "tier": 2,
+      "model": "Carpigiani Labotronic",
+      "price": 28000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kde6w083",
+      "type": "slicer",
+      "tier": 2,
+      "model": "Berkel automatic slicer",
+      "price": 8000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kk1h3878",
+      "type": "bar",
+      "tier": 3,
+      "model": "The bar and lounge",
+      "price": 90000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ktfde5yt",
+      "type": "glasswasher",
+      "tier": 2,
+      "model": "Hobart LXeH undercounter",
+      "price": 9000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kztb09pt",
+      "type": "clearice",
+      "tier": 2,
+      "model": "Clear-ice maker and band saw",
+      "price": 15000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k86l23ta",
+      "type": "winestore",
+      "tier": 2,
+      "model": "Sake and wine refrigeration",
+      "price": 45000,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwywotzf",
+      "type": "espresso",
+      "tier": 2,
+      "model": "La Marzocco Strada",
+      "price": 26000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k7cd3f8m",
+      "type": "ice",
+      "tier": 3,
+      "model": "Hoshizaki KM, pair with storage",
+      "price": 14000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kaa1q6am",
+      "type": "pos",
+      "tier": 3,
+      "model": "Kitchen display screens on the line",
+      "price": 9000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "cons": 1.5,
+       "labor": -0.005,
+       "fee": 100
+      }
+     },
+     {
+      "id": "k7waxrsu",
+      "type": "menus",
+      "tier": 3,
+      "model": "Leather-bound menus and a bound wine list",
+      "price": 9000,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "pers": 2
+      }
+     },
+     {
+      "id": "kk57jcjr",
+      "type": "hoststand",
+      "tier": 3,
+      "model": "Custom host stand, guest CRM & a reservations desk",
+      "price": 15000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {
+       "cap": 0.015,
+       "pers": 2,
+       "fee": 1200
+      }
+     },
+     {
+      "id": "kd660o3v",
+      "type": "sound",
+      "tier": 3,
+      "model": "Audiophile hi-fi with a record wall",
+      "price": 60000,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "karmsrbb",
+      "type": "seating",
+      "tier": 3,
+      "model": "Custom upholstered dining chairs and hand-finished stone tables",
+      "price": 431300,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kctaoped",
+      "type": "booths",
+      "tier": 3,
+      "model": "Custom leather banquettes and curved booths",
+      "price": 273100,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krhddi7y",
+      "type": "stools",
+      "tier": 3,
+      "model": "The sushi bar counter",
+      "price": 20000,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "knzjg91m",
+      "type": "tableware",
+      "tier": 3,
+      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
+      "price": 172500,
+      "cond": 78,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k7syhhml",
+      "type": "waterservice",
+      "tier": 2,
+      "model": "Still & sparkling on tap",
+      "price": 5000,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kbncyseo",
+      "type": "smallwares",
+      "tier": 3,
+      "model": "A complete set with wireless temperature logging for HACCP",
+      "price": 92000,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "krgf9n81",
+      "type": "watertreat",
+      "tier": 2,
+      "model": "Reverse-osmosis system for espresso and ice",
+      "price": 3600,
+      "cond": 90,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kf4u1f6p",
+      "type": "restroom",
+      "tier": 3,
+      "model": "Designer restrooms",
+      "price": 316300,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kwh0j07y",
+      "type": "hvac",
+      "tier": 3,
+      "model": "Variable-refrigerant-flow system with energy recovery",
+      "price": 258800,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kxuk91c4",
+      "type": "safe",
+      "tier": 1,
+      "model": "Drop safe",
+      "price": 1200,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kxz2v2n2",
+      "type": "cameras",
+      "tier": 3,
+      "model": "Monitored cameras with the POS overlaid on the footage",
+      "price": 9000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     }
+    ],
+    "fire": {
+     "hoodLast": -1,
+     "supLast": -2,
+     "hoodPlan": true,
+     "supPlan": true
+    },
+    "kitFireSplit": true,
+    "kitFohSeeded": true,
+    "kitSeatSeeded": true,
+    "hours": {
+     "days": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "svc": {
+      "breakfast": false,
+      "lunch": true,
+      "dinner": true,
+      "late": true
+     }
+    },
+    "setting": {
+     "custom": true,
+     "name": "The Shoppes at Marina Bay Sands, Singapore",
+     "desc": "The basement level of the mall under the three towers of Marina Bay Sands. Bankers from Marina Bay Financial Centre at lunch, hotel and casino guests, conference delegates from the convention centre, birthday groups and tourists who came for the torii gate on Instagram.",
+     "check": 1,
+     "traffic": 1.3,
+     "season": [
+      1.06,
+      1.08,
+      0.98,
+      0.98,
+      1,
+      1,
+      1.02,
+      1.04,
+      0.98,
+      1.06,
+      1,
+      1.1
+     ],
+     "seg": {
+      "regulars": 4,
+      "locals": 6,
+      "tourists": 12,
+      "business": 10,
+      "occasion": 10
+     },
+     "crime": 2,
+     "ev": [
+      {
+       "p": 0.5,
+       "m": [
+        9
+       ],
+       "tone": "good",
+       "text": "Formula 1 race week: the circuit runs past the door, and every table is booked from Thursday to Sunday.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Race week",
+         "value": 0.07,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.4,
+       "m": [
+        0,
+        1
+       ],
+       "tone": "good",
+       "text": "Chinese New Year: lo hei at every corporate table and the mezzanine room booked every night for two weeks.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Chinese New Year",
+         "value": 0.05,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.2,
+       "m": null,
+       "tone": "good",
+       "text": "A big medical conference at the Sands Expo filled the lunch sets for a week.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "Conference week",
+         "value": 0.03,
+         "months": 1
+        }
+       ]
+      },
+      {
+       "p": 0.08,
+       "m": null,
+       "tone": "warn",
+       "text": "A new Japanese omakase counter opened in the same mall, with a well-known chef from Tokyo.",
+       "fx": [
+        {
+         "op": "mod",
+         "kind": "demand",
+         "label": "New omakase nearby",
+         "value": -0.03,
+         "months": 6
+        }
+       ]
+      }
+     ],
+     "drift": null,
+     "source": ""
+    },
+    "mkt": {
+     "social": 2500,
+     "search": 800,
+     "pr": 3000,
+     "email": 600
+    },
+    "kitV3": true,
+    "kitDedup": true
+   }
+  ],
+  "dials": {
+   "price": 1,
+   "quality": "standard",
+   "staffing": "full",
+   "marketing": 1800,
+   "draw": 2500,
+   "breadth": 0.5
+  },
+  "programs": {
+   "bar": true,
+   "brunch": false,
+   "delivery": false,
+   "catering": false
+  },
+  "admin": 30,
+  "salesTaxHeld": 0,
+  "taxReserve": 0,
+  "inflation": 1,
+  "history": [],
+  "log": [
+   {
+    "when": "Oct Y1",
+    "tone": "good",
+    "text": "You're the general manager of KOMA, Tao Group Hospitality's Japanese restaurant at The Shoppes at Marina Bay Sands, open since July 2019. Tao Group runs it with Marina Bay Sands; you run the sushi bar, the robata, the lounge and 230 seats, and report to Tao Group's Singapore leadership. Prices on the menu are before the 10% service charge and 9% GST, as Singapore restaurants print them."
+   }
+  ],
+  "flags": {
+   "compFix": 1
+  },
+  "actionsLeft": 2,
+  "pendingEvents": [],
+  "gameOver": null,
+  "openingCosts": {
+   "build": 0,
+   "equip": 0,
+   "deposit": 351000,
+   "licences": 0,
+   "smallwares": 0,
+   "preopen": 0,
+   "openingInv": 104135,
+   "cellar": 164000,
+   "total": 619135,
+   "sqft": 10350
+  },
+  "ap": 0,
+  "ar": 0,
+  "savedAt": 1790372907973,
+  "mods": [
+   {
+    "id": "euoc4au",
+    "left": null,
+    "loc": -1,
+    "src": "KOMA Singapore",
+    "label": "Tao Group Hospitality brand, systems and marketing",
+    "kind": "fixed",
+    "value": 22000
+   }
+  ],
+  "threads": [],
+  "aiMemory": [],
+  "followups": [],
+  "offers": [],
+  "upgrades": [],
+  "chronicle": [],
+  "world": {
+   "notes": "KOMA is a Japanese restaurant and sushi bar by Tao Group Hospitality, created with Marina Bay Sands; it opened on 26 July 2019 at The Shoppes at Marina Bay Sands (#B1-67, 10 Bayfront Avenue) with 230 seats, designed by Rockwell Group. Guests enter through a 20-metre passage of orange arches recalling the Fushimi Inari Shrine, into a lounge; the main room has soaring ceilings, a 2.5-metre bell above a traditional footbridge, an oversized sushi bar and a private dining room on the mezzanine. Hours: lunch daily 11.30am-3pm; dinner 5pm-11pm Sunday to Thursday and to midnight on Fridays, Saturdays and the eves of public holidays; the bar and lounge from 11.30am. The dishes, drinks, sets, trophy sakes and their prices are from KOMA's published menus (September 2026), converted from Singapore dollars at S$1.2797 to the US dollar; menu prices are before the 10% service charge and 9% GST. The Signature Lunch Set is S$58 for two courses and S$68 for three, Monday to Friday; the KOMA Tasting Menu is S$380 at lunch and dinner; the Sunday Sushi Omakase is S$158 with two hours of free-flow sake, soju and beer. Singapore's food-services Progressive Wage Model entry wage is S$2,220 a month from 1 July 2026. Sales, rent, floor area, the Tao Group fee, staff names and local events are estimates or invented.",
+   "living": true,
+   "guide": false,
+   "guideMonth": 10
+  },
+  "decision": null,
+  "pitch": null,
+  "heat": {
+   "forces": [],
+   "ops": [],
+   "raids": {},
+   "history": [],
+   "proposal": null,
+   "net": 0,
+   "dirty": 0,
+   "wash": 0,
+   "washedTotal": 0
+  },
+  "guestIdx": 1,
+  "supplierPool": [
+   {
+    "id": "sp_kmsea",
+    "name": "Toyosu seafood air-freight importer",
+    "cats": [
+     "seafood",
+     "luxury"
+    ],
+    "q": 86,
+    "price": 1.25,
+    "reliability": 0.95,
+    "terms": "net30",
+    "relation": 78,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "Tuna, uni, amadai and shellfish from Tokyo's Toyosu market, flown in several times a week."
+   },
+   {
+    "id": "sp_kmwagyu",
+    "name": "Japanese wagyu importer",
+    "cats": [
+     "meat",
+     "luxury"
+    ],
+    "q": 86,
+    "price": 1.2,
+    "reliability": 0.96,
+    "terms": "net30",
+    "relation": 72,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "A4 and A5 wagyu, Kagoshima and Niigata, with certificates."
+   },
+   {
+    "id": "sp_kmbroad",
+    "name": "Singapore foodservice distributor",
+    "cats": [
+     "produce",
+     "dairy",
+     "pantry",
+     "meat"
+    ],
+    "q": 64,
+    "price": 1,
+    "reliability": 0.97,
+    "terms": "net30",
+    "relation": 70,
+    "green": false,
+    "monthsWith": 36,
+    "blurb": "The broadline truck for dry goods, dairy and local produce, through the mall's loading bay."
+   }
+  ],
+  "suppliers": {
+   "produce": "sp_kmbroad",
+   "meat": "sp_kmwagyu",
+   "seafood": "sp_kmsea",
+   "dairy": "sp_kmbroad",
+   "pantry": "sp_kmbroad",
+   "luxury": "sp_kmsea"
+  },
+  "menu": {
+   "format": "carte",
+   "tastingPrice": 75,
+   "dishes": [
+    {
+     "id": "h75xdc3",
+     "name": "Edamame",
+     "course": "snack",
+     "desc": "Steamed, sea salt.",
+     "cats": {
+      "produce": 0.9,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 1.02,
+     "price": 6.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Edamame|Steamed, sea salt."
+    },
+    {
+     "id": "y40anef",
+     "name": "Miso Soup",
+     "course": "starter",
+     "desc": "Tofu, seaweed, Tokyo negi.",
+     "cats": {
+      "pantry": 0.6,
+      "produce": 0.4
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 0.92,
+     "price": 6.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Miso Soup|Tofu, seaweed, Tokyo negi."
+    },
+    {
+     "id": "m4rvb9s",
+     "name": "Crispy Tokyo Gyoza",
+     "course": "starter",
+     "desc": "Chicken, cabbage, miso.",
+     "cats": {
+      "meat": 0.5,
+      "produce": 0.2,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.33,
+     "price": 10.94,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "plancha",
+        "range"
+       ],
+       "hard": false,
+       "loss": 0.1,
+       "why": "a flat-top"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Crispy Tokyo Gyoza|Chicken, cabbage, miso."
+    },
+    {
+     "id": "21joac1",
+     "name": "Chicken Karaage",
+     "course": "starter",
+     "desc": "Thai basil, smoked tartare sauce, garam masala.",
+     "cats": {
+      "meat": 0.7,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.46,
+     "price": 12.5,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "a fryer"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Chicken Karaage|Thai basil, smoked tartare sauce, garam masala."
+    },
+    {
+     "id": "o31yk9k",
+     "name": "Salmon Pillow",
+     "course": "starter",
+     "desc": "King salmon, roasted jalapeño, smoked avocado.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 3.65,
+     "price": 14.85,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Salmon Pillow|King salmon, roasted jalapeño, smoked avocado."
+    },
+    {
+     "id": "ttdeop2",
+     "name": "Miso Glazed Eggplant",
+     "course": "starter",
+     "desc": "Sweet ginger red miso, ricotta cheese.",
+     "cats": {
+      "produce": 0.7,
+      "dairy": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.31,
+     "price": 14.07,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Miso Glazed Eggplant|Sweet ginger red miso, ricotta cheese."
+    },
+    {
+     "id": "1jg2kw9",
+     "name": "Amiyaki Mushroom Salad",
+     "course": "starter",
+     "desc": "Kumquat, citrus, mizuna, soy vinaigrette.",
+     "cats": {
+      "produce": 0.9,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 3.1,
+     "price": 17.19,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Amiyaki Mushroom Salad|Kumquat, citrus, mizuna, soy vinaigrette."
+    },
+    {
+     "id": "0cod5o0",
+     "name": "Wagyu Beef Gyoza",
+     "course": "starter",
+     "desc": "Chilli sauce.",
+     "cats": {
+      "meat": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 5.38,
+     "price": 21.88,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Wagyu Beef Gyoza|Chilli sauce."
+    },
+    {
+     "id": "54i39qt",
+     "name": "Yellowtail Salad",
+     "course": "starter",
+     "desc": "Mizuna, Tokyo negi, ponzu vinaigrette.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 6.92,
+     "price": 28.13,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Yellowtail Salad|Mizuna, Tokyo negi, ponzu vinaigrette."
+    },
+    {
+     "id": "6jf9cjk",
+     "name": "D.I.Y Spicy Tuna",
+     "course": "starter",
+     "desc": "Crispy rice, sweet soy, chives, spicy mayo.",
+     "cats": {
+      "seafood": 0.6,
+      "pantry": 0.4
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7.3,
+     "price": 29.69,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "D.I.Y Spicy Tuna|Crispy rice, sweet soy, chives, spicy mayo."
+    },
+    {
+     "id": "6dy6qvk",
+     "name": "Lobster Avocado Salad",
+     "course": "starter",
+     "desc": "Tomato, pomelo, crispy tapioca chip, celery citrus sauce.",
+     "cats": {
+      "seafood": 0.6,
+      "produce": 0.4
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 10.46,
+     "price": 37.51,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Lobster Avocado Salad|Tomato, pomelo, crispy tapioca chip, celery citrus sauce."
+    },
+    {
+     "id": "pxdj6qu",
+     "name": "Wagyu Sirloin with Chimichurri",
+     "course": "starter",
+     "desc": "A4 Kagoshima wagyu, crispy shallot, truffle chimichurri, micro cress.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 14.3,
+     "price": 48.45,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Wagyu Sirloin with Chimichurri|A4 Kagoshima wagyu, crispy shallot, truffle chimichurri, micro cress."
+    },
+    {
+     "id": "efwbxaj",
+     "name": "Caviar: 30g Kaluga Queen",
+     "course": "starter",
+     "desc": "Served with traditional condiments.",
+     "cats": {
+      "luxury": 0.9,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 47.42,
+     "price": 115.65,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Caviar: 30g Kaluga Queen|Served with traditional condiments."
+    },
+    {
+     "id": "kpv2qsp",
+     "name": "Sake Nigiri",
+     "course": "starter",
+     "desc": "King salmon, per piece.",
+     "cats": {
+      "seafood": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 1.85,
+     "price": 6.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Sake Nigiri|King salmon, per piece."
+    },
+    {
+     "id": "02giz85",
+     "name": "Hamachi Nigiri",
+     "course": "starter",
+     "desc": "Kingfish, per piece.",
+     "cats": {
+      "seafood": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.31,
+     "price": 7.81,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Hamachi Nigiri|Kingfish, per piece."
+    },
+    {
+     "id": "xjj741y",
+     "name": "Otoro Nigiri",
+     "course": "starter",
+     "desc": "Fatty tuna, per piece.",
+     "cats": {
+      "seafood": 0.85,
+      "pantry": 0.15
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7.54,
+     "price": 21.88,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Otoro Nigiri|Fatty tuna, per piece."
+    },
+    {
+     "id": "jjox59p",
+     "name": "Uni Nigiri",
+     "course": "starter",
+     "desc": "Sea urchin, per piece.",
+     "cats": {
+      "seafood": 0.85,
+      "luxury": 0.15
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 10.38,
+     "price": 28.13,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Uni Nigiri|Sea urchin, per piece."
+    },
+    {
+     "id": "zc6xqh0",
+     "name": "Assorted Sashimi Platter",
+     "course": "starter",
+     "desc": "Nine pieces.",
+     "cats": {
+      "seafood": 0.9,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 20.3,
+     "price": 68.77,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Assorted Sashimi Platter|Nine pieces."
+    },
+    {
+     "id": "fm5irmo",
+     "name": "Chef's Yokozuna Omakase",
+     "course": "main",
+     "desc": "Twenty pieces and two rolls, for the table to share.",
+     "cats": {
+      "seafood": 0.8,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 60.39,
+     "price": 193.8,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Chef's Yokozuna Omakase|Twenty pieces and two rolls, for the table to share."
+    },
+    {
+     "id": "wt0bhfw",
+     "name": "California Roll",
+     "course": "starter",
+     "desc": "King crab, cucumber, avocado.",
+     "cats": {
+      "seafood": 0.6,
+      "produce": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 5.13,
+     "price": 19.54,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "California Roll|King crab, cucumber, avocado."
+    },
+    {
+     "id": "v7l2yng",
+     "name": "STS Roll",
+     "course": "starter",
+     "desc": "Shrimp tempura, spicy tuna.",
+     "cats": {
+      "seafood": 0.7,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7.3,
+     "price": 29.69,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": false,
+       "loss": 0.2,
+       "why": "a fryer"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "STS Roll|Shrimp tempura, spicy tuna."
+    },
+    {
+     "id": "1xj8zn5",
+     "name": "Rainbow Roll",
+     "course": "starter",
+     "desc": "Lobster, sweet butter aioli, avocado.",
+     "cats": {
+      "seafood": 0.7,
+      "produce": 0.2,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 13.51,
+     "price": 48.45,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Rainbow Roll|Lobster, sweet butter aioli, avocado."
+    },
+    {
+     "id": "t93gm69",
+     "name": "KOMA Roll",
+     "course": "starter",
+     "desc": "Wagyu beef, Hokkaido uni, snow crab, shiso leaf.",
+     "cats": {
+      "meat": 0.3,
+      "seafood": 0.6,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 19.97,
+     "price": 64.08,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "KOMA Roll|Wagyu beef, Hokkaido uni, snow crab, shiso leaf."
+    },
+    {
+     "id": "snh7bgf",
+     "name": "Negima Skewer",
+     "course": "starter",
+     "desc": "Chicken thigh, Tokyo negi, from the robata.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 1.44,
+     "price": 6.25,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata"
+       ],
+       "hard": true,
+       "loss": 0.6,
+       "why": "the robata grill"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Negima Skewer|Chicken thigh, Tokyo negi, from the robata."
+    },
+    {
+     "id": "y9wbwzp",
+     "name": "Lamb Chop Skewer",
+     "course": "starter",
+     "desc": "Cilantro, mint, from the robata.",
+     "cats": {
+      "meat": 0.9,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 4.79,
+     "price": 17.19,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata"
+       ],
+       "hard": true,
+       "loss": 0.6,
+       "why": "the robata grill"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Lamb Chop Skewer|Cilantro, mint, from the robata."
+    },
+    {
+     "id": "uy45h24",
+     "name": "Hokkaido Scallop Skewer",
+     "course": "starter",
+     "desc": "Butter soy sauce, from the robata.",
+     "cats": {
+      "seafood": 0.9,
+      "dairy": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 6.69,
+     "price": 22.66,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata"
+       ],
+       "hard": true,
+       "loss": 0.6,
+       "why": "the robata grill"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Hokkaido Scallop Skewer|Butter soy sauce, from the robata."
+    },
+    {
+     "id": "078y4bj",
+     "name": "Japanese Wagyu Yakitori",
+     "course": "starter",
+     "desc": "Black pepper chimichurri, pickled ginger miso, from the robata.",
+     "cats": {
+      "meat": 0.9,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 9.74,
+     "price": 29.69,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata"
+       ],
+       "hard": true,
+       "loss": 0.6,
+       "why": "the robata grill"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Japanese Wagyu Yakitori|Black pepper chimichurri, pickled ginger miso, from the robata."
+    },
+    {
+     "id": "vp59h6r",
+     "name": "Tempura Medley",
+     "course": "starter",
+     "desc": "Shrimp, Japanese whiting, mongou cuttlefish, shiitake, eggplant, asparagus.",
+     "cats": {
+      "seafood": 0.6,
+      "produce": 0.3,
+      "pantry": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7,
+     "price": 32.82,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "fryer",
+        "contfryer",
+        "fryrobot"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "a fryer"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Tempura Medley|Shrimp, Japanese whiting, mongou cuttlefish, shiitake, eggplant, asparagus."
+    },
+    {
+     "id": "zmjx24h",
+     "name": "Truffle Fried Rice",
+     "course": "main",
+     "desc": "Japanese rice, truffle paste, mushrooms, vegetables.",
+     "cats": {
+      "pantry": 0.6,
+      "produce": 0.3,
+      "luxury": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 3.95,
+     "price": 21.88,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "wok",
+        "range"
+       ],
+       "hard": false,
+       "loss": 0.1,
+       "why": "wok heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Truffle Fried Rice|Japanese rice, truffle paste, mushrooms, vegetables."
+    },
+    {
+     "id": "2qazdcf",
+     "name": "Ginza Chicken",
+     "course": "main",
+     "desc": "Half chicken, ginger paitan, coriander cress.",
+     "cats": {
+      "meat": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7,
+     "price": 32.82,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Ginza Chicken|Half chicken, ginger paitan, coriander cress."
+    },
+    {
+     "id": "p4f8a3o",
+     "name": "Wafu Carbonara with Uni",
+     "course": "main",
+     "desc": "Smoked butter.",
+     "cats": {
+      "pantry": 0.4,
+      "seafood": 0.3,
+      "dairy": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 10.05,
+     "price": 38.29,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Wafu Carbonara with Uni|Smoked butter."
+    },
+    {
+     "id": "4obvhae",
+     "name": "Barbecued Beef Short Rib",
+     "course": "main",
+     "desc": "Lettuce, kochijan.",
+     "cats": {
+      "meat": 0.85,
+      "produce": 0.15
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 12.85,
+     "price": 46.1,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata",
+        "grill"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "Barbecued Beef Short Rib|Lettuce, kochijan."
+    },
+    {
+     "id": "56u0jky",
+     "name": "Roasted Miso Black Cod",
+     "course": "main",
+     "desc": "Assorted mushrooms, edamame, asparagus, snow peas, Tokyo negi.",
+     "cats": {
+      "seafood": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 14.82,
+     "price": 53.14,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Roasted Miso Black Cod|Assorted mushrooms, edamame, asparagus, snow peas, Tokyo negi."
+    },
+    {
+     "id": "0f0lomx",
+     "name": "Bamboo Steamed Seabass",
+     "course": "main",
+     "desc": "Zucchini, maitake mushroom, bok choy, sun-dried tomato ponzu.",
+     "cats": {
+      "seafood": 0.8,
+      "produce": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 13.94,
+     "price": 53.14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Bamboo Steamed Seabass|Zucchini, maitake mushroom, bok choy, sun-dried tomato ponzu."
+    },
+    {
+     "id": "rgc52fr",
+     "name": "KOMA US Prime Sirloin Steak 400g",
+     "course": "main",
+     "desc": "Black garlic peppercorn sauce, green salad, potato pave.",
+     "cats": {
+      "meat": 0.9,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 40.37,
+     "price": 136.75,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata",
+        "grill"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "KOMA US Prime Sirloin Steak 400g|Black garlic peppercorn sauce, green salad, potato pave."
+    },
+    {
+     "id": "blkx9rz",
+     "name": "A5 Wagyu Tenderloin 150g",
+     "course": "main",
+     "desc": "Wasabi, ponzu, yuzu kosho.",
+     "cats": {
+      "meat": 0.95,
+      "produce": 0.05
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 53.83,
+     "price": 156.29,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "robata",
+        "grill"
+       ],
+       "hard": false,
+       "loss": 0.3,
+       "why": "grill heat"
+      }
+     ],
+     "sec": "food",
+     "kitJ": "A5 Wagyu Tenderloin 150g|Wasabi, ponzu, yuzu kosho."
+    },
+    {
+     "id": "4lt5jec",
+     "name": "Lemon Yuzu",
+     "course": "dessert",
+     "desc": "Lemon mousse, yuzu jam, cacao crumble.",
+     "cats": {
+      "dairy": 0.5,
+      "produce": 0.2,
+      "pantry": 0.3
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.54,
+     "price": 14.07,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Lemon Yuzu|Lemon mousse, yuzu jam, cacao crumble."
+    },
+    {
+     "id": "e07vpyc",
+     "name": "Bonsai",
+     "course": "dessert",
+     "desc": "Molten dark chocolate, crunchy praline.",
+     "cats": {
+      "pantry": 0.6,
+      "dairy": 0.4
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.68,
+     "price": 14.85,
+     "signature": true,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Bonsai|Molten dark chocolate, crunchy praline."
+    },
+    {
+     "id": "cbu9f0x",
+     "name": "Japanese Cheese Cake",
+     "course": "dessert",
+     "desc": "Strawberry sorbet.",
+     "cats": {
+      "dairy": 0.7,
+      "produce": 0.1,
+      "pantry": 0.2
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.82,
+     "price": 15.63,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "Japanese Cheese Cake|Strawberry sorbet."
+    },
+    {
+     "id": "3fjazko",
+     "name": "KOMA Signature Dessert Omakase",
+     "course": "dessert",
+     "desc": "Chef's selection.",
+     "cats": {
+      "pantry": 0.5,
+      "dairy": 0.4,
+      "produce": 0.1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 14.66,
+     "price": 68.77,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "food",
+     "kitJ": "KOMA Signature Dessert Omakase|Chef's selection."
+    },
+    {
+     "id": "ntd6c49",
+     "name": "Ichigo Sour",
+     "course": "side",
+     "desc": "Gin, strawberry sake, rose and lychee tea cordial.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 3.91,
+     "price": 19.54,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "cocktail",
+     "kitJ": "Ichigo Sour|Gin, strawberry sake, rose and lychee tea cordial."
+    },
+    {
+     "id": "4bk9a6a",
+     "name": "Mikan Negroni",
+     "course": "side",
+     "desc": "Circa gin, Asterley Bros vermouth, Averna amaro, Campari.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 4.06,
+     "price": 20.32,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "cocktail",
+     "kitJ": "Mikan Negroni|Circa gin, Asterley Bros vermouth, Averna amaro, Campari."
+    },
+    {
+     "id": "xa71qmf",
+     "name": "Star of the Show",
+     "course": "side",
+     "desc": "Butterfly pea gin, brut Champagne, yuzu sake, lychee and orange saccharum.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 4.81,
+     "price": 21.88,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "cocktail",
+     "kitJ": "Star of the Show|Butterfly pea gin, brut Champagne, yuzu sake, lychee and orange saccharum."
+    },
+    {
+     "id": "8m9mv7g",
+     "name": "Nikka Highball",
+     "course": "side",
+     "desc": "Nikka Taketsuru, London Essence soda, fresh mint.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 4.06,
+     "price": 20.32,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [
+      {
+       "any": [
+        "bar"
+       ],
+       "hard": true,
+       "loss": 0.4,
+       "why": "a working bar"
+      }
+     ],
+     "sec": "drink",
+     "drink": "cocktail",
+     "kitJ": "Nikka Highball|Nikka Taketsuru, London Essence soda, fresh mint."
+    },
+    {
+     "id": "jkfra35",
+     "name": "Little Crane",
+     "course": "side",
+     "desc": "Lychee nectar, elderflower and lemongrass.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 2.81,
+     "price": 15.63,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "zero",
+     "kitJ": "Little Crane|Lychee nectar, elderflower and lemongrass."
+    },
+    {
+     "id": "rd9kw3c",
+     "name": "Suntory Premium Malt, draft",
+     "course": "side",
+     "desc": "330ml, Kyoto.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 3.44,
+     "price": 15.63,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "beer",
+     "kitJ": "Suntory Premium Malt, draft|330ml, Kyoto."
+    },
+    {
+     "id": "6aw7dcz",
+     "name": "Domaine Christian Moreau Chablis 2023, glass",
+     "course": "side",
+     "desc": "150ml.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7.22,
+     "price": 25.79,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Domaine Christian Moreau Chablis 2023, glass|150ml."
+    },
+    {
+     "id": "jyalc8c",
+     "name": "Bodegas Muga Reserva 2020, glass",
+     "course": "side",
+     "desc": "150ml, Rioja.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 7.22,
+     "price": 25.79,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Bodegas Muga Reserva 2020, glass|150ml, Rioja."
+    },
+    {
+     "id": "etmuhxh",
+     "name": "Bollinger Special Cuvée, glass",
+     "course": "side",
+     "desc": "150ml, Champagne.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 10.31,
+     "price": 34.38,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Bollinger Special Cuvée, glass|150ml, Champagne."
+    },
+    {
+     "id": "f0mqc4z",
+     "name": "Dom Pérignon 2015, bottle",
+     "course": "side",
+     "desc": "750ml, Champagne.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 203.17,
+     "price": 507.93,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Dom Pérignon 2015, bottle|750ml, Champagne."
+    },
+    {
+     "id": "034x9uu",
+     "name": "Naeba \"Four Fox\" Junmai Daiginjo, carafe",
+     "course": "side",
+     "desc": "Niigata.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 11.25,
+     "price": 37.51,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Naeba \"Four Fox\" Junmai Daiginjo, carafe|Niigata."
+    },
+    {
+     "id": "ghy7qpf",
+     "name": "Dassai 23 Junmai Daiginjo, bottle",
+     "course": "side",
+     "desc": "720ml, Yamaguchi.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 82.52,
+     "price": 250.06,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "wine",
+     "kitJ": "Dassai 23 Junmai Daiginjo, bottle|720ml, Yamaguchi."
+    },
+    {
+     "id": "68ioe07",
+     "name": "Sencha Green Tea",
+     "course": "side",
+     "desc": "Jibun sencha, loose leaf.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 0.84,
+     "price": 7.03,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Sencha Green Tea|Jibun sencha, loose leaf."
+    },
+    {
+     "id": "xdbllsw",
+     "name": "Café Latte",
+     "course": "side",
+     "desc": "",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 3,
+     "technique": 3.4,
+     "presentation": 4.2,
+     "creativity": 62,
+     "cost": 1.05,
+     "price": 7.03,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "sec": "drink",
+     "drink": "coffee",
+     "kitJ": "Café Latte|"
+    },
+    {
+     "id": "1yp00ed",
+     "name": "Signature Lunch Set, three courses",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "set",
+      "items": [
+       "y40anef",
+       "2qazdcf",
+       "4lt5jec"
+      ]
+     },
+     "desc": "Weekday lunch, Monday to Friday: an appetiser, a main and a dessert, with sencha.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 53.14,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "daypart": "lunch",
+     "kitJ": "Signature Lunch Set, three courses|Weekday lunch, Monday to Friday: an appetiser, a main and a dessert, with sencha."
+    },
+    {
+     "id": "g2mdu8y",
+     "name": "KOMA Tasting Menu",
+     "course": "main",
+     "sec": "bundle",
+     "bundle": {
+      "style": "prixfixe",
+      "items": [
+       "6dy6qvk",
+       "zc6xqh0",
+       "vp59h6r",
+       "078y4bj",
+       "1xj8zn5",
+       "4lt5jec",
+       "e07vpyc"
+      ]
+     },
+     "desc": "Seven courses at lunch or dinner, from lobster avocado salad through sashimi, uni tempura, amadai, wagyu ribeye and rainbow monaka to a duo of the signature desserts.",
+     "cats": {
+      "pantry": 1
+     },
+     "grade": 2,
+     "technique": 1,
+     "presentation": 2,
+     "creativity": 10,
+     "cost": 0,
+     "price": 296.94,
+     "signature": false,
+     "off": false,
+     "note": "",
+     "src": "preset",
+     "needs": [],
+     "kitJ": "KOMA Tasting Menu|Seven courses at lunch or dinner, from lobster avocado salad through sashimi, uni tempura, amadai, wagyu ribeye and rainbow monaka to a duo of the signature desserts."
+    }
+   ],
+   "coherence": 80,
+   "identity": "Modern Japanese from Tao Group: nigiri and sashimi by the piece, maki, robata skewers, tempura, wagyu, caviar and a long sake list.",
+   "notes": "",
+   "creBonus": 0,
+   "pairing": false,
+   "pairingPrice": 55,
+   "v2": 1
+  },
+  "team": [
+   {
+    "id": "p0626fg",
+    "role": "chef",
+    "name": "Ryo Takahashi",
+    "skill": 80,
+    "years": 18,
+    "salary": 135000,
+    "trait": "perfectionist",
+    "bio": "Executive chef. Trained in Tokyo and at Tao Group's KOMA-style kitchens; runs the sushi bar, the robata and a brigade of forty.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "5bngmam",
+    "role": "sous",
+    "name": "Marcus Tan",
+    "skill": 72,
+    "years": 10,
+    "salary": 66000,
+    "trait": "steady",
+    "bio": "Sous chef who runs the hot kitchen and the robata on a full Friday.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "p2n3n1i",
+    "role": "pastry",
+    "name": "Aiko Mori",
+    "skill": 70,
+    "years": 9,
+    "salary": 56000,
+    "trait": "perfectionist",
+    "bio": "Pastry chef behind the Bonsai and the dessert omakase.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "q0ddyc3",
+    "role": "somm",
+    "name": "Rachel Lim",
+    "skill": 74,
+    "years": 11,
+    "salary": 58000,
+    "trait": "connected",
+    "bio": "Beverage manager and certified sake sommelier; built the sake list around Juyondai, Kokuryu and Dassai.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   },
+   {
+    "id": "yvv6y7d",
+    "role": "maitre",
+    "name": "Daniel Koh",
+    "skill": 74,
+    "years": 13,
+    "salary": 98000,
+    "trait": "showman",
+    "bio": "Restaurant manager: runs 230 seats, the lounge and the mezzanine room on a race-week Saturday.",
+    "certs": [
+     "servsafe"
+    ],
+    "loyalty": 62,
+    "ambition": 45,
+    "stress": 34,
+    "away": false,
+    "fame": 0
+   }
+  ],
+  "training": [],
+  "brigade": 74,
+  "fohTrain": 72,
+  "capex": 0,
+  "rngState": 2138944025,
+  "cellar": {
+   "value": 420000,
+   "target": 420000,
+   "ref": 420000,
+   "markup": 3.2,
+   "standing": 70,
+   "rare": [
+    {
+     "id": "komaryusen",
+     "name": "Juyondai \"Ryusen\" Junmai Daiginjo (720ml)",
+     "cost": 2972,
+     "price": 7727,
+     "prestige": 8,
+     "qty": 1,
+     "rarity": 5
+    },
+    {
+     "id": "komaryugetsu",
+     "name": "Juyondai \"Ryugetsu\" Junmai Daiginjo (1.8L)",
+     "cost": 2070,
+     "price": 5383,
+     "prestige": 8,
+     "qty": 1,
+     "rarity": 5
+    },
+    {
+     "id": "komanine",
+     "name": "Nikka Nine Decade",
+     "cost": 2070,
+     "price": 5383,
+     "prestige": 7,
+     "qty": 1,
+     "rarity": 4
+    },
+    {
+     "id": "komaisojiman",
+     "name": "Isojiman \"La Isojiman\" Junmai Daiginjo (720ml)",
+     "cost": 1770,
+     "price": 4601,
+     "prestige": 7,
+     "qty": 1,
+     "rarity": 4
+    },
+    {
+     "id": "komasoko",
+     "name": "Juyondai \"Soko\" Junmai Daiginjo (720ml)",
+     "cost": 704,
+     "price": 1832,
+     "prestige": 6,
+     "qty": 2,
+     "rarity": 4
+    },
+    {
+     "id": "komanizaemon",
+     "name": "Kokuryu \"Nizaemon\" Junmai Daiginjo (720ml)",
+     "cost": 597,
+     "price": 1553,
+     "prestige": 6,
+     "qty": 2,
+     "rarity": 3
+    },
+    {
+     "id": "komadassaib",
+     "name": "Dassai \"Beyond\" Junmai Daiginjo (720ml)",
+     "cost": 597,
+     "price": 1553,
+     "prestige": 6,
+     "qty": 3,
+     "rarity": 3
+    },
+    {
+     "id": "komazankyo",
+     "name": "Niizawa \"Zankyo Super 7\" 2021 (720ml)",
+     "cost": 406,
+     "price": 1055,
+     "prestige": 5,
+     "qty": 3,
+     "rarity": 3
+    }
+   ]
+  },
+  "lots": [],
+  "candidates": [],
+  "supplierOffers": [],
+  "archOffers": [],
+  "trainOffers": [],
+  "actionsMax": 3,
+  "franchise": null,
+  "policies": [
+   {
+    "id": "pola67vw9p",
+    "key": "health",
+    "name": "Medical cover and CPF top-ups",
+    "blurb": "Group medical insurance for all staff, on top of CPF for citizens and PRs.",
+    "monthly": 90,
+    "morale": 2,
+    "quit": -0.1,
+    "stress": -1,
+    "loyalty": 0.3,
+    "on": true
+   },
+   {
+    "id": "polkjey8dd",
+    "key": "meal",
+    "name": "Staff meals",
+    "blurb": "A staff meal before each service.",
+    "monthly": 30,
+    "morale": 2,
+    "quit": -0.05,
+    "stress": 0,
+    "loyalty": 0.2,
+    "on": true
+   }
+  ],
+  "tipPolicy": "service",
+  "license": {
+   "type": "full"
+  },
+  "intl": {
+   "home": "Singapore",
+   "fx": {},
+   "countries": {
+    "Singapore": {
+     "name": "Singapore",
+     "currency": {
+      "code": "SGD",
+      "symbol": "S$",
+      "perUSD": 1.2797,
+      "decimals": 2
+     },
+     "payrollBurden": 0.13,
+     "cardFee": 0.02,
+     "cashShare": 0.03,
+     "tipping": {
+      "norm": "service charge",
+      "tipCredit": 0
+     },
+     "salesTax": {
+      "rate": 0.09,
+      "included": false
+     },
+     "alcohol": {
+      "status": "allowed",
+      "note": "Restaurants serve alcohol under a liquor licence from the Singapore Police Force; public drinking is banned from 10.30pm to 7am, but licensed premises may serve within their hours."
+     },
+     "inspections": {
+      "system": "The Singapore Food Agency licenses food establishments and inspects them.",
+      "public": false
+     },
+     "mealTimes": "Lunch from about noon to 2pm, with office crowds on weekdays; dinner from about 7pm, and later on Fridays, Saturdays and the eves of public holidays.",
+     "customs": "Menus print prices before a 10% service charge and 9% GST (the 'plus-plus'), and tipping beyond the service charge is rare. Guests are a mix of residents, business travellers and tourists from the Marina Bay Sands hotel and casino; cards and mobile payments are expected, and cash is rare.",
+     "labour": "Employers pay CPF of 17% on the wages of Singapore citizens and permanent residents aged 55 and under. Food-service workers who are citizens or PRs are covered by the Progressive Wage Model, which sets an entry wage of S$2,220 a month from July 2026, rising to S$2,500 by July 2028. Foreign staff need Work Permits or S Passes under quotas and levies.",
+     "holidays": [
+      {
+       "month": 0,
+       "name": "Chinese New Year",
+       "note": "Reunion dinners and corporate lo hei; the city's busiest weeks for restaurants, in January or February."
+      },
+      {
+       "month": 7,
+       "name": "National Day",
+       "note": "9 August, with the parade and fireworks over Marina Bay."
+      },
+      {
+       "month": 9,
+       "name": "Formula 1 Singapore Grand Prix",
+       "note": "The night race runs round Marina Bay; race week fills every table near the circuit."
+      },
+      {
+       "month": 11,
+       "name": "Christmas and year end",
+       "note": "Corporate dinners and New Year's Eve at full price."
+      }
+     ],
+     "regionTag": "other",
+     "builtIn": false,
+     "source": "Written by hand for the KOMA preset."
+    }
+   }
+  }
+ }
+}
