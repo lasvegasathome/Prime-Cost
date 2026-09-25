@@ -4,7 +4,7 @@ A restaurant management game in a single HTML file. You run the books, the menu,
 
 ## Playing
 
-Open `index.html` in a browser. Nothing needs installing and there's no server. Your game saves in the browser, and you can export it as a file at any time.
+Open `index.html` as a Claude artifact. It's possible to play this offline, but I strongly advise against it since many of the base features of the game will be disabled or, at best, severely impaired.
 
 ## Preset saves
 
@@ -23,7 +23,7 @@ The `presets/` folder holds ready-made restaurants to start from. Download one, 
 | KOMA | `prime-cost-koma-singapore.json` | Marina Bay Sands, Singapore |
 | Los Pollos Hermanos | `prime-cost-los-pollos-hermanos.json` | Albuquerque |
 | McDonald's franchise | `prime-cost-mcdonalds-franchise.json` | Suburban highway exit |
-| Eastside Burger Co. (virtual brand kitchen) | `prime-cost-mrbeast-burger.json` | East Orlando |
+| Eastside Burger Co. (virtual brand kitchen - MrBeast Burger) | `prime-cost-mrbeast-burger.json` | East Orlando |
 | Olive Garden | `prime-cost-olive-garden.json` | Suburban retail corridor |
 | POPS 66 | `prime-cost-pops-66.json` | Route 66, Arcadia, Oklahoma |
 | Robuchon au Dôme | `prime-cost-robuchon-au-dome.json` | Grand Lisboa, Macau |
