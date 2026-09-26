@@ -387,8 +387,10 @@ let pendingResult=null;      // last month's results awaiting the modal
 
 // calendar: S.epoch is the real year of the save's first calendar year, when the story is set in a real time; otherwise years count Y1, Y2
 const MONTHS_LONG=["January","February","March","April","May","June","July","August","September","October","November","December"];
-function yearName(y,st){ st=st||S; const e=st&&Number(st.epoch); return e?String(e+y-1):`Y${y}`; }
-function yearLong(y){ const e=S&&Number(S.epoch); return e?` ${e+y-1}`:`, year ${y}`; }
+// on screen, years count from when the owner took over: Y1 is the first twelve months whatever month they started in.
+// The real calendar year (S.epoch) stays behind the scenes for Claude's briefing and for period prices and equipment.
+function playYear(cal,y,st){ st=st||S; if(!st||st.year==null) return y; const start=st.year*12+st.calMonth-(st.monthIdx||0); return Math.max(1,Math.floor((y*12+cal-start)/12)+1); }
+function dateName(cal,y,st){ return `${MONTHS[cal]} Y${playYear(cal,y,st)}`; }
 function uid(){return Math.random().toString(36).slice(2,9);}
 
 function newLocation(cfg){
@@ -476,7 +478,7 @@ function newGameInner(cfg,seed0){
     ownerName:cfg.ownerName||"You", bizName:cfg.bizName,
     concept:cfg.concept, market:cfg.market, traits:cfg.traits,
     monthIdx:0, calMonth:cfg.startMonth, year:1,
-    cash, equityInvestor, loans,
+    cash, equityInvestor, loans, dateLabelsV3:true,
     origin: (cfg.spec&&cfg.spec.sourceText)||"",
     customConcept: cfg.concept==="custom"?JSON.parse(JSON.stringify(CONCEPTS.custom)):null,
     customMarket: cfg.market==="custom"?JSON.parse(JSON.stringify(MARKETS.custom)):null,
@@ -976,7 +978,7 @@ function rollEvents(S,R){
 /* ---- rewind: a snapshot of the start of each of the last three months ---- */
 function snapshotMonth(){
   if(!S||!S.slotId) return;
-  const k=S.monthIdx%3, snap={at:Date.now(),label:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,monthIdx:S.monthIdx,state:JSON.parse(JSON.stringify(S))};
+  const k=S.monthIdx%3, snap={at:Date.now(),label:`${dateName(S.calMonth,S.year)}`,monthIdx:S.monthIdx,state:JSON.parse(JSON.stringify(S))};
   try{ lsSet("primecost.rw."+S.slotId+"."+k,JSON.stringify(snap)); }catch(e){}
   const col=userCol(); if(col){ try{ col.doc("rw_"+S.slotId+"_"+k).set(snap).catch(()=>{}); }catch(e){} }
 }
@@ -1041,10 +1043,10 @@ function advanceMonth(){
   R.closingCash=S.cash;
   R.prime = R.pl.prime; R.primePct = R.pl.rev>0? R.pl.prime/R.pl.rev : 0;
   S.history.push(compactResult(R));
-  S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,
+  S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,
     text:`${money(R.pl.rev)} revenue on ${R.pl.covers.toLocaleString()} covers. Prime cost ${pct(R.primePct)}. Cash ${R.cf.net>=0?"up":"down"} ${money(Math.abs(R.cf.net))}.${R.dirty&&(R.dirty.income||R.dirty.washed)?` Back room: ${money(R.dirty.income)} in dirty cash${R.dirty.washed?`, ${money(R.dirty.washed)} laundered through the till`:""}.`:""}`,
     tone: R.cf.net>=0?"good":"warn"});
-  for(const e of R.events) S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,text:e.text+(e.detail?` — ${e.detail}`:""),tone:e.tone==="good"?"good":e.tone==="warn"?"warn":"bad"});
+  for(const e of R.events) S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,text:e.text+(e.detail?` — ${e.detail}`:""),tone:e.tone==="good"?"good":e.tone==="warn"?"warn":"bad"});
   S.log=S.log.slice(0,160);
 
   tickMods(R);
@@ -1064,7 +1066,7 @@ function advanceMonth(){
   const due=S.followups.filter(f=>f.due<=S.monthIdx);
   S.followups=S.followups.filter(f=>f.due>S.monthIdx);
   const wantEvent = !S.gameOver && sampleFn && (due.length || S.world.living);
-  if(!sampleFn) for(const f of due) S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"warn",text:`No word came back about ${f.hook}.`});
+  if(!sampleFn) for(const f of due) S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`No word came back about ${f.hook}.`});
   S.history=S.history.slice(-240);
   save(); render();
   // what lands on the desk is written before the month's results show, so they arrive together
@@ -1176,7 +1178,7 @@ function ownershipTick(S,R){
     else { O.strain=(O.strain||0)+2;
       offerDecision({title:`${O.owner} can't cover the shortfall`,text:`The account is ${money(need)} short of what it takes to operate, and ${O.owner} says it doesn't have the money to send. ${P&&P.rep.name?`${P.rep.name} wants a plan by Friday.`:""}`,
         choices:[{label:"Cut hours and trim the menu",blurb:"Survive on less until the money comes back.",effects:[{op:"mod",kind:"labor",label:"Owner-ordered cuts",value:-.12,months:6},{op:"mod",kind:"demand",label:"A thinner offer",value:-.05,months:6},{op:"morale",locIndex:0,delta:-8}]},
-          {label:"Walk away from the contract",blurb:"",effects:[{op:"winddown"}]}],when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`},true); }
+          {label:"Walk away from the contract",blurb:"",effects:[{op:"winddown"}]}],when:`${dateName(S.calMonth,S.year)}`},true); }
   }
   // an owner in trouble sells, and the new one has its own ideas
   if(P&&(O.liquidity<-P.netWorth*.02||(O.strain||0)>=4||Math.random()<.0015)){
@@ -1187,7 +1189,7 @@ function ownershipTick(S,R){
   }
   // the owner's own habits
   if(P) for(const e of P.events){ if(e.m&&!e.m.includes(S.calMonth)) continue; if(Math.random()>=e.p) continue;
-    if(e.desk){ offerDecision({title:e.desk.title,text:e.desk.text,choices:e.desk.choices.map(c=>Object.assign({},c,{effects:(c.effects||[]).map(x=>Object.assign({locIndex:0},x))})),when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`}); continue; }
+    if(e.desk){ offerDecision({title:e.desk.title,text:e.desk.text,choices:e.desk.choices.map(c=>Object.assign({},c,{effects:(c.effects||[]).map(x=>Object.assign({locIndex:0},x))})),when:`${dateName(S.calMonth,S.year)}`}); continue; }
     applyEffects(e.fx.map(x=>Object.assign({locIndex:0},x)),{max:6,modScale:1,maxMonths:24,permanent:true,label:O.owner}); R.events.push({tone:e.tone,text:e.text}); }
   // the annual performance test, at the end of the owner's fiscal year
   if(R.calMonth===11){
@@ -1311,7 +1313,7 @@ function checkSolvency(S,R){
   if(avail>=need){
     S.creditLine.drawn+=need; S.cash=0;
     R.events.push({tone:"warn",text:`You drew ${money(need)} on the line of credit to make payroll. That is what it is for, once.`});
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"warn",text:`Drew ${money(need)} on the credit line to cover the month.`});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`Drew ${money(need)} on the credit line to cover the month.`});
     return;
   }
   S.creditLine.drawn=S.creditLine.limit;
@@ -1319,7 +1321,7 @@ function checkSolvency(S,R){
   S.flags.distress=(S.flags.distress||0)+1;
   if((S.flags.distress>=2 || S.cash < -45000)&&!S.flags.restructured){
     offerDecision({title:"You can't make payroll",text:"The credit line is maxed and vendors are on cash-on-delivery. A bankruptcy lawyer lays out two paths: a small-business reorganization that cuts your debts and keeps the doors open under court supervision, or an orderly wind-down.",
-      choices:[{label:"Wind the business down",blurb:"Close it in an orderly way and let the lawyers handle the rest.",effects:[{op:"winddown"}]},{label:"File for reorganization",blurb:"Debts cut, credit frozen, and everyone will know.",effects:[{op:"restructure"}]}],when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`},true);
+      choices:[{label:"Wind the business down",blurb:"Close it in an orderly way and let the lawyers handle the rest.",effects:[{op:"winddown"}]},{label:"File for reorganization",blurb:"Debts cut, credit frozen, and everyone will know.",effects:[{op:"restructure"}]}],when:`${dateName(S.calMonth,S.year)}`},true);
     return;
   }
   if(S.flags.distress>=2 || S.cash < -45000){
@@ -1386,7 +1388,7 @@ function loadLocal(){
 function stateDigest(S){
   const h=S.history.slice(-4);
   const L=S.locations.map(l=>`  - ${l.name} (${MARKETS[l.market].name}${l.status==="building"?", UNDER CONSTRUCTION":""}): ${l.seats} seats, rent ${money(l.rent+l.cam)}/mo, reputation ${Math.round(l.rep)}/100, awareness ${Math.round(l.awareness)}/100, staff morale ${Math.round(l.morale)}/100, kitchen skill ${Math.round(l.skill)}/100, equipment ${Math.round(l.equip)}/100, health score ${Math.round(l.health)}/100`).join("\n");
-  const H=h.map(r=>`  ${MONTHS[r.cal]} ${yearName(r.y)}: revenue ${money(r.rev)}, prime cost ${pct(r.primePct)}, EBITDA ${money(r.ebitda)}, cash movement ${money(r.net)}, closing cash ${money(r.cash)}, ${r.covers} covers${r.lost>100?`, sold out with about ${r.lost} requests on the waitlist`:""}`).join("\n");
+  const H=h.map(r=>`  ${dateName(r.cal,r.y)}: revenue ${money(r.rev)}, prime cost ${pct(r.primePct)}, EBITDA ${money(r.ebitda)}, cash movement ${money(r.net)}, closing cash ${money(r.cash)}, ${r.covers} covers${r.lost>100?`, sold out with about ${r.lost} requests on the waitlist`:""}`).join("\n");
   const loans=S.loans.filter(l=>l.remaining>0).map(l=>`${l.kind} loan ${money(l.remaining)} at ${pct(l.rate,2)}, ${money(l.payment)}/mo, ${l.monthsLeft} months left`).join("; ")||"none";
   return `BUSINESS: ${S.bizName}, a ${CONCEPTS[S.concept].name.toLowerCase()} run by ${S.ownerName}.
 Market: ${MARKETS[S.market].name}. Now: ${S.epoch?`${MONTHS_LONG[S.calMonth]} ${S.epoch+S.year-1}; this is the real calendar date in the story: prices, technology and people are as they were then, but history after the save's start does not happen here unless the owner asks for it`:`${MONTHS[S.calMonth]} of calendar year ${S.year}`} (month ${S.monthIdx+1} under this owner).
@@ -1542,7 +1544,7 @@ function offlineAdvisor(){
   if(!h.length) return "No trading months yet. Advance a month and there will be something to read.";
   const a=h[h.length-1], b=h[h.length-2];
   const out=[];
-  out.push(`${MONTHS[a.cal]} ${yearName(a.y)}: ${money(a.rev)} sales, prime cost ${pct(a.primePct)}, EBITDA ${money(a.ebitda)}, cash ${a.net>=0?"+":""}${money(a.net)}.`);
+  out.push(`${dateName(a.cal,a.y)}: ${money(a.rev)} sales, prime cost ${pct(a.primePct)}, EBITDA ${money(a.ebitda)}, cash ${a.net>=0?"+":""}${money(a.net)}.`);
   const target = primeTarget();
   if(a.primePct>target) out.push(`Prime cost is ${pct(a.primePct)} against a ${pct(target,0)} target. Food plus labour is ${money(a.prime-a.rev*target)} more than this sales volume can carry. Prices or portions or hours — one of the three has to move.`);
   else out.push(`Prime cost is ${pct(a.primePct)}, inside the ${pct(target,0)} benchmark. That part is working.`);
@@ -1595,11 +1597,15 @@ function presetEpoch(s){
 }
 function ensureState(s){
   if(s.epoch==null&&!s.epochChecked){ const e=presetEpoch(s); if(e) s.epoch=e; s.epochChecked=true; }
-  if(s.epoch&&!s.yearsRelabelled){ s.yearsRelabelled=true;   // dates written as "Oct Y1" before the save knew its year read as real years now
-    const ep=Number(s.epoch), fix=str=>str.replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) Y(\d{1,3})\b/g,(m,mo,y)=>`${mo} ${ep+Number(y)-1}`);
-    const walk=o=>{ if(Array.isArray(o)){ for(let i=0;i<o.length;i++){ if(typeof o[i]==="string") o[i]=fix(o[i]); else if(o[i]&&typeof o[i]==="object") walk(o[i]); } }
-      else if(o&&typeof o==="object"){ for(const k of Object.keys(o)){ if(k==="brand"||k==="logo") continue; const v=o[k]; if(typeof v==="string") o[k]=fix(v); else if(v&&typeof v==="object") walk(v); } } };
-    for(const k of ["log","chronicle","threads","followups","history","mods","press","heat","aiMemory","advisorChat","corrections","decision","deskQueue","locations","team","office","ownership"]) if(s[k]&&typeof s[k]==="object") walk(s[k]); }
+  if(!s.dateLabelsV3){ s.dateLabelsV3=true;   // older saves wrote "Oct Y1" (calendar years) or "Oct 2026": both become years since taking over
+    const ep=Number(s.epoch)||0, idx=m=>MONTHS.indexOf(m);
+    const conv=str=>typeof str!=="string"?str:str.replace(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (?:Y(\d{1,3})|(\d{4}))\b/,(m,mo,cy,ry)=>{ const y=cy?Number(cy):(ep?Number(ry)-ep+1:null); return y==null?m:`${mo} Y${playYear(idx(mo),y,s)}`; });
+    for(const l of s.log||[]) l.when=conv(l.when);
+    for(const t of s.threads||[]) t.since=conv(t.since);
+    if(Array.isArray(s.chronicle)) s.chronicle=s.chronicle.map(conv);
+    for(const loc of s.locations||[]) for(const r of ((loc.press||{}).reviews||[])) r.when=conv(r.when);
+    for(const k of ["decision"]) if(s[k]&&s[k].when) s[k].when=conv(s[k].when);
+    for(const d of s.deskQueue||[]) if(d.when) d.when=conv(d.when); }
   for(const b of (s.ghost&&s.ghost.brands)||[]) if(b.kind==="licensed"&&/Virtual Dining Concepts/.test(b.licensor||"")&&/^(MrBeast Burger|Mariah's Cookies)$/.test(b.name)) b.real=true;
   s.mods=Array.isArray(s.mods)?s.mods:[];
   s.threads=Array.isArray(s.threads)?s.threads:[];
@@ -1707,7 +1713,7 @@ function tickMods(){
     if(m.left==null){ keep.push(m); continue; }
     m.left--;
     if(m.left>0) keep.push(m);
-    else S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"warn",text:`${m.label} has run its course (${MOD_KINDS[m.kind].name.toLowerCase()} ${fmtModValue(m.kind,m.value)}).`});
+    else S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`${m.label} has run its course (${MOD_KINDS[m.kind].name.toLowerCase()} ${fmtModValue(m.kind,m.value)}).`});
   }
   S.mods=keep;
 }
@@ -1717,12 +1723,12 @@ function applyThreads(t){
   S.threads=S.threads.filter(x=>!close.includes(x.id));
   for(const o of (Array.isArray(t.open)?t.open:[]).slice(0,2)){
     const text=clip(String(o||"").trim(),600); if(!text) continue;
-    S.threads.push({id:"t"+uid().slice(0,4),text,since:`${MONTHS[S.calMonth]} ${yearName(S.year)}`});
+    S.threads.push({id:"t"+uid().slice(0,4),text,since:`${dateName(S.calMonth,S.year)}`});
   }
   if(S.threads.length>MAX_THREADS) S.threads=S.threads.slice(-MAX_THREADS);
 }
 function chronicle(text){
-  S.chronicle.unshift(`${MONTHS[S.calMonth]} ${yearName(S.year)}: ${clip(String(text),780)}`);
+  S.chronicle.unshift(`${dateName(S.calMonth,S.year)}: ${clip(String(text),780)}`);
   S.chronicle=S.chronicle.slice(0,10);
 }
 
@@ -2026,7 +2032,7 @@ function sanitizeOffer(r){
   const cost=asked;
   return {id:uid(),name:String(r.name||"An opportunity").slice(0,48),pitch:clip(String(r.pitch||""),960),
     risk:clip(String(r.risk||""),660),cost,repricedFrom: floor>asked*1.05? asked : null,effects,
-    when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`};
+    when:`${dateName(S.calMonth,S.year)}`};
 }
 function previewEffect(e){
   if(!e) return "";
@@ -2106,7 +2112,7 @@ async function adjudicate(text,outEl,btn){
     S.actionsLeft--;
     const narr=clip(String(data.narration||""),2400);
     const tone=data.outcome==="success"?"good":data.outcome==="partial"?"warn":"bad";
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone,text:narr+(applied.length?` [${applied.join("; ")}]`:"")});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone,text:narr+(applied.length?` [${applied.join("; ")}]`:"")});
     chronicle(`Owner tried: ${text.slice(0,120)}. Result (${data.outcome}): ${narr}`);
     outEl.innerHTML=`<span class="pill ${tone==="good"?"g":tone==="warn"?"w":"b"}">${esc(String(data.outcome||"done"))}</span>
       <div class="quote" style="margin-top:8px">${esc(narr)}</div>`+auditHTML(data)
@@ -2171,8 +2177,8 @@ function buyOffer(o){
   if(!o||S.cash<o.cost) return;
   S.cash-=o.cost;
   const applied=applyEffects(o.effects,{max:10,modScale:1,maxMonths:120,permanent:true,label:o.name,cash:false});
-  S.upgrades.push({name:o.name,when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,cost:o.cost});
-  S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"good",text:`Bought: ${o.name} for ${money(o.cost)}.${applied.length?` [${applied.join("; ")}]`:""}`});
+  S.upgrades.push({name:o.name,when:`${dateName(S.calMonth,S.year)}`,cost:o.cost});
+  S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:`Bought: ${o.name} for ${money(o.cost)}.${applied.length?` [${applied.join("; ")}]`:""}`});
   chronicle(`Owner invested ${money(o.cost)} in ${o.name}: ${o.pitch}`);
   S.offers=S.offers.filter(x=>x.id!==o.id);
   if(S.pitch&&S.pitch.id===o.id) S.pitch=null;
@@ -2212,11 +2218,11 @@ async function generateEvent(due){
     if(choices.length===1) choices.push({label:"Leave it",blurb:"",effects:[]});
     applyThreads(data.threads);
     if(!choices.length){
-      S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"warn",text:`${String(data.title||"")}: ${String(data.text||"")}`.slice(0,700)});
+      S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`${String(data.title||"")}: ${String(data.text||"")}`.slice(0,700)});
       chronicle(`${data.title}: ${data.text}`); S.decision=null; nextDesk();
     }else{
       S.decision={title:String(data.title||"Something came up").slice(0,70),text:clip(String(data.text||""),2100),choices,
-        when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,followup:due.length>0};
+        when:`${dateName(S.calMonth,S.year)}`,followup:due.length>0};
     }
   }catch(e){
     S.decision=null; nextDesk(); if(!S.decision) S.decision={error:sampleError(e,"news")};
@@ -2232,8 +2238,8 @@ function leaseDecision(){
     const sign={label:"Sign ten years at their rate",blurb:"Rent up 20% from where it is.",effects:[{op:"lease",locIndex:li,months:120,rentChange:.2}]};
     const leave={label:"Leave",blurb:S.locations.filter(l=>l.status!=="closed").length>1?"The location closes for good.":"This is your only location: the business closes with it.",effects:[{op:"vacate",locIndex:li}]};
     const stall={label:"Sit on the notice",blurb:"They'll have to follow up. Three more months month to month at a higher holdover rent, and a lawyer's letter to answer.",effects:[{op:"lease",locIndex:li,months:3,rentChange:.1},{op:"cash",amount:-fees,why:"answering the landlord's lawyer"}]};
-    offerDecision(second?{title:`The landlord has filed to take ${x.name} back`,text:`You sat on the first notice, so the landlord's lawyers filed for possession of ${x.name}. The terms haven't changed: sign ten years at their rate, or go.`,keep:true,choices:[leave,sign],when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`}
-      :{title:`The landlord wants ${x.name} back`,text:`You've been month to month at ${x.name}, and the landlord has a tenant who'll sign ten years. Sign a proper lease at their new rate, or leave.`,keep:true,choices:[sign,leave,stall],when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`},true);
+    offerDecision(second?{title:`The landlord has filed to take ${x.name} back`,text:`You sat on the first notice, so the landlord's lawyers filed for possession of ${x.name}. The terms haven't changed: sign ten years at their rate, or go.`,keep:true,choices:[leave,sign],when:`${dateName(S.calMonth,S.year)}`}
+      :{title:`The landlord wants ${x.name} back`,text:`You've been month to month at ${x.name}, and the landlord has a tenant who'll sign ten years. Sign a proper lease at their new rate, or leave.`,keep:true,choices:[sign,leave,stall],when:`${dateName(S.calMonth,S.year)}`},true);
     return; }
   if(deskCount()>=DESK_MAX) return; const l=S.locations.find(x=>!x.owned&&x.status==="open"&&x.leaseLeft<=6&&!x.leaseAsked); if(!l) return;
   l.leaseAsked=true; const li=S.locations.indexOf(l), price=Math.round(l.rent*12/.065/10000)*10000, good=l.rep>=60;
@@ -2242,7 +2248,7 @@ function leaseDecision(){
   if(price>=100000&&S.cash>=price*.25) choices.push({label:`Buy the building (${money(price)})`,blurb:"25% down, the rest on a 25-year mortgage. No more rent, but taxes and upkeep are yours.",
     effects:[{op:"cash",amount:-Math.round(price*.25),why:"down payment"},{op:"loan",amount:Math.round(price*.75),rate:.07,term:300,why:"commercial mortgage"},{op:"lease",locIndex:li,owned:true,propertyValue:price},{op:"mod",kind:"fixed",label:"Property tax and upkeep",value:Math.round(price*.015/12),months:0,locIndex:li}]});
   choices.push({label:"Let it roll to month-to-month",blurb:"Holdover rent: 25% more, the landlord can end it, and you'll be asked again within the year.",effects:[{op:"lease",locIndex:li,months:12,rentChange:l.holdover?0:.25}]});
-  offerDecision({title:`The lease at ${l.name} is almost up`,text:`${l.leaseLeft} months left on the lease. The landlord's broker sent terms.`,keep:true,choices,when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`});
+  offerDecision({title:`The lease at ${l.name} is almost up`,text:`${l.leaseLeft} months left on the lease. The landlord's broker sent terms.`,keep:true,choices,when:`${dateName(S.calMonth,S.year)}`});
 }
 const DESK_MAX=3;
 function deskCount(){ return (S.decision&&!S.decision.error?1:0)+((S.deskQueue||[]).length); }
@@ -2278,14 +2284,14 @@ function mediaDecision(){
      choices:[{label:"Confirm it to the press",blurb:"",effects:[{op:"awareness",locIndex:0,delta:8},{op:"mod",kind:"demand",label:"Celebrity sighting",value:.04,months:3},{op:"rep",locIndex:0,delta:-1}]},
       {label:"No comment",blurb:"Discretion is its own kind of reputation.",effects:[{op:"rep",locIndex:0,delta:2}]}]}
   ];
-  const o=pick(opts); offerDecision(Object.assign(o,{when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`}));
+  const o=pick(opts); offerDecision(Object.assign(o,{when:`${dateName(S.calMonth,S.year)}`}));
 }
 function resolveDecision(i,auto){
   const D=S.decision; if(!D||!D.choices) return null;
   const c=D.choices[clamp(i,0,D.choices.length-1)];
   S.decision=null;
   const applied=applyEffects(c.effects,{max:10,modScale:1,maxMonths:60,permanent:true,label:D.title});
-  S.log.unshift({when:D.when||`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:auto?"warn":"good",
+  S.log.unshift({when:D.when||`${dateName(S.calMonth,S.year)}`,tone:auto?"warn":"good",
     text:`${D.title}. ${auto?"You didn't decide, so it went the default way":"You chose"}: ${c.label.toLowerCase()}.${applied.length?` [${applied.join("; ")}]`:""}`});
   chronicle(`${D.title}: ${D.text} Owner chose: ${c.label}.`);
   nextDesk();
@@ -3902,7 +3908,7 @@ function pressVisits(loc,crit,R){
     const sc=clamp(blend/Math.max(wt,.01)+rnd(-7,7),0,100);
     const stars=sc>=90?4:sc>=80?3:sc>=68?2:sc>=55?1:0;
     P.lastCritic=S.monthIdx;
-    const rv={id:uid(),src:critic,aspects:{service:Math.round(asp.service),room:Math.round(asp.room),value:Math.round(asp.value),wine:Math.round(asp.wine)},stars,when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,text:"",locId:loc.id,score:Math.round(sc),crit:roundCrit(crit)};
+    const rv={id:uid(),src:critic,aspects:{service:Math.round(asp.service),room:Math.round(asp.room),value:Math.round(asp.value),wine:Math.round(asp.wine)},stars,when:`${dateName(S.calMonth,S.year)}`,text:"",locId:loc.id,score:Math.round(sc),crit:roundCrit(crit)};
     P.reviews.unshift(rv); P.reviews=P.reviews.slice(0,12);
     R.reviews.push(rv);
     loc.awareness=clamp(loc.awareness+4*stars-2,2,99);
@@ -4113,7 +4119,7 @@ function inferEnv(loc){
   if(/main street|courthouse|small town|small city/.test(t)) return "mainstreet";
   return ENV_DEFAULT[loc.market]||"suburb";
 }
-function envOf(loc){ if(!loc) return ENVS.suburb; if(loc.setting&&loc.setting.custom) return loc.setting; if(!loc.env||!ENVS[loc.env]){ loc.env=inferEnv(loc); if(!loc.envLive){ loc.segBase=null; if(S&&S.log) S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"warn",text:`Setting recorded for ${loc.name}: ${ENVS[loc.env].name.toLowerCase()}.`}); } } return ENVS[loc.env]; }
+function envOf(loc){ if(!loc) return ENVS.suburb; if(loc.setting&&loc.setting.custom) return loc.setting; if(!loc.env||!ENVS[loc.env]){ loc.env=inferEnv(loc); if(!loc.envLive){ loc.segBase=null; if(S&&S.log) S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`Setting recorded for ${loc.name}: ${ENVS[loc.env].name.toLowerCase()}.`}); } } return ENVS[loc.env]; }
 function envPriced(loc){ return !!loc&&loc.market!=="custom"; }
 /* a setting native to its market (edge of campus in a college town, the waterfront in a resort town) describes the same pattern the market
    already does, so the two are averaged rather than stacked; a setting from elsewhere still stacks on top */
@@ -4126,7 +4132,7 @@ function envTick(R){
     for(const e of (exp("setting")?E.ev:[])){
       if(e.m&&!e.m.includes(S.calMonth)) continue;
       if(Math.random()>=e.p) continue;
-      if(e.desk){ offerDecision({title:e.desk.title,text:e.desk.text,choices:e.desk.choices.map(c=>Object.assign({},c,{effects:(c.effects||[]).map(x=>Object.assign({locIndex:li},x))})),when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`}); continue; }
+      if(e.desk){ offerDecision({title:e.desk.title,text:e.desk.text,choices:e.desk.choices.map(c=>Object.assign({},c,{effects:(c.effects||[]).map(x=>Object.assign({locIndex:li},x))})),when:`${dateName(S.calMonth,S.year)}`}); continue; }
       applyEffects(e.fx.map(x=>Object.assign({locIndex:li},x)),{max:6,modScale:1,maxMonths:24,permanent:true,label:E.name});
       R.events.push({tone:e.tone,text:`${e.text}${S.locations.length>1?` (${loc.name})`:""}`});
     }
@@ -4187,7 +4193,7 @@ function newRival(opening){ const l=S.locations[0], base=(l&&l.perf&&l.perf.food
   const pot=clamp(Math.round(base+rnd(-12,10)),25,97);
   // an established rival is already at its level; a new opening starts shaky and hyped, and grows into its potential over a year or so
   return {id:uid(),name:nm,chef:ch,base:pot,q:opening?clamp(pot-Math.round(rnd(12,22)),20,97):pot,buzz:opening?Math.round(rnd(60,82)):Math.round(rnd(20,75)),
-    opened:opening?S.monthIdx:null,since:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,closed:false}; }
+    opened:opening?S.monthIdx:null,since:`${dateName(S.calMonth,S.year)}`,closed:false}; }
 const RIVAL_CAP=5;
 /* restaurants close: roughly a quarter in year one, a fifth in year two, a seventh in year three (Parsa, Ohio State), and far fewer once established.
    Weak rivals go first; a crowded set thins itself out */
@@ -6165,7 +6171,7 @@ function otherGuides(R){
       if(cap>0&&lvl<cap){ R.events.push({tone:"warn",text:`${guideName(g)}: ${loc.name} stopped at ${prev.name} this year.`}); continue; }
       if(lvl>=0){
         const name=g.levels[lvl][0], up=!prev||lvl>prev.level;
-        loc.awards[g.key]={level:lvl,name,guide:guideName(g),when:`${MONTHS[R.calMonth]} ${yearName(R.year)}`,score:Math.round(sc),retired:g.retireAt!=null&&lvl>=g.retireAt};
+        loc.awards[g.key]={level:lvl,name,guide:guideName(g),when:`${dateName(R.calMonth,R.year)}`,score:Math.round(sc),retired:g.retireAt!=null&&lvl>=g.retireAt};
         const w=g.p*(lvl+1), mLoc=S.locations.length<2?-1:li, pre=`${g.name}: `.slice(0,48);
         S.mods=S.mods.filter(m=>!(m.src==="guide"&&m.kind==="demand"&&m.loc===mLoc&&m.label.startsWith(pre)));   // a renewal or a step up replaces the old bonus
         const fame=clamp((1-loc.awareness/100)*3.3,.08,1);   // an award barely moves a place everyone already knows
@@ -6203,7 +6209,7 @@ function guideRelease(R){
     loc.selected = eff>=62 || stars>0;
     loc.bib = !stars && eff>=66 && (menuStats().valueCheck||menuStats().foodCheck)*S.dials.price <= 52*MARKETS[loc.market].checkMult;
     loc.green = eff>=66 && greenShare()>=.55;
-    P.history.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,stars,bib:loc.bib,green:loc.green,sel:loc.selected,visits:cyc.length});
+    P.history.unshift({when:`${dateName(S.calMonth,S.year)}`,stars,bib:loc.bib,green:loc.green,sel:loc.selected,visits:cyc.length});
     P.history=P.history.slice(0,12);
     P.inspections=P.inspections.filter(i=>i.m>S.monthIdx-3);
     const at=S.locations.length>1?` for ${loc.name}`:"";
@@ -6425,7 +6431,7 @@ function guestReviewTick(loc){ grLines();
   for(let i=0;i<nNew;i++){
     const k=pickW(keys.map(x=>[x,w[x]])), sc=asp[k]||50, st=Math.round(clamp(1+sc/100*4.2+rnd(-.9,.7),1,5)), good=st>=4;
     const pool=(GR_LINES[k]||GR_LINES.food)[good?"good":"bad"].filter(t=>!used.has(t)), txt=pool.length?pick(pool):pick(GR_LINES[k][good?"good":"bad"]); used.add(txt);
-    fresh.push({id:uid(),when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,stars:st,about:k,who:segs.length?pickW(segs):"locals",text:txt,draft:true});
+    fresh.push({id:uid(),when:`${dateName(S.calMonth,S.year)}`,stars:st,about:k,who:segs.length?pickW(segs):"locals",text:txt,draft:true});
   }
   loc.grRecent=fresh.concat(loc.grRecent||[]).slice(0,8);
 }
@@ -6459,7 +6465,7 @@ function rememberCall(input,out){
   let result="";
   try{ result=typeof out==="string"?out:JSON.stringify(out); }catch(e){}
   S.aiMemory=Array.isArray(S.aiMemory)?S.aiMemory:[];
-  S.aiMemory.push({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,kind:who?`one-on-one with ${who}`:m[1].replace(/^THE /,"").toLowerCase(),ask,result:result.replace(/\s+/g," ").slice(0,700)});
+  S.aiMemory.push({when:`${dateName(S.calMonth,S.year)}`,kind:who?`one-on-one with ${who}`:m[1].replace(/^THE /,"").toLowerCase(),ask,result:result.replace(/\s+/g," ").slice(0,700)});
   if(S.aiMemory.length>120) S.aiMemory=S.aiMemory.slice(-120);
 }
 function wrapSample(s){
@@ -6747,7 +6753,7 @@ async function claudeJSON(rules,extra,outEl,what,busy){
   catch(e){ if(outEl) outEl.textContent=sampleError(e,what); return null; }
 }
 const keepY=()=>{const y=window.scrollY; save(); render(); window.scrollTo(0,y);};
-const when=()=>`${MONTHS[S.calMonth]} ${yearName(S.year)}`;
+const when=()=>`${dateName(S.calMonth,S.year)}`;
 const logIt=(tone,text)=>S.log.unshift({when:when(),tone,text});
 
 /* ---- offline catalogues, so nothing is dead without Claude ---- */
@@ -7025,7 +7031,7 @@ const lsGet=k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } 
 const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } };
 const lsDel=k=>{ try{ localStorage.removeItem(k); }catch(e){} };
 function localIndex(){ try{ const a=JSON.parse(lsGet(SLOTS_KEY)||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
-function slotMeta(s){ return {id:s.slotId,seed:s.seed||0,name:s.slotName||s.bizName,bizName:s.bizName,when:`${MONTHS[s.calMonth]} ${yearName(s.year,s)}`,cash:s.cash,savedAt:s.savedAt||0,over:!!s.gameOver,concept:(CONCEPTS[s.concept]||{}).name||""}; }
+function slotMeta(s){ return {id:s.slotId,seed:s.seed||0,name:s.slotName||s.bizName,bizName:s.bizName,when:`${dateName(s.calMonth,s.year,s)}`,cash:s.cash,savedAt:s.savedAt||0,over:!!s.gameOver,concept:(CONCEPTS[s.concept]||{}).name||""}; }
 function userCol(){ return (dbNS&&userId)? dbNS.collection("data/users/"+userId) : null; }
 /* ---- stale-tab protection: if this game is changed somewhere else, stop and ask before writing over it ---- */
 let watchId=null, watchUnsub=null, ownWrites=new Set(), staleRemote=false;
@@ -7115,7 +7121,7 @@ async function syncRemote(){
 }
 async function exportSave(msgEl){
   const data=JSON.stringify({game:"prime-cost",format:3,exportedAt:new Date().toISOString(),state:S},null,1);
-  const name=`${(S.bizName||"prime-cost").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"prime-cost"}-${MONTHS[S.calMonth].toLowerCase()}-${S.epoch?yearName(S.year):"y"+S.year}.json`;
+  const name=`${(S.bizName||"prime-cost").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"prime-cost"}-${MONTHS[S.calMonth].toLowerCase()}-y${playYear(S.calMonth,S.year)}.json`;
   if(downloadsNS){
     try{ await downloadsNS.save({filename:name,data}); if(msgEl) msgEl.textContent=`Saved ${name}.`; return; }
     catch(e){ if(e&&e.code==="declined"){ if(msgEl) msgEl.textContent="Export cancelled."; return; } }
@@ -7140,7 +7146,7 @@ function savesPanelHTML(inGame){
       :`<p class="note" style="margin:0">No saved games yet.</p>`}
     ${inGame?`<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--rule)">
       <div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:6px">This game saves itself after every change. Branch it to keep a copy you can come back to.</div>
-      <div class="row"><input type="text" id="slotName" placeholder="${esc(`${S.bizName} — ${MONTHS[S.calMonth]} ${yearName(S.year)}`)}" maxlength="60" style="flex:1;width:auto">
+      <div class="row"><input type="text" id="slotName" placeholder="${esc(`${S.bizName} — ${dateName(S.calMonth,S.year)}`)}" maxlength="60" style="flex:1;width:auto">
         <button class="btn sm" id="saveAs">Save a copy</button></div>
       <div class="row" style="margin-top:9px"><button class="btn sm sec" id="exportBtn">Export to a file</button><button class="btn sm sec" id="newGameBtn">Start a new game</button></div>
     </div>`:""}
@@ -7164,7 +7170,7 @@ function wireSaves(){
     const y=window.scrollY; render(); window.scrollTo(0,y); });
   const sa=$("#saveAs"); if(sa) sa.onclick=()=>{
     const cp=JSON.parse(JSON.stringify(S)); cp.slotId="s"+uid()+uid();
-    cp.slotName=($("#slotName").value.trim()||`${S.bizName} — ${MONTHS[S.calMonth]} ${yearName(S.year)}`).slice(0,60); cp.savedAt=Date.now()-1;
+    cp.slotName=($("#slotName").value.trim()||`${S.bizName} — ${dateName(S.calMonth,S.year)}`).slice(0,60); cp.savedAt=Date.now()-1;
     writeSlot(cp); save(); const y=window.scrollY; render(); window.scrollTo(0,y); const m=$("#saveMsg"); if(m) m.textContent=`Saved a copy: ${cp.slotName}.`; };
   const ex=$("#exportBtn"); if(ex) ex.onclick=()=>exportSave(msg);
   const ng=$("#newGameBtn"); if(ng) ng.onclick=()=>{ save(); S=null; lsDel(CUR_KEY); setupCfg.traits=[]; setupCfg.custom=false; setupCfg.spec=null; view="dash"; render(); window.scrollTo(0,0); };
@@ -7239,7 +7245,7 @@ function renderVitals(){
   const runway= burn>0 ? (S.cash/burn) : null;
   const items=[
     {k:"Cash",v:money(S.cash),cls:S.cash<12000?"alarm":S.cash>90000?"ok":""},
-    {k:"Month",v:`${MONTHS[S.calMonth]} · ${yearName(S.year)}`,cls:""},
+    {k:"Month",v:`${MONTHS[S.calMonth]} · Y${playYear(S.calMonth,S.year)}`,cls:""},
     {k:"Prime cost",v:h?pct(h.primePct,0):"—",cls:h?(h.primePct>primeTarget()?"alarm":"ok"):""},
     {k:"Last EBITDA",v:h?money(h.ebitda):"—",cls:h?(h.ebitda<0?"alarm":"ok"):""},
     {k:"Runway",v:runway!==null?`${runway.toFixed(1)} mo`:"—",cls:runway!==null&&runway<3?"alarm":""}
@@ -7805,7 +7811,7 @@ function dashHTML(){
       <div class="stack">
         <div class="panel ${S.decision&&!S.decision.error?"":"hidden"}" data-decision-wrap><div class="hd"><h3>On your desk${deskCount()>1?` <span class="note" style="font-family:var(--sans,inherit);font-size:13px">(${deskCount()})</span>`:""}</h3></div>
           <div class="bd" data-decision-box>${decisionHTML()}</div></div>
-        <div class="panel"><div class="hd"><h3>${MONTHS[S.calMonth]}${yearLong(S.year)} — ahead of you</h3></div>
+        <div class="panel"><div class="hd"><h3>${MONTHS[S.calMonth]}, year ${playYear(S.calMonth,S.year)} — ahead of you</h3></div>
           <div class="bd">
             ${alerts.length? alerts.map(a=>`<div class="kv" style="align-items:flex-start;gap:9px"><span class="pill ${a.c}" style="flex:none">${a.t}</span><span style="font-size:13px;text-align:right">${esc(a.m)}</span></div>`).join("")
               : `<p class="note" style="margin:0">Nothing is on fire. Set your dials on the Operate tab and run the month.</p>`}
@@ -7889,7 +7895,7 @@ function chartPanel(){
       <path d="${line(cashVals)}" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
       <circle cx="${xs(h.length-1).toFixed(1)}" cy="${ys(cashVals[cashVals.length-1]).toFixed(1)}" r="3.4" fill="var(--accent)"/>
       <text x="${pad.l}" y="${H-6}" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--muted)">${MONTHS[h[0].cal]} Y${h[0].y}</text>
-      <text x="${W-pad.r}" y="${H-6}" text-anchor="end" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--muted)">${MONTHS[h[h.length-1].cal]} ${yearName(h[h.length-1].y)}</text>
+      <text x="${W-pad.r}" y="${H-6}" text-anchor="end" font-size="9.5" font-family="IBM Plex Mono, monospace" fill="var(--muted)">${dateName(h[h.length-1].cal,h[h.length-1].y)}</text>
     </svg></div>
     <div class="legend"><span><i style="background:var(--accent)"></i>Cash in the bank</span><span><i style="background:var(--ink2)"></i>Monthly sales</span></div></div>`;
 }
@@ -8075,7 +8081,7 @@ function booksHTML(){
   const p=v=>h.rev>0?pct(v/h.rev,1):"—";
   const rows=(label,val,cls,sub)=>`<tr class="${sub?"sub":""}"><td>${label}</td><td class="pct">${p(val)}</td><td class="n ${cls||""}">${money(val)}</td></tr>`;
   return `<div class="sec" style="padding-top:18px">
-  <h2>Books — ${MONTHS[h.cal]}${yearLong(h.y)}</h2>
+  <h2>Books — ${MONTHS[h.cal]}, year ${playYear(h.cal,h.y)}</h2>
   <p class="lede">Two statements, and they disagree. The profit and loss says whether the business works. The cash flow says whether it survives until it does.</p>
   ${ownershipHTML()}
   <div class="grid g2">
@@ -8183,7 +8189,7 @@ function sparkChart(title,vals,labels,fmt,opts){
 function trendsHTML(){
   if(!exp("trends")) return "";
   const h=S.history.slice(-18).filter(r=>r.covers>0||r.rev>0); if(h.length<2) return "";
-  const lb=h.map(r=>`${MONTHS[r.cal]} ${yearName(r.y)}`), M=v=>money(v), mm=v=>v>=1e6?`$${(v/1e6).toFixed(1)}M`:v>=1e3?`$${Math.round(v/1e3)}k`:money(v);
+  const lb=h.map(r=>`${dateName(r.cal,r.y)}`), M=v=>money(v), mm=v=>v>=1e6?`$${(v/1e6).toFixed(1)}M`:v>=1e3?`$${Math.round(v/1e3)}k`:money(v);
   return `<div class="panel" style="margin-top:14px"><div class="hd"><h3>Trends</h3><span class="spacer"></span><span class="note">last ${h.length} months</span></div><div class="bd">
     <div style="display:flex;flex-wrap:wrap;gap:14px">
       ${sparkChart("Revenue",h.map(r=>r.rev),lb,mm)}
@@ -8431,19 +8437,19 @@ function wireGrowth(){ wireCommissary(); wireGhost();
     const k=b.dataset.prog, p=PROGRAMS[k];
     if(S.cash<p.cost) return;
     S.cash-=p.cost; S.programs[k]=true;
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"good",text:`Invested ${money(p.cost)} in ${p.name.toLowerCase()}.`});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:`Invested ${money(p.cost)} in ${p.name.toLowerCase()}.`});
     save();render();});
   const rf=$("#refit"); if(rf) rf.onclick=()=>{ if(S.cash<65000)return; S.cash-=65000;
     for(const l of S.locations) kitNudge(l,45);
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"good",text:"Refitted the kitchen. Two weeks of contractors and a much quieter Saturday."});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:"Refitted the kitchen. Two weeks of contractors and a much quieter Saturday."});
     save();render();};
   const dc=$("#deepclean"); if(dc) dc.onclick=()=>{ if(S.cash<7500)return; S.cash-=7500;
     for(const l of S.locations) l.health=clamp(l.health+28,0,100);
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"good",text:"Deep clean and a compliance audit. The consultant found three things you did not want to know about."});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:"Deep clean and a compliance audit. The consultant found three things you did not want to know about."});
     save();render();};
   const pl=$("#payline"); if(pl) pl.onclick=()=>{ const amt=Math.min(S.cash,S.creditLine.drawn); if(amt<=0)return;
     S.cash-=amt; S.creditLine.drawn-=amt;
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"good",text:`Repaid ${money(amt)} on the credit line.`});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:`Repaid ${money(amt)} on the credit line.`});
     save();render();};
   const ol=$("#openLoc"); if(ol) ol.onclick=()=>{
     const mk=$("#newMarket").value;
@@ -8456,7 +8462,7 @@ function wireGrowth(){ wireCommissary(); wireGhost();
     n.status="building"; n.buildLeft=4; n.rep=clamp(S.locations[0].rep*0.72,20,80); n.awareness=clamp(S.locations[0].awareness*0.45,5,60);
     n.attention=35; S.locations[0].attention=clamp(S.locations[0].attention-30,10,100);
     S.locations.push(n);
-    S.log.unshift({when:`${MONTHS[S.calMonth]} ${yearName(S.year)}`,tone:"warn",text:`Signed a second lease in the ${MARKETS[mk].name.toLowerCase()}. Four months of build-out, and rent starts now.`});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`Signed a second lease in the ${MARKETS[mk].name.toLowerCase()}. Four months of build-out, and rent starts now.`});
     save();render();};
 }
 
@@ -9616,7 +9622,7 @@ function showResultModal(R,wantEvent){
   const el=document.createElement("div");
   el.className="modal";
   el.innerHTML=`<div class="sheet">
-    <div class="hd"><h2>${MONTHS[R.calMonth]}${yearLong(R.year)}</h2><span class="spacer"></span>
+    <div class="hd"><h2>${MONTHS[R.calMonth]}, year ${playYear(R.calMonth,R.year)}</h2><span class="spacer"></span>
       <span class="pill ${h.net>=0?"g":"b"}">cash ${h.net>=0?"+":"−"}${money(Math.abs(h.net)).replace("$","$")}</span></div>
     <div class="bd">
       <table class="led" style="margin:0 -18px 14px">
