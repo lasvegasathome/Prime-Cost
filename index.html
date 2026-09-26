@@ -2443,13 +2443,38 @@ function certRegion(){ const h=S&&S.intl&&S.intl.home;
   const H={"Singapore":"sg","Hong Kong":"hk","Macau":"mo","Japan":"jp","United Kingdom":"uk","United States":"us","France":"eu","Italy":"eu","Spain":"eu","Germany":"eu","Canada":"ca","Australia":"au","Mexico":"mx"};
   if(h&&H[h]) return H[h]; const g=regionTags(); return g.has("japan")?"jp":g.has("uk")?"uk":g.has("europe")?"eu":g.has("australia")?"au":g.has("canada")?"ca":g.has("mexico")?"mx":g.has("us")?"us":"other"; }
 function storyYear(){ return S&&S.epoch? S.epoch+S.year-1 : null; }
-function certAvailable(k){ const c=CERTS[k]; if(!c) return false; const y=storyYear();
+function localCerts(){ return Object.keys((S&&S.customCerts)||{}).filter(k=>S.customCerts[k].local); }
+function certAvailable(k){ if(!CERTS[k]) return localCerts().includes(k); const c=CERTS[k]; const y=storyYear();
   if(c.regions&&!c.regions.includes(certRegion())) return false; if(c.since&&y&&y<c.since) return false;
   if(c.fit){ try{ if(!c.fit.test(conceptText())) return false; }catch(e){} }
   if(c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)) return false;
   if(c.upscale&&S.locations[0]&&locTier(S.locations[0])==="low") return false; return true; }
-function localFoodSafety(){ return {us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]||"haccp3"; }
-function certOptions(m){ return Object.keys(CERTS).filter(k=>certAvailable(k)&&certEligible(m,k)).sort((a,b)=>(CERTS[a].rs||0)-(CERTS[b].rs||0)).slice(0,4); }
+function localFoodSafety(){ const k={us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]; if(k) return k;
+  const loc=localCerts().filter(x=>S.customCerts[x].food&&!S.customCerts[x].pre); return loc[0]||"haccp3"; }
+function certOptions(m){ return Object.keys(CERTS).concat(localCerts()).filter(k=>certAvailable(k)&&certEligible(m,k)).sort((a,b)=>(certInfo(a).rs||0)-(certInfo(b).rs||0)).slice(0,4); }
+/* ---- the credentials of any country the game doesn't know, looked up by Claude ---- */
+function placeName(){ return (S.intl&&S.intl.home&&S.intl.home!=="United States"?S.intl.home:"")||((S.customMarket&&S.customMarket.name)||((MARKETS[S.market]||{}).name||"")); }
+const LOCALCRED_RULES=()=>`You know the restaurant trade's credentials country by country. List the ones that really matter for restaurant staff where this restaurant is, as they stood${storyYear()?` in ${storyYear()}`:" now"}: the legally required food-safety or hygiene card and its supervisor or manager level, national trade qualifications for cooks, pastry cooks and front of house, and any licences the local cuisine requires. Only real credentials that existed then; if the country has little formal certification, list fewer. Don't list international ones the game already has: ${Object.values(CERTS).filter(c=>!c.regions).map(c=>c.name).join("; ")}.
+For each: name (its real name, with the local-language name in brackets if useful), roles (from chef, sous, pastry, somm, maitre), food (true for a food-safety or hygiene credential), requires (the exact name of another one in your list that must come first, or ""), level (the skill, 0-100, it's pitched at), years (experience needed), cost (US dollars${storyYear()?`, at ${storyYear()} prices`:""}, fees and prep), months, pass (0-1 chance for someone at that level), skill (0-8 it adds), prestige (0-6), health (0-8 for food safety).
+Reply with ONLY JSON: {"place":"the country","credentials":[{"name":"","roles":["chef"],"food":false,"requires":"","level":30,"years":0,"cost":0,"months":1,"pass":0.8,"skill":1,"prestige":0,"health":0}]}`;
+function applyLocalCreds(r){
+  const list=(Array.isArray(r&&r.credentials)?r.credentials:[]).slice(0,10), made=[]; S.customCerts=S.customCerts||{};
+  for(const c of list){ const name=clip(String(c.name||"").trim(),80); if(!name) continue; const built=matchCert(name); if(CERTS[built]) continue;
+    const roles=(Array.isArray(c.roles)?c.roles:[]).filter(x=>ROLES[x]); if(!roles.length) continue;
+    const key="x:"+name; S.customCerts[key]={name,local:true,kind:"certification",roles,food:!!c.food,rs:Math.round(clamp(Number(c.level)||30,0,100)),ry:Math.round(clamp(Number(c.years)||0,0,20)),
+      cost:Math.round(clamp(Number(c.cost)||200,0,100000)),months:Math.round(clamp(Number(c.months)||1,1,36)),pass:clamp(Number(c.pass)||.8,.05,.98),skill:Math.round(clamp(Number(c.skill)||0,0,8)),
+      prestige:Math.round(clamp(Number(c.prestige)||0,0,6)),health:Math.round(clamp(Number(c.health)||0,0,8)),reqName:clip(String(c.requires||""),80)};
+    made.push(key); }
+  for(const k of made){ const c=S.customCerts[k]; if(c.reqName){ const p=made.find(x=>S.customCerts[x].name.toLowerCase()===c.reqName.toLowerCase()); if(p&&p!==k) c.pre=p; } delete c.reqName; }
+  S.localCredPlace=clip(String((r&&r.place)||placeName()),60); return made;
+}
+function localCredHTML(){
+  if(!exp("credentials")) return ""; const lc=localCerts(), known=["us","sg","hk","uk","jp"].includes(certRegion());
+  return `<div class="panel"><div class="hd"><h3>Credentials here</h3></div><div class="bd">
+    <p class="note" style="margin:0 0 8px">${known?`The game already knows the standard credentials for ${esc(placeName()||"this country")}. Claude can look up others that matter locally.`:`The game doesn't have ${esc(placeName()||"this country")}'s own credentials built in. Claude can look up what's standard here${storyYear()?` in ${storyYear()}`:""}: the food-safety card, trade qualifications and any licences the cuisine needs.`}</p>
+    ${lc.length?lc.map(k=>{ const c=S.customCerts[k]; return `<div class="kv"><span>${esc(c.name)}<span class="note"> · ${c.roles.map(r=>ROLES[r].name.toLowerCase()).join(", ")}${c.pre?` · after ${esc(certInfo(c.pre).name)}`:""}</span></span><span class="n">${money(c.cost)} · ${c.months} mo</span></div>`; }).join(""):""}
+    <button class="btn sm${lc.length?" sec":""}" id="localCredGo" style="margin-top:8px" ${sampleFn?"":"disabled"}>${lc.length?"Look again":"Look up the local credentials"}</button><div class="note" id="localCredOut" style="margin-top:6px">${sampleFn?"":"Needs Claude, which this view can't reach."}</div></div></div>`;
+}
 function matchCert(str){
   const t=String(str||"").toLowerCase().trim(); if(!t) return null;
   if(CERTS[t]) return t;
@@ -2506,11 +2531,11 @@ function certSkill(m){ return certsOf(m).reduce((a,k)=>a+(certInfo(k).skill||0),
 function certPremium(m){ return certsOf(m).reduce((a,k)=>{const c=certInfo(k); return a+(c.skill||0)*.012+(c.prestige||0)*.025;},0); }
 function teamPrestige(){ return (S.team||[]).reduce((a,m)=>a+certsOf(m).reduce((b,k)=>b+(certInfo(k).prestige||0),0),0); }
 function certEligible(m,k){
-  const c=CERTS[k]; if(!c||!c.roles.includes(m.role)||certsOf(m).includes(k)) return false;
+  const c=CERTS[k]||(S.customCerts&&S.customCerts[k]&&S.customCerts[k].local?S.customCerts[k]:null); if(!c||!(c.roles||[]).includes(m.role)||certsOf(m).includes(k)) return false;
   if(c.pre&&!certsOf(m).includes(c.pre)) return false;
   const tr=CERT_TRACKS.find(t=>t.includes(k));   // nobody sits a lower rung than one they already hold
   if(tr&&certsOf(m).some(h=>tr.indexOf(h)>tr.indexOf(k))) return false;
-  return (m.years||0)>=c.ry && m.skill>=c.rs-6;
+  return (m.years||0)>=(c.ry||0) && m.skill>=(c.rs||0)-6;
 }
 function examChance(m,k,c){ c=c||certInfo(k); if(c.pass==null) return 1; return clamp(c.pass*(1+(effSkill(m)-(c.rs==null?effSkill(m):c.rs))/30),.02,.97); }
 /* ---- anything else the owner wants someone to earn or do: Claude checks it's real, the engine prices the odds ---- */
@@ -2533,9 +2558,12 @@ function sanitizeCred(r,m){
 function estYears(skill){ return clamp(Math.round((skill-25)/3.2+rnd(-1,3)),0,40); }
 function plausibleCerts(role,skill,years){
   const out=[];
-  for(const k0 of CERT_LADDER[role]||[]){ const k=k0==="servsafe"?localFoodSafety():k0, c=CERTS[k]; if(!certAvailable(k)) continue;
+  for(const k0 of CERT_LADDER[role]||[]){ const k=k0==="servsafe"?localFoodSafety():k0, c=certInfo(k); if(!certAvailable(k)||!(c.roles||[]).includes(role)) continue;
     if(c.pre&&!out.includes(c.pre)) continue;
     if(skill>=c.rs+4&&years>=c.ry&&Math.random()<(c.pass>.5?.65:.35)) out.push(k); }
+  // this country's own trade qualifications, when they've been looked up
+  for(const k of localCerts()){ const c=S.customCerts[k]; if(out.includes(k)||!c.roles.includes(role)||c.food) continue; if(c.pre&&!out.includes(c.pre)) continue;
+    if(skill>=(c.rs||0)+4&&years>=(c.ry||0)&&Math.random()<(c.pass>.5?.55:.3)) out.push(k); }
   return out;
 }
 function backfillPerson(m){
@@ -5010,6 +5038,8 @@ function kitType(key,o){
 /* more models for the stations that already existed */
 (function(){
   const add=(k,list)=>{ KIT_MORE[k]=(KIT_MORE[k]||[]).concat(list); };
+  add("tablegrill",[["Korean smokeless roasters ×10, with drop-down extraction",2,55000,"The Korean-barbecue house standard: a pipe drops over every grill and pulls the smoke away."]]);
+  add("hotpot",[["Split-pot (yuanyang) induction tables ×12",2,22000,"Two broths in one pot, divided down the middle: mild on one side, mala on the other."]]);
   add("pizza",[["Ooni Karu 16 portable oven (not NSF-listed)",0,800,"Fine for a pop-up or a truck; a health inspector may not accept it indoors."],["Gozney Dome outdoor oven",0,2000,"Wood or gas, portable, a cult following. Not a production oven."],
     ["Bakers Pride Y-600 double deck oven",1,15000,"The classic New York slice-shop oven: stone decks, steady and forgiving."],["Lincoln Impinger conveyor oven",1,18000,"Air impingement pushes pies through on a belt: consistent, fast, no skill needed."],
     ["Middleby Marshall PS640 conveyor oven",2,30000,"The chain workhorse. One belt, hundreds of pies an hour."],["Middleby Marshall PS640 triple stack",3,75000,"Three conveyor ovens stacked for high-volume delivery pizza."]]);
@@ -5395,6 +5425,18 @@ kitType("teppan",{name:"Teppanyaki grills",aisle:"global",desc:"A thick steel gr
 kitType("tablegrill",{name:"Tabletop BBQ grills",aisle:"global",desc:"Grills set into each table with downdraft extraction underneath, so guests grill Korean or Japanese barbecue themselves without smoking out the room.",
   models:[["Used tabletop gas grills ×10",0,6000],["Downdraft table grills ×10",1,40000],["Charcoal-ready downdraft grills ×10",2,65000,"Real charcoal at the table, with ventilation to match."],["Custom downdraft tables ×16 with stone surrounds",3,120000]],
   eff:{labor:-.02,pers:2,cap:.01,energy:400},flags:{noTruck:1}});
+kitType("livetank",{name:"Live seafood tanks",aisle:"cold",desc:"Chilled, filtered tanks that keep fish, lobster, crab and shellfish alive until they're ordered: the freshest seafood there is, and a display guests point at.",
+  models:[["Used lobster tank with a chiller",0,2500],["Lobster & shellfish display tank with chiller and UV",1,9000],["Multi-tank live seafood wall with chillers and UV filtration",2,45000],["Custom live seafood hall: fish, crab, lobster and geoduck tanks on a seawater supply",3,180000]],
+  eff:{pers:2,cons:1,foodcost:-.003,labor:.004,energy:350},fail:.01,flags:{noTruck:1}});
+kitType("saladbar",{name:"Salad bars",aisle:"buffet",desc:"A self-serve bar of chilled wells under sneeze guards: greens, toppings and dressings that guests build themselves.",
+  models:[["Used salad bar with a sneeze guard",0,1500],["Refrigerated 5-well salad bar",1,5000],["Double-sided refrigerated salad bar, 10 wells",2,12000],["Custom island salad bar with a refrigerated base and double guards",3,30000]],
+  eff:{cap:.015,labor:-.01,health:.1,foodcost:.002,energy:250},flags:{noTruck:1}});
+kitType("rawbar",{name:"Raw bar & oyster display",aisle:"cold",desc:"Iced display and a shucking station for oysters, clams, crudo and chilled shellfish, in sight of the room.",
+  models:[["Ice-filled display trays",0,500],["Refrigerated raw bar display",1,6000],["Raw bar counter with ice wells and a shucking station",2,18000],["Custom raw bar with its own seating and seawater ice",3,45000]],
+  eff:{pers:1,cap:.005,side:.004,energy:150},flags:{noTruck:1}});
+kitType("netacase",{name:"Sushi display cases",aisle:"global",desc:"Low refrigerated glass cases along a sushi counter that hold the fish at the right temperature in front of the chef and the guests.",
+  models:[["Used countertop sushi case",0,900],["Refrigerated sushi display case, 4 ft",1,3500],["Refrigerated sushi case, 6 ft, with a curved front",2,7000],["Custom-built sushi counter cases",3,20000]],
+  eff:{pers:1,health:.2,foodcost:-.002,energy:150},flags:{noTruck:1}});
 kitType("hotpot",{name:"Hot-pot tables",aisle:"global",desc:"Induction hobs set flush into each table, so every party cooks its own broth at the table.",
   models:[["Portable burners ×10",0,800],["Built-in induction hobs ×10",1,8000],["Individual induction hobs ×30, one per guest",2,18000],["Custom tables with flush induction and hidden controls ×16",3,40000]],
   eff:{labor:-.02,pers:1,energy:200},flags:{noTruck:1}});
@@ -5816,7 +5858,14 @@ function paintCatalog(){
     kitDropClick(b,loc,p,msg=>{ catalog.msg=msg; if(catalog.repl===p.id) catalog.repl=null; keepY(); paintCatalog(); }); });
 }
 
+// what a dollar of 2026 equipment cost in the story's year (US CPI-U, annual averages)
+const CPI={1980:82.4,1985:107.6,1990:130.7,1995:152.4,1999:166.6,2000:172.2,2005:195.3,2009:214.5,2010:218.1,2015:237,2020:258.8,2022:292.7,2024:313.7,2026:325};
+function eraPriceFactor(){ const y=storyYear(); if(!y||y>=2026) return 1; const ks=Object.keys(CPI).map(Number).sort((a,b)=>a-b);
+  let lo=ks[0],hi=ks[ks.length-1]; for(const k of ks){ if(k<=y) lo=k; if(k>=y){ hi=k; break; } } const v=lo===hi?CPI[lo]:CPI[lo]+(CPI[hi]-CPI[lo])*(y-lo)/(hi-lo); return clamp(v/CPI[2026],.2,1); }
+function periodKit(){ const y=storyYear(); return !!(y&&y<2012); }
+const KIT_TIER_WORD=["Used","Standard","Professional","Top-of-the-range"];
 function kitModels(type,tier){
+  if(periodKit()){ const md=kitModel(type,tier); if(!md) return []; const K=KIT[type]; return [[`${KIT_TIER_WORD[tier]} ${K.name.toLowerCase()}, ${storyYear()} model`,md[1],"",md[3]||null]]; }
   const K=KIT[type], C=CONCEPTS[S.concept]||{}, out=[];
   const base=kitModel(type,tier); if(base) out.push(base);
   if(!(C.truck&&K.t)) for(const [n,t,pr,note,fx] of (KIT_MORE[type]||[])) if(t===tier) out.push([n,pr,note||"",fx||null]);
@@ -5825,7 +5874,7 @@ function kitModels(type,tier){
 function kitSize(loc){ const C=CONCEPTS[S.concept]||{}; if(C.truck) return 1; const s=(loc.seats||60)/80; return s<=3? Math.max(.5,s) : Math.min(30,3*Math.pow(s/3,.8)); }   // a 2,300-seat hall is about 18× a bistro, not 3×
 function kitModel(type,tier){ const K=KIT[type], C=CONCEPTS[S.concept]||{};
   if(C.truck&&K.t){ return [K.t[tier*2],K.t[tier*2+1]]; } return K.m[tier]; }
-function kitPrice(loc,type,tier,mi){ const md=kitModels(type,tier)[mi||0]||kitModel(type,tier); if(!md) return null; return Math.round(md[1]*(KIT[type].scale&&!CONCEPTS[S.concept].truck?kitSize(loc):1)/100)*100; }
+function kitPrice(loc,type,tier,mi){ const md=kitModels(type,tier)[mi||0]||kitModel(type,tier); if(!md) return null; return Math.round(md[1]*eraPriceFactor()*(KIT[type].scale&&!CONCEPTS[S.concept].truck?kitSize(loc):1)/100)*100; }
 function kitSpecFit(type){ const K=KIT[type], g=genreTags(), t=conceptText();
   if(!K.spec) return true;
   return K.spec==="pizza"?g.has("pizza"):K.spec==="bbq"?g.has("bbq"):K.spec==="japanese"?/japanese|izakaya|yakitori|robata|sushi|kaiseki|omakase/.test(t)
@@ -8997,13 +9046,13 @@ function houseHTML(){
   ${exp("kitchen")?kitchenHTML(loc):`<div class="panel" style="margin-top:14px"><div class="bd"><p class="note" style="margin:0">Kitchen condition ${Math.round(kitCondition(loc))}/100. Detailed kitchen equipment is switched off, so your kit is serviced and repaired on contract automatically. Switch it on in the Office tab to manage it station by station.</p></div></div>`}`;
 }
 let kitOpen=null;
-const KIT_RULES=`You are a commercial kitchen equipment dealer inside a realistic restaurant simulation. The owner is looking for a specific piece of equipment. Offer 1-4 real products that match: real brands and models, at realistic current US prices for a kitchen this size (used kit at used prices). If what they want doesn't exist or makes no sense for this kitchen, say so in the note and offer the closest real thing.
-For each: station (what it is, short), model (brand and model), tier (0 used, 1 standard, 2 professional, 3 flagship), price (dollars, total), solidFuel (true if it burns wood or charcoal: the hood then needs monthly cleaning), note (one sentence: why it fits, or the catch), and eff, what it does for this kitchen in service, all small:
+const kitRules=()=>`You are a commercial kitchen equipment dealer inside a realistic restaurant simulation. The owner is looking for a specific piece of equipment. Offer 1-4 real products that match: real brands and models that existed in the story's year, at that year's US prices for a kitchen this size (used kit at used prices). If what they want doesn't exist or makes no sense for this kitchen, say so in the note and offer the closest real thing.
+For each: station (what it is, short), as (if it does the job of one of the game's standard stations, that station's key, so it can stand in for it: ${Object.keys(KIT).filter(k=>KIT_INFO[k]).map(k=>`${k} = ${KIT[k].name}`).join("; ")}; otherwise ""), year (the year the model is from), model (brand and model), tier (0 used, 1 standard, 2 professional, 3 flagship), price (dollars, total), solidFuel (true if it burns wood or charcoal: the hood then needs monthly cleaning), note (one sentence: why it fits, or the catch), and eff, what it does for this kitchen in service, all small:
 cap (-0.1 to 0.1, share of capacity), labor (-0.08 to 0.05, share of hourly labour), cons (-5 to 6, consistency points), pers (0 to 6, points of personality on the plate), foodcost (-0.01 to 0.01), health (-0.5 to 0.6, health-score points a month), energy (dollars a month to run), side (0 to 0.03, extra revenue as a share of sales).
-Reply with ONLY JSON: {"offers":[{"station":"","model":"","tier":2,"price":0,"solidFuel":false,"note":"","eff":{}}],"note":"optional"}`;
+Reply with ONLY JSON: {"offers":[{"station":"","as":"","year":0,"model":"","tier":2,"price":0,"solidFuel":false,"note":"","eff":{}}],"note":"optional"}`;
 function sanitizeKitOffer(r){
   r=r||{}; const e=r.eff||{}, n=(v,lo,hi)=>Math.round(nnum(v,lo,hi,0)*1000)/1000;
-  return {station:String(r.station||"Equipment").slice(0,50),model:String(r.model||"Unnamed").slice(0,80),tier:Math.round(nnum(r.tier,0,3,1)),price:Math.round(nnum(r.price,1,1e12,5000)),solid:!!r.solidFuel,note:clip(String(r.note||""),660),
+  return {station:String(r.station||"Equipment").slice(0,50),as:KIT[r.as]&&KIT_INFO[r.as]?r.as:"",year:Math.round(nnum(r.year,0,2200,0))||null,model:String(r.model||"Unnamed").slice(0,80),tier:Math.round(nnum(r.tier,0,3,1)),price:Math.round(nnum(r.price,1,1e12,5000)),solid:!!r.solidFuel,note:clip(String(r.note||""),660),
     eff:{cap:n(e.cap,-.9,10),labor:n(e.labor,-.9,10),cons:n(e.cons,-100,100),pers:n(e.pers,-100,100),foodcost:n(e.foodcost,-.5,.5),health:n(e.health,-50,50),energy:Math.round(nnum(e.energy,0,1e9,0)),side:n(e.side,0,10)}};
 }
 function kitAskHTML(loc){
@@ -9037,10 +9086,10 @@ function kitchenHTML(loc){
     const c=Math.round(p.cond), mc=p.broken?"b":c>=66?"g":c>=45?"w":"b";
     return `<div class="kitrow${p.broken?" down":""}">${kitIcon(p.type,30)}
       <div class="kr-main"><b>${esc(T.name)}</b>${p.broken?' <span class="pill b">down</span>':c<45?' <span class="pill w">worn</span>':""}
-        <div class="note">${esc(p.model)} · ${kitTierName(p.type,p.tier)} · ${own}${p.warranty>0?` · warranty ${p.warranty} mo`:""}</div></div>
+        <div class="note">${esc(p.model)}${p.find?` · dealer find${p.year?`, ${p.year}`:""}`:""} · ${kitTierName(p.type,p.tier)} · ${own}${p.warranty>0?` · warranty ${p.warranty} mo`:""}</div></div>
       <div class="kr-cond" title="Condition"><div class="meter ${mc}"><i style="width:${p.broken?0:c}%"></i></div><span class="num">${p.broken?"—":c}</span></div>
       <div class="kr-act">${p.broken||p.cond<85?`<button class="btn sm${p.broken?"":" sec"}" data-kitfix="${loc.id}|${p.id}" ${S.cash<rep?"disabled":""}>${p.broken?"Repair":"Service"} · ${rep?money(rep):"covered"}</button>`:""}<button class="btn sm sec" data-catfor="${loc.id}|${p.type==="custom"?"":p.type}|${p.id}">Replace</button>${p.type==="vent"?`<span class="note" title="Built into the building: it can be replaced, not sold.">built in</span>`:`<button class="btn sm sec" data-kitdrop="${loc.id}|${p.id}" ${kitCanDrop(p)?"":"disabled"}>${kitDropLabel(p)}</button>`}</div></div>`; };
-  const groups=KIT_AISLES.map(([k,n])=>[k,n,K.filter(p=>p.type!=="custom"&&((KIT_INFO[p.type]||[])[0]||"infra")===k)]).concat([["custom","Dealer finds",K.filter(p=>p.type==="custom")]]).filter(g=>g[2].length);
+  const groups=KIT_AISLES.map(([k,n])=>[k,n,K.filter(p=>p.type!=="custom"&&!p.find&&((KIT_INFO[p.type]||[])[0]||"infra")===k)]).concat([["custom","Dealer finds",K.filter(p=>p.type==="custom"||p.find)]]).filter(g=>g[2].length);
   const grp=([k,n,list])=>{ const key=loc.id+"|"+k, bad=list.filter(p=>p.broken).length, worn=list.filter(p=>!p.broken&&p.cond<45).length;
     const open=kitGrpOpen[key]!=null?kitGrpOpen[key]:(bad+worn>0);
     return `<details class="kitgrp" data-kg="${key}"${open?" open":""}><summary><span class="kg-name">${esc(n)}</span><span class="note">${list.length} piece${list.length>1?"s":""}</span><span class="spacer"></span>${bad?`<span class="pill b">${bad} down</span>`:""}${worn?`<span class="pill w">${worn} worn</span>`:""}${!bad&&!worn?`<span class="note">all running</span>`:""}</summary>${list.map(row).join("")}</details>`; };
@@ -9065,7 +9114,10 @@ function kitchenHTML(loc){
 function buyKit(lid,type,t,own,rep,mis){
     const tier=+t, mi=+(mis||0), locOf=id=>S.locations.find(l=>l.id===id), loc=locOf(lid); if(!loc) return null;
     let np, pr;
-    if(type==="custom"){ const o=(loc.kitOffers||[])[mi]; if(!o) return null; pr=o.price; np={id:"k"+uid(),type:"custom",tier:o.tier,model:o.model,price:o.price,cond:o.tier===0?Math.round(rnd(45,68)):100,own,leaseLeft:own==="lease"?36:0,warranty:o.tier===0||own==="rent"?0:12,age:0,broken:false,def:Object.assign({name:o.station},o.eff,{solid:o.solid})}; }
+    if(type==="custom"&&(loc.kitOffers||[])[mi]&&loc.kitOffers[mi].as){ const o=loc.kitOffers[mi]; pr=o.price;   // a find that fills a standard station is that station
+      np=newPiece(loc,o.as,o.tier,own,o.tier===0?Math.round(rnd(45,68)):100,0); Object.assign(np,{model:o.model,price:o.price,find:true,year:o.year||storyYear()||null});
+      if(!rep){ const old=loc.kit.filter(p=>p.type===o.as).sort((a,b)=>kitScore(a)-kitScore(b))[0]; if(old&&KIT_REQUIRED[o.as]) rep=old.id; } }
+    else if(type==="custom"){ const o=(loc.kitOffers||[])[mi]; if(!o) return null; pr=o.price; np={id:"k"+uid(),type:"custom",tier:o.tier,model:o.model,price:o.price,cond:o.tier===0?Math.round(rnd(45,68)):100,own,leaseLeft:own==="lease"?36:0,warranty:o.tier===0||own==="rent"?0:12,age:0,broken:false,def:Object.assign({name:o.station},o.eff,{solid:o.solid})}; }
     else { pr=kitPrice(loc,type,tier,mi); np=newPiece(loc,type,tier,own,null,mi); }
     if(own==="owned"&&S.cash<pr) return null;
     if(own==="owned"&&!ownerApproves(pr,np.model)){ keepY(); return `The owner turned down ${np.model}.`; }
@@ -9128,7 +9180,7 @@ function wireKitchen(){
   document.querySelectorAll("details[data-kg]").forEach(d=>d.ontoggle=()=>{ kitGrpOpen[d.dataset.kg]=d.open; });
   const locOf=id=>S.locations.find(l=>l.id===id);
   const ka=$("#kitAskGo"); if(ka) ka.onclick=async()=>{ const loc=locOf(ka.dataset.kloc), t=($("#kitAsk").value||"").trim(); if(!loc||!t) return; ka.disabled=true;
-    const r=await claudeJSON(KIT_RULES,`\n\nTHIS KITCHEN: ${loc.name}, ${loc.seats||0} seats, ${KIT_TIERS[Math.round(ensureKit(loc).reduce((a,p)=>a+p.tier,0)/Math.max(1,ensureKit(loc).length))]} kit. Current kit: ${ensureKit(loc).map(p=>p.model).join("; ")}.\n\nTHE OWNER IS LOOKING FOR:\n${t}`,$("#kitAskOut"),"equipment","Calling dealers…");
+    const r=await claudeJSON(kitRules(),`${storyYear()?`\n\nTHE STORY'S YEAR IS ${storyYear()}.`:""}\n\nTHIS KITCHEN: ${loc.name}, ${loc.seats||0} seats, ${KIT_TIERS[Math.round(ensureKit(loc).reduce((a,p)=>a+p.tier,0)/Math.max(1,ensureKit(loc).length))]} kit. Current kit: ${ensureKit(loc).map(p=>p.model).join("; ")}.\n\nTHE OWNER IS LOOKING FOR:\n${t}`,$("#kitAskOut"),"equipment","Calling dealers…");
     ka.disabled=false; if(!r) return;
     const offers=(Array.isArray(r.offers)?r.offers:[]).slice(0,4).map(sanitizeKitOffer);
     if(!offers.length){ $("#kitAskOut").textContent=String(r.note||"Nobody had anything like that."); return; }
@@ -9254,7 +9306,7 @@ function staffCardHTML(m){
       <div class="row" style="margin-top:6px;flex-wrap:wrap;gap:6px"><button class="btn sm" data-poach="${m.id}|match">Match it · ${money(m.poach.salary)}/yr</button><button class="btn sm sec" data-poach="${m.id}|counter">Counter with a title and a ${money(Math.round(m.salary*.1))} bonus</button><button class="btn sm sec" data-poach="${m.id}|let">Wish them well</button></div></div>`:""}
     <div class="tags">${Math.round(m.years||0)} years in kitchens and dining rooms${certsOf(m).length?` · ${certsOf(m).map(k=>esc(certInfo(k).name)).join(", ")}`:" · no formal credentials"}</div>
     <div class="tags">${money(m.salary)}/yr · the market pays about ${money(mkt)} for this person${tr?` · in ${esc(tr.name)}, ${tr.left} mo left`:""}</div>
-    ${exp("credentials")&&!tr&&next.length?`<div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px">${next.map(k=>{const c=CERTS[k]; return `<button class="btn sm sec" data-cert="${m.id}|${k}" ${S.cash<c.cost?"disabled":""}>Sit ${esc(c.name)} · ${money(c.cost)} · ${c.months} mo · ~${Math.round(examChance(m,k)*100)}% pass</button>`;}).join("")}</div>`:""}
+    ${exp("credentials")&&!tr&&next.length?`<div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px">${next.map(k=>{const c=certInfo(k); return `<button class="btn sm sec" data-cert="${m.id}|${k}" ${S.cash<c.cost?"disabled":""}>Sit ${esc(c.name)} · ${money(c.cost)} · ${c.months} mo · ~${Math.round(examChance(m,k)*100)}% pass</button>`;}).join("")}</div>`:""}
     ${m.credOffer?(()=>{ const o=m.credOffer, c=o.custom||CERTS[o.key]||{}, cost=o.custom?c.cost:c.cost, mo=o.custom?c.months:c.months, ch=examChance(m,o.key,o.custom||null);
       return `<div class="choice" style="cursor:default;margin-top:8px"><b>${esc(c.name)}</b><span>${esc(o.custom?c.blurb:"A recognised credential already in the game.")}</span>
         <span class="note" style="margin-top:4px">${money(cost)} · ${mo} month${mo>1?"s":""}${c.away?" away from work":""}${c.pass===null?"":` · about ${Math.round(ch*100)}% chance${c.kind==="competition"?" of placing":" of passing"}`}${c.prestige?` · prestige ${c.prestige}`:""}${c.fame?` · fame +${c.fame} if it goes well`:""}</span>
@@ -9307,6 +9359,7 @@ function teamHTML(){
           ${c.catch?`<span style="margin-top:6px"><b style="display:inline;font-size:12.3px">The catch:</b> ${esc(c.catch)}</span>`:""}
           <div class="row" style="margin-top:9px"><button class="btn sm" data-hire="${c.id}">Hire</button><button class="btn sm sec" data-hdrop="${c.id}">Pass</button></div></div>`).join("")}
       </div></div>
+      ${localCredHTML()}
       <div class="panel"><div class="hd"><h3>Training programmes</h3></div><div class="bd">
         ${S.training.length?`<div style="margin-bottom:10px">${S.training.map(t=>`<div class="kv"><span>${esc(t.name)}${t.memberId?`<span class="note"> · ${esc((S.team.find(x=>x.id===t.memberId)||{}).name||"")}</span>`:""}</span><span class="n">${t.left<=1?`finishes when ${MONTHS[S.calMonth]} closes`:`${t.left} of ${t.months} mo left`}</span></div>`).join("")}</div>`:""}
         <p class="note" style="margin:0 0 8px">Credential exams (ACF, CMS, WSET, AHLEI, ServSafe) are on each person's card above, matched to what they already hold.</p>
@@ -9353,7 +9406,7 @@ function wireTeam(){
     else { delete m.poach; staffDeparture(m,`hired away by ${from}`,null); logIt("warn",`${m.name} left for ${from} with your blessing.`); }
     keepY(); });
   document.querySelectorAll("[data-cert]").forEach(b=>b.onclick=()=>{
-    const [id,k]=b.dataset.cert.split("|"), m=S.team.find(x=>x.id===id), c=CERTS[k];
+    const [id,k]=b.dataset.cert.split("|"), m=S.team.find(x=>x.id===id), c=CERTS[k]||(S.customCerts||{})[k];
     if(!m||!c||S.cash<c.cost||S.training.some(t=>t.memberId===m.id)) return;
     S.cash-=c.cost; S.training.push({id:uid(),name:`${c.name} exam`,memberId:m.id,left:c.months,months:c.months,monthly:0,eff:{},away:false,cert:k});
     logIt("good",`${m.name} is sitting ${c.name}: ${money(c.cost)} in fees and prep, results in ${c.months} month${c.months>1?"s":""}.`); keepY(); });
@@ -9388,6 +9441,9 @@ function wireTeam(){
     const r=await claudeJSON(TRAIN_RULES,`\n\nTHE OWNER'S IDEA:\n${t}`,$("#trainOut"),"programme","Putting a programme together…");
     tg.disabled=false; if(!r) return;
     S.trainOffers=[sanitizeTraining(r)].concat(S.trainOffers).slice(0,6); keepY(); };
+  const lcg=$("#localCredGo"); if(lcg) lcg.onclick=async()=>{ lcg.disabled=true;
+    const r=await claudeJSON(LOCALCRED_RULES(),`\n\nWHERE: ${placeName()}${S.intl&&S.intl.home?`, ${S.intl.home}`:""}`,$("#localCredOut"),"credentials","Looking up what's standard here…"); lcg.disabled=false; if(!r) return;
+    const made=applyLocalCreds(r); logIt("warn",made.length?`Looked up ${made.length} local credential${made.length>1?"s":""} for ${S.localCredPlace}.`:`Nothing to add for ${placeName()}.`); keepY(); };
   document.querySelectorAll("[data-credask]").forEach(b=>b.onclick=async()=>{ const m=S.team.find(x=>x.id===b.dataset.credask); if(!m) return;
     const ta=document.querySelector(`[data-credidea="${m.id}"]`), out=document.querySelector(`[data-credout="${m.id}"]`), t=(ta.value||"").trim();
     if(!t){ out.textContent="Name what you have in mind first."; return; }
