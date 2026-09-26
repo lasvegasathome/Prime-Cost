@@ -43,3 +43,7 @@ The game and the preset saves are released under the MIT License (see `LICENSE`)
 ## Disclaimer
 
 Prime Cost is an unofficial fan project. It is not affiliated with, endorsed by, or sponsored by any restaurant, company or person named in it. All trademarks belong to their owners. Presets based on real restaurants use publicly available information (menus, prices, filings, press coverage) for simulation and commentary; figures marked as estimates or invented are not real data.
+
+## Logos and colours
+
+Each preset opens with its restaurant's logo and colours, shown in the header and on the dashboard. Change them on the dashboard under **Logo & colours**: upload any PNG, JPG, WebP or SVG, pick an accent and a base colour, or go back to the defaults. It only changes how the game looks. Where each built-in logo comes from is listed in `LOGOS.md`.
