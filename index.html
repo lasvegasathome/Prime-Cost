@@ -199,6 +199,10 @@ label.nf>em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);
 .seasongrid label{display:block}
 .seasongrid label span{display:block;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
 .seasongrid label input{padding:5px 6px;font-family:var(--mono);font-size:12.5px;text-align:center}
+.advlog{max-height:460px;overflow:auto;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain}
+.advq{align-self:flex-end;max-width:88%;background:color-mix(in srgb,var(--accent) 9%,var(--panel));border:1px solid var(--rule);padding:8px 11px;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.advq .note{display:block;font-size:11px;margin-bottom:2px}
+@media (max-width:600px){ .advlog{max-height:60vh} .advq{max-width:96%} }
 .adv{background:var(--panel2);border-left:3px solid var(--accent);padding:12px 14px;font-size:14px;line-height:1.6;white-space:pre-wrap}
 .hidden{display:none!important}
 
@@ -1477,29 +1481,52 @@ function directorTools(changes){
        holder[key]=arr.filter(x=>x!==hit); const d=`removed ${kind}: ${hit[m[1]]||hit.id}`; changes.push(d); return d; }}
   ];
 }
+/* ---- the advisor: one running conversation, kept in the save like a one-on-one ---- */
+let advPending=null;   // {q,text} while an answer is on its way; survives leaving the tab
+function advThread(){ S.advisorChat=Array.isArray(S.advisorChat)?S.advisorChat:[]; return S.advisorChat; }
+function advTranscript(){
+  return advThread().slice(-12).map(t=>`${t.role==="user"?`OWNER (${t.when||"earlier"})`:`YOU (${t.when||"earlier"})`}: ${clip(String(t.content||""),1200)}`).join("\n");
+}
+function advisorLogHTML(){
+  const ch=advThread(), shown=ch.slice(-24), hidden=ch.length-shown.length;
+  const turn=t=>t.role==="user"
+    ?`<div class="advq"><span class="note">You · ${esc(t.when||"")}</span><div>${esc(t.content)}</div></div>`
+    :`<div class="adv advA">${esc(t.content)}${t.changes&&t.changes.length?`<div class="note" style="margin-top:8px"><b>Changed:</b> ${esc(t.changes.join("; "))}</div>`:""}${t.offline?`<div class="note" style="margin-top:6px">Mechanical read; Claude wasn't available.</div>`:""}</div>`;
+  const live=advPending?`<div class="advq"><span class="note">You · ${esc(when())}</span><div>${esc(advPending.q)}</div></div><div class="adv advA" id="advLive">${esc(advPending.text||"Thinking…")}</div>`:"";
+  if(!ch.length&&!advPending) return `<div class="adv advA">${esc(offlineAdvisor())}</div><p class="note" style="margin:8px 0 0">That's the mechanical read of your books. Ask something and the conversation is kept here, month to month.</p>`;
+  return (hidden?`<p class="note" style="margin:0 0 6px">${hidden} earlier message${hidden>1?"s":""} not shown.</p>`:"")+shown.map(turn).join("")+live;
+}
+function paintAdvisor(){ const box=document.getElementById("advLog"); if(!box) return; box.innerHTML=advisorLogHTML(); box.scrollTop=box.scrollHeight;
+  const b=document.getElementById("advAsk"); if(b) b.disabled=!!advPending; }
 async function askAdvisor(q,outEl,btn){
-  if(!sampleFn){ outEl.textContent=offlineAdvisor(q); return; }
-  btn.disabled=true; outEl.textContent="Thinking…";
+  q=clip(String(q||"").trim(),1500); if(!q||advPending) return;
+  const asked=when(), prior=advTranscript();
+  const push=(o)=>{ advThread().push(o); S.advisorChat=S.advisorChat.slice(-60); };
+  const show=t=>{ if(outEl&&outEl.isConnected) outEl.textContent=t; const lv=document.getElementById("advLive"); if(lv&&lv!==outEl) lv.textContent=t; };
+  if(!sampleFn){ const a=offlineAdvisor(q); push({role:"user",content:q,when:asked}); push({role:"assistant",content:a,when:asked,offline:true}); save(); show(a); paintAdvisor(); return; }
+  advPending={q,text:""}; if(btn) btn.disabled=true; paintAdvisor(); show("Thinking…");
   const ctl=new AbortController(); currentCtl=ctl;
+  let answer="", changes=[], offline=false;
   try{
-    const changes=[];
-    const {text}=await sampleFn(
-      `${ADVISOR_RULES}\n\nBRIEFING\n${stateDigest(S)}${houseRules()}\n\nTHE OWNER ASKS:\n${q}`,
-      {signal:ctl.signal,cache:false,tools:directorTools(changes),onText:({text})=>{outEl.textContent=text;}}
-    );
-    outEl.textContent=text;
-    if(changes.length){
-      logIt("warn",`Director's edit: ${changes.join("; ")}.`);
-      chronicle(`The owner edited the game directly: ${changes.join("; ")}.`);
-      const id=outEl.id, keepTxt=text+"\n\nChanged: "+changes.join("; ");
-      save(); render(); const o=id?document.getElementById(id):null; (o||outEl).textContent=keepTxt;
-    }
+    const r=await sampleFn(
+      `${ADVISOR_RULES}\n\nBRIEFING (as of now, ${asked})\n${stateDigest(S)}${houseRules()}\n\nYOUR EARLIER CONVERSATION WITH THE OWNER (oldest first; the month is when it was said, so older figures may have moved since)\n${prior||"(none yet)"}\n\nTHE OWNER ASKS:\n${q}`,
+      {signal:ctl.signal,cache:false,tools:directorTools(changes),onText:({text})=>{ advPending&&(advPending.text=text); show(text); }});
+    answer=String(r.text||"").trim();
   }catch(e){
-    if(e.code==="cancelled"){ outEl.textContent=e.text||""; }
-    else if(e.code==="not_granted"||e.code==="sampling_disabled"){ sampleFn=null; outEl.textContent=offlineAdvisor(q); render(); }
-    else if(e.code==="rate_limited"){ outEl.textContent="You've hit your Claude usage limit for now. The advisor will work again later — here's the mechanical read in the meantime:\n\n"+offlineAdvisor(q); }
-    else { outEl.textContent=(e.text?e.text+"\n\n":"")+"The advisor couldn't be reached. Mechanical read:\n\n"+offlineAdvisor(q); }
-  }finally{ btn.disabled=false; }
+    if(e.code==="cancelled"){ answer=String(e.text||"").trim(); }
+    else if(e.code==="not_granted"||e.code==="sampling_disabled"){ sampleFn=null; answer=offlineAdvisor(q); offline=true; }
+    else if(e.code==="rate_limited"){ answer="You've hit your Claude usage limit for now. The advisor will work again later. Here's the mechanical read in the meantime:\n\n"+offlineAdvisor(q); offline=true; }
+    else { answer=(e.text?e.text+"\n\n":"")+"The advisor couldn't be reached. Mechanical read:\n\n"+offlineAdvisor(q); offline=true; }
+  }finally{
+    advPending=null; if(btn) btn.disabled=false;
+    if(answer){ push({role:"user",content:q,when:asked}); push({role:"assistant",content:clip(answer,6000),when:asked,changes:changes.length?changes:undefined,offline:offline||undefined}); }
+    if(changes.length){ logIt("warn",`Director's edit: ${changes.join("; ")}.`); chronicle(`The owner edited the game directly: ${changes.join("; ")}.`); }
+    save();
+    const id=outEl&&outEl.id;
+    if(changes.length){ render(); }
+    const o=id?document.getElementById(id):outEl; if(o&&o.isConnected&&o.id!=="advLive") o.textContent=answer+(changes.length?"\n\nChanged: "+changes.join("; "):"");
+    paintAdvisor();
+  }
 }
 let currentCtl=null;
 
@@ -8152,13 +8179,13 @@ function officeHTML(){
     <p class="note" style="margin:7px 0 0">Free-form actions need Claude. The advisor below falls back to a mechanical read of your books, which is less conversational and, for questions about your own numbers, frequently more accurate.</p></div></div>`:""}
   <div class="grid g2">
     <div class="panel"><div class="hd"><h3>Ask your advisor</h3></div><div class="bd">
-      <p class="note" style="margin:0 0 9px">A former operator who has read your books. Ask anything — "why did we lose money", "should I raise prices", "what is prime cost".</p>
-      <textarea id="advQ" placeholder="Why did profit fall when sales went up?"></textarea>
+      <p class="note" style="margin:0 0 9px">A former operator who has read your books and remembers what you've talked about. Ask anything: "why did we lose money", "should I raise prices", "what is prime cost".</p>
+      <div id="advLog" class="advlog">${advisorLogHTML()}</div>
+      <textarea id="advQ" placeholder="Why did profit fall when sales went up?" style="margin-top:10px"></textarea>
       <div class="row" style="margin-top:9px">
         ${["Why did this month go the way it did?","Where is my money actually going?","What should I change first?"].map(q=>`<button class="btn sm sec" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
       </div>
-      <button class="btn" id="advAsk" style="margin-top:10px">Ask</button>
-      <div class="adv" id="advOut" style="margin-top:12px;${""}">${esc(offlineAdvisor())}</div>
+      <div class="row" style="margin-top:10px;gap:8px"><button class="btn" id="advAsk" ${advPending?"disabled":""}>Ask</button>${advThread().length?`<button class="btn sm sec" id="advClear">Start a fresh conversation</button>`:""}</div>
     </div></div>
 
     <div class="panel"><div class="hd"><h3>Do something</h3>
@@ -8219,9 +8246,12 @@ function officeHTML(){
   </div>`;
 }
 function wireOffice(){
-  const q=$("#advQ"), out=$("#advOut"), btn=$("#advAsk");
+  const q=$("#advQ"), btn=$("#advAsk"), lg=$("#advLog");
+  if(lg) lg.scrollTop=lg.scrollHeight;
   document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{q.value=b.dataset.q;});
-  btn.onclick=()=>{ const t=q.value.trim(); if(!t){out.textContent=offlineAdvisor();return;} askAdvisor(t,out,btn); };
+  const send=()=>{ const t=q.value.trim(); if(!t||advPending) return; q.value=""; askAdvisor(t,null,btn); };
+  btn.onclick=send; q.onkeydown=e=>{ if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){ e.preventDefault(); send(); } };
+  const cl=$("#advClear"); if(cl) cl.onclick=()=>{ if(advPending) return; if(!confirm("Clear the whole conversation with your advisor?")) return; S.advisorChat=[]; keepY(); };
   const at=$("#actT"), ao=$("#actOut"), ab=$("#actGo");
   document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{at.value=b.dataset.a;});
   if(ab) ab.onclick=()=>{ const t=at.value.trim(); if(!t){ao.textContent="Say what you're going to do.";return;} adjudicate(t,ao,ab); };
