@@ -50,4 +50,4 @@ Prime Cost is an unofficial fan project. It is not affiliated with, endorsed by,
 
 ## Logos and colours
 
-Each preset opens with its restaurant's logo and colours, shown in the header and on the dashboard. Change them on the dashboard under **Logo & colours**: upload any PNG, JPG, WebP or SVG, pick an accent and a base colour, or go back to the defaults. It only changes how the game looks. Where each built-in logo comes from is listed in `LOGOS.md`.
+Each preset opens with its restaurant's logo and colours, shown in the header and on the dashboard. Change them on the dashboard under **Logo & colours**: upload any PNG, JPG, WebP or SVG, pick an accent and a base colour, hide the restaurant's name when the logo already spells it out, or go back to the defaults. It only changes how the game looks. Where each built-in logo comes from is listed in `LOGOS.md`.

@@ -44,6 +44,8 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
   --paper:color-mix(in srgb,var(--b-base) 10%,#14160F);--panel:color-mix(in srgb,var(--b-base) 8%,#1C1F16);--panel2:color-mix(in srgb,var(--b-base) 13%,#262A1D);--rule:color-mix(in srgb,var(--b-base) 18%,#31351F)}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .blogo{height:34px;width:auto;max-width:92px;object-fit:contain;flex:none;border-radius:4px}
+.blogo.solo{height:42px;max-width:230px}
+@media (max-width:560px){.blogo.solo{height:34px;max-width:160px}}
 .plate{background:#F4F1EA;padding:3px 6px;border-radius:6px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}.bcard .bimg.plate{padding:10px 14px}
 .bcard{text-align:center}.bcard .bimg{max-width:min(220px,70%);max-height:150px;object-fit:contain;display:block;margin:4px auto 10px}
 .bcard .bname{font-family:var(--serif);font-size:26px;line-height:1.1}.bswatch{display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid var(--rule2);vertical-align:-4px;margin:0 3px}
@@ -6887,11 +6889,11 @@ let brandEditing=false;
 function brandCardHTML(){ const b=brandOf()||{};
   return `<div class="panel"><div class="hd"><h3>The brand</h3><span class="spacer"></span><button class="btn sec" id="brandEdit" style="padding:4px 10px">${brandEditing?"Done":"Logo &amp; colours"}</button></div><div class="bd bcard">
     ${b.logo?`<img class="bimg${b.plate?" plate":""}" src="${b.logo}" alt="${esc(S.bizName)} logo">`:""}
-    <div class="bname">${esc(S.bizName)}</div>
+    ${b.logo&&b.hideName?"":`<div class="bname">${esc(S.bizName)}</div>`}
     ${b.accent?`<div class="note" style="margin-top:6px">Colours <span class="bswatch" style="background:${b.accent}"></span><span class="bswatch" style="background:${b.base||b.accent}"></span></div>`:`<div class="note" style="margin-top:6px">No logo or colours yet. They change how the game looks, nothing else.</div>`}
     ${brandEditing?`<div class="bedit">
-      <div class="row" style="flex-wrap:wrap;gap:8px"><label class="btn sec" style="cursor:pointer">Upload a logo<input type="file" id="brandFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden></label>${b.logo?`<button class="btn sec" id="brandNoLogo">Remove logo</button><label class="row" style="gap:6px;cursor:pointer;flex:none"><input type="checkbox" id="brandPlate" ${b.plate?"checked":""} style="width:auto;accent-color:var(--accent)"> Light backing</label>`:""}</div>
-      <div class="hint">PNG, JPG, WebP or SVG. It's scaled down and kept inside your save. A dark logo reads better with a light backing in dark mode.</div>
+      <div class="row" style="flex-wrap:wrap;gap:8px"><label class="btn sec" style="cursor:pointer">Upload a logo<input type="file" id="brandFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden></label>${b.logo?`<button class="btn sec" id="brandNoLogo">Remove logo</button><label class="row" style="gap:6px;cursor:pointer;flex:none"><input type="checkbox" id="brandPlate" ${b.plate?"checked":""} style="width:auto;accent-color:var(--accent)"> Light backing</label><label class="row" style="gap:6px;cursor:pointer;flex:none"><input type="checkbox" id="brandShowName" ${b.hideName?"":"checked"} style="width:auto;accent-color:var(--accent)"> Show the name next to the logo</label>`:""}</div>
+      <div class="hint">PNG, JPG, WebP or SVG. It's scaled down and kept inside your save. A dark logo reads better with a light backing in dark mode. If the logo already spells out the name, you can hide the name so it isn't there twice.</div>
       <div class="row" style="margin-top:10px;gap:14px;flex-wrap:wrap"><label>Accent <input type="color" id="brandAccent" value="${b.accent||"#8C2F39"}"></label><label>Base <input type="color" id="brandBase" value="${b.base||b.accent||"#8C2F39"}"></label>
         ${b.accent?`<button class="btn sec" id="brandReset">Default colours</button>`:""}</div>
       <div class="hint">The accent colours buttons, highlights and the active tab; the base tints the page and panels lightly so text stays readable in light and dark mode. Warnings and losses keep their usual colours.</div></div>`:""}
@@ -6908,6 +6910,7 @@ function wireBrand(){ const e=$("#brandEdit"); if(!e) return;
       img.onerror=()=>alert("That file couldn't be read as an image."); img.src=rd.result; }; rd.readAsDataURL(file); };
   const nl=$("#brandNoLogo"); if(nl) nl.onclick=()=>set("logo",null);
   const pl=$("#brandPlate"); if(pl) pl.onchange=()=>set("plate",pl.checked?true:null);
+  const sn=$("#brandShowName"); if(sn) sn.onchange=()=>set("hideName",sn.checked?null:true);
   const a=$("#brandAccent"); if(a) a.onchange=()=>{ const b=brandOf()||{}; S.brand=Object.assign({},b,{accent:a.value,base:b.base||a.value}); save(); applyBrand(); keepY(); };
   const bs=$("#brandBase"); if(bs) bs.onchange=()=>{ const b=brandOf()||{}; S.brand=Object.assign({},b,{base:bs.value,accent:b.accent||bs.value}); save(); applyBrand(); keepY(); };
   const rs=$("#brandReset"); if(rs) rs.onclick=()=>{ const b=Object.assign({},brandOf()||{}); delete b.accent; delete b.base; S.brand=b; save(); applyBrand(); keepY(); }; }
@@ -6915,7 +6918,7 @@ function render(){
   const app=$("#app");
   applyBrand();
   if(!S){ $("#tabbar").hidden=true; $("#vitals").innerHTML=""; app.innerHTML=setupHTML(); wireSetup(); return; }
-  { const b=brandOf(); $("#brandName").innerHTML= (b&&b.logo?`<img class="blogo${b.plate?" plate":""}" src="${b.logo}" alt="">`:"")+(S.bizName? `<span>${esc(S.bizName)}</span>` : 'Prime <em>Cost</em>'); }
+  { const b=brandOf(), solo=!!(b&&b.logo&&b.hideName&&S.bizName); $("#brandName").innerHTML= (b&&b.logo?`<img class="blogo${b.plate?" plate":""}${solo?" solo":""}" src="${b.logo}" alt="${solo?esc(S.bizName):""}" title="${esc(S.bizName||"")}">`:"")+(solo?"":S.bizName? `<span>${esc(S.bizName)}</span>` : 'Prime <em>Cost</em>'); }
   $("#tabbar").hidden=false;
   if(sampleFn&&!_kitJudging) setTimeout(judgeDishKit,60); else if(!sampleFn) offlineKitTag();
   renderVitals(); renderTabs();

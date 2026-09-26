@@ -6,7 +6,7 @@ Each preset save carries its restaurant's logo so the game can show it. The logo
 |---|---|
 | The Cheesecake Factory | [The Cheesecake Factory (logo, stacked).svg](https://en.wikipedia.org/wiki/File:The_Cheesecake_Factory_(logo,_stacked).svg) on Wikipedia / Wikimedia Commons (PD) |
 | Chick-fil-A | [Chick-fil-A Logo.svg](https://commons.wikimedia.org/wiki/File:Chick-fil-A_Logo.svg) on Wikipedia / Wikimedia Commons (Public domain) |
-| Crumbl | [Crumbl logo updated.svg](https://commons.wikimedia.org/wiki/File:Crumbl_logo_updated.svg) on Wikipedia / Wikimedia Commons (Public domain) |
+| Crumbl | [Crumbl.png](https://commons.wikimedia.org/wiki/File:Crumbl.png) on Wikimedia Commons (Public domain) |
 | Golden Corral | [Golden Corral logo.svg](https://commons.wikimedia.org/wiki/File:Golden_Corral_logo.svg) on Wikipedia / Wikimedia Commons (CC BY-SA 4.0) |
 | Heart Attack Grill | Heart Attack Grill website header (heartattackgrill.com) |
 | Gordon Ramsay Hell's Kitchen | Gordon Ramsay Restaurants website header (gordonramsayrestaurants.com/en/us/hells-kitchen) |
