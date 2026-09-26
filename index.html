@@ -1389,7 +1389,7 @@ function stateDigest(S){
   const H=h.map(r=>`  ${MONTHS[r.cal]} ${yearName(r.y)}: revenue ${money(r.rev)}, prime cost ${pct(r.primePct)}, EBITDA ${money(r.ebitda)}, cash movement ${money(r.net)}, closing cash ${money(r.cash)}, ${r.covers} covers${r.lost>100?`, sold out with about ${r.lost} requests on the waitlist`:""}`).join("\n");
   const loans=S.loans.filter(l=>l.remaining>0).map(l=>`${l.kind} loan ${money(l.remaining)} at ${pct(l.rate,2)}, ${money(l.payment)}/mo, ${l.monthsLeft} months left`).join("; ")||"none";
   return `BUSINESS: ${S.bizName}, a ${CONCEPTS[S.concept].name.toLowerCase()} run by ${S.ownerName}.
-Market: ${MARKETS[S.market].name}. Now: ${S.epoch?`${MONTHS_LONG[S.calMonth]} ${S.epoch+S.year-1}; this is the real calendar date in the story, so keep events, prices and people to what exists then`:`${MONTHS[S.calMonth]} of calendar year ${S.year}`} (month ${S.monthIdx+1} under this owner).
+Market: ${MARKETS[S.market].name}. Now: ${S.epoch?`${MONTHS_LONG[S.calMonth]} ${S.epoch+S.year-1}; this is the real calendar date in the story: prices, technology and people are as they were then, but history after the save's start does not happen here unless the owner asks for it`:`${MONTHS[S.calMonth]} of calendar year ${S.year}`} (month ${S.monthIdx+1} under this owner).
 Owner background: ${S.traits.map(t=>TRAITS[t].name).join("; ") || S.circumstances || "unremarkable"}.
 Cash on hand: ${money(S.cash)}. Credit line: ${money(S.creditLine.drawn)} drawn of ${money(S.creditLine.limit)}.
 Sales tax held but not yet remitted: ${money(S.salesTaxHeld)}. Debt: ${loans}.
@@ -1595,6 +1595,7 @@ function presetEpoch(s){
 }
 function ensureState(s){
   if(s.epoch==null&&!s.epochChecked){ const e=presetEpoch(s); if(e) s.epoch=e; s.epochChecked=true; }
+  for(const b of (s.ghost&&s.ghost.brands)||[]) if(b.kind==="licensed"&&/Virtual Dining Concepts/.test(b.licensor||"")&&/^(MrBeast Burger|Mariah's Cookies)$/.test(b.name)) b.real=true;
   s.mods=Array.isArray(s.mods)?s.mods:[];
   s.threads=Array.isArray(s.threads)?s.threads:[];
   s.aiMemory=Array.isArray(s.aiMemory)?s.aiMemory:[];
@@ -1770,11 +1771,18 @@ The people, the room, the supply chain and the cellar. Use these whenever the st
 
 const STYLE_NOTE=`Writing: plain, concrete and specific to this place. Use contractions and name people. No aphorisms, quips or punchline endings; stop when the facts are told.`;
 
+// history stops where the save starts: the date anchors what exists, never a script of what comes next
+function storyStart(){ if(!S||!S.epoch) return ""; const a=(S.epoch+S.year-1)*12+S.calMonth-(S.monthIdx||0); return `${MONTHS_LONG[((a%12)+12)%12]} ${Math.floor(a/12)}`; }
+function historyRule(){
+  const st=storyStart();
+  return `\n\nHISTORY STOPS WHERE THIS SAVE STARTS${st?` (${st})`:""}. The date tells you what exists (prices, technology, laws, the people and places as they were then); it is not a script. From the first month on this is its own timeline. Unless the owner explicitly asks for it, in their own words, the house rules or an action, never reproduce, foreshadow or hint at real-world or canon events that happened after the start: attacks, disasters, wars, pandemics, deaths, arrests, lawsuits, scandals, closures or bankruptcies, whether of the restaurant, its owner, its partners, its people or its city. Anything in the setting notes that happened after the start is background for you, never an event to stage. No character, including the owner the player is playing, dies, is arrested, is ruined or leaves the story because history or canon says so; only the game's own events and the owner's choices decide that.`;
+}
 function houseRules(){
   const n=String(S.world.notes||"").trim(), o=String(S.origin||"").trim();
   let t=`\n\nTHE OWNER'S WORD IS AUTHORITATIVE. When the owner (in the original description, the house rules, or any request) says something is true of their restaurant, their people or their world, it is true: the room looks the way they said, the people are who they said, the things they said they built or bought exist. Never quietly downgrade it. Be realistic about what they leave unsaid and about the consequences that follow. The one thing they can't change is the reply format.`;
   if(o) t+=`\n\nORIGINAL DESCRIPTION BY THE OWNER, AUTHORITATIVE.\n${o.slice(0,6000)}`;
   if(n) t+=`\n\nHOUSE RULES FROM THE OWNER, AUTHORITATIVE FACTS ABOUT THE SETTING AND PREFERENCES FOR TONE.\n${n.slice(0,6000)}`;
+  t+=historyRule();
   const fx=(S.corrections||[]).slice(-12);
   if(fx.length) t+=`\n\nGAME CORRECTIONS. These are fixes to the simulation's numbers, not events in the story. Nobody in the world experienced them: never treat them as pay cuts, losses, windfalls or anything a character would notice or react to. Just use the corrected figures as if they had always been true.\n`+fx.map(c=>`- ${c}`).join("\n");
   return t;
@@ -3367,7 +3375,8 @@ function ghostMonth(R){
     // a licensor watches its name
     if(b.kind==="licensed"){
       if(b.low>=3&&Math.random()<.25){ b.status="ended"; R.events.push({tone:"bad",text:`${b.licensor||"The licensor"} pulled ${b.name}: three months under three stars is damaging the name. The listing is gone tonight.`}); }
-      else if((b.fame||0)>=70&&!b.hypeHit&&Math.random()<.012){ b.hypeHit=.6; R.events.push({tone:"bad",text:`The famous face behind ${b.name} is publicly distancing themselves from it. Searches for the brand have fallen off a cliff.`}); }
+      else if((b.fame||0)>=70&&!b.hypeHit&&!b.real&&Math.random()<.012){   // never for a real person's brand: that would be replaying their history
+         b.hypeHit=.6; R.events.push({tone:"bad",text:`The famous face behind ${b.name} is publicly distancing themselves from it. Searches for the brand have fallen off a cliff.`}); }
     } }
   // delivery-only units: rent (hood, utilities and the loading bay are in it) and a crew on shift whenever the apps are open
   for(const u of G.units){ if(u.status!=="open") continue; const M=ghostMarket(u); out.rent+=u.rent;
