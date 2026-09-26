@@ -1393,7 +1393,7 @@ Market: ${MARKETS[S.market].name}. Now: ${S.epoch?`${MONTHS_LONG[S.calMonth]} ${
 Owner background: ${S.traits.map(t=>TRAITS[t].name).join("; ") || S.circumstances || "unremarkable"}.
 Cash on hand: ${money(S.cash)}. Credit line: ${money(S.creditLine.drawn)} drawn of ${money(S.creditLine.limit)}.
 Sales tax held but not yet remitted: ${money(S.salesTaxHeld)}. Debt: ${loans}.
-Outside equity: ${pct(S.equityInvestor,0)}.
+Outside equity: ${pct(S.equityInvestor,0)}${S.investorName?`, held by ${S.investorName}`:""}.
 Current settings: price adjustment across the menu ${pct(S.dials.price-1,0)}, staffing "${STAFFING.find(s=>s.k===S.dials.staffing).name}", marketing ${money(mktTotal())}/mo (${S.locations.map(l=>`${l.name}: `+Object.entries(mktOf(l)).filter(([k,v])=>+v>0).map(([k,v])=>`${MKT_CH[k].name.toLowerCase()} ${money(v)}`).concat(mktCampaigns(l).map(c=>`the owner's own campaign "${c.name}" ${money(c.monthly)} (${c.pitch})`)).join(", ")).join("; ")||"none"}), owner's draw ${money(S.dials.draw)}/mo.
 Programmes running: ${Object.keys(S.programs).filter(k=>S.programs[k]).map(k=>PROGRAMS[k].name).join(", ")||"none"}.
 LOCATIONS:
@@ -2386,38 +2386,78 @@ const ROLES={
 const ROLE_KEYS=Object.keys(ROLES);
 /* ---- credentials: real certifications, with game values for difficulty, cost and what they do ---- */
 const CERTS={
-  servsafe:{name:"ServSafe Food Protection Manager",roles:["chef","sous","pastry","maitre"],rs:0,ry:0,skill:0,cost:180,months:1,pass:.9,health:6},
-  acf_cc:{name:"ACF Certified Culinarian (CC)",roles:["chef","sous"],rs:35,ry:0,skill:1,cost:350,months:2,pass:.85},
-  acf_csc:{name:"ACF Certified Sous Chef (CSC)",roles:["chef","sous"],rs:50,ry:3,skill:2,cost:450,months:3,pass:.7},
-  acf_ccc:{name:"ACF Certified Chef de Cuisine (CCC)",roles:["chef","sous"],rs:58,ry:5,skill:3,cost:500,months:3,pass:.65},
-  acf_cec:{name:"ACF Certified Executive Chef (CEC)",roles:["chef"],rs:66,ry:8,skill:4,cost:600,months:4,pass:.55,prestige:1},
-  acf_cmc:{name:"ACF Certified Master Chef (CMC)",roles:["chef"],pre:"acf_cec",rs:84,ry:12,skill:7,cost:6000,months:6,pass:.2,prestige:4},
-  mof_cuisine:{name:"Meilleur Ouvrier de France, Cuisine",roles:["chef"],rs:90,ry:15,skill:8,cost:30000,months:12,pass:.08,prestige:6},
-  acf_cpc:{name:"ACF Certified Pastry Culinarian (CPC)",roles:["pastry"],rs:35,ry:0,skill:1,cost:350,months:2,pass:.85},
-  acf_cwpc:{name:"ACF Certified Working Pastry Chef (CWPC)",roles:["pastry"],rs:55,ry:4,skill:2,cost:450,months:3,pass:.7},
-  acf_cepc:{name:"ACF Certified Executive Pastry Chef (CEPC)",roles:["pastry"],rs:68,ry:8,skill:4,cost:600,months:4,pass:.55,prestige:1},
-  acf_cmpc:{name:"ACF Certified Master Pastry Chef (CMPC)",roles:["pastry"],pre:"acf_cepc",rs:84,ry:12,skill:7,cost:6000,months:6,pass:.2,prestige:4},
-  mof_patisserie:{name:"Meilleur Ouvrier de France, Pâtisserie",roles:["pastry"],rs:90,ry:15,skill:8,cost:30000,months:12,pass:.08,prestige:6},
-  cms_intro:{name:"CMS Introductory Sommelier",roles:["somm","maitre"],rs:30,ry:0,skill:1,cost:700,months:1,pass:.9},
-  cms_cert:{name:"CMS Certified Sommelier",roles:["somm","maitre"],pre:"cms_intro",rs:45,ry:1,skill:3,cost:600,months:3,pass:.6},
-  cms_adv:{name:"CMS Advanced Sommelier",roles:["somm"],pre:"cms_cert",rs:65,ry:3,skill:5,cost:1200,months:6,pass:.3,prestige:1},
-  cms_ms:{name:"Master Sommelier (MS)",roles:["somm"],pre:"cms_adv",rs:82,ry:6,skill:8,cost:15000,months:12,pass:.1,prestige:4},
-  wset3:{name:"WSET Level 3 Award in Wines",roles:["somm","maitre"],rs:40,ry:0,skill:2,cost:1300,months:3,pass:.8},
-  wset_dip:{name:"WSET Level 4 Diploma in Wines",roles:["somm"],pre:"wset3",rs:62,ry:2,skill:4,cost:12000,months:18,pass:.5,prestige:1},
-  mw:{name:"Master of Wine (MW)",roles:["somm"],pre:"wset_dip",rs:85,ry:5,skill:7,cost:40000,months:24,pass:.1,prestige:5},
+  servsafe:{name:"ServSafe Food Protection Manager",regions:["us"],roles:["chef","sous","pastry","maitre"],rs:0,ry:0,skill:0,cost:180,months:1,pass:.9,health:6},
+  acf_cc:{regions:["us"],name:"ACF Certified Culinarian (CC)",roles:["chef","sous"],rs:35,ry:0,skill:1,cost:350,months:2,pass:.85},
+  acf_csc:{regions:["us"],name:"ACF Certified Sous Chef (CSC)",roles:["chef","sous"],rs:50,ry:3,skill:2,cost:450,months:3,pass:.7},
+  acf_ccc:{regions:["us"],name:"ACF Certified Chef de Cuisine (CCC)",roles:["chef","sous"],rs:58,ry:5,skill:3,cost:500,months:3,pass:.65},
+  acf_cec:{regions:["us"],name:"ACF Certified Executive Chef (CEC)",roles:["chef"],rs:66,ry:8,skill:4,cost:600,months:4,pass:.55,prestige:1},
+  acf_cmc:{regions:["us"],name:"ACF Certified Master Chef (CMC)",roles:["chef"],pre:"acf_cec",rs:84,ry:12,skill:7,cost:6000,months:6,pass:.2,prestige:4},
+  mof_cuisine:{regions:["eu"],name:"Meilleur Ouvrier de France, Cuisine",roles:["chef"],rs:90,ry:15,skill:8,cost:30000,months:12,pass:.08,prestige:6},
+  acf_cpc:{regions:["us"],name:"ACF Certified Pastry Culinarian (CPC)",roles:["pastry"],rs:35,ry:0,skill:1,cost:350,months:2,pass:.85},
+  acf_cwpc:{regions:["us"],name:"ACF Certified Working Pastry Chef (CWPC)",roles:["pastry"],rs:55,ry:4,skill:2,cost:450,months:3,pass:.7},
+  acf_cepc:{regions:["us"],name:"ACF Certified Executive Pastry Chef (CEPC)",roles:["pastry"],rs:68,ry:8,skill:4,cost:600,months:4,pass:.55,prestige:1},
+  acf_cmpc:{regions:["us"],name:"ACF Certified Master Pastry Chef (CMPC)",roles:["pastry"],pre:"acf_cepc",rs:84,ry:12,skill:7,cost:6000,months:6,pass:.2,prestige:4},
+  mof_patisserie:{regions:["eu"],name:"Meilleur Ouvrier de France, Pâtisserie",roles:["pastry"],rs:90,ry:15,skill:8,cost:30000,months:12,pass:.08,prestige:6},
+  cms_intro:{alc:1,name:"CMS Introductory Sommelier",roles:["somm","maitre"],rs:30,ry:0,skill:1,cost:700,months:1,pass:.9},
+  cms_cert:{alc:1,name:"CMS Certified Sommelier",roles:["somm","maitre"],pre:"cms_intro",rs:45,ry:1,skill:3,cost:600,months:3,pass:.6},
+  cms_adv:{alc:1,name:"CMS Advanced Sommelier",roles:["somm"],pre:"cms_cert",rs:65,ry:3,skill:5,cost:1200,months:6,pass:.3,prestige:1},
+  cms_ms:{alc:1,name:"Master Sommelier (MS)",roles:["somm"],pre:"cms_adv",rs:82,ry:6,skill:8,cost:15000,months:12,pass:.1,prestige:4},
+  wset3:{alc:1,name:"WSET Level 3 Award in Wines",roles:["somm","maitre"],rs:40,ry:0,skill:2,cost:1300,months:3,pass:.8},
+  wset_dip:{alc:1,name:"WSET Level 4 Diploma in Wines",roles:["somm"],pre:"wset3",rs:62,ry:2,skill:4,cost:12000,months:18,pass:.5,prestige:1},
+  mw:{alc:1,name:"Master of Wine (MW)",roles:["somm"],pre:"wset_dip",rs:85,ry:5,skill:7,cost:40000,months:24,pass:.1,prestige:5},
   ahlei_chs:{name:"AHLEI Certified Hospitality Supervisor (CHS)",roles:["maitre"],rs:40,ry:1,skill:2,cost:400,months:2,pass:.8},
-  ahlei_cfbe:{name:"AHLEI Certified Food and Beverage Executive (CFBE)",roles:["maitre"],rs:62,ry:5,skill:4,cost:900,months:4,pass:.6,prestige:1}
+  ahlei_cfbe:{name:"AHLEI Certified Food and Beverage Executive (CFBE)",roles:["maitre"],rs:62,ry:5,skill:4,cost:900,months:4,pass:.6,prestige:1},
+  // food safety where the restaurant actually is
+  sg_fh1:{name:"WSQ Food Safety Course Level 1",regions:["sg"],roles:["chef","sous","pastry","somm","maitre"],rs:0,ry:0,skill:0,cost:150,months:1,pass:.95,health:4},
+  sg_fh2:{name:"WSQ Food Safety Course Level 2",regions:["sg"],pre:"sg_fh1",roles:["chef","sous","maitre"],rs:30,ry:1,skill:0,cost:400,months:1,pass:.85,health:6},
+  hk_hs:{name:"FEHD Hygiene Supervisor",regions:["hk"],roles:["chef","sous","pastry","maitre"],rs:0,ry:0,skill:0,cost:250,months:1,pass:.9,health:4},
+  hk_hm:{name:"FEHD Hygiene Manager",regions:["hk"],pre:"hk_hs",roles:["chef","maitre"],rs:30,ry:1,skill:0,cost:500,months:1,pass:.85,health:6},
+  uk_l2:{name:"Level 2 Food Hygiene and Safety for Catering",regions:["uk"],roles:["chef","sous","pastry","somm","maitre"],rs:0,ry:0,skill:0,cost:30,months:1,pass:.95,health:3},
+  uk_l3:{name:"Level 3 Supervising Food Safety in Catering",regions:["uk"],pre:"uk_l2",roles:["chef","sous","pastry","maitre"],rs:25,ry:1,skill:0,cost:300,months:1,pass:.85,health:5},
+  uk_l4:{name:"Level 4 Managing Food Safety in Catering",regions:["uk"],pre:"uk_l3",roles:["chef","maitre"],rs:45,ry:3,skill:1,cost:650,months:2,pass:.7,health:6},
+  jp_eisei:{name:"Food Sanitation Supervisor (shokuhin eisei sekininsha)",regions:["jp"],roles:["chef","sous","maitre"],rs:0,ry:0,skill:0,cost:100,months:1,pass:.98,health:4},
+  jp_chori:{name:"Licensed Cook (chōrishi menkyo)",regions:["jp"],roles:["chef","sous","pastry"],rs:35,ry:2,skill:1,cost:300,months:2,pass:.65},
+  jp_fugu:{name:"Fugu handling licence",regions:["jp"],roles:["chef","sous"],rs:55,ry:2,skill:1,cost:600,months:3,pass:.5,prestige:1},
+  haccp3:{name:"Level 3 Award in HACCP",roles:["chef","sous","maitre"],rs:30,ry:1,skill:0,cost:500,months:1,pass:.85,health:5,since:2000},
+  // trade diplomas
+  cap_cuisine:{name:"CAP Cuisine",regions:["eu"],roles:["chef","sous"],rs:20,ry:0,skill:1,cost:250,months:6,pass:.75},
+  cap_patisserie:{name:"CAP Pâtissier",regions:["eu"],roles:["pastry"],rs:20,ry:0,skill:1,cost:250,months:6,pass:.75},
+  // sake, spirits, cheese, coffee, and more wine
+  ssi_kikisake:{alc:1,name:"SSI Kikisake-shi (Sake Sommelier)",roles:["somm","maitre"],rs:35,ry:0,skill:2,cost:1000,months:2,pass:.8,since:1991},
+  wset_sake3:{alc:1,name:"WSET Level 3 Award in Sake",roles:["somm","maitre"],rs:45,ry:1,skill:3,cost:1400,months:3,pass:.7,since:2017},
+  swe_css:{alc:1,name:"SWE Certified Specialist of Spirits (CSS)",roles:["somm","maitre"],rs:40,ry:1,skill:2,cost:900,months:3,pass:.7,since:2009},
+  barsmarts:{alc:1,name:"BarSmarts Advanced",roles:["somm","maitre"],rs:25,ry:0,skill:1,cost:100,months:1,pass:.9,since:2008},
+  fws:{alc:1,name:"Wine Scholar Guild French Wine Scholar",roles:["somm","maitre"],rs:45,ry:1,skill:2,cost:800,months:3,pass:.75,since:2012},
+  acs_ccp:{upscale:1,name:"ACS Certified Cheese Professional (CCP)",roles:["somm","maitre","chef","sous"],rs:45,ry:4,skill:2,cost:600,months:3,pass:.65,since:2012},
+  sca_barista:{name:"SCA Barista Skills Professional",roles:["maitre","sous"],fit:/coffee|caf[eé]|espresso|barista/,rs:40,ry:1,skill:2,cost:1200,months:2,pass:.7,since:2017}
 };
 const CERT_LADDER={chef:["servsafe","acf_cc","acf_csc","acf_ccc","acf_cec","acf_cmc","mof_cuisine"],sous:["servsafe","acf_cc","acf_csc","acf_ccc"],
   pastry:["servsafe","acf_cpc","acf_cwpc","acf_cepc","acf_cmpc","mof_patisserie"],somm:["cms_intro","cms_cert","wset3","cms_adv","wset_dip","cms_ms","mw"],
   maitre:["servsafe","ahlei_chs","cms_intro","wset3","cms_cert","ahlei_cfbe"]};
 const CERT_TRACKS=[["acf_cc","acf_csc","acf_ccc","acf_cec","acf_cmc","mof_cuisine"],["acf_cpc","acf_cwpc","acf_cepc","acf_cmpc","mof_patisserie"],
-  ["cms_intro","cms_cert","cms_adv","cms_ms"],["wset3","wset_dip","mw"],["ahlei_chs","ahlei_cfbe"]];
-function certInfo(k){ return CERTS[k]||{name:String(k).replace(/^x:/,""),roles:[],skill:2,prestige:0}; }
+  ["cms_intro","cms_cert","cms_adv","cms_ms"],["wset3","wset_dip","mw"],["ahlei_chs","ahlei_cfbe"],
+  ["sg_fh1","sg_fh2"],["hk_hs","hk_hm"],["uk_l2","uk_l3","uk_l4"],["cap_cuisine","acf_cc"],["cap_patisserie","acf_cpc"]];
+function certInfo(k){ return CERTS[k]||(S&&S.customCerts&&S.customCerts[k])||{name:String(k).replace(/^x:/,""),roles:[],skill:2,prestige:0}; }
+// the country the credential rules come from
+function certRegion(){ const h=S&&S.intl&&S.intl.home;
+  const H={"Singapore":"sg","Hong Kong":"hk","Macau":"mo","Japan":"jp","United Kingdom":"uk","United States":"us","France":"eu","Italy":"eu","Spain":"eu","Germany":"eu","Canada":"ca","Australia":"au","Mexico":"mx"};
+  if(h&&H[h]) return H[h]; const g=regionTags(); return g.has("japan")?"jp":g.has("uk")?"uk":g.has("europe")?"eu":g.has("australia")?"au":g.has("canada")?"ca":g.has("mexico")?"mx":g.has("us")?"us":"other"; }
+function storyYear(){ return S&&S.epoch? S.epoch+S.year-1 : null; }
+function certAvailable(k){ const c=CERTS[k]; if(!c) return false; const y=storyYear();
+  if(c.regions&&!c.regions.includes(certRegion())) return false; if(c.since&&y&&y<c.since) return false;
+  if(c.fit){ try{ if(!c.fit.test(conceptText())) return false; }catch(e){} }
+  if(c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)) return false;
+  if(c.upscale&&S.locations[0]&&locTier(S.locations[0])==="low") return false; return true; }
+function localFoodSafety(){ return {us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]||"haccp3"; }
+function certOptions(m){ return Object.keys(CERTS).filter(k=>certAvailable(k)&&certEligible(m,k)).sort((a,b)=>(CERTS[a].rs||0)-(CERTS[b].rs||0)).slice(0,4); }
 function matchCert(str){
   const t=String(str||"").toLowerCase().trim(); if(!t) return null;
   if(CERTS[t]) return t;
-  const tests=[["mw",/master of wine|\bmw\b/],["cms_ms",/master sommelier|\bms\b/],["cms_adv",/advanced sommelier/],["cms_cert",/certified sommelier/],["cms_intro",/introductory sommelier/],
+  const tests=[["wset_sake3",/wset.*sake/],["ssi_kikisake",/kikisake|sake sommelier/],["swe_css",/specialist of spirits|\bcss\b/],["barsmarts",/barsmarts/],["fws",/french wine scholar/],
+    ["acs_ccp",/certified cheese professional|\bccp\b/],["sca_barista",/\bsca\b.*barista|barista skills/],["jp_fugu",/fugu/],["jp_chori",/ch[oō]rishi|licensed cook/],["jp_eisei",/food sanitation supervisor|shokuhin eisei/],
+    ["sg_fh2",/wsq.*level 2|food safety course level 2/],["sg_fh1",/wsq|food safety course level 1/],["hk_hm",/hygiene manager/],["hk_hs",/hygiene supervisor/],
+    ["uk_l4",/level 4.*food safety/],["uk_l3",/level 3.*(supervising )?food safety/],["uk_l2",/level 2.*food (hygiene|safety)/],["haccp3",/haccp/],["cap_patisserie",/cap p[aâ]tiss/],["cap_cuisine",/\bcap\b.*cuisin|cap cuisine/],
+    ["mw",/master of wine|\bmw\b/],["cms_ms",/master sommelier|\bms\b/],["cms_adv",/advanced sommelier/],["cms_cert",/certified sommelier/],["cms_intro",/introductory sommelier/],
     ["wset_dip",/wset.*(diploma|level 4)/],["wset3",/wset.*(level 3|l3)/],["acf_cmpc",/master pastry/],["acf_cepc",/executive pastry/],["acf_cwpc",/working pastry/],["acf_cpc",/pastry culinarian/],
     ["acf_cmc",/certified master chef|\bcmc\b/],["acf_cec",/certified executive chef|\bcec\b/],["acf_ccc",/chef de cuisine \(ccc\)|\bccc\b/],["acf_csc",/certified sous chef|\bcsc\b/],["acf_cc",/certified culinarian/],
     ["mof_patisserie",/meilleur ouvrier.*p[aâ]tiss/],["mof_cuisine",/meilleur ouvrier|\bmof\b/],["ahlei_cfbe",/food and beverage executive|cfbe/],["ahlei_chs",/hospitality supervisor/],["servsafe",/servsafe|food protection manager/]];
@@ -2472,11 +2512,28 @@ function certEligible(m,k){
   if(tr&&certsOf(m).some(h=>tr.indexOf(h)>tr.indexOf(k))) return false;
   return (m.years||0)>=c.ry && m.skill>=c.rs-6;
 }
-function examChance(m,k){ const c=CERTS[k]; return clamp(c.pass*(1+(effSkill(m)-c.rs)/30),.02,.97); }
+function examChance(m,k,c){ c=c||certInfo(k); if(c.pass==null) return 1; return clamp(c.pass*(1+(effSkill(m)-(c.rs==null?effSkill(m):c.rs))/30),.02,.97); }
+/* ---- anything else the owner wants someone to earn or do: Claude checks it's real, the engine prices the odds ---- */
+const CRED_KINDS={certification:"certification",licence:"licence",course:"course",competition:"competition",degree:"degree",stage:"stage"};
+function credRules(m){ const y=storyYear();
+  return `You advise a restaurant owner, inside a realistic simulation, on a credential, licence, course, competition, degree or stage they want one of their people to pursue. Check it against the real world${y?` as it was in ${y}`:""}${certRegion()!=="other"?`, for someone working in ${S.intl&&S.intl.home||[...regionTags()].join(", ")}`:""}. If it doesn't exist, didn't exist yet, can't be taken from here, or this person can't realistically attempt it (wrong role, far too junior, missing a prerequisite), set "real" to false and say why in one sentence. The owner's house rules outrank the real world. If it is one of these built-in credentials, put its exact name in "sameAs" so the game uses that one instead of a duplicate: ${Object.values(CERTS).map(c=>c.name).join("; ")}.
+Otherwise price it honestly: fees, travel, prep, and the cover you'd pay while they're away, in US dollars; how many months it takes; whether they're away from work for it; "pass" is the chance someone of the required level passes, wins or places (null for a course with no assessment); "level" is the skill (0-100) it's pitched at; skill (0-8) is what it adds to their craft once earned; prestige (0-6) how much it impresses guests, critics and recruiters (a Master Sommelier is 4, MOF 6, a food-safety card 0); fame (0-20) how far it raises their public profile (winning a televised or international competition is 10-20); health (0-8) for food-safety qualifications; blurb is 1-2 sentences on what it involves.
+Reply with ONLY JSON: {"real":true,"reason":"","name":"","kind":"certification"|"licence"|"course"|"competition"|"degree"|"stage","sameAs":"","cost":0,"months":1,"away":false,"pass":0.6,"level":50,"skill":2,"prestige":0,"fame":0,"health":0,"blurb":""}
+
+THE PERSON: ${m.name}\n${personFacts(m)}`; }
+function sanitizeCred(r,m){
+  if(!r||r.real===false) return {none:clip(String((r&&r.reason)||"That isn't something they can do."),400)};
+  const built=matchCert(String(r.sameAs||"").trim()||String(r.name||"")); if(built&&CERTS[built]) return {key:built};
+  const name=clip(String(r.name||"").trim(),70); if(!name) return {none:"Couldn't pin down what that is."};
+  const pass=r.pass==null||r.pass===""?null:clamp(Number(r.pass)||.5,.02,.97);
+  return {key:"x:"+name,custom:{name,kind:CRED_KINDS[r.kind]?r.kind:"course",roles:[m.role],rs:Math.round(clamp(Number(r.level)||m.skill,0,100)),ry:0,pass,
+    skill:Math.round(clamp(Number(r.skill)||0,0,8)),prestige:Math.round(clamp(Number(r.prestige)||0,0,6)),fame:Math.round(clamp(Number(r.fame)||0,0,20)),health:Math.round(clamp(Number(r.health)||0,0,8)),
+    cost:Math.round(clamp(Number(r.cost)||0,0,500000)),months:Math.round(clamp(Number(r.months)||1,1,36)),away:!!r.away,blurb:clip(String(r.blurb||""),500)}};
+}
 function estYears(skill){ return clamp(Math.round((skill-25)/3.2+rnd(-1,3)),0,40); }
 function plausibleCerts(role,skill,years){
   const out=[];
-  for(const k of CERT_LADDER[role]||[]){ const c=CERTS[k];
+  for(const k0 of CERT_LADDER[role]||[]){ const k=k0==="servsafe"?localFoodSafety():k0, c=CERTS[k]; if(!certAvailable(k)) continue;
     if(c.pre&&!out.includes(c.pre)) continue;
     if(skill>=c.rs+4&&years>=c.ry&&Math.random()<(c.pass>.5?.65:.35)) out.push(k); }
   return out;
@@ -6112,16 +6169,18 @@ function tickHighEnd(R){
     const m=t.memberId? S.team.find(x=>x.id===t.memberId) : null;
     if(m) m.away=false;
     if(t.cert){
-      const c=CERTS[t.cert];
+      const c=certInfo(t.cert), comp=c.kind==="competition";
       if(m&&c){
         if(Math.random()<examChance(m,t.cert)){
-          m.certs=certsOf(m).concat([t.cert]); m.loyalty=clamp(m.loyalty+6,0,100);
+          if(!certsOf(m).includes(t.cert)) m.certs=certsOf(m).concat([t.cert]); m.loyalty=clamp(m.loyalty+6,0,100);
+          if(c.skill&&!CERTS[t.cert]) m.skill=clamp(m.skill+Math.round(c.skill/2),5,99);
+          if(c.fame) m.fame=clamp((m.fame||0)+c.fame,0,100);
           if(c.health) for(const l of S.locations) l.health=clamp(l.health+c.health,10,100);
-          R.events.push({tone:"good",text:`${m.name} passed: ${c.name}.${c.prestige?" The press will mention it.":""}`});
-          chronicle(`${m.name} earned ${c.name}.`);
+          R.events.push({tone:"good",text:comp?`${m.name} placed at ${c.name}.${c.fame?" People have heard about it.":""}`:c.pass==null?`${m.name} finished ${c.name}.`:`${m.name} passed: ${c.name}.${c.prestige?" The press will mention it.":""}`});
+          chronicle(`${m.name} ${comp?"placed at":"earned"} ${c.name}.`);
         }else{
           m.loyalty=clamp(m.loyalty-2,0,100);
-          R.events.push({tone:"warn",text:`${m.name} didn't pass ${c.name} this time. They can resit.`});
+          R.events.push({tone:"warn",text:comp?`${m.name} competed at ${c.name} and didn't place.`:`${m.name} didn't pass ${c.name} this time. They can resit.`});
         }
       }
       continue;
@@ -6411,7 +6470,7 @@ Reply with ONLY JSON:
 {"candidates":[{"name":"...","role":"chef"|"sous"|"pastry"|"somm"|"maitre","skill":0-100,"salary":dollars,"loyalty":0-100,"ambition":0-100,"years":number,"certs":["credential names"],
  "bio":"1-2 sentences: where they've worked and what they're like","catch":"one sentence"}]}  (2 or 3 candidates)`;
 
-const TRAIN_RULES=`You design staff training programmes for a restaurant inside a realistic simulation. Check the team list for each person's experience and credentials: never propose a programme for a credential someone already holds or has outgrown, and never pitch beginner training at a veteran. Formal credential exams (ACF, CMS, WSET, AHLEI, ServSafe) are handled elsewhere in the game, so design practical training instead: stages, mentoring, R&D, drills, specialist courses. Turn the owner's idea into a programme with an honest cost (course fees, travel, cover for people away, product used) and duration. Effects are as large as the training would really make them and take the whole duration to arrive. If it targets one person, name their role. The hourly crews (kitchen line, floor, dish and porters) can be trained too: use the crew fields for them.
+const TRAIN_RULES=`You design staff training programmes for a restaurant inside a realistic simulation. Check the team list for each person's experience and credentials: never propose a programme for a credential someone already holds or has outgrown, and never pitch beginner training at a veteran. Credentials, licences, exams and competitions (ACF, CMS, WSET, sake and spirits certificates, food-safety cards, MOF, the Bocuse d'Or and the like) are handled elsewhere in the game, on each person's card, so never design a programme that is one of those or leads to one; design practical training instead: stages, mentoring, R&D, drills, hands-on courses. Turn the owner's idea into a programme with an honest cost (course fees, travel, cover for people away, product used) and duration. Effects are as large as the training would really make them and take the whole duration to arrive. If it targets one person, name their role. The hourly crews (kitchen line, floor, dish and porters) can be trained too: use the crew fields for them.
 
 Reply with ONLY JSON:
 {"name":"2-6 words","role":null|"chef"|"sous"|"pastry"|"somm"|"maitre","cost":up-front dollars,"monthly":running dollars per month (0 if none),
@@ -6654,7 +6713,7 @@ const FEATURES=[
   {fit:{formats:["seated"],tiers:["mid"],minAlc:.08},clash:/happy hour|bar rail/,name:"Bar rail & happy hour setup",pitch:"Eight stools along a rail, taps and a short happy-hour list for the 4 to 6 dead zone.",cost:32000,weeks:2,seats:8,bev:.07,risk:"Happy hour trains some regulars to only show up at half price."},
 ];
 const TRAIN_CATALOG=[
-  {name:"Food safety & HACCP refresher",role:null,cost:1800,months:1,eff:{health:14,brigade:2},blurb:"A consultant, a morning, and the logs you should already be keeping."},
+  {name:"Food safety audit and refresher",role:null,cost:1800,months:1,eff:{health:14,brigade:2},blurb:"A consultant walks the kitchen with your logs, retrains everyone on the spot and leaves you a list. No certificate, just fewer violations."},
   {name:"Stage abroad for the sous chef",role:"sous",cost:9000,months:2,away:true,eff:{skill:12,loyalty:6,creativity:4},blurb:"Two months in a serious kitchen abroad. You pay their salary and flights while they're gone."},
   {name:"Brigade technique programme",role:null,cost:7500,months:3,eff:{brigade:12,morale:2},blurb:"Saturday mornings with a visiting chef-instructor: butchery, sauces, fish, consistency drills."},
   {name:"Service choreography",role:null,cost:6000,months:2,eff:{fohTrain:12,morale:2},blurb:"Pre-shift drills, table maintenance, reading a table, the three-minute rule. The floor starts moving as one."},
@@ -7909,9 +7968,37 @@ function wireOperate(){
 }
 
 /* ---------- BOOKS ---------- */
+
+/* ---- who owns what: the business, the stakes in it, the brand it answers to, and the buildings ---- */
+function ownershipHTML(early){
+  const man=isManaged(), FR=S.franchise, O=S.ownership||{}, n=namesakeOf&&namesakeOf();
+  const you=S.ownerName&&S.ownerName!=="You"?S.ownerName:"you";
+  const kv=(a,b)=>`<div class="kv" style="align-items:flex-start;gap:12px"><span>${a}</span><span class="n" style="text-align:right">${b}</span></div>`;
+  const role=man?`you run it for them under a management agreement${FR?`, inside ${esc(FR.brand)}'s system`:""}`:FR?`you own it as a ${esc(FR.brand)} franchisee`:"you own it and run it";
+  const inv=S.equityInvestor>0?kv("Outside equity",`${pct(S.equityInvestor,0)}${S.investorName?` held by ${esc(S.investorName)}`:" held by outside investors"}`):"";
+  const fr=FR?`<div class="choice" style="cursor:default;margin-top:10px"><b>${esc(FR.brand)}</b>
+      <span>${[FR.royalty?`${pct(FR.royalty,1)} royalty`:"",FR.adFund?`${pct(FR.adFund,1)} to the advertising fund`:"",FR.rentPct?`${pct(FR.rentPct,1)} of sales as rent`:"",FR.techFee?`${money(FR.techFee)} a month in technology fees per restaurant`:""].filter(Boolean).join(" · ")||"no ongoing fees"}</span>
+      ${FR.rules?`<span class="note" style="margin-top:6px">${esc(FR.rules)}</span>`:""}</div>`:"";
+  const prem=S.locations.filter(l=>l.status!=="closed").map(l=>kv(esc(l.name),l.owned?`building owned${l.propertyValue?`, worth about ${money(l.propertyValue)}`:""}`
+    :`leased${l.landlord?` from ${esc(l.landlord)}`:""}${l.rent?`, ${money(l.rent+(l.cam||0))}/mo`:""}${l.leaseLeft&&l.leaseLeft<900?` · ${l.leaseLeft} months left`:""}`)).join("");
+  return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Ownership</h3></div><div class="bd">
+    ${kv("Owner of the business",man?esc(O.owner):you==="you"?"You":esc(you))}
+    ${kv("Your part",role)}
+    ${man&&O.profile&&O.profile.kind?kv("Who they are",esc(O.profile.kind)):""}
+    ${inv}${fr}
+    ${n?kv("Famous name attached",`${esc(n.name)} · ${esc(NAMESAKE_KINDS[n.kind].name)}`):""}
+    ${S.locations.filter(l=>l.status!=="closed").length>3?(()=>{ const L=S.locations.filter(l=>l.status!=="closed"), o=L.filter(l=>l.owned).length;
+      return `<details style="margin-top:12px"><summary class="note" style="cursor:pointer;font-weight:700;color:var(--ink2)">Premises: ${L.length} locations, ${o} owned and ${L.length-o} leased</summary>${prem}</details>`; })()
+      :`<div class="note" style="font-weight:700;color:var(--ink2);margin:12px 0 4px">Premises</div>${prem}`}
+    ${man&&!early?`<p class="note" style="margin:10px 0 0">The fees, the owner's profile and this year's performance test are under "Your management agreement" further down.</p>`:""}
+    ${man&&early?`${O.profile?`<div class="choice" style="cursor:default;margin-top:10px"><b>${esc(O.profile.name)}</b><span>${esc(O.profile.desc||"")}</span><span style="margin-top:4px">${esc(O.profile.personality||"")}</span>${O.profile.rep&&O.profile.rep.name?`<span class="note" style="margin-top:4px">You deal with ${esc(O.profile.rep.name)}${O.profile.rep.title?`, ${esc(O.profile.rep.title)}`:""}. ${esc(O.profile.rep.style||"")}</span>`:""}</div>`:""}
+      ${kv("Your base fee",`${pct(O.baseFee||0,1)} of revenue`)}${kv("Your incentive fee",`${pct(O.incentiveFee||0,0)} of profit after the base fee`)}${kv("Operating reserve held for them",money(O.reserveFloor||0))}${kv("Capital projects you can approve alone",`up to ${money(O.capexLimit||0)}`)}
+      <p class="note" style="margin:10px 0 0">Profit above the reserve goes to ${esc(O.owner)} each month. The performance test and fee totals appear once you've traded.</p>`:""}
+  </div></div>`;
+}
 function booksHTML(){
   const h=S.history[S.history.length-1];
-  if(!h) return `<div class="sec" style="padding-top:18px"><h2>Books</h2><p class="lede">Nothing to report until you've traded a month.</p></div>`;
+  if(!h) return `<div class="sec" style="padding-top:18px"><h2>Books</h2><p class="lede">The statements fill in once you've traded a month.</p>${ownershipHTML(true)}</div>`;
   const R=pendingResult;
   const pl=R&&R.month===h.m?R.pl:null;
   const cf=R&&R.month===h.m?R.cf:null;
@@ -7920,6 +8007,7 @@ function booksHTML(){
   return `<div class="sec" style="padding-top:18px">
   <h2>Books — ${MONTHS[h.cal]}${yearLong(h.y)}</h2>
   <p class="lede">Two statements, and they disagree. The profit and loss says whether the business works. The cash flow says whether it survives until it does.</p>
+  ${ownershipHTML()}
   <div class="grid g2">
     <div class="panel"><div class="hd"><h3>Profit &amp; loss</h3></div>
       <table class="led">
@@ -7980,7 +8068,7 @@ function booksHTML(){
         ${T.nol?`<div class="kv"><span>Losses carried forward</span><span class="n">${money(T.nol)}</span></div>`:""}
         ${T.balance?`<div class="kv"><span>Last year's return, settles in April</span><span class="n">${T.balance>0?money(T.balance)+" owed":money(-T.balance)+" refund"}</span></div>`:""}`; })()}
         <div class="kv"><span>Owed to food vendors</span><span class="n">${money(S.ap)}</span></div>
-        <div class="kv"><span>Outside equity</span><span class="n">${pct(S.equityInvestor,0)}</span></div>
+        <div class="kv"><span>Outside equity</span><span class="n">${pct(S.equityInvestor,0)}${S.investorName?` · ${esc(S.investorName)}`:""}</span></div>
       </div></div>
 
       ${S.history.length>2?trailingPanel():""}
@@ -9155,7 +9243,7 @@ function teamOverviewHTML(){
 }
 function staffCardHTML(m){
   const mkt=Math.round(marketSalary(m.role,m.skill)*(1+certPremium(m))/500)*500, tr=S.training.find(t=>t.memberId===m.id);
-  const next=(CERT_LADDER[m.role]||[]).filter(k=>certEligible(m,k)).slice(0,3);
+  const next=certOptions(m);
   return `<div class="choice" style="cursor:default">
     <div class="row" style="align-items:baseline"><b style="margin:0">${esc(m.name)}</b><span class="note">${esc(ROLES[m.role].name)}</span><span class="spacer"></span>${m.away?'<span class="pill w">away</span>':""}${m.loyalty<35?'<span class="pill b">flight risk</span>':""}</div>
     ${m.bio?`<span>${esc(m.bio)}</span>`:""}
@@ -9167,6 +9255,13 @@ function staffCardHTML(m){
     <div class="tags">${Math.round(m.years||0)} years in kitchens and dining rooms${certsOf(m).length?` · ${certsOf(m).map(k=>esc(certInfo(k).name)).join(", ")}`:" · no formal credentials"}</div>
     <div class="tags">${money(m.salary)}/yr · the market pays about ${money(mkt)} for this person${tr?` · in ${esc(tr.name)}, ${tr.left} mo left`:""}</div>
     ${exp("credentials")&&!tr&&next.length?`<div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px">${next.map(k=>{const c=CERTS[k]; return `<button class="btn sm sec" data-cert="${m.id}|${k}" ${S.cash<c.cost?"disabled":""}>Sit ${esc(c.name)} · ${money(c.cost)} · ${c.months} mo · ~${Math.round(examChance(m,k)*100)}% pass</button>`;}).join("")}</div>`:""}
+    ${m.credOffer?(()=>{ const o=m.credOffer, c=o.custom||CERTS[o.key]||{}, cost=o.custom?c.cost:c.cost, mo=o.custom?c.months:c.months, ch=examChance(m,o.key,o.custom||null);
+      return `<div class="choice" style="cursor:default;margin-top:8px"><b>${esc(c.name)}</b><span>${esc(o.custom?c.blurb:"A recognised credential already in the game.")}</span>
+        <span class="note" style="margin-top:4px">${money(cost)} · ${mo} month${mo>1?"s":""}${c.away?" away from work":""}${c.pass===null?"":` · about ${Math.round(ch*100)}% chance${c.kind==="competition"?" of placing":" of passing"}`}${c.prestige?` · prestige ${c.prestige}`:""}${c.fame?` · fame +${c.fame} if it goes well`:""}</span>
+        <div class="row" style="margin-top:6px;gap:6px"><button class="btn sm" data-credgo="${m.id}" ${S.cash<cost||tr?"disabled":""}>Go ahead</button><button class="btn sm sec" data-creddrop="${m.id}">Never mind</button></div></div>`; })():""}
+    <details style="margin-top:8px"><summary class="note" style="cursor:pointer;font-weight:700">A credential, licence, course or competition for ${esc(m.name.split(" ")[0])}</summary>
+      <textarea data-credidea="${m.id}" style="margin-top:6px" placeholder="WSET Level 3 in Sake / the Bocuse d'Or national selection / a fugu licence / a butchery course in Lyon" ${sampleFn?"":"disabled"}></textarea>
+      <button class="btn sm" data-credask="${m.id}" style="margin-top:6px" ${sampleFn?"":"disabled"}>Look into it</button><div class="note" data-credout="${m.id}" style="margin-top:6px">${sampleFn?"Claude checks it's real for this place and time, and prices it. Anything already in the game is used as is.":"Needs Claude, which this view can't reach."}</div></details>
     ${talkOpen===m.id?talkPanelHTML(m):""}
     <details style="margin-top:8px"><summary class="note" style="cursor:pointer;font-weight:700">Plan ${esc(m.name.split(" ")[0])}'s development</summary>
       <textarea data-devidea="${m.id}" style="margin-top:6px" placeholder="Send them to stage for a month at a kaiseki house in Kyoto, then have them teach the brigade what they learned." ${sampleFn?"":"disabled"}></textarea>
@@ -9293,6 +9388,22 @@ function wireTeam(){
     const r=await claudeJSON(TRAIN_RULES,`\n\nTHE OWNER'S IDEA:\n${t}`,$("#trainOut"),"programme","Putting a programme together…");
     tg.disabled=false; if(!r) return;
     S.trainOffers=[sanitizeTraining(r)].concat(S.trainOffers).slice(0,6); keepY(); };
+  document.querySelectorAll("[data-credask]").forEach(b=>b.onclick=async()=>{ const m=S.team.find(x=>x.id===b.dataset.credask); if(!m) return;
+    const ta=document.querySelector(`[data-credidea="${m.id}"]`), out=document.querySelector(`[data-credout="${m.id}"]`), t=(ta.value||"").trim();
+    if(!t){ out.textContent="Name what you have in mind first."; return; }
+    b.disabled=true; const r=await claudeJSON(credRules(m),`\n\nTHE OWNER WANTS THEM TO DO:\n${t}`,out,"credential",`Looking into it for ${m.name.split(" ")[0]}…`); b.disabled=false; if(!r) return;
+    const o=sanitizeCred(r,m); if(o.none){ out.textContent=o.none; return; }
+    if(!o.custom){ if(certsOf(m).includes(o.key)){ out.textContent=`${m.name} already holds ${CERTS[o.key].name}.`; return; }
+      if(!certEligible(m,o.key)){ const c=CERTS[o.key]; out.textContent=`That's ${c.name}, which ${m.name} can't sit yet${c.pre&&!certsOf(m).includes(c.pre)?`: it needs ${CERTS[c.pre].name} first`:c.roles.includes(m.role)?": they need more experience":`: it isn't for a ${ROLES[m.role].name.toLowerCase()}`}.`; return; } }
+    else if(certsOf(m).includes(o.key)&&o.custom.kind!=="competition"){ out.textContent=`${m.name} already has ${o.custom.name}.`; return; }
+    m.credOffer=o; keepY(); });
+  document.querySelectorAll("[data-creddrop]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.creddrop); if(m) delete m.credOffer; keepY(); });
+  document.querySelectorAll("[data-credgo]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.credgo); if(!m||!m.credOffer||S.training.some(t=>t.memberId===m.id)) return;
+    const o=m.credOffer, c=o.custom||CERTS[o.key]; if(!c||S.cash<c.cost) return;
+    if(o.custom){ S.customCerts=Object.assign(S.customCerts||{},{[o.key]:o.custom}); }
+    S.cash-=c.cost; S.training.push({id:uid(),name:c.kind==="competition"?c.name:`${c.name}${o.custom&&c.pass==null?"":" exam"}`,memberId:m.id,left:c.months,months:c.months,monthly:0,eff:{},away:!!c.away,cert:o.key});
+    if(c.away) m.away=true; delete m.credOffer;
+    logIt("good",`${m.name} is going for ${c.name}: ${money(c.cost)}, ${c.months} month${c.months>1?"s":""}.`); keepY(); });
   document.querySelectorAll("[data-devgo]").forEach(b=>b.onclick=async()=>{ const m=S.team.find(x=>x.id===b.dataset.devgo); if(!m) return;
     const ta=document.querySelector(`[data-devidea="${m.id}"]`), out=document.querySelector(`[data-devout="${m.id}"]`), t=(ta.value||"").trim()||`Whatever would most help ${m.name} grow in this job right now.`;
     b.disabled=true;
