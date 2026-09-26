@@ -1595,6 +1595,11 @@ function presetEpoch(s){
 }
 function ensureState(s){
   if(s.epoch==null&&!s.epochChecked){ const e=presetEpoch(s); if(e) s.epoch=e; s.epochChecked=true; }
+  if(s.epoch&&!s.yearsRelabelled){ s.yearsRelabelled=true;   // dates written as "Oct Y1" before the save knew its year read as real years now
+    const ep=Number(s.epoch), fix=str=>str.replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) Y(\d{1,3})\b/g,(m,mo,y)=>`${mo} ${ep+Number(y)-1}`);
+    const walk=o=>{ if(Array.isArray(o)){ for(let i=0;i<o.length;i++){ if(typeof o[i]==="string") o[i]=fix(o[i]); else if(o[i]&&typeof o[i]==="object") walk(o[i]); } }
+      else if(o&&typeof o==="object"){ for(const k of Object.keys(o)){ if(k==="brand"||k==="logo") continue; const v=o[k]; if(typeof v==="string") o[k]=fix(v); else if(v&&typeof v==="object") walk(v); } } };
+    for(const k of ["log","chronicle","threads","followups","history","mods","press","heat","aiMemory","advisorChat","corrections","decision","deskQueue","locations","team","office","ownership"]) if(s[k]&&typeof s[k]==="object") walk(s[k]); }
   for(const b of (s.ghost&&s.ghost.brands)||[]) if(b.kind==="licensed"&&/Virtual Dining Concepts/.test(b.licensor||"")&&/^(MrBeast Burger|Mariah's Cookies)$/.test(b.name)) b.real=true;
   s.mods=Array.isArray(s.mods)?s.mods:[];
   s.threads=Array.isArray(s.threads)?s.threads:[];
@@ -7110,7 +7115,7 @@ async function syncRemote(){
 }
 async function exportSave(msgEl){
   const data=JSON.stringify({game:"prime-cost",format:3,exportedAt:new Date().toISOString(),state:S},null,1);
-  const name=`${(S.bizName||"prime-cost").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"prime-cost"}-${MONTHS[S.calMonth].toLowerCase()}-y${S.year}.json`;
+  const name=`${(S.bizName||"prime-cost").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"prime-cost"}-${MONTHS[S.calMonth].toLowerCase()}-${S.epoch?yearName(S.year):"y"+S.year}.json`;
   if(downloadsNS){
     try{ await downloadsNS.save({filename:name,data}); if(msgEl) msgEl.textContent=`Saved ${name}.`; return; }
     catch(e){ if(e&&e.code==="declined"){ if(msgEl) msgEl.textContent="Export cancelled."; return; } }
