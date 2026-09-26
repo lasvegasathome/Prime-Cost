@@ -1745,7 +1745,7 @@ The people, the room, the supply chain and the cellar. Use these whenever the st
 {"op":"menu","creativity":4,"coherence":5}   (the whole menu, points on 0-100 scales)
 {"op":"brigade","delta":5}   (the whole kitchen's technique, permanent, on a 0-100 scale)
 {"op":"rarebottle","name":"producer, wine, vintage","qty":1,"cost":800,"price":2200,"prestige":5}   (a bottle enters the cellar; charge for it with a cash effect)
-{"op":"risk","kind":"labor"|"tax"|"liquor"|"fraud"|"vice"|"organized"|"political","delta":15,"ongoing":0}   (legal exposure. Whenever the owner breaks the law or cuts a legal corner (cash wages off the books, hiring without paperwork, skimming cash, serving after hours, passing off cheaper fish, gambling or drugs on the premises, doing business with organized crime, anything a state would call sedition), record it: delta for a one-off, ongoing per month for a practice that continues, ongoing 0 when they stop. Exposure decides whether audits, regulators or police ever show up.)
+{"op":"risk","kind":"labor"|"tax"|"liquor"|"fraud"|"vice"|"crime"|"organized"|"political","delta":15,"ongoing":0}   (legal exposure. "fraud" is only food fraud: passing off cheaper fish, fake wagyu, a menu that lies about what's on the plate. "vice" is illegal trade run on the premises: drugs, gambling, after-hours sales. "crime" is any other crime the owner or staff commit, on or off the premises: assault, arson, insurance fraud, vandalism, threats, a car driven into someone. A crime already reported to the police starts high (40 or more for a felony), and one with an arrest higher still. Whenever the owner breaks the law or cuts a legal corner (cash wages off the books, hiring without paperwork, skimming cash, serving after hours, passing off cheaper fish, gambling or drugs on the premises, doing business with organized crime, anything a state would call sedition), record it: delta for a one-off, ongoing per month for a practice that continues, ongoing 0 when they stop. Exposure decides whether audits, regulators or police ever show up.)
 {"op":"shutdown","locIndex":0,"weeks":2,"reason":"why"}   (a forced closure: court order, police, fire, a regulator)
 {"op":"seats","locIndex":0,"delta":20}   (seats physically added or removed, e.g. when an expansion opens; capacity mods can't push a room past its physical ceiling, seats can)
 {"op":"lease","locIndex":0,"months":120,"rentChange":0.1,"guarantee":false}   (a new lease term and rent; or {"op":"lease","locIndex":0,"owned":true,"propertyValue":2000000} when the owner buys the building)${heatEffectsDoc()}`; }
@@ -1892,7 +1892,9 @@ function applyEffects(effects,opts){
         for(const l of S.locations){ l.rep=clamp(l.rep-10,3,99); l.awareness=clamp(l.awareness-5,2,99); }
         done.push("filed for reorganization: debts cut, credit line frozen, the story is public"); break; }
       case "force":{
-        if(!exp("heat")){ rejected.push("the back room is switched off"); break; }
+        if(!exp("heat")||!findForce(e.name)){ const k=forceRiskKind(e.name), v=Math.round(clamp(Math.max(Math.abs(d(e.attention)),Math.abs(d(e.case)))*(e.status==="gone"?-1:(d(e.attention)+d(e.case))<0?-1:1)*.6,-100,60));
+          if(!v){ rejected.push(exp("heat")?`nobody called "${String(e.name||"").slice(0,40)}" is watching yet`:"the back room is switched off, so nobody is tracked by name"); break; }
+          S.risk=S.risk||{}; S.risk[k]=clamp(riskOf(k)+v,0,100); done.push(`${String(e.name||"the authorities").slice(0,40)}: ${RISKS[k].name.toLowerCase()} exposure ${v>0?"+":""}${v}`); break; }
         const f=findForce(e.name); if(!f){ rejected.push(`nobody called "${String(e.name||"").slice(0,40)}" is watching`); break; }
         const a=Math.round(d(e.attention)), c=Math.round(d(e.case));
         if(a) f.attention=clamp(f.attention+a,0,100); if(c) f.case=clamp(f.case+c,0,100);
@@ -4104,11 +4106,16 @@ function inspectionGrade(loc){
 const RISKS={labor:{name:"Employment paperwork and hiring",who:"immigration and labor investigators"},
   tax:{name:"Tax reporting",who:"state revenue and the IRS"},
   liquor:{name:"Liquor law",who:"the state alcohol regulator"},
-  fraud:{name:"Food labelling and fraud",who:"food-safety regulators and the attorney general"},
+  fraud:{name:"Food labelling fraud",who:"food-safety regulators and the attorney general"},
   vice:{name:"Crime on the premises",who:"the police"},
+  crime:{name:"Criminal acts",who:"the police and the district attorney"},
   organized:{name:"Organized-crime ties",who:"organized-crime investigators and rival outfits"},
   political:{name:"Political activity",who:"state security"}};
 function riskOf(k){ S.risk=S.risk||{}; return S.risk[k]||0; }
+// with the back room off there are no named forces, so a force effect lands on the exposure its agency would pursue
+function forceRiskKind(n){ n=String(n||"").toLowerCase();
+  return /\b(irs|revenue|tax)/.test(n)?"tax":/(immigra|\bice\b|labou?r (dep|board|inspect)|wage)/.test(n)?"labor":/(alcohol|liquor|\babc\b|beverage control)/.test(n)?"liquor":/(health dep|food.safety|\bfda\b|usda|inspector)/.test(n)?"fraud"
+    :/(mafia|cartel|mob\b|gang|triad|yakuza|crime family)/.test(n)?"organized":/(state security|secret police|ministry of state|intelligence)/.test(n)?"political":"crime"; }
 function riskTick(R){
   if(!exp("legal")&&!exp("heat")) return;
   S.risk=S.risk||{}; S.riskOngoing=S.riskOngoing||{};
@@ -4167,12 +4174,24 @@ function riskTick(R){
     S.risk.vice=Math.max(0,riskOf("vice")-30); S.riskOngoing.vice=0;
   }
 }
+function crimeTick(R){
+  if(!exp("legal")||forceOn("crime")) return; const x=riskOf("crime"); if(x<=0) return;
+  const l=S.locations.find(q=>q.status==="open")||S.locations[0]; if(!l) return;
+  if(Math.random()>=x*.0012) return;
+  if(x<35){ const fee=Math.round(rnd(4000,25000)); S.cash-=fee; S.risk.crime=Math.max(0,x-15);
+    R.events.push({tone:"warn",text:`Detectives came to ${l.name} with questions about what you did, and you needed a lawyer in the room. Legal fees ${money(fee)}; no charges yet.`}); return; }
+  if(x<70||Math.random()>=.35){ const fee=Math.round(rnd(30000,150000)); S.cash-=fee;
+    for(const q of S.locations){ q.rep=clamp(q.rep-(q===l?10:4),3,99); q.awareness=clamp(q.awareness+4,2,99); } l.morale=clamp(l.morale-8,3,99);
+    R.events.push({tone:"bad",text:`The district attorney filed charges against you, and it made the local news. Your lawyer's retainer and bond came to ${money(fee)}, and the staff at ${l.name} keep asking whether they'll still have jobs.`});
+    chronicle(`The owner was charged by the district attorney.`); S.risk.crime=Math.max(0,x-30); return; }
+  return seize(`You were convicted and sentenced to prison. With the owner inside and the accounts drained by legal bills, ${S.bizName} was sold off to pay what you owed.`);
+}
 function seize(text){ S.gameOver={kind:"seized",text}; chronicle(text); }
 /* ============ THE BACK ROOM: what the restaurant is secretly for, who's watching, and what they do about it ============
    Claude writes the forces, the operation and the scenes. The engine decides when a force moves, how serious it is,
    and what every response costs and risks. */
 const WATCH_KEYS=()=>Object.keys(RISKS).concat(["backroom"]);
-const WATCH_WORDS={labor:"who's on the payroll",tax:"the books",liquor:"the bar",fraud:"what's really on the plate",vice:"what goes on after hours",
+const WATCH_WORDS={labor:"who's on the payroll",tax:"the books",liquor:"the bar",fraud:"what's really on the plate",vice:"what goes on after hours",crime:"what the owner has done",
   organized:"who you do business with",political:"who meets here and why",backroom:"the back room"};
 const FORCE_KINDS=["police","regulator","federal","state security","military","criminal","press","other"];
 const RAID_TIERS=[null,
@@ -4214,7 +4233,7 @@ function sanitizeForce(r){
 }
 function fallbackForces(){
   const NAMES={labor:["Labour and immigration inspectors","federal"],tax:["The tax authority","regulator"],liquor:["The alcohol regulator","regulator"],fraud:["Food-safety regulators","regulator"],
-    vice:["The local police","police"],organized:["An organized-crime task force","federal"],political:["State security","state security"]};
+    vice:["The local police","police"],crime:["The police and the district attorney","police"],organized:["An organized-crime task force","federal"],political:["State security","state security"]};
   const ks=Object.keys(RISKS).filter(k=>riskOf(k)>=5).sort((a,b)=>riskOf(b)-riskOf(a));
   if(liveOps().length&&!ks.includes("organized")) ks.push("organized");
   return ks.slice(0,3).map(k=>sanitizeForce({name:NAMES[k][0],kind:NAMES[k][1],desc:`They watch ${WATCH_WORDS[k]}.`,watches:[k,"backroom"],
@@ -4625,7 +4644,7 @@ function wireHeat(){
 }
 
 function legalTick(R){
-  riskTick(R); if(S.gameOver) return;
+  riskTick(R); if(S.gameOver) return; crimeTick(R); if(S.gameOver) return;
   const l=S.locations[0]; if(!l||l.status!=="open") return;
   const lic=licenceOf();
   if(lic.pending&&S.monthIdx>=lic.pending.due){ lic.type=lic.pending.type; delete lic.pending; R.events.push({tone:"good",text:`Your ${lic.type==="full"?"full liquor":"beer and wine"} licence came through.`}); }
