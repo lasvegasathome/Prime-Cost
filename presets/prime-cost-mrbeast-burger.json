@@ -1,10 +1,10 @@
 {
  "game": "prime-cost",
  "format": 3,
- "exportedAt": "2026-09-25T21:48:33.351Z",
+ "exportedAt": "2026-09-26T02:22:38.776Z",
  "state": {
   "v": 2,
-  "seed": 89801745,
+  "seed": 66519993,
   "ownerName": "You",
   "bizName": "Eastside Burger Co.",
   "concept": "custom",
@@ -46,7 +46,7 @@
    "rentYr": 30,
    "wage": 14,
    "tipCredit": 0,
-   "traffic": 1.495,
+   "traffic": 1.597,
    "comp": 1.25,
    "checkMult": 1,
    "taxRate": 0.065,
@@ -73,7 +73,7 @@
   },
   "locations": [
    {
-    "id": "31vu8dd",
+    "id": "7wvy5rj",
     "name": "Eastside Burger Co.",
     "market": "custom",
     "seats": 34,
@@ -113,89 +113,11 @@
     },
     "kit": [
      {
-      "id": "kcii705q",
+      "id": "kmbezjwp",
       "type": "range",
       "tier": 1,
       "model": "Vulcan V-Series range line",
       "price": 4500,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "krtdw0kh",
-      "type": "hood",
-      "tier": 1,
-      "model": "CaptiveAire ND-2 canopy hood",
-      "price": 5500,
-      "cond": 89,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kia8mgbk",
-      "type": "vent",
-      "tier": 1,
-      "model": "Upblast fan, welded grease duct & untempered makeup air",
-      "price": 22500,
-      "cond": 84,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k3j7fyvx",
-      "type": "suppression",
-      "tier": 1,
-      "model": "Ansul R-102 wet-chemical system",
-      "price": 2500,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kqdmisuk",
-      "type": "extinguisher",
-      "tier": 1,
-      "model": "Class K and ABC extinguishers, tagged",
-      "price": 900,
-      "cond": 81,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kmpmkkxh",
-      "type": "sprinkler",
-      "tier": 1,
-      "model": "Wet-pipe sprinkler fit-out",
-      "price": 7500,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k9ufnd5j",
-      "type": "refrig",
-      "tier": 1,
-      "model": "Kolpak walk-in · True reach-ins",
-      "price": 10000,
       "cond": 86,
       "own": "owned",
       "leaseLeft": 0,
@@ -204,11 +126,24 @@
       "broken": false
      },
      {
-      "id": "kdr2qnm1",
-      "type": "dish",
-      "tier": 0,
-      "model": "Hobart AM (used)",
-      "price": 4000,
+      "id": "km4k0z2r",
+      "type": "hood",
+      "tier": 1,
+      "model": "CaptiveAire ND-2 canopy hood",
+      "price": 5500,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kl1d3izi",
+      "type": "vent",
+      "tier": 1,
+      "model": "Upblast fan, welded grease duct & untempered makeup air",
+      "price": 22500,
       "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
@@ -217,37 +152,11 @@
       "broken": false
      },
      {
-      "id": "kj5euxxv",
-      "type": "fryer",
+      "id": "khpvvxrm",
+      "type": "suppression",
       "tier": 1,
-      "model": "Pitco gas fryers, pair",
-      "price": 1800,
-      "cond": 80,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k87x6v6i",
-      "type": "plancha",
-      "tier": 1,
-      "model": "Flat-top griddle for smash burgers",
-      "price": 2600,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kzh7j4fn",
-      "type": "preprail",
-      "tier": 1,
-      "model": "True TSSU-60 sandwich prep table",
-      "price": 3500,
+      "model": "Ansul R-102 wet-chemical system",
+      "price": 2500,
       "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
@@ -256,11 +165,37 @@
       "broken": false
      },
      {
-      "id": "kp1md2y7",
-      "type": "heatlamp",
+      "id": "kdngoo8i",
+      "type": "extinguisher",
       "tier": 1,
-      "model": "Hatco Glo-Ray strip heater",
-      "price": 500,
+      "model": "Class K and ABC extinguishers, tagged",
+      "price": 900,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ks8scorl",
+      "type": "sprinkler",
+      "tier": 1,
+      "model": "Wet-pipe sprinkler fit-out",
+      "price": 7500,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kzysojmd",
+      "type": "refrig",
+      "tier": 1,
+      "model": "Kolpak walk-in · True reach-ins",
+      "price": 10000,
       "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
@@ -269,12 +204,12 @@
       "broken": false
      },
      {
-      "id": "k12cbxxy",
-      "type": "holding",
-      "tier": 1,
-      "model": "Hatco Flav-R-Savor cabinet",
-      "price": 3500,
-      "cond": 86,
+      "id": "krqfqfpk",
+      "type": "dish",
+      "tier": 0,
+      "model": "Hobart AM (used)",
+      "price": 4000,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -282,7 +217,72 @@
       "broken": false
      },
      {
-      "id": "kx3qmgtw",
+      "id": "kn6s5zn0",
+      "type": "fryer",
+      "tier": 1,
+      "model": "Pitco gas fryers, pair",
+      "price": 1800,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kvsnzw21",
+      "type": "plancha",
+      "tier": 1,
+      "model": "Flat-top griddle for smash burgers",
+      "price": 2600,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k6ezugvv",
+      "type": "preprail",
+      "tier": 1,
+      "model": "True TSSU-60 sandwich prep table",
+      "price": 3500,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k43azurh",
+      "type": "heatlamp",
+      "tier": 1,
+      "model": "Hatco Glo-Ray strip heater",
+      "price": 500,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "keoddglz",
+      "type": "holding",
+      "tier": 1,
+      "model": "Hatco Flav-R-Savor cabinet",
+      "price": 3500,
+      "cond": 82,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kpww8owq",
       "type": "convection",
       "tier": 0,
       "model": "Used convection oven for the cookie brand",
@@ -295,78 +295,11 @@
       "broken": false
      },
      {
-      "id": "k8ye90ib",
+      "id": "kga5jwe8",
       "type": "fountain",
       "tier": 1,
       "model": "Lancer IBD 22-6 fountain",
       "price": 5000,
-      "cond": 82,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k37u758q",
-      "type": "blender",
-      "tier": 0,
-      "model": "Spindle mixer for shakes",
-      "price": 300,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k4bkpv93",
-      "type": "pos",
-      "tier": 1,
-      "model": "POS terminal plus three delivery-app tablets",
-      "price": 0,
-      "cond": 81,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false,
-      "fx": {}
-     },
-     {
-      "id": "k0o26ma7",
-      "type": "menus",
-      "tier": 1,
-      "model": "Menu board over the counter",
-      "price": 0,
-      "cond": 85,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false,
-      "fx": {}
-     },
-     {
-      "id": "kh59lqx8",
-      "type": "booths",
-      "tier": 0,
-      "model": "Used vinyl booths",
-      "price": 2500,
-      "cond": 87,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kgj1dycq",
-      "type": "stools",
-      "tier": 0,
-      "model": "Counter stools",
-      "price": 1200,
       "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
@@ -375,50 +308,11 @@
       "broken": false
      },
      {
-      "id": "k37naeir",
-      "type": "sound",
+      "id": "kpvs27gq",
+      "type": "blender",
       "tier": 0,
-      "model": "A Bluetooth speaker behind the bar",
-      "price": 100,
-      "cond": 81,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "ksmxcei5",
-      "type": "greasetrap",
-      "tier": 1,
-      "model": "Under-sink hydromechanical trap, 50 gpm, installed",
-      "price": 1800,
-      "cond": 88,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kowi6kxv",
-      "type": "smallwares",
-      "tier": 0,
-      "model": "Mismatched pans, dull knives and no probe thermometers",
-      "price": 1500,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kneol32j",
-      "type": "restroom",
-      "tier": 0,
-      "model": "Old restrooms that don't meet ADA standards",
-      "price": 0,
+      "model": "Spindle mixer for shakes",
+      "price": 300,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -427,7 +321,113 @@
       "broken": false
      },
      {
-      "id": "k44eu91m",
+      "id": "kcb9te5g",
+      "type": "pos",
+      "tier": 1,
+      "model": "POS terminal plus three delivery-app tablets",
+      "price": 0,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "ka4eod3l",
+      "type": "menus",
+      "tier": 1,
+      "model": "Menu board over the counter",
+      "price": 0,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false,
+      "fx": {}
+     },
+     {
+      "id": "k9ulu1x1",
+      "type": "booths",
+      "tier": 0,
+      "model": "Used vinyl booths",
+      "price": 2500,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "km3vho2o",
+      "type": "stools",
+      "tier": 0,
+      "model": "Counter stools",
+      "price": 1200,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "km4r9unf",
+      "type": "sound",
+      "tier": 0,
+      "model": "A Bluetooth speaker behind the bar",
+      "price": 100,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ku2uhvhu",
+      "type": "greasetrap",
+      "tier": 1,
+      "model": "Under-sink hydromechanical trap, 50 gpm, installed",
+      "price": 1800,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kg4pwef5",
+      "type": "smallwares",
+      "tier": 0,
+      "model": "Mismatched pans, dull knives and no probe thermometers",
+      "price": 1500,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kad5pwow",
+      "type": "restroom",
+      "tier": 0,
+      "model": "Old restrooms that don't meet ADA standards",
+      "price": 0,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k3hplkg2",
       "type": "hvac",
       "tier": 0,
       "model": "Old rooftop unit on its last legs",
@@ -440,12 +440,12 @@
       "broken": false
      },
      {
-      "id": "ktodlmay",
+      "id": "kw0c9mqw",
       "type": "deliverytab",
       "tier": 1,
       "model": "One tablet running an order aggregator for all three apps",
       "price": 900,
-      "cond": 87,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -453,12 +453,12 @@
       "broken": false
      },
      {
-      "id": "k9w1sciu",
+      "id": "kqu6s2fv",
       "type": "cameras",
       "tier": 1,
       "model": "Basic four-camera system",
       "price": 1800,
-      "cond": 79,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -466,12 +466,12 @@
       "broken": false
      },
      {
-      "id": "kk1oujw6",
+      "id": "k1mnx53p",
       "type": "safe",
       "tier": 0,
       "model": "Old floor safe",
       "price": 300,
-      "cond": 90,
+      "cond": 85,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -662,7 +662,7 @@
   },
   "ap": 0,
   "ar": 0,
-  "savedAt": 1790372913345,
+  "savedAt": 1790389358772,
   "mods": [],
   "threads": [],
   "aiMemory": [],
@@ -759,7 +759,7 @@
    "tastingPrice": 0,
    "dishes": [
     {
-     "id": "u38z4ds",
+     "id": "deszand",
      "name": "Smash Cheeseburger",
      "course": "main",
      "desc": "Two smashed patties, American cheese, pickles and house sauce on a potato bun.",
@@ -793,7 +793,7 @@
      "kitJ": "Smash Cheeseburger|Two smashed patties, American cheese, pickles and house sauce on a potato bun."
     },
     {
-     "id": "jqitywj",
+     "id": "qi52bsq",
      "name": "Bacon Cheeseburger",
      "course": "main",
      "desc": "The smash burger with thick-cut bacon.",
@@ -827,7 +827,7 @@
      "kitJ": "Bacon Cheeseburger|The smash burger with thick-cut bacon."
     },
     {
-     "id": "n83qr0v",
+     "id": "poa0c1z",
      "name": "Crispy Chicken Sandwich",
      "course": "main",
      "desc": "Buttermilk-fried chicken thigh, slaw and pickles.",
@@ -861,7 +861,7 @@
      "kitJ": "Crispy Chicken Sandwich|Buttermilk-fried chicken thigh, slaw and pickles."
     },
     {
-     "id": "xs9903t",
+     "id": "y59do4d",
      "name": "Grilled Cheese",
      "course": "main",
      "desc": "American and cheddar on griddled sourdough.",
@@ -894,7 +894,7 @@
      "kitJ": "Grilled Cheese|American and cheddar on griddled sourdough."
     },
     {
-     "id": "77axji0",
+     "id": "vma8gfa",
      "name": "Fries",
      "course": "side",
      "desc": "Skin-on fries with seasoning salt.",
@@ -928,7 +928,7 @@
      "kitJ": "Fries|Skin-on fries with seasoning salt."
     },
     {
-     "id": "bmu8clh",
+     "id": "8tshfg6",
      "name": "Onion Rings",
      "course": "side",
      "desc": "Beer-battered rings.",
@@ -962,7 +962,7 @@
      "kitJ": "Onion Rings|Beer-battered rings."
     },
     {
-     "id": "hfmqapc",
+     "id": "68p93kt",
      "name": "Chocolate Shake",
      "course": "side",
      "desc": "Hand-spun chocolate shake.",
@@ -996,7 +996,7 @@
      "kitJ": "Chocolate Shake|Hand-spun chocolate shake."
     },
     {
-     "id": "fyj63cu",
+     "id": "0jem0of",
      "name": "Fountain Drink",
      "course": "side",
      "desc": "Coca-Cola products from the fountain.",
@@ -1019,7 +1019,7 @@
      "kitJ": "Fountain Drink|Coca-Cola products from the fountain."
     },
     {
-     "id": "322tjmo",
+     "id": "r69b7pf",
      "name": "Kids' Cheeseburger",
      "course": "main",
      "desc": "A single patty with cheese.",
@@ -1043,16 +1043,16 @@
      "kitJ": "Kids' Cheeseburger|A single patty with cheese."
     },
     {
-     "id": "41mj42l",
+     "id": "4odr0w4",
      "name": "Smash Burger Combo",
      "course": "main",
      "sec": "bundle",
      "bundle": {
       "style": "combo",
       "items": [
-       "u38z4ds",
-       "77axji0",
-       "fyj63cu"
+       "deszand",
+       "vma8gfa",
+       "0jem0of"
       ]
      },
      "desc": "The smash cheeseburger with fries and a drink.",
@@ -1083,7 +1083,7 @@
   },
   "team": [
    {
-    "id": "kp1j8zg",
+    "id": "u120b77",
     "role": "sous",
     "name": "Andre Pierce",
     "skill": 57,
@@ -1101,12 +1101,12 @@
     "fame": 0
    },
    {
-    "id": "66xll8y",
+    "id": "mrpnm6d",
     "role": "maitre",
     "name": "Maribel Soto",
     "skill": 52,
     "years": 3,
-    "salary": 34500,
+    "salary": 42000,
     "trait": "restless",
     "bio": "Shift lead who runs the counter and the tablets. Knows every DoorDash driver by name and which ones will wait.",
     "certs": [
@@ -1123,7 +1123,7 @@
   "brigade": 55,
   "fohTrain": 50,
   "capex": 0,
-  "rngState": 4121427953,
+  "rngState": 4098146201,
   "cellar": {
    "value": 0,
    "target": 0,
@@ -1142,12 +1142,12 @@
   "ghost": {
    "brands": [
     {
-     "id": "o6i1ifm",
+     "id": "atjsohk",
      "months": 0,
      "rating": 4.4,
      "status": "live",
      "hostType": "loc",
-     "hostId": "31vu8dd",
+     "hostId": "7wvy5rj",
      "name": "MrBeast Burger",
      "cuisine": "smash burgers, fries and sandwiches",
      "kind": "licensed",
@@ -1159,12 +1159,12 @@
      "plan": "premier"
     },
     {
-     "id": "j9sh7rl",
+     "id": "dcmznot",
      "months": 0,
      "rating": 4.4,
      "status": "live",
      "hostType": "loc",
-     "hostId": "31vu8dd",
+     "hostId": "7wvy5rj",
      "name": "Mariah's Cookies",
      "cuisine": "boxed cookies",
      "kind": "licensed",

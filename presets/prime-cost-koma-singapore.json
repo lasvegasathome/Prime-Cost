@@ -1,10 +1,10 @@
 {
  "game": "prime-cost",
  "format": 3,
- "exportedAt": "2026-09-25T21:48:27.979Z",
+ "exportedAt": "2026-09-26T02:19:38.506Z",
  "state": {
   "v": 2,
-  "seed": 770119191,
+  "seed": 7926701,
   "ownerName": "You",
   "bizName": "KOMA Singapore",
   "concept": "custom",
@@ -32,7 +32,7 @@
    "sqftSeat": 45,
    "buildSqft": 0,
    "equip": 0,
-   "chef": 135000,
+   "chef": 148000,
    "gm": 98000,
    "counter": false,
    "truck": false,
@@ -46,7 +46,7 @@
    "rentYr": 0,
    "wage": 12.5,
    "tipCredit": 0,
-   "traffic": 0.462,
+   "traffic": 0.456,
    "comp": 1.3,
    "checkMult": 1,
    "taxRate": 0,
@@ -73,7 +73,7 @@
   },
   "locations": [
    {
-    "id": "988c0bv",
+    "id": "95f0gub",
     "name": "KOMA Singapore",
     "market": "custom",
     "seats": 230,
@@ -101,7 +101,7 @@
     "wagePremium": 0,
     "features": [
      {
-      "id": "fzo0nak6",
+      "id": "fxxf4nrg",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -112,7 +112,7 @@
       "prestige": 2
      },
      {
-      "id": "f1sl80s5",
+      "id": "fot5zyck",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -123,7 +123,7 @@
       "prestige": 2
      },
      {
-      "id": "fylg54mw",
+      "id": "fxlzkizj",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -134,7 +134,7 @@
       "bev": 0.12
      },
      {
-      "id": "fy7n3lw0",
+      "id": "ffe3byfb",
       "when": "before you took over",
       "weeks": 0,
       "original": true,
@@ -157,12 +157,12 @@
     },
     "kit": [
      {
-      "id": "k0o2phuz",
+      "id": "k08rokwm",
       "type": "range",
       "tier": 3,
       "model": "Molteni custom French suite",
       "price": 517500,
-      "cond": 87,
+      "cond": 90,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -170,12 +170,12 @@
       "broken": false
      },
      {
-      "id": "k9dgp28e",
+      "id": "kw1aa8n3",
       "type": "hood",
       "tier": 3,
       "model": "Halton Capture Jet hood with UV and integrated lighting",
       "price": 109300,
-      "cond": 81,
+      "cond": 79,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -183,12 +183,12 @@
       "broken": false
      },
      {
-      "id": "k1gi615d",
+      "id": "ke2s3roq",
       "type": "vent",
       "tier": 3,
       "model": "Demand-controlled ventilation with heat recovery",
       "price": 460000,
-      "cond": 87,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -196,24 +196,11 @@
       "broken": false
      },
      {
-      "id": "k1mrvvw6",
+      "id": "k0zc3iu2",
       "type": "suppression",
       "tier": 3,
       "model": "Hybrid water-mist & wet-chemical system with remote monitoring",
       "price": 80500,
-      "cond": 84,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kk42tj9l",
-      "type": "extinguisher",
-      "tier": 3,
-      "model": "Full set with fire blankets, wall cabinets and a staff-training contract",
-      "price": 4000,
       "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
@@ -222,50 +209,11 @@
       "broken": false
      },
      {
-      "id": "kkolrnex",
-      "type": "sprinkler",
+      "id": "k0qsmx4d",
+      "type": "extinguisher",
       "tier": 3,
-      "model": "Quick-response sprinklers, monitored alarm & dedicated fire pump",
-      "price": 172500,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kt5p32hs",
-      "type": "greasetrap",
-      "tier": 3,
-      "model": "Automatic grease removal unit with an interceptor, installed",
-      "price": 26000,
-      "cond": 79,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "khqj18tk",
-      "type": "refrig",
-      "tier": 3,
-      "model": "Sushi bar cases and walk-ins",
-      "price": 186900,
-      "cond": 78,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "krjknsxe",
-      "type": "dish",
-      "tier": 3,
-      "model": "Meiko M-iQ flight-type",
-      "price": 110000,
+      "model": "Full set with fire blankets, wall cabinets and a staff-training contract",
+      "price": 4000,
       "cond": 84,
       "own": "owned",
       "leaseLeft": 0,
@@ -274,12 +222,64 @@
       "broken": false
      },
      {
-      "id": "kmhpf82d",
+      "id": "khwutuxz",
+      "type": "sprinkler",
+      "tier": 3,
+      "model": "Quick-response sprinklers, monitored alarm & dedicated fire pump",
+      "price": 172500,
+      "cond": 84,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kld5sqyu",
+      "type": "greasetrap",
+      "tier": 3,
+      "model": "Automatic grease removal unit with an interceptor, installed",
+      "price": 26000,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kcqxr767",
+      "type": "refrig",
+      "tier": 3,
+      "model": "Sushi bar cases and walk-ins",
+      "price": 186900,
+      "cond": 85,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k1rw0p52",
+      "type": "dish",
+      "tier": 3,
+      "model": "Meiko M-iQ flight-type",
+      "price": 110000,
+      "cond": 86,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kl2ivuct",
       "type": "robata",
       "tier": 2,
       "model": "The robata grill",
       "price": 18000,
-      "cond": 78,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -287,12 +287,12 @@
       "broken": false
      },
      {
-      "id": "ksgnv0fz",
+      "id": "k0rebyi1",
       "type": "fryer",
       "tier": 2,
       "model": "Tempura fryers",
       "price": 9000,
-      "cond": 79,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -300,12 +300,12 @@
       "broken": false
      },
      {
-      "id": "kwzs4hxc",
+      "id": "kmt5gms4",
       "type": "fryer",
       "tier": 2,
       "model": "Frymaster filtration fryer bank",
       "price": 9000,
-      "cond": 80,
+      "cond": 86,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -313,7 +313,7 @@
       "broken": false
      },
      {
-      "id": "kbi02qx1",
+      "id": "kqdy4x3l",
       "type": "ricecooker",
       "tier": 3,
       "model": "Sushi rice cookers",
@@ -326,12 +326,12 @@
       "broken": false
      },
      {
-      "id": "kjld014w",
+      "id": "kbdsza4p",
       "type": "wok",
       "tier": 2,
       "model": "Jade three-hole wok range",
       "price": 16000,
-      "cond": 87,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -339,12 +339,12 @@
       "broken": false
      },
      {
-      "id": "kqeop9uf",
+      "id": "klzf8yl5",
       "type": "plancha",
       "tier": 2,
       "model": "Evo commercial plancha",
       "price": 9000,
-      "cond": 86,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -352,12 +352,12 @@
       "broken": false
      },
      {
-      "id": "kkkdf9y9",
+      "id": "k59xkwag",
       "type": "combi",
       "tier": 2,
       "model": "Rational iCombi Pro 10-full",
       "price": 24000,
-      "cond": 83,
+      "cond": 80,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -365,12 +365,12 @@
       "broken": false
      },
      {
-      "id": "krke4ls6",
+      "id": "kblnc09g",
       "type": "salamander",
       "tier": 2,
       "model": "Salvis Salamat Pro",
       "price": 9000,
-      "cond": 87,
+      "cond": 79,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -378,12 +378,12 @@
       "broken": false
      },
      {
-      "id": "ksz559on",
+      "id": "k3xf77sp",
       "type": "sousvide",
       "tier": 1,
       "model": "PolyScience circulators ×6",
       "price": 7000,
-      "cond": 80,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -391,12 +391,12 @@
       "broken": false
      },
      {
-      "id": "kmwe9g22",
+      "id": "krlmzin7",
       "type": "blast",
       "tier": 2,
       "model": "Irinox MultiFresh",
       "price": 22000,
-      "cond": 83,
+      "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -404,12 +404,12 @@
       "broken": false
      },
      {
-      "id": "km69e8y5",
+      "id": "k3nqp37j",
       "type": "icecream",
       "tier": 2,
       "model": "Carpigiani Labotronic",
       "price": 28000,
-      "cond": 83,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -417,12 +417,12 @@
       "broken": false
      },
      {
-      "id": "kde6w083",
+      "id": "ksh6czk1",
       "type": "slicer",
       "tier": 2,
       "model": "Berkel automatic slicer",
       "price": 8000,
-      "cond": 86,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -430,12 +430,12 @@
       "broken": false
      },
      {
-      "id": "kk1h3878",
+      "id": "k2txzc27",
       "type": "bar",
       "tier": 3,
       "model": "The bar and lounge",
       "price": 90000,
-      "cond": 85,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -443,12 +443,12 @@
       "broken": false
      },
      {
-      "id": "ktfde5yt",
+      "id": "ke0ilxja",
       "type": "glasswasher",
       "tier": 2,
       "model": "Hobart LXeH undercounter",
       "price": 9000,
-      "cond": 83,
+      "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -456,12 +456,12 @@
       "broken": false
      },
      {
-      "id": "kztb09pt",
+      "id": "kbgub921",
       "type": "clearice",
       "tier": 2,
       "model": "Clear-ice maker and band saw",
       "price": 15000,
-      "cond": 80,
+      "cond": 88,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -469,7 +469,7 @@
       "broken": false
      },
      {
-      "id": "k86l23ta",
+      "id": "kf5i3okg",
       "type": "winestore",
       "tier": 2,
       "model": "Sake and wine refrigeration",
@@ -482,12 +482,12 @@
       "broken": false
      },
      {
-      "id": "kwywotzf",
+      "id": "kpbco1jb",
       "type": "espresso",
       "tier": 2,
       "model": "La Marzocco Strada",
       "price": 26000,
-      "cond": 81,
+      "cond": 87,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -495,12 +495,12 @@
       "broken": false
      },
      {
-      "id": "k7cd3f8m",
+      "id": "k3n0p4y3",
       "type": "ice",
       "tier": 3,
       "model": "Hoshizaki KM, pair with storage",
       "price": 14000,
-      "cond": 81,
+      "cond": 78,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -508,12 +508,12 @@
       "broken": false
      },
      {
-      "id": "kaa1q6am",
+      "id": "kvkcbxx0",
       "type": "pos",
       "tier": 3,
       "model": "Kitchen display screens on the line",
       "price": 9000,
-      "cond": 78,
+      "cond": 86,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -526,12 +526,12 @@
       }
      },
      {
-      "id": "k7waxrsu",
+      "id": "kydfvr5r",
       "type": "menus",
       "tier": 3,
       "model": "Leather-bound menus and a bound wine list",
       "price": 9000,
-      "cond": 87,
+      "cond": 90,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -542,12 +542,12 @@
       }
      },
      {
-      "id": "kk57jcjr",
+      "id": "ky1xx9t4",
       "type": "hoststand",
       "tier": 3,
       "model": "Custom host stand, guest CRM & a reservations desk",
       "price": 15000,
-      "cond": 80,
+      "cond": 83,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -560,50 +560,11 @@
       }
      },
      {
-      "id": "kd660o3v",
+      "id": "kootwz6e",
       "type": "sound",
       "tier": 3,
       "model": "Audiophile hi-fi with a record wall",
       "price": 60000,
-      "cond": 78,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "karmsrbb",
-      "type": "seating",
-      "tier": 3,
-      "model": "Custom upholstered dining chairs and hand-finished stone tables",
-      "price": 431300,
-      "cond": 78,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kctaoped",
-      "type": "booths",
-      "tier": 3,
-      "model": "Custom leather banquettes and curved booths",
-      "price": 273100,
-      "cond": 86,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "krhddi7y",
-      "type": "stools",
-      "tier": 3,
-      "model": "The sushi bar counter",
-      "price": 20000,
       "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
@@ -612,24 +573,11 @@
       "broken": false
      },
      {
-      "id": "knzjg91m",
-      "type": "tableware",
+      "id": "kuxg1fpc",
+      "type": "seating",
       "tier": 3,
-      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
-      "price": 172500,
-      "cond": 78,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "k7syhhml",
-      "type": "waterservice",
-      "tier": 2,
-      "model": "Still & sparkling on tap",
-      "price": 5000,
+      "model": "Custom upholstered dining chairs and hand-finished stone tables",
+      "price": 431300,
       "cond": 90,
       "own": "owned",
       "leaseLeft": 0,
@@ -638,11 +586,37 @@
       "broken": false
      },
      {
-      "id": "kbncyseo",
-      "type": "smallwares",
+      "id": "kpoxq10j",
+      "type": "booths",
       "tier": 3,
-      "model": "A complete set with wireless temperature logging for HACCP",
-      "price": 92000,
+      "model": "Custom leather banquettes and curved booths",
+      "price": 273100,
+      "cond": 81,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kttfnw1k",
+      "type": "stools",
+      "tier": 3,
+      "model": "The sushi bar counter",
+      "price": 20000,
+      "cond": 79,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kjhd5j9u",
+      "type": "tableware",
+      "tier": 3,
+      "model": "Handmade ceramics, Zalto stems & silver-plate flatware",
+      "price": 172500,
       "cond": 89,
       "own": "owned",
       "leaseLeft": 0,
@@ -651,50 +625,37 @@
       "broken": false
      },
      {
-      "id": "krgf9n81",
+      "id": "kuqe7xzu",
+      "type": "waterservice",
+      "tier": 2,
+      "model": "Still & sparkling on tap",
+      "price": 5000,
+      "cond": 80,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kgy6smnr",
+      "type": "smallwares",
+      "tier": 3,
+      "model": "A complete set with wireless temperature logging for HACCP",
+      "price": 92000,
+      "cond": 83,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "k93txj8p",
       "type": "watertreat",
       "tier": 2,
       "model": "Reverse-osmosis system for espresso and ice",
       "price": 3600,
-      "cond": 90,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kf4u1f6p",
-      "type": "restroom",
-      "tier": 3,
-      "model": "Designer restrooms",
-      "price": 316300,
-      "cond": 85,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kwh0j07y",
-      "type": "hvac",
-      "tier": 3,
-      "model": "Variable-refrigerant-flow system with energy recovery",
-      "price": 258800,
-      "cond": 85,
-      "own": "owned",
-      "leaseLeft": 0,
-      "warranty": 0,
-      "age": 0,
-      "broken": false
-     },
-     {
-      "id": "kxuk91c4",
-      "type": "safe",
-      "tier": 1,
-      "model": "Drop safe",
-      "price": 1200,
       "cond": 82,
       "own": "owned",
       "leaseLeft": 0,
@@ -703,12 +664,51 @@
       "broken": false
      },
      {
-      "id": "kxz2v2n2",
+      "id": "k1dtcfd2",
+      "type": "restroom",
+      "tier": 3,
+      "model": "Designer restrooms",
+      "price": 316300,
+      "cond": 88,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ka0my74v",
+      "type": "hvac",
+      "tier": 3,
+      "model": "Variable-refrigerant-flow system with energy recovery",
+      "price": 258800,
+      "cond": 87,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "ka0blocr",
+      "type": "safe",
+      "tier": 1,
+      "model": "Drop safe",
+      "price": 1200,
+      "cond": 89,
+      "own": "owned",
+      "leaseLeft": 0,
+      "warranty": 0,
+      "age": 0,
+      "broken": false
+     },
+     {
+      "id": "kdi4o1js",
       "type": "cameras",
       "tier": 3,
       "model": "Monitored cameras with the POS overlaid on the footage",
       "price": 9000,
-      "cond": 86,
+      "cond": 81,
       "own": "owned",
       "leaseLeft": 0,
       "warranty": 0,
@@ -896,10 +896,10 @@
   },
   "ap": 0,
   "ar": 0,
-  "savedAt": 1790372907973,
+  "savedAt": 1790389178492,
   "mods": [
    {
-    "id": "euoc4au",
+    "id": "5njjw7i",
     "left": null,
     "loc": -1,
     "src": "KOMA Singapore",
@@ -999,7 +999,7 @@
    "tastingPrice": 75,
    "dishes": [
     {
-     "id": "h75xdc3",
+     "id": "ux34am2",
      "name": "Edamame",
      "course": "snack",
      "desc": "Steamed, sea salt.",
@@ -1022,7 +1022,7 @@
      "kitJ": "Edamame|Steamed, sea salt."
     },
     {
-     "id": "y40anef",
+     "id": "74xyf9q",
      "name": "Miso Soup",
      "course": "starter",
      "desc": "Tofu, seaweed, Tokyo negi.",
@@ -1045,7 +1045,7 @@
      "kitJ": "Miso Soup|Tofu, seaweed, Tokyo negi."
     },
     {
-     "id": "m4rvb9s",
+     "id": "v13iuff",
      "name": "Crispy Tokyo Gyoza",
      "course": "starter",
      "desc": "Chicken, cabbage, miso.",
@@ -1079,7 +1079,7 @@
      "kitJ": "Crispy Tokyo Gyoza|Chicken, cabbage, miso."
     },
     {
-     "id": "21joac1",
+     "id": "ujqnm7t",
      "name": "Chicken Karaage",
      "course": "starter",
      "desc": "Thai basil, smoked tartare sauce, garam masala.",
@@ -1113,7 +1113,7 @@
      "kitJ": "Chicken Karaage|Thai basil, smoked tartare sauce, garam masala."
     },
     {
-     "id": "o31yk9k",
+     "id": "luhu0jb",
      "name": "Salmon Pillow",
      "course": "starter",
      "desc": "King salmon, roasted jalapeño, smoked avocado.",
@@ -1136,7 +1136,7 @@
      "kitJ": "Salmon Pillow|King salmon, roasted jalapeño, smoked avocado."
     },
     {
-     "id": "ttdeop2",
+     "id": "fhti4ou",
      "name": "Miso Glazed Eggplant",
      "course": "starter",
      "desc": "Sweet ginger red miso, ricotta cheese.",
@@ -1160,7 +1160,7 @@
      "kitJ": "Miso Glazed Eggplant|Sweet ginger red miso, ricotta cheese."
     },
     {
-     "id": "1jg2kw9",
+     "id": "mkanxyw",
      "name": "Amiyaki Mushroom Salad",
      "course": "starter",
      "desc": "Kumquat, citrus, mizuna, soy vinaigrette.",
@@ -1183,7 +1183,7 @@
      "kitJ": "Amiyaki Mushroom Salad|Kumquat, citrus, mizuna, soy vinaigrette."
     },
     {
-     "id": "0cod5o0",
+     "id": "bho32un",
      "name": "Wagyu Beef Gyoza",
      "course": "starter",
      "desc": "Chilli sauce.",
@@ -1206,7 +1206,7 @@
      "kitJ": "Wagyu Beef Gyoza|Chilli sauce."
     },
     {
-     "id": "54i39qt",
+     "id": "mfeilo2",
      "name": "Yellowtail Salad",
      "course": "starter",
      "desc": "Mizuna, Tokyo negi, ponzu vinaigrette.",
@@ -1229,7 +1229,7 @@
      "kitJ": "Yellowtail Salad|Mizuna, Tokyo negi, ponzu vinaigrette."
     },
     {
-     "id": "6jf9cjk",
+     "id": "kg75lij",
      "name": "D.I.Y Spicy Tuna",
      "course": "starter",
      "desc": "Crispy rice, sweet soy, chives, spicy mayo.",
@@ -1252,7 +1252,7 @@
      "kitJ": "D.I.Y Spicy Tuna|Crispy rice, sweet soy, chives, spicy mayo."
     },
     {
-     "id": "6dy6qvk",
+     "id": "padaowv",
      "name": "Lobster Avocado Salad",
      "course": "starter",
      "desc": "Tomato, pomelo, crispy tapioca chip, celery citrus sauce.",
@@ -1275,7 +1275,7 @@
      "kitJ": "Lobster Avocado Salad|Tomato, pomelo, crispy tapioca chip, celery citrus sauce."
     },
     {
-     "id": "pxdj6qu",
+     "id": "1xdjx5z",
      "name": "Wagyu Sirloin with Chimichurri",
      "course": "starter",
      "desc": "A4 Kagoshima wagyu, crispy shallot, truffle chimichurri, micro cress.",
@@ -1298,7 +1298,7 @@
      "kitJ": "Wagyu Sirloin with Chimichurri|A4 Kagoshima wagyu, crispy shallot, truffle chimichurri, micro cress."
     },
     {
-     "id": "efwbxaj",
+     "id": "m0muo6p",
      "name": "Caviar: 30g Kaluga Queen",
      "course": "starter",
      "desc": "Served with traditional condiments.",
@@ -1321,7 +1321,7 @@
      "kitJ": "Caviar: 30g Kaluga Queen|Served with traditional condiments."
     },
     {
-     "id": "kpv2qsp",
+     "id": "digq5lt",
      "name": "Sake Nigiri",
      "course": "starter",
      "desc": "King salmon, per piece.",
@@ -1344,7 +1344,7 @@
      "kitJ": "Sake Nigiri|King salmon, per piece."
     },
     {
-     "id": "02giz85",
+     "id": "swnc18m",
      "name": "Hamachi Nigiri",
      "course": "starter",
      "desc": "Kingfish, per piece.",
@@ -1367,7 +1367,7 @@
      "kitJ": "Hamachi Nigiri|Kingfish, per piece."
     },
     {
-     "id": "xjj741y",
+     "id": "qh50t9t",
      "name": "Otoro Nigiri",
      "course": "starter",
      "desc": "Fatty tuna, per piece.",
@@ -1390,7 +1390,7 @@
      "kitJ": "Otoro Nigiri|Fatty tuna, per piece."
     },
     {
-     "id": "jjox59p",
+     "id": "9m6kpzk",
      "name": "Uni Nigiri",
      "course": "starter",
      "desc": "Sea urchin, per piece.",
@@ -1413,7 +1413,7 @@
      "kitJ": "Uni Nigiri|Sea urchin, per piece."
     },
     {
-     "id": "zc6xqh0",
+     "id": "l2wls2e",
      "name": "Assorted Sashimi Platter",
      "course": "starter",
      "desc": "Nine pieces.",
@@ -1436,7 +1436,7 @@
      "kitJ": "Assorted Sashimi Platter|Nine pieces."
     },
     {
-     "id": "fm5irmo",
+     "id": "6aruye0",
      "name": "Chef's Yokozuna Omakase",
      "course": "main",
      "desc": "Twenty pieces and two rolls, for the table to share.",
@@ -1459,7 +1459,7 @@
      "kitJ": "Chef's Yokozuna Omakase|Twenty pieces and two rolls, for the table to share."
     },
     {
-     "id": "wt0bhfw",
+     "id": "nc8uory",
      "name": "California Roll",
      "course": "starter",
      "desc": "King crab, cucumber, avocado.",
@@ -1483,7 +1483,7 @@
      "kitJ": "California Roll|King crab, cucumber, avocado."
     },
     {
-     "id": "v7l2yng",
+     "id": "g9dssmn",
      "name": "STS Roll",
      "course": "starter",
      "desc": "Shrimp tempura, spicy tuna.",
@@ -1517,7 +1517,7 @@
      "kitJ": "STS Roll|Shrimp tempura, spicy tuna."
     },
     {
-     "id": "1xj8zn5",
+     "id": "x7qzxsy",
      "name": "Rainbow Roll",
      "course": "starter",
      "desc": "Lobster, sweet butter aioli, avocado.",
@@ -1541,7 +1541,7 @@
      "kitJ": "Rainbow Roll|Lobster, sweet butter aioli, avocado."
     },
     {
-     "id": "t93gm69",
+     "id": "ngzwj2e",
      "name": "KOMA Roll",
      "course": "starter",
      "desc": "Wagyu beef, Hokkaido uni, snow crab, shiso leaf.",
@@ -1565,7 +1565,7 @@
      "kitJ": "KOMA Roll|Wagyu beef, Hokkaido uni, snow crab, shiso leaf."
     },
     {
-     "id": "snh7bgf",
+     "id": "47g1qen",
      "name": "Negima Skewer",
      "course": "starter",
      "desc": "Chicken thigh, Tokyo negi, from the robata.",
@@ -1597,7 +1597,7 @@
      "kitJ": "Negima Skewer|Chicken thigh, Tokyo negi, from the robata."
     },
     {
-     "id": "y9wbwzp",
+     "id": "3tv0fft",
      "name": "Lamb Chop Skewer",
      "course": "starter",
      "desc": "Cilantro, mint, from the robata.",
@@ -1629,7 +1629,7 @@
      "kitJ": "Lamb Chop Skewer|Cilantro, mint, from the robata."
     },
     {
-     "id": "uy45h24",
+     "id": "wfpl8ra",
      "name": "Hokkaido Scallop Skewer",
      "course": "starter",
      "desc": "Butter soy sauce, from the robata.",
@@ -1661,7 +1661,7 @@
      "kitJ": "Hokkaido Scallop Skewer|Butter soy sauce, from the robata."
     },
     {
-     "id": "078y4bj",
+     "id": "ni194l4",
      "name": "Japanese Wagyu Yakitori",
      "course": "starter",
      "desc": "Black pepper chimichurri, pickled ginger miso, from the robata.",
@@ -1693,7 +1693,7 @@
      "kitJ": "Japanese Wagyu Yakitori|Black pepper chimichurri, pickled ginger miso, from the robata."
     },
     {
-     "id": "vp59h6r",
+     "id": "n21qujj",
      "name": "Tempura Medley",
      "course": "starter",
      "desc": "Shrimp, Japanese whiting, mongou cuttlefish, shiitake, eggplant, asparagus.",
@@ -1728,7 +1728,7 @@
      "kitJ": "Tempura Medley|Shrimp, Japanese whiting, mongou cuttlefish, shiitake, eggplant, asparagus."
     },
     {
-     "id": "zmjx24h",
+     "id": "3gc7cqz",
      "name": "Truffle Fried Rice",
      "course": "main",
      "desc": "Japanese rice, truffle paste, mushrooms, vegetables.",
@@ -1762,7 +1762,7 @@
      "kitJ": "Truffle Fried Rice|Japanese rice, truffle paste, mushrooms, vegetables."
     },
     {
-     "id": "2qazdcf",
+     "id": "3ai58c8",
      "name": "Ginza Chicken",
      "course": "main",
      "desc": "Half chicken, ginger paitan, coriander cress.",
@@ -1785,7 +1785,7 @@
      "kitJ": "Ginza Chicken|Half chicken, ginger paitan, coriander cress."
     },
     {
-     "id": "p4f8a3o",
+     "id": "29vvnty",
      "name": "Wafu Carbonara with Uni",
      "course": "main",
      "desc": "Smoked butter.",
@@ -1809,7 +1809,7 @@
      "kitJ": "Wafu Carbonara with Uni|Smoked butter."
     },
     {
-     "id": "4obvhae",
+     "id": "b5rhgir",
      "name": "Barbecued Beef Short Rib",
      "course": "main",
      "desc": "Lettuce, kochijan.",
@@ -1842,7 +1842,7 @@
      "kitJ": "Barbecued Beef Short Rib|Lettuce, kochijan."
     },
     {
-     "id": "56u0jky",
+     "id": "zmgov5m",
      "name": "Roasted Miso Black Cod",
      "course": "main",
      "desc": "Assorted mushrooms, edamame, asparagus, snow peas, Tokyo negi.",
@@ -1865,7 +1865,7 @@
      "kitJ": "Roasted Miso Black Cod|Assorted mushrooms, edamame, asparagus, snow peas, Tokyo negi."
     },
     {
-     "id": "0f0lomx",
+     "id": "f20mouh",
      "name": "Bamboo Steamed Seabass",
      "course": "main",
      "desc": "Zucchini, maitake mushroom, bok choy, sun-dried tomato ponzu.",
@@ -1888,7 +1888,7 @@
      "kitJ": "Bamboo Steamed Seabass|Zucchini, maitake mushroom, bok choy, sun-dried tomato ponzu."
     },
     {
-     "id": "rgc52fr",
+     "id": "oiwx2cs",
      "name": "KOMA US Prime Sirloin Steak 400g",
      "course": "main",
      "desc": "Black garlic peppercorn sauce, green salad, potato pave.",
@@ -1921,7 +1921,7 @@
      "kitJ": "KOMA US Prime Sirloin Steak 400g|Black garlic peppercorn sauce, green salad, potato pave."
     },
     {
-     "id": "blkx9rz",
+     "id": "0l8mupo",
      "name": "A5 Wagyu Tenderloin 150g",
      "course": "main",
      "desc": "Wasabi, ponzu, yuzu kosho.",
@@ -1954,7 +1954,7 @@
      "kitJ": "A5 Wagyu Tenderloin 150g|Wasabi, ponzu, yuzu kosho."
     },
     {
-     "id": "4lt5jec",
+     "id": "2m3smoh",
      "name": "Lemon Yuzu",
      "course": "dessert",
      "desc": "Lemon mousse, yuzu jam, cacao crumble.",
@@ -1978,7 +1978,7 @@
      "kitJ": "Lemon Yuzu|Lemon mousse, yuzu jam, cacao crumble."
     },
     {
-     "id": "e07vpyc",
+     "id": "inanv7c",
      "name": "Bonsai",
      "course": "dessert",
      "desc": "Molten dark chocolate, crunchy praline.",
@@ -2001,7 +2001,7 @@
      "kitJ": "Bonsai|Molten dark chocolate, crunchy praline."
     },
     {
-     "id": "cbu9f0x",
+     "id": "pkzvv5r",
      "name": "Japanese Cheese Cake",
      "course": "dessert",
      "desc": "Strawberry sorbet.",
@@ -2025,7 +2025,7 @@
      "kitJ": "Japanese Cheese Cake|Strawberry sorbet."
     },
     {
-     "id": "3fjazko",
+     "id": "yl043c9",
      "name": "KOMA Signature Dessert Omakase",
      "course": "dessert",
      "desc": "Chef's selection.",
@@ -2049,7 +2049,7 @@
      "kitJ": "KOMA Signature Dessert Omakase|Chef's selection."
     },
     {
-     "id": "ntd6c49",
+     "id": "vx3rvvi",
      "name": "Ichigo Sour",
      "course": "side",
      "desc": "Gin, strawberry sake, rose and lychee tea cordial.",
@@ -2081,7 +2081,7 @@
      "kitJ": "Ichigo Sour|Gin, strawberry sake, rose and lychee tea cordial."
     },
     {
-     "id": "4bk9a6a",
+     "id": "rtqh9g9",
      "name": "Mikan Negroni",
      "course": "side",
      "desc": "Circa gin, Asterley Bros vermouth, Averna amaro, Campari.",
@@ -2113,7 +2113,7 @@
      "kitJ": "Mikan Negroni|Circa gin, Asterley Bros vermouth, Averna amaro, Campari."
     },
     {
-     "id": "xa71qmf",
+     "id": "4ov461x",
      "name": "Star of the Show",
      "course": "side",
      "desc": "Butterfly pea gin, brut Champagne, yuzu sake, lychee and orange saccharum.",
@@ -2145,7 +2145,7 @@
      "kitJ": "Star of the Show|Butterfly pea gin, brut Champagne, yuzu sake, lychee and orange saccharum."
     },
     {
-     "id": "8m9mv7g",
+     "id": "eyo7p4r",
      "name": "Nikka Highball",
      "course": "side",
      "desc": "Nikka Taketsuru, London Essence soda, fresh mint.",
@@ -2177,7 +2177,7 @@
      "kitJ": "Nikka Highball|Nikka Taketsuru, London Essence soda, fresh mint."
     },
     {
-     "id": "jkfra35",
+     "id": "51ewhom",
      "name": "Little Crane",
      "course": "side",
      "desc": "Lychee nectar, elderflower and lemongrass.",
@@ -2200,7 +2200,7 @@
      "kitJ": "Little Crane|Lychee nectar, elderflower and lemongrass."
     },
     {
-     "id": "rd9kw3c",
+     "id": "hsa1uft",
      "name": "Suntory Premium Malt, draft",
      "course": "side",
      "desc": "330ml, Kyoto.",
@@ -2223,7 +2223,7 @@
      "kitJ": "Suntory Premium Malt, draft|330ml, Kyoto."
     },
     {
-     "id": "6aw7dcz",
+     "id": "oiwki4o",
      "name": "Domaine Christian Moreau Chablis 2023, glass",
      "course": "side",
      "desc": "150ml.",
@@ -2246,7 +2246,7 @@
      "kitJ": "Domaine Christian Moreau Chablis 2023, glass|150ml."
     },
     {
-     "id": "jyalc8c",
+     "id": "d0xxp4o",
      "name": "Bodegas Muga Reserva 2020, glass",
      "course": "side",
      "desc": "150ml, Rioja.",
@@ -2269,7 +2269,7 @@
      "kitJ": "Bodegas Muga Reserva 2020, glass|150ml, Rioja."
     },
     {
-     "id": "etmuhxh",
+     "id": "0y903nf",
      "name": "Bollinger Special Cuvée, glass",
      "course": "side",
      "desc": "150ml, Champagne.",
@@ -2292,7 +2292,7 @@
      "kitJ": "Bollinger Special Cuvée, glass|150ml, Champagne."
     },
     {
-     "id": "f0mqc4z",
+     "id": "ymp8kk7",
      "name": "Dom Pérignon 2015, bottle",
      "course": "side",
      "desc": "750ml, Champagne.",
@@ -2315,7 +2315,7 @@
      "kitJ": "Dom Pérignon 2015, bottle|750ml, Champagne."
     },
     {
-     "id": "034x9uu",
+     "id": "kjot1ro",
      "name": "Naeba \"Four Fox\" Junmai Daiginjo, carafe",
      "course": "side",
      "desc": "Niigata.",
@@ -2338,7 +2338,7 @@
      "kitJ": "Naeba \"Four Fox\" Junmai Daiginjo, carafe|Niigata."
     },
     {
-     "id": "ghy7qpf",
+     "id": "rfevk0r",
      "name": "Dassai 23 Junmai Daiginjo, bottle",
      "course": "side",
      "desc": "720ml, Yamaguchi.",
@@ -2361,7 +2361,7 @@
      "kitJ": "Dassai 23 Junmai Daiginjo, bottle|720ml, Yamaguchi."
     },
     {
-     "id": "68ioe07",
+     "id": "ghsjui9",
      "name": "Sencha Green Tea",
      "course": "side",
      "desc": "Jibun sencha, loose leaf.",
@@ -2384,7 +2384,7 @@
      "kitJ": "Sencha Green Tea|Jibun sencha, loose leaf."
     },
     {
-     "id": "xdbllsw",
+     "id": "zsjjlsd",
      "name": "Café Latte",
      "course": "side",
      "desc": "",
@@ -2407,16 +2407,16 @@
      "kitJ": "Café Latte|"
     },
     {
-     "id": "1yp00ed",
+     "id": "gps6x7w",
      "name": "Signature Lunch Set, three courses",
      "course": "main",
      "sec": "bundle",
      "bundle": {
       "style": "set",
       "items": [
-       "y40anef",
-       "2qazdcf",
-       "4lt5jec"
+       "74xyf9q",
+       "3ai58c8",
+       "2m3smoh"
       ]
      },
      "desc": "Weekday lunch, Monday to Friday: an appetiser, a main and a dessert, with sencha.",
@@ -2438,20 +2438,20 @@
      "kitJ": "Signature Lunch Set, three courses|Weekday lunch, Monday to Friday: an appetiser, a main and a dessert, with sencha."
     },
     {
-     "id": "g2mdu8y",
+     "id": "01yit7p",
      "name": "KOMA Tasting Menu",
      "course": "main",
      "sec": "bundle",
      "bundle": {
       "style": "prixfixe",
       "items": [
-       "6dy6qvk",
-       "zc6xqh0",
-       "vp59h6r",
-       "078y4bj",
-       "1xj8zn5",
-       "4lt5jec",
-       "e07vpyc"
+       "padaowv",
+       "l2wls2e",
+       "n21qujj",
+       "ni194l4",
+       "x7qzxsy",
+       "2m3smoh",
+       "inanv7c"
       ]
      },
      "desc": "Seven courses at lunch or dinner, from lobster avocado salad through sashimi, uni tempura, amadai, wagyu ribeye and rainbow monaka to a duo of the signature desserts.",
@@ -2482,12 +2482,12 @@
   },
   "team": [
    {
-    "id": "p0626fg",
+    "id": "jqgixv8",
     "role": "chef",
     "name": "Ryo Takahashi",
     "skill": 80,
     "years": 18,
-    "salary": 135000,
+    "salary": 148000,
     "trait": "perfectionist",
     "bio": "Executive chef. Trained in Tokyo and at Tao Group's KOMA-style kitchens; runs the sushi bar, the robata and a brigade of forty.",
     "certs": [
@@ -2500,7 +2500,7 @@
     "fame": 0
    },
    {
-    "id": "5bngmam",
+    "id": "t1xq3wx",
     "role": "sous",
     "name": "Marcus Tan",
     "skill": 72,
@@ -2518,12 +2518,12 @@
     "fame": 0
    },
    {
-    "id": "p2n3n1i",
+    "id": "k4nupx6",
     "role": "pastry",
     "name": "Aiko Mori",
     "skill": 70,
     "years": 9,
-    "salary": 56000,
+    "salary": 62000,
     "trait": "perfectionist",
     "bio": "Pastry chef behind the Bonsai and the dessert omakase.",
     "certs": [
@@ -2536,12 +2536,12 @@
     "fame": 0
    },
    {
-    "id": "q0ddyc3",
+    "id": "40b8rlw",
     "role": "somm",
     "name": "Rachel Lim",
     "skill": 74,
     "years": 11,
-    "salary": 58000,
+    "salary": 66000,
     "trait": "connected",
     "bio": "Beverage manager and certified sake sommelier; built the sake list around Juyondai, Kokuryu and Dassai.",
     "certs": [
@@ -2554,7 +2554,7 @@
     "fame": 0
    },
    {
-    "id": "yvv6y7d",
+    "id": "1pnbrga",
     "role": "maitre",
     "name": "Daniel Koh",
     "skill": 74,
@@ -2576,7 +2576,7 @@
   "brigade": 74,
   "fohTrain": 72,
   "capex": 0,
-  "rngState": 2138944025,
+  "rngState": 1376751535,
   "cellar": {
    "value": 420000,
    "target": 420000,
@@ -2667,7 +2667,7 @@
   "franchise": null,
   "policies": [
    {
-    "id": "pola67vw9p",
+    "id": "poltevvmda",
     "key": "health",
     "name": "Medical cover and CPF top-ups",
     "blurb": "Group medical insurance for all staff, on top of CPF for citizens and PRs.",
@@ -2679,7 +2679,7 @@
     "on": true
    },
    {
-    "id": "polkjey8dd",
+    "id": "pol6lp50oa",
     "key": "meal",
     "name": "Staff meals",
     "blurb": "A staff meal before each service.",

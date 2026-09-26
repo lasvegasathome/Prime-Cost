@@ -708,6 +708,7 @@ function simulateMonth(S){
       + (C.truck?0:((here.some(m=>m.role==="chef")?0:(li>0?C.chef:0)/12) + (here.some(m=>m.role==="maitre")?0:(li>0?C.gm:0)/12))*localPay(loc));
     const burden = (hourly+salaried)*countryOf(loc).payrollBurden;   // payroll tax, social charges, insurance: the country decides
     const delivLabor = delOrders*hpc*.4*wage*1.168;   // kitchen time only: no server, no busser
+    loc.lastCrewHours = schedHours + delOrders*hpc*.4;
     const locLabor = hourly+salaried+burden+delivLabor;
 
     // occupancy & other
@@ -2397,7 +2398,13 @@ const CRITICS=["The city paper's critic","A national food magazine","The regiona
 const CRITIC_WORDS=["Poor","Good","Very good","Excellent","Extraordinary"];
 const FIRST=["Dani","Marco","Aiko","Tomás","Priya","Élodie","Kwame","Sofia","Mateo","Hye-jin","Olu","Camille","Rafael","Ingrid","Yusuf","Beatriz","Luca","Nadia","Jonah","Mei","Ana","Idris","Fern","Theo"];
 const LAST=["Okafor","Moreau","Tanaka","Reyes","Lindqvist","Castellano","Nakamura","Haddad","Oyelaran","Brennan","Duval","Kowalski","Achterberg","Ferreira","Iwu","Marchetti","Salgado","Park","Novak","Abernathy","Ramos","Chen","Sato","Delacroix"];
-const personName=()=>`${pick(FIRST)} ${pick(LAST)}`;
+const NAME_POOLS={
+  "Singapore":[["Wei Ling","Jun Hao","Siti","Muhammad Hafiz","Priya","Arjun","Mei Xin","Nurul","Kavitha","Darren","Jasmine","Rizwan","Joy","Mark Anthony","Aung","Kelvin"],["Tan","Lim","Ng","Wong","Lee","Goh","Rahman","Ismail","Nair","Pillai","Santos","Reyes","Chua","Koh","Ong","Kyaw"]],
+  "Macau":[["Ka-lok","Wai-man","Hoi-ian","Chi-kin","Sio-man","Ana","Joao","Mary Grace","Jericho","Kin-hong","Lai-ieng","Rui"],["Leong","Chan","Ho","Wong","Lei","Iao","Choi","Sousa","Santos","Dela Cruz","Kuan","Lam"]],
+  "Hong Kong":[["Ka-wai","Chun-kit","Wing-yan","Ho-yin","Siu-ming","Man-kit","Kai-yan","Tsz-ho","Mei-ling","Joanne","Kenneth","Maricel"],["Chan","Wong","Lee","Cheung","Lau","Ho","Leung","Tsang","Yip","Ng","Kwok","Reyes"]],
+  "Japan":[["Haruto","Yui","Sota","Hina","Ren","Aoi","Kaito","Mio","Riku","Sakura"],["Sato","Suzuki","Takahashi","Tanaka","Watanabe","Ito","Yamamoto","Nakamura","Kobayashi","Kato"]]
+};
+const personName=()=>{ const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h]; return P?`${pick(P[0])} ${pick(P[1])}`:`${pick(FIRST)} ${pick(LAST)}`; };
 
 /* ---- starter menus: realistic enough to play, plain enough to rewrite ---- */
 const MENU_TPL={
@@ -3583,14 +3590,24 @@ const TIP_POLICIES={
   service:{name:"Service charge, no tipping",floor:-2,kitchen:4,wage:true,check:.04}
 };
 function tipCheck(){ const t=TIP_POLICIES[S.tipPolicy||"servers"]; return (t&&t.check)||0; }
+function crewHoursEst(loc){
+  const C=CONCEPTS[S.concept]||{}, ms=menuStats(), D=demandCore(S,loc,S.calMonth);
+  const hpc=(C.hrsPerCover||.4)*(ms.laborMult||1)*(1-featSum(loc,"labor"));
+  const minCrew=(C.seats>0? Math.max(8,loc.seats*.15) : 6)*(S.menu&&S.menu.format==="tasting"?1.6:1);
+  const idle=(D.slots||[]).reduce((a,x)=>a+Math.max(0,minCrew*(30.4/7)-x.cov*hpc),0);
+  return D.covers*hpc*(1+.10*ms.breadth)/(0.72+0.46*(loc.skill/100)) + idle*.8; }
 function crewOf(loc){
-  if(!loc.crew){ const C=CONCEPTS[S.concept]||{}; const fte=Math.max(2,Math.round((loc.lastForecast||800)*(C.hrsPerCover||.4)/165));
+  if(!loc.crew){ const C=CONCEPTS[S.concept]||{}; let f=loc.lastForecast, lm=1;
+    let hrs=loc.lastCrewHours||0;
+    if(!hrs&&!crewOf._busy){ crewOf._busy=1; try{ hrs=crewHoursEst(loc); }catch(e){ hrs=0; } finally{ crewOf._busy=0; } }
+    if(!hrs){ try{ lm=menuStats().laborMult||1; }catch(e){} hrs=(f||800)*(C.hrsPerCover||.4)*lm; }
+    const fte=Math.max(2,Math.round(hrs/165));
     loc.crew={}; for(const k in CREWS) loc.crew[k]={n:Math.max(1,Math.round(fte*CREWS[k].share)),skill:clamp(loc.skill*.85+rnd(-5,5),20,95),morale:loc.morale,lead:personName()}; }
   return loc.crew;
 }
 function crewTick(loc,R){
   const cr=crewOf(loc), C=CONCEPTS[S.concept]||{}, ms=menuStats();
-  const need=Math.max(2,Math.round((loc.lastForecast||800)*(C.hrsPerCover||.4)*(ms.laborMult||1)/165));
+  const need=Math.max(2,Math.round((loc.lastCrewHours||(()=>{ try{ return crewHoursEst(loc); }catch(e){ return (loc.lastForecast||800)*(C.hrsPerCover||.4)*(ms.laborMult||1); } })())/165));
   const tp=TIP_POLICIES[S.tipPolicy||"servers"]||TIP_POLICIES.servers;
   let hires=0,quits=0;
   for(const k in CREWS){
@@ -8936,7 +8953,7 @@ function teamHTML(){
         ${officeHTML2()}
         ${(()=>{ if(!exp("crews")) return ""; const l=S.locations[0]; if(!l) return ""; const cr=crewOf(l);
           return `<div class="choice" style="cursor:default"><b style="margin:0">Hourly crews at ${esc(l.name)}</b>`+
-            Object.keys(CREWS).map(k=>`<div class="kv"><span>${CREWS[k].name}<span class="note"> · ${cr[k].n} people, lead ${esc(cr[k].lead)}</span></span><span class="n">skill ${Math.round(cr[k].skill)} · morale ${Math.round(cr[k].morale)}</span></div>`).join("")+
+            Object.keys(CREWS).map(k=>`<div class="kv"><span>${CREWS[k].name}<span class="note"> · ${cr[k].n} ${cr[k].n===1?"person":"people"}, lead ${esc(cr[k].lead)}</span></span><span class="n">skill ${Math.round(cr[k].skill)} · morale ${Math.round(cr[k].morale)}</span></div>`).join("")+
             `${l.crewChurn?`<div class="hint">Last month: ${l.crewChurn.quits} quit, ${l.crewChurn.hires} hired, ${money(l.crewChurn.cost)} in hiring and training.</div>`:""}
             <div class="hint" style="margin-top:6px">Tips: <select id="tipPolicy">${Object.keys(TIP_POLICIES).map(k=>`<option value="${k}" ${(S.tipPolicy||"servers")===k?"selected":""}>${esc(TIP_POLICIES[k].name)}</option>`).join("")}</select></div></div>`; })()}
         ${S.team.length?S.team.map(staffCardHTML).join(""):`<p class="note" style="margin:0">Nobody salaried. You're doing it all.</p>`}
