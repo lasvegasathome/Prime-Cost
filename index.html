@@ -387,9 +387,9 @@ let pendingResult=null;      // last month's results awaiting the modal
 
 // calendar: S.epoch is the real year of the save's first calendar year, when the story is set in a real time; otherwise years count Y1, Y2
 const MONTHS_LONG=["January","February","March","April","May","June","July","August","September","October","November","December"];
-// on screen, years count from when the owner took over: Y1 is the first twelve months whatever month they started in.
+// on screen, years are calendar years of the game: Y1 is the calendar year the owner started in, and January starts the next.
 // The real calendar year (S.epoch) stays behind the scenes for Claude's briefing and for period prices and equipment.
-function playYear(cal,y,st){ st=st||S; if(!st||st.year==null) return y; const start=st.year*12+st.calMonth-(st.monthIdx||0); return Math.max(1,Math.floor((y*12+cal-start)/12)+1); }
+function playYear(cal,y){ return y; }
 function dateName(cal,y,st){ return `${MONTHS[cal]} Y${playYear(cal,y,st)}`; }
 function uid(){return Math.random().toString(36).slice(2,9);}
 
@@ -478,7 +478,7 @@ function newGameInner(cfg,seed0){
     ownerName:cfg.ownerName||"You", bizName:cfg.bizName,
     concept:cfg.concept, market:cfg.market, traits:cfg.traits,
     monthIdx:0, calMonth:cfg.startMonth, year:1,
-    cash, equityInvestor, loans, dateLabelsV3:true,
+    cash, equityInvestor, loans, dateLabelsV3:true, dateLabelsV4:true,
     origin: (cfg.spec&&cfg.spec.sourceText)||"",
     customConcept: cfg.concept==="custom"?JSON.parse(JSON.stringify(CONCEPTS.custom)):null,
     customMarket: cfg.market==="custom"?JSON.parse(JSON.stringify(MARKETS.custom)):null,
@@ -1597,6 +1597,14 @@ function presetEpoch(s){
 }
 function ensureState(s){
   if(s.epoch==null&&!s.epochChecked){ const e=presetEpoch(s); if(e) s.epoch=e; s.epochChecked=true; }
+  if(s.dateLabelsV3&&!s.dateLabelsV4){   // labels written as years-since-taking-over go back to calendar years
+    const start=s.year*12+s.calMonth-(s.monthIdx||0), idx=m=>MONTHS.indexOf(m);
+    const back=str=>typeof str!=="string"?str:str.replace(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) Y(\d{1,3})\b/,(m,mo,p)=>{ const lo=start+(Number(p)-1)*12; let a=lo; while(((a%12)+12)%12!==idx(mo)) a++; return `${mo} Y${Math.floor(a/12)}`; });
+    for(const l of s.log||[]) l.when=back(l.when); for(const t of s.threads||[]) t.since=back(t.since);
+    if(Array.isArray(s.chronicle)) s.chronicle=s.chronicle.map(back);
+    for(const loc of s.locations||[]) for(const r of ((loc.press||{}).reviews||[])) r.when=back(r.when);
+    if(s.decision&&s.decision.when) s.decision.when=back(s.decision.when); for(const d of s.deskQueue||[]) if(d.when) d.when=back(d.when); }
+  s.dateLabelsV4=true;
   if(!s.dateLabelsV3){ s.dateLabelsV3=true;   // older saves wrote "Oct Y1" (calendar years) or "Oct 2026": both become years since taking over
     const ep=Number(s.epoch)||0, idx=m=>MONTHS.indexOf(m);
     const conv=str=>typeof str!=="string"?str:str.replace(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (?:Y(\d{1,3})|(\d{4}))\b/,(m,mo,cy,ry)=>{ const y=cy?Number(cy):(ep?Number(ry)-ep+1:null); return y==null?m:`${mo} Y${playYear(idx(mo),y,s)}`; });
