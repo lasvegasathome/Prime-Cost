@@ -10,7 +10,7 @@ Each preset save carries its restaurant's logo so the game can show it. The logo
 | Golden Corral | [Golden Corral logo.svg](https://commons.wikimedia.org/wiki/File:Golden_Corral_logo.svg) on Wikipedia / Wikimedia Commons (CC BY-SA 4.0) |
 | Heart Attack Grill | Heart Attack Grill website header (heartattackgrill.com) |
 | Gordon Ramsay Hell's Kitchen | Gordon Ramsay Restaurants website header (gordonramsayrestaurants.com/en/us/hells-kitchen) |
-| Jumbo Kingdom | [JumboKingdomLogo.png](https://en.wikipedia.org/wiki/File:JumboKingdomLogo.png) on Wikipedia / Wikimedia Commons (Fair use) |
+| Jumbo Kingdom | Jumbo Kingdom website (jumbokingdom.com), rearranged side by side: the palace on the left, the names on the right |
 | Katz's Delicatessen | Katz's Delicatessen website (katzsdelicatessen.com) |
 | KOMA | Tao Group Hospitality website (taogroup.com/venues/koma-singapore), shown on a dark tile |
 | Los Pollos Hermanos (fictional, from Breaking Bad) | [Los Pollos Hermanos logo.png](https://en.wikipedia.org/wiki/File:Los_Pollos_Hermanos_logo.png) on Wikipedia / Wikimedia Commons (Fair use) |
@@ -18,7 +18,7 @@ Each preset save carries its restaurant's logo so the game can show it. The logo
 | Eastside Burger Co. (fictional) | Drawn for this project |
 | Olive Garden | [Olive Garden Logo.svg](https://en.wikipedia.org/wiki/File:Olive_Garden_Logo.svg) on Wikipedia / Wikimedia Commons (Fair use) |
 | POPS 66 | POPS 66 website header (pops66.com) |
-| Robuchon au Dôme | Grand Lisboa website (grandlisboa.com), white background removed |
+| Robuchon au Dôme | Grand Lisboa website (grandlisboa.com), background removed |
 | Starbucks | [Starbucks Corporation Logo 2011.svg](https://en.wikipedia.org/wiki/File:Starbucks_Corporation_Logo_2011.svg) on Wikipedia / Wikimedia Commons (Fair use) |
 | The French Laundry | [The French Laundry logo.svg](https://commons.wikimedia.org/wiki/File:The_French_Laundry_logo.svg) on Wikipedia / Wikimedia Commons (Public domain) |
 | Waffle House | [Waffle House Logo.svg](https://commons.wikimedia.org/wiki/File:Waffle_House_Logo.svg) on Wikipedia / Wikimedia Commons (Public domain) |
