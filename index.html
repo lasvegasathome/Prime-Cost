@@ -80,6 +80,7 @@ nav.tabs .tin{max-width:1120px;margin:0 auto;padding-inline:16px;display:flex;ga
 .tab{background:none;border:0;border-bottom:2px solid transparent;padding:10px 12px;cursor:pointer;color:var(--muted);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .dnum{display:inline-block;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--accent);color:#fff;font-size:10px;line-height:16px;text-align:center;margin-left:5px;vertical-align:middle;letter-spacing:0}
 .tab .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-left:5px;vertical-align:middle}
 
 /* panels */
@@ -2219,7 +2220,7 @@ function decisionHTML(){
   if(!D) return "";
   if(D.loading) return `<p class="note" style="margin:0">Something's landing on your desk…</p>`;
   if(D.error) return `<p class="note" style="margin:0">${esc(D.error)}</p>`;
-  return `<div class="row" style="margin-bottom:6px">${D.followup?'<span class="pill w">the answer you were waiting for</span>':'<span class="pill w">decision</span>'}<span class="note" style="margin-left:8px">decides when ${MONTHS[S.calMonth]} closes${(S.deskQueue||[]).length?` · ${S.deskQueue.length} more waiting on your desk`:""}</span></div>
+  return `<div class="row" style="margin-bottom:6px">${D.followup?'<span class="pill w">the answer you were waiting for</span>':'<span class="pill w">decision</span>'}${deskCount()>1?`<span class="pill" style="margin-left:6px">1 of ${deskCount()} on your desk</span>`:""}<span class="note" style="margin-left:8px">decides when ${MONTHS[S.calMonth]} closes</span></div>
     <h3 style="font-family:var(--serif);font-weight:400;font-size:21px;margin-bottom:5px">${esc(D.title)}</h3>
     <p style="margin:0 0 11px;font-size:14px;line-height:1.55">${esc(D.text)}</p>
     ${D.choices.map((c,i)=>`<button class="choice" data-choice="${i}"><b>${esc(c.label)}${i===D.choices.length-1?' <span class="note" style="font-weight:500">(default if you don\'t choose)</span>':""}</b>
@@ -2235,14 +2236,22 @@ function paintDecision(){
     wireDecision(box);
   }
 }
+function deskAfterHTML(resultHTML){
+  const nx=S.decision&&S.decision.choices;
+  return resultHTML+(nx?`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--rule)">${decisionHTML()}</div>`
+    :`<p class="note" style="margin:10px 0 0">Your desk is clear.</p>`);
+}
+function showDeskAfter(resultHTML){
+  const html=deskAfterHTML(resultHTML);
+  for(const bx of document.querySelectorAll("[data-decision-box]")){ bx.innerHTML=html; bx.closest("[data-decision-wrap]")?.classList.remove("hidden"); wireDecision(bx); }
+}
 function wireDecision(box){
   const go=box.querySelector("[data-dcgo]"); if(go) go.onclick=()=>{ const ta=box.querySelector("[data-dcustom]"), out=box.querySelector("[data-dcout]"), t=((ta&&ta.value)||"").trim();
     if(!t){ out.textContent="Write what you'd do first."; return; } answerDecision(t,out,go); };
   box.querySelectorAll("[data-choice]").forEach(b=>b.onclick=()=>{
     const r=resolveDecision(+b.dataset.choice,false); if(!r) return;
     const html=`<p class="note" style="margin:0"><b>${esc(r.choice.label)}.</b>${r.applied.length?"<br>"+r.applied.map(esc).join("<br>"):" Nothing measurable changed."}${r.applied.rejected.length?`<br><span style="color:var(--bad)">Refused by the books: ${r.applied.rejected.map(esc).join("; ")}</span>`:""}</p>`;
-    render();
-    for(const bx of document.querySelectorAll("[data-decision-box]")){ bx.innerHTML=html; bx.closest("[data-decision-wrap]")?.classList.remove("hidden"); }
+    render(); showDeskAfter(html);
   });
 }
 
@@ -2280,11 +2289,8 @@ async function answerDecision(text,outEl,btn){
     nextDesk(); save();
     const html=`<span class="pill ${tone==="good"?"g":tone==="warn"?"w":"b"}">${esc(oc)}</span><div class="quote" style="margin-top:8px">${esc(narr)}</div>`
       +(applied.length?`<div class="note" style="margin-top:10px"><b>What changed:</b><br>${applied.map(esc).join("<br>")}</div>`:`<div class="note" style="margin-top:10px">Nothing measurable changed.</div>`)
-      +(applied.rejected&&applied.rejected.length?`<div class="note" style="margin-top:6px;color:var(--bad)"><b>Refused by the books:</b> ${applied.rejected.map(esc).join("; ")}</div>`:"")
-      +(S.decision&&S.decision.choices?`<div class="note" style="margin-top:10px">Next on your desk: ${esc(S.decision.title)}. <button class="btn sm sec" data-dcnext>Show it</button></div>`:"");
-    render();
-    for(const bx of document.querySelectorAll("[data-decision-box]")){ bx.innerHTML=html; bx.closest("[data-decision-wrap]")?.classList.remove("hidden");
-      const nx=bx.querySelector("[data-dcnext]"); if(nx) nx.onclick=()=>paintDecision(); }
+      +(applied.rejected&&applied.rejected.length?`<div class="note" style="margin-top:6px;color:var(--bad)"><b>Refused by the books:</b> ${applied.rejected.map(esc).join("; ")}</div>`:"");
+    render(); showDeskAfter(html);
   }catch(e){ outEl.textContent=sampleError(e,"outcome"); btn.disabled=false; }
 }
 
@@ -3717,9 +3723,12 @@ function pressVisits(loc,crit,R){
   }
   // each outlet reviews on its own schedule: roughly once a year at most, sooner after a new chef; a busy, talked-about room gets more of them
   P.criticLast=P.criticLast||{}; if(P.lastCritic!=null&&P.reviews[0]&&P.criticLast[P.reviews[0].src]==null) P.criticLast[P.reviews[0].src]=P.lastCritic;
-  const since=P.lastCritic==null?99:S.monthIdx-P.lastCritic, fresh=c=>{ const t=P.criticLast[c]; return t==null||S.monthIdx-t>=12||(loc.chefChange!=null&&loc.chefChange>t); };
-  const pool=CRITICS.filter(c=>{const pr=CRITIC_PROFILES[c]||{}; return fresh(c)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc);});
-  if(pool.length && since>=2 && loc.monthsOpen>=2 && Math.random()<(.08+loc.awareness/600)*(1+mktEffects(loc).press*1.5)*(locTier(loc)==="high"?1.3:1)){
+  const since=P.lastCritic==null?99:S.monthIdx-P.lastCritic, fresh=c=>{ const t=P.criticLast[c]; return t==null||S.monthIdx-t>=12||(loc.chefChange!=null&&loc.chefChange>t); },
+    // an outlet reviews a chain, not each of its stores: once one of them has been written up, the others wait their year
+    chainFresh=c=>S.locations.every(o=>o===loc||!o.press||!o.press.criticLast||o.press.criticLast[c]==null||S.monthIdx-o.press.criticLast[c]>=12);
+  const cheap=locTier(loc)==="low";
+  const pool=CRITICS.filter(c=>{const pr=CRITIC_PROFILES[c]||{}; return fresh(c)&&chainFresh(c)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc);});
+  if(pool.length && since>=2 && loc.monthsOpen>=2 && Math.random()<(.08+loc.awareness/600)*(1+mktEffects(loc).press*1.5)*(locTier(loc)==="high"?1.3:cheap?.5:1)){
     const P2=loc.perf||{}, critic=pick(pool), pr=CRITIC_PROFILES[critic]||{food:1}; P.criticLast[critic]=S.monthIdx;
     const asp={food:crit.overall,pers:crit.personality,service:P2.service||loc.foh,room:ambience(loc),value:P2.value==null?60:P2.value,wine:P2.wine==null?40:P2.wine};
     let blend=0,wt=0; for(const k of ["food","pers","service","room","value","wine"]) if(pr[k]){ blend+=pr[k]*asp[k]; wt+=pr[k]; }
@@ -3731,7 +3740,7 @@ function pressVisits(loc,crit,R){
     R.reviews.push(rv);
     loc.awareness=clamp(loc.awareness+4*stars-2,2,99);
     const li=S.locations.indexOf(loc);
-    if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${rv.src.replace(/^The |^An? /,"")} review`,kind:"demand",value:Math.round((stars-1.5)*.05*100)/100,left:8,loc:S.locations.length<2?-1:li,src:"press"});
+    if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${rv.src.replace(/^The |^An? /,"")} review`,kind:"demand",value:Math.round((stars-1.5)*.05*(cheap?.4:1)*100)/100,left:8,loc:S.locations.length<2?-1:li,src:"press"});
     R.events.push({tone:stars>=2?"good":"bad",text:`${rv.src} reviewed ${loc.name}: ${CRITIC_WORDS[stars]}${stars?` (${"★".repeat(stars)})`:""}.`});
   }
 }
@@ -6952,7 +6961,7 @@ function renderVitals(){
 function renderTabs(){
   const tabs=[["dash","Dashboard"],["operate","Operate"],["menu","Menu"],["sourcing","Sourcing"],["house","House"],["team","Team"],["press","Press"],["books","Books"],["growth","Growth"]].concat(exp("heat")?[["heat","Back room"]]:[],[["office","Office"],["log","Log"]]);
   $("#tabin").innerHTML=tabs.map(([k,n])=>
-    `<button class="tab" data-tab="${k}" aria-selected="${view===k}">${n}${(k==="office"&&S.actionsLeft>0)||(k==="dash"&&S.decision&&S.decision.choices)?'<span class="dot"></span>':""}</button>`).join("");
+    `<button class="tab" data-tab="${k}" aria-selected="${view===k}">${n}${k==="dash"&&S.decision&&S.decision.choices?(deskCount()>1?`<span class="dnum">${deskCount()}</span>`:'<span class="dot"></span>'):k==="office"&&S.actionsLeft>0?'<span class="dot"></span>':""}</button>`).join("");
   $("#tabin").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{view=b.dataset.tab;render();window.scrollTo(0,0);});
 }
 
@@ -7505,7 +7514,7 @@ function dashHTML(){
   return `<div class="sec" style="padding-top:18px">
     <div class="grid g2">
       <div class="stack">
-        <div class="panel ${S.decision&&!S.decision.error?"":"hidden"}" data-decision-wrap><div class="hd"><h3>On your desk</h3></div>
+        <div class="panel ${S.decision&&!S.decision.error?"":"hidden"}" data-decision-wrap><div class="hd"><h3>On your desk${deskCount()>1?` <span class="note" style="font-family:var(--sans,inherit);font-size:13px">(${deskCount()})</span>`:""}</h3></div>
           <div class="bd" data-decision-box>${decisionHTML()}</div></div>
         <div class="panel"><div class="hd"><h3>${MONTHS[S.calMonth]}, year ${S.year} — ahead of you</h3></div>
           <div class="bd">

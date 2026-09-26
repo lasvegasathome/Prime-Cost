@@ -25,7 +25,7 @@ The `presets/` folder holds ready-made restaurants to start from. Download one, 
 | Jumbo Kingdom | `prime-cost-jumbo-kingdom.json` | Aberdeen, Hong Kong |
 | Katz's Delicatessen | `prime-cost-katzs-delicatessen.json` | Lower East Side, Manhattan |
 | KOMA | `prime-cost-koma-singapore.json` | Marina Bay Sands, Singapore |
-| Los Pollos Hermanos | `prime-cost-los-pollos-hermanos.json` | Albuquerque |
+| Los Pollos Hermanos | `prime-cost-los-pollos-hermanos.json` | Albuquerque and 13 more across the Southwest |
 | McDonald's franchise | `prime-cost-mcdonalds-franchise.json` | Suburban highway exit |
 | Eastside Burger Co. (virtual brand kitchen - MrBeast Burger) | `prime-cost-mrbeast-burger.json` | East Orlando |
 | Olive Garden | `prime-cost-olive-garden.json` | Suburban retail corridor |
