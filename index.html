@@ -5270,6 +5270,10 @@ const KIT_FLAVOR={
   heatlamp:["A used strip heater with a dead bulb.","A heat lamp over the pass that keeps plates hot while they wait for a runner.","A dual-element lamp for a wider pass.","A heated pass with lamps above and a warm shelf below, so nothing cools between the line and the table."],
   fountain:["A used fountain with a sticky valve.","A soda fountain with an ice bin, often free with a syrup contract.","A fountain that dispenses its own ice, faster at a busy counter.","A touchscreen Freestyle with 200 flavours, usually leased."],
   steamtable:["A used steam table with a thermostat that runs a little cool.","A five-well steam table that holds hot food at safe temperatures.","A full buffet unit with a sneeze guard, built to be seen by guests.","A custom buffet line with sneeze guards, lighting and heated and chilled wells built into one counter."],
+  livetank:["A used lobster tank with a chiller: a few dozen lobsters at a time, and someone has to watch the water.","A lobster and shellfish tank with its own chiller and UV filter, set where guests can see it.","A wall of tanks for fish, crab, lobster and clams, each chilled and filtered on its own.","A seafood hall of tanks on a seawater supply: guests point at a grouper or a geoduck and it's cooked the way they ask."],
+  saladbar:["A used salad bar with a sneeze guard and ice packed under the pans.","A refrigerated five-well salad bar that keeps greens, toppings and dressings cold without ice.","A double-sided refrigerated bar with ten wells, so two lines move at once.","A custom island salad bar with a refrigerated base and guards on both sides, in the middle of the room."],
+  rawbar:["Ice-filled trays on a counter and an oyster knife.","A refrigerated raw bar display that keeps shellfish on ice in front of the guests.","A raw bar counter with ice wells, a shucking station and a sink, staffed through service.","A custom raw bar with its own seats and seawater ice, where a shucker works an arm's length from the guests."],
+  netacase:["A used countertop case that keeps the fish cold, mostly.","A four-foot refrigerated case along the sushi counter, with the fish in sight of the guests.","A six-foot case with a curved glass front and gentle, even cooling that doesn't dry the fish out.","Cases built into the counter, so the fish sits at eye level in front of every seat."],
   coldwell:["A used cold pan that sweats.","A refrigerated cold well that keeps salads and desserts at safe temperatures.","A refrigerated buffet with display glass, built for guests to see.","A frost-top display counter that keeps seafood and desserts cold and looks like ice."],
   carving:["A used carving lamp on a board.","A carving station with a heat lamp over a warm board.","A heated carving station with a sneeze guard and a pan below for jus.","A marble carving station, the centrepiece of a buffet."],
   chafers:["A set of used chafers with dented lids.","Stainless chafers with fuel cans, the standard for catering.","Induction-heated chafers: no fuel cans, steady heat and a cleaner look.","Hammered copper chafers, the look of a grand hotel."],
@@ -5302,6 +5306,7 @@ function kitSuits(loc,type){
   if(K.spec||K.tiers||K.minAlc) return kitFits(loc,type);
   if(a==="qsr") return !!C.counter||t==="low"||C.truck;
   if(a==="hosp") return ["kiosk","selfserve","toppingdisp","saucedisp"].includes(type)? !!(C.counter||t==="low"||C.truck) : type==="gueridon"||type==="hoststand"? (C.seats>0&&t!=="low") : true;
+  if(type==="saladbar") return !!C.counter||t==="low"||(loc.seats||0)>=100||/salad|buffet|family|steakhouse|cafeteria|diner|health|vegetarian/.test(txt);
   if(a==="buffet") return (loc.seats||0)>=100||S.programs.catering||/buffet|banquet|hotel|resort|casino|catering|cafeteria|wedding/.test(txt);
   if(a==="industrial") return (loc.seats||0)>=300||/commissary|factory|production|catering|banquet|institution|cafeteria/.test(txt);
   if(a==="fun") return !!C.counter||C.truck||t==="low"||/cinema|fair|stadium|arena|kids|family|arcade|bowling|carnival|theme park|boardwalk/.test(txt);
@@ -5372,6 +5377,10 @@ const KIT_ICONS={
   heatlamp:'<rect x="6" y="6" width="52" height="6"/><path d="M10 12 V16 M54 12 V16"/><path d="M14 16 L18 22 M26 16 L28 22 M38 16 L36 22 M50 16 L46 22" stroke-dasharray="2 2"/><rect x="6" y="28" width="52" height="4"/><ellipse cx="22" cy="26" rx="6" ry="2"/><ellipse cx="42" cy="26" rx="6" ry="2"/>',
   fountain:'<rect x="8" y="4" width="48" height="16"/><path d="M14 20 V24 M22 20 V24 M30 20 V24 M38 20 V24 M46 20 V24"/><rect x="6" y="32" width="52" height="12"/><path d="M26 24 L28 32 H34 L36 24"/><rect x="8" y="26" width="48" height="2"/>',
   steamtable:'<path d="M6 12 H58 L54 20 H10 Z"/><path d="M8 12 V6 M56 12 V6"/><rect x="6" y="24" width="52" height="8"/><path d="M12 24 V28 H22 V24 M26 24 V28 H36 V24 M40 24 V28 H50 V24"/><line x1="10" y1="32" x2="10" y2="44"/><line x1="54" y1="32" x2="54" y2="44"/><line x1="10" y1="40" x2="54" y2="40"/>',
+  livetank:'<rect x="6" y="8" width="52" height="30"/><path d="M6 14 H58" stroke-dasharray="4 3"/><path d="M16 27 q8 -7 16 0 q-8 7 -16 0 Z M32 27 l6 -4 v8 Z"/><circle cx="46" cy="22" r="1.5"/><circle cx="48" cy="17" r="1"/><circle cx="45" cy="12" r="1"/><rect x="4" y="38" width="56" height="6"/>',
+  saladbar:'<rect x="6" y="28" width="52" height="16"/><path d="M10 28 V24 H22 V28 M26 28 V24 H38 V28 M42 28 V24 H54 V28"/><path d="M12 10 H52 L56 20 H8 Z"/><path d="M14 20 V24 M50 20 V24"/><path d="M13 24 q3 -4 6 0 M29 24 q3 -4 6 0 M45 24 q3 -4 6 0"/>',
+  rawbar:'<path d="M6 30 L12 38 H52 L58 30 Z"/><path d="M6 30 q6 -4 12 0 q6 -4 12 0 q6 -4 12 0 q6 -4 16 0"/><ellipse cx="20" cy="24" rx="6" ry="3"/><ellipse cx="34" cy="23" rx="6" ry="3"/><path d="M44 26 a5 5 0 0 1 10 0 Z"/><path d="M32 38 V44 M22 44 H42"/>',
+  netacase:'<rect x="4" y="34" width="56" height="10"/><path d="M8 34 V22 Q8 16 16 16 H56 V34"/><path d="M14 30 q5 -4 10 0 q-5 4 -10 0 Z M30 30 q5 -4 10 0 q-5 4 -10 0 Z"/><line x1="44" y1="26" x2="54" y2="26"/><line x1="44" y1="30" x2="54" y2="30"/>',
   coldwell:'<rect x="6" y="22" width="52" height="22"/><path d="M12 22 V26 H22 V22 M26 22 V26 H36 V22 M40 22 V26 H50 V22"/><path d="M28 32 L36 38 M36 32 L28 38 M32 30 V40"/><path d="M8 22 L12 14 H52 L56 22"/>',
   carving:'<rect x="10" y="28" width="44" height="6"/><path d="M28 6 V14 L20 22 H44 L36 14 V6"/><path d="M24 26 q8 -8 16 0"/><line x1="16" y1="34" x2="16" y2="44"/><line x1="48" y1="34" x2="48" y2="44"/>',
   chafers:'<path d="M10 22 Q32 6 54 22"/><line x1="32" y1="14" x2="32" y2="10"/><rect x="8" y="22" width="48" height="10"/><path d="M14 32 L10 42 M50 32 L54 42"/><rect x="26" y="36" width="12" height="6"/>',
@@ -5424,22 +5433,22 @@ kitType("teppan",{name:"Teppanyaki grills",aisle:"global",desc:"A thick steel gr
   eff:{pers:3,side:.004,energy:250},flags:{noTruck:1}});
 kitType("tablegrill",{name:"Tabletop BBQ grills",aisle:"global",desc:"Grills set into each table with downdraft extraction underneath, so guests grill Korean or Japanese barbecue themselves without smoking out the room.",
   models:[["Used tabletop gas grills ×10",0,6000],["Downdraft table grills ×10",1,40000],["Charcoal-ready downdraft grills ×10",2,65000,"Real charcoal at the table, with ventilation to match."],["Custom downdraft tables ×16 with stone surrounds",3,120000]],
-  eff:{labor:-.02,pers:2,cap:.01,energy:400},flags:{noTruck:1}});
+  eff:{labor:-.02,pers:2,cap:.01,energy:400},flags:{noTruck:1,spec:"tablegrill"}});
 kitType("livetank",{name:"Live seafood tanks",aisle:"cold",desc:"Chilled, filtered tanks that keep fish, lobster, crab and shellfish alive until they're ordered: the freshest seafood there is, and a display guests point at.",
   models:[["Used lobster tank with a chiller",0,2500],["Lobster & shellfish display tank with chiller and UV",1,9000],["Multi-tank live seafood wall with chillers and UV filtration",2,45000],["Custom live seafood hall: fish, crab, lobster and geoduck tanks on a seawater supply",3,180000]],
-  eff:{pers:2,cons:1,foodcost:-.003,labor:.004,energy:350},fail:.01,flags:{noTruck:1}});
+  eff:{pers:2,cons:1,foodcost:-.003,labor:.004,energy:350},fail:.01,flags:{noTruck:1,spec:"seafood"}});
 kitType("saladbar",{name:"Salad bars",aisle:"buffet",desc:"A self-serve bar of chilled wells under sneeze guards: greens, toppings and dressings that guests build themselves.",
   models:[["Used salad bar with a sneeze guard",0,1500],["Refrigerated 5-well salad bar",1,5000],["Double-sided refrigerated salad bar, 10 wells",2,12000],["Custom island salad bar with a refrigerated base and double guards",3,30000]],
   eff:{cap:.015,labor:-.01,health:.1,foodcost:.002,energy:250},flags:{noTruck:1}});
 kitType("rawbar",{name:"Raw bar & oyster display",aisle:"cold",desc:"Iced display and a shucking station for oysters, clams, crudo and chilled shellfish, in sight of the room.",
   models:[["Ice-filled display trays",0,500],["Refrigerated raw bar display",1,6000],["Raw bar counter with ice wells and a shucking station",2,18000],["Custom raw bar with its own seating and seawater ice",3,45000]],
-  eff:{pers:1,cap:.005,side:.004,energy:150},flags:{noTruck:1}});
+  eff:{pers:1,cap:.005,side:.004,energy:150},flags:{noTruck:1,spec:"seafood"}});
 kitType("netacase",{name:"Sushi display cases",aisle:"global",desc:"Low refrigerated glass cases along a sushi counter that hold the fish at the right temperature in front of the chef and the guests.",
   models:[["Used countertop sushi case",0,900],["Refrigerated sushi display case, 4 ft",1,3500],["Refrigerated sushi case, 6 ft, with a curved front",2,7000],["Custom-built sushi counter cases",3,20000]],
-  eff:{pers:1,health:.2,foodcost:-.002,energy:150},flags:{noTruck:1}});
+  eff:{pers:1,health:.2,foodcost:-.002,energy:150},flags:{noTruck:1,spec:"japanese"}});
 kitType("hotpot",{name:"Hot-pot tables",aisle:"global",desc:"Induction hobs set flush into each table, so every party cooks its own broth at the table.",
   models:[["Portable burners ×10",0,800],["Built-in induction hobs ×10",1,8000],["Individual induction hobs ×30, one per guest",2,18000],["Custom tables with flush induction and hidden controls ×16",3,40000]],
-  eff:{labor:-.02,pers:1,energy:200},flags:{noTruck:1}});
+  eff:{labor:-.02,pers:1,energy:200},flags:{noTruck:1,spec:"hotpot"}});
 kitType("duckoven",{name:"Roast duck ovens",aisle:"global",desc:"Tall hanging ovens for Cantonese and Peking roast duck, char siu and crispy pork: meat hung on hooks over fire.",
   models:[["Used hanging roast oven",0,3000],["Gas hanging roast oven",1,9000],["Wood-fired Peking duck oven",2,22000],["Custom open-fire duck oven in view of the room",3,45000]],
   eff:{pers:3,cap:.01,energy:220}});
@@ -5881,7 +5890,10 @@ function kitSpecFit(type){ const K=KIT[type], g=genreTags(), t=conceptText();
     :K.spec==="asian"?/chinese|cantonese|sichuan|szechuan|thai|\bwok\b|dim sum|vietnamese|korean/.test(t):K.spec==="indian"?/indian|tandoor/.test(t)
     :K.spec==="italian"?/italian|trattoria|pasta|osteria/.test(t):K.spec==="cafe"?/caf[eé]|coffee|bakery|brunch|espresso|juice|tea/.test(t)
     :K.spec==="boba"?/boba|bubble tea|milk tea|taiwanese/.test(t):K.spec==="gelato"?/gelat|ice cream|italian|dessert/.test(t)
-    :K.spec==="levant"?/lebanese|levant|middle eastern|shawarma|falafel|pita|syrian|palestin|israeli|jordan|mezze/.test(t):K.spec==="ethiopian"?/ethiopian|eritrean|injera/.test(t):true; }
+    :K.spec==="levant"?/lebanese|levant|middle eastern|shawarma|falafel|pita|syrian|palestin|israeli|jordan|mezze/.test(t):K.spec==="ethiopian"?/ethiopian|eritrean|injera/.test(t)
+    :K.spec==="hotpot"?/hot ?pot|shabu|sukiyaki|mongolian|chinese|cantonese|sichuan|szechuan|taiwanese|korean|japanese|thai|malaysian|singapore/.test(t)
+    :K.spec==="tablegrill"?/korean|yakiniku|japanese|izakaya|barbecue|\bbbq\b|galbi|bulgogi|mongolian/.test(t)
+    :K.spec==="seafood"?/seafood|lobster|crab|oyster|shellfish|\bfish\b|cantonese|dim sum|sushi|harbou?r|wharf|dockside|floating/.test(t+" "+placeText()):true; }
 function kitFits(loc,type){ const K=KIT[type], C=CONCEPTS[S.concept]||{};
   if(K.noTruck&&C.truck) return false; if(K.truckOnly&&!C.truck) return false; if(K.tiers&&!K.tiers.includes(locTier(loc))) return false;
   if(K.minAlc&&(C.alcohol||0)<K.minAlc) return false; return kitSpecFit(type); }
