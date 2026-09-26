@@ -1758,7 +1758,8 @@ The people, the room, the supply chain and the cellar. Use these whenever the st
 {"op":"foh","locIndex":0,"delta":6}   (front-of-house polish, fades)
 {"op":"namesake","name":"Gordon Ramsay","fame":95,"kind":"handson"|"brand"|"legacy","fee":0.05}   (a famous name attached to the restaurant: a licensing deal, an endorsement, a celebrity partner. fame is how widely known they are, 0-100 (a TV chef people recognise is 70-90, a household name 90+, a respected local chef 30-50); kind is whether they cook here, lend their name and recipes, or are a late master's legacy; fee is the share of sales they're paid, 0 if they're paid another way. {"op":"namesake","remove":true} ends it. Only when the story actually attaches or detaches a name.)
 {"op":"fame","role":"chef"|"pastry"|"somm","delta":8}   (that person's public profile, 0-100: TV appearances, a cookbook, a viral clip, a scandal)
-{"op":"staff","role":"chef"|"sous"|"pastry"|"somm"|"maitre","skill":3,"loyalty":-10,"cert":"optional credential they earn","years":0}   (that person, if employed; skill and loyalty are 0-100)
+{"op":"staff","role":"chef"|"sous"|"pastry"|"somm"|"maitre","name":"their name, if there's more than one in that role","skill":3,"loyalty":-10,"cert":"optional credential they earn","years":0}   (that person, if employed; skill and loyalty are 0-100)
+{"op":"staff","name":"their name","role":"their role","leaves":true,"why":"took the head chef job at Luca's Place"}   (whenever the story has someone quit, take another job, walk out, get arrested, die or otherwise stop working here, record it: they come off the payroll, with no severance because they left. The owner firing someone is not this; that's done from the team page.)
 {"op":"supplier","cat":"produce"|"meat"|"seafood"|"dairy"|"pantry"|"luxury","relation":10,"reliability":0.03,"price":-0.05}   (whoever supplies that category now; relation 0-100, reliability a 0-1 share, price index where 1 is market)
 {"op":"standing","delta":8}   (standing with wine distributors, which decides rare allocations; 0-100)
 {"op":"menu","creativity":4,"coherence":5}   (the whole menu, points on 0-100 scales)
@@ -1870,8 +1871,11 @@ function applyEffects(effects,opts){
         const m=S.team.find(t=>t.role===e.role&&CELEB_ROLES.includes(t.role)); if(!m){ rejected.push(`there's no ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"such person"} with a public profile`); break; }
         const v=Math.round(clamp(d(e.delta),-40,25)); m.fame=clamp((m.fame||0)+v,0,100); done.push(`${poss(m.name)} public profile ${v>0?"+":""}${v}`); break; }
       case "staff":{
-        const m=S.team.find(t=>t.role===e.role);
-        if(!m){ rejected.push(`there's no ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"such person"} on staff`); break; }
+        const nm=String(e.name||"").trim().toLowerCase();
+        const m=(nm&&S.team.find(t=>t.name.toLowerCase()===nm||t.name.toLowerCase().split(" ")[0]===nm.split(" ")[0]&&(!e.role||t.role===e.role)))||S.team.find(t=>t.role===e.role);
+        if(!m){ rejected.push(`there's no ${nm?`"${String(e.name).slice(0,40)}"`:ROLES[e.role]?ROLES[e.role].name.toLowerCase():"such person"} on staff`); break; }
+        if(e.leaves){   // they quit, took another job, were arrested or otherwise stopped working here: no severance for someone who left
+          const why=clip(String(e.why||"left"),120); staffDeparture(m,why,null); done.push(`${m.name} is gone: ${why}`); break; }
         const sk=Math.round(d(e.skill)), lo=Math.round(d(e.loyalty));
         m.skill=clamp(m.skill+sk,5,99); m.loyalty=clamp(m.loyalty+lo,0,100);
         if(e.cert){ const k=matchCert(e.cert); if(k&&!certsOf(m).includes(k)){ m.certs=certsOf(m).concat([k]); done.push(`${m.name} now holds ${certInfo(k).name}`); } }
@@ -2040,7 +2044,7 @@ function previewEffect(e){
     case "foh": return `front of house ${Number(e.delta)>0?"+":""}${Math.round(Number(e.delta)||0)} (fades)`;
     case "namesake": return e.remove?"a famous name comes off the door":`${String(e.name||"a famous name").slice(0,40)}'s name on the restaurant${Number(e.fee)>0?`, ${pct(Number(e.fee),1)} of sales`:""}`;
     case "fame": return `your ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"staff"}'s public profile ${Number(e.delta)>0?"+":""}${Math.round(Number(e.delta)||0)}`;
-    case "staff": return `your ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"staff"}: ${e.skill?`skill ${e.skill>0?"+":""}${Math.round(e.skill)} `:""}${e.loyalty?`loyalty ${e.loyalty>0?"+":""}${Math.round(e.loyalty)}`:""}`;
+    case "staff": if(e.leaves) return `${String(e.name||(ROLES[e.role]?`your ${ROLES[e.role].name.toLowerCase()}`:"someone")).slice(0,40)} leaves`; return `your ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"staff"}: ${e.skill?`skill ${e.skill>0?"+":""}${Math.round(e.skill)} `:""}${e.loyalty?`loyalty ${e.loyalty>0?"+":""}${Math.round(e.loyalty)}`:""}`;
     case "supplier": return `${CATS[e.cat]?CATS[e.cat].name.toLowerCase():"a"} supplier${e.price?`, prices ${e.price<0?"down":"up"}`:""}${e.relation?`, relationship ${e.relation>0?"better":"worse"}`:""}`;
     case "standing": return `distributor standing ${Number(e.delta)>0?"+":""}${Math.round(Number(e.delta)||0)}`;
     case "menu": return `menu ${e.creativity?`creativity ${e.creativity>0?"+":""}${Math.round(e.creativity)} `:""}${e.coherence?`coherence ${e.coherence>0?"+":""}${Math.round(e.coherence)}`:""}`;
@@ -6317,7 +6321,7 @@ function tickHighEnd(R){
       R.events.push({tone:"warn",text:`${ucf(m.poach.from)} offered ${m.name} ${money(m.poach.salary)} a year. They told you before deciding. Answer on the Team tab.`});
       continue;
     }
-    if(m.poach&&S.monthIdx>=m.poach.due){
+    if(m.poach&&(S.monthIdx>=m.poach.due||m.poach.decided==="accept")){   // someone who's said yes goes when this month closes
       const P=m.poach, from=P.from; delete m.poach;
       const talked=(m.chat||[]).some(t=>t.role==="user"&&(t.at==null||t.at>=(P.at==null?S.monthIdx-1:P.at)));
       const gap=Math.max(0,P.salary/Math.max(1,m.salary)-1);
@@ -9314,7 +9318,7 @@ function staffCardHTML(m){
     ${S.locations.filter(l=>l.status!=="closed").length>1?`<div class="tags">Works at <select data-mloc2="${m.id}">${S.locations.filter(l=>l.status!=="closed").map(l=>`<option value="${l.id}" ${(m.locId||S.locations[0].id)===l.id?"selected":""}>${esc(l.name)}</option>`).join("")}</select></div>`:""}
     ${staffTrait(m)?`<div class="tags"><b style="display:inline">${esc(staffTrait(m).name)}</b>: ${esc(staffTrait(m).desc)}${(m.fame||0)>=15?` · known name (fame ${Math.round(m.fame)})`:""}</div>`:""}
     <div style="margin-top:8px">${meter(m.skill,"Skill")}${meter(m.loyalty,"Loyalty")}${meter(Math.round(m.stress||0),"Stress",true,70,50)}</div>
-    ${m.poach?`<div class="choice" style="cursor:default;margin-top:8px;border-color:var(--warn)"><b>${esc(ucf(m.poach.from))} offered ${money(m.poach.salary)}/yr</b><span>${m.poach.decided?(m.poach.decided==="decline"?"They've told you they'll turn it down.":"They've told you they're taking it."):S.monthIdx>=m.poach.due?`They decide when ${MONTHS[S.calMonth]} closes. Answer here, or talk it through with them.`:`They decide in ${m.poach.due-S.monthIdx} month${m.poach.due-S.monthIdx>1?"s":""}.`}</span>
+    ${m.poach?`<div class="choice" style="cursor:default;margin-top:8px;border-color:var(--warn)"><b>${esc(ucf(m.poach.from))} offered ${money(m.poach.salary)}/yr</b><span>${m.poach.decided?(m.poach.decided==="decline"?"They've told you they'll turn it down.":"They've told you they're taking it, and they leave when this month closes."):S.monthIdx>=m.poach.due?`They decide when ${MONTHS[S.calMonth]} closes. Answer here, or talk it through with them.`:`They decide in ${m.poach.due-S.monthIdx} month${m.poach.due-S.monthIdx>1?"s":""}.`}</span>
       <div class="row" style="margin-top:6px;flex-wrap:wrap;gap:6px"><button class="btn sm" data-poach="${m.id}|match">Match it · ${money(m.poach.salary)}/yr</button><button class="btn sm sec" data-poach="${m.id}|counter">Counter with a title and a ${money(Math.round(m.salary*.1))} bonus</button><button class="btn sm sec" data-poach="${m.id}|let">Wish them well</button></div></div>`:""}
     <div class="tags">${Math.round(m.years||0)} years in kitchens and dining rooms${certsOf(m).length?` · ${certsOf(m).map(k=>esc(certInfo(k).name)).join(", ")}`:" · no formal credentials"}</div>
     <div class="tags">${money(m.salary)}/yr · the market pays about ${money(mkt)} for this person${tr?` · in ${esc(tr.name)}, ${tr.left} mo left`:""}</div>
@@ -9330,7 +9334,7 @@ function staffCardHTML(m){
     <details style="margin-top:8px"><summary class="note" style="cursor:pointer;font-weight:700">Plan ${esc(m.name.split(" ")[0])}'s development</summary>
       <textarea data-devidea="${m.id}" style="margin-top:6px" placeholder="Send them to stage for a month at a kaiseki house in Kyoto, then have them teach the brigade what they learned." ${sampleFn?"":"disabled"}></textarea>
       <button class="btn sm" data-devgo="${m.id}" style="margin-top:6px" ${sampleFn?"":"disabled"}>Design it</button><div class="note" data-devout="${m.id}" style="margin-top:6px">${sampleFn?"Leave it blank and Claude will suggest what would help them most. The plan appears under Training programmes.":"Needs Claude, which this view can't reach."}</div></details>
-    <div class="row" style="margin-top:9px"><button class="btn sm sec" data-raise="${m.id}">Give a 10% raise · ${money(Math.round(m.salary*.1))}/yr</button>${(m.stress||0)>=45&&!m.away?`<button class="btn sm sec" data-timeoff="${m.id}">Paid week off · ${money(Math.round(m.salary/52))}</button>`:""}${exp("oneonones")?"":"<!--"}<button class="btn sm sec" data-talk="${m.id}">${talkOpen===m.id?"Talking":"Talk"}</button>${exp("oneonones")?"":"-->"}<button class="btn sm sec" data-fire="${m.id}">Let go</button></div>
+    <div class="row" style="margin-top:9px"><button class="btn sm sec" data-raise="${m.id}">Give a 10% raise · ${money(Math.round(m.salary*.1))}/yr</button>${(m.stress||0)>=45&&!m.away?`<button class="btn sm sec" data-timeoff="${m.id}">Paid week off · ${money(Math.round(m.salary/52))}</button>`:""}${exp("oneonones")?"":"<!--"}<button class="btn sm sec" data-talk="${m.id}">${talkOpen===m.id?"Talking":"Talk"}</button>${exp("oneonones")?"":"-->"}<button class="btn sm sec" data-fire="${m.id}">Let go</button><button class="btn sm sec" data-quit="${m.id}" title="When they've quit or taken another job: no severance">They quit</button></div>
   </div>`;
 }
 function teamHTML(){
@@ -9424,9 +9428,13 @@ function wireTeam(){
     logIt("good",`${m.name} is sitting ${c.name}: ${money(c.cost)} in fees and prep, results in ${c.months} month${c.months>1?"s":""}.`); keepY(); });
   document.querySelectorAll("[data-raise]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.raise); if(!m) return;
     m.salary=Math.round(m.salary*1.1/500)*500; m.loyalty=clamp(m.loyalty+12,0,100); logIt("good",`Gave ${m.name} a raise to ${money(m.salary)}.`); keepY(); });
+  document.querySelectorAll("[data-quit]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.quit); if(!m) return;
+    if(!confirm(`Record that ${m.name} has quit? They come off the payroll with no severance, since they left.`)) return;
+    if(m.poach) delete m.poach; staffDeparture(m,"quit",null); logIt("warn",`${m.name} quit and came off the payroll.`); keepY(); });
   document.querySelectorAll("[data-fire]").forEach(b=>b.onclick=()=>{
     if(!b.dataset.armed){ b.dataset.armed="1"; b.className="btn sm danger"; b.textContent="Tap again"; return; }
     const m=S.team.find(x=>x.id===b.dataset.fire); if(!m) return;
+    if(m.poach&&m.poach.decided==="accept"){ const from=m.poach.from; delete m.poach; staffDeparture(m,`hired away by ${from}`,null); logIt("warn",`${m.name} left early for ${from}. They'd already taken the job, so no severance.`); keepY(); return; }
     const sev=Math.round(m.salary/12); S.cash-=sev; staffDeparture(m,"let go",null);
     for(const l of S.locations) l.morale=clamp(l.morale-4,3,99);
     logIt("warn",`Let ${m.name} go with a month's severance (${money(sev)}).`); chronicle(`Let go of ${m.name}, the ${ROLES[m.role].name.toLowerCase()}.`); keepY(); });
