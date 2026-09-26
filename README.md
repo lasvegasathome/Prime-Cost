@@ -2,6 +2,10 @@
 
 A restaurant management game in a single HTML file. You run the books, the menu, the kitchen equipment, the staff and the suppliers, month by month, and the P&L tells you how it's going.
 
+I always liked Pax Historia's concept but didn't particularly like how it ran on usage credits. While this obviously isn't a copy of it, it certainly draws on some of its aspects- particularly the integration of AI into gameplay for better customization! You can customize basically anything in this game, and do basically anything! Browse the catalog of over 100 pieces of kitchen equipment, craft your own menu with Claude, score the highest accolades in the restaurant industry, respond to events landing on your desk... really, the possibilities are near-endless.
+
+Want to jack up prices and lose your entire customer base? Blackmail your head chef out of quitting? Sell off the fire suppression systems and get the fire marshal called on you? Start an illegal drug trafficking operation with the restaurant as a front? You can do all of that and so much more, in Prime Cost.
+
 ## Playing
 
 Open `index.html` as a Claude artifact. It's possible to play this offline, but I strongly advise against it since many of the base features of the game will be disabled or, at best, severely impaired.
