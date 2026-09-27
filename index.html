@@ -1033,6 +1033,7 @@ function advanceMonth(){
   leaseDecision();
   mediaDecision();
   tickHighEnd(R);
+  settleGuidePending(R);
   if(R.calMonth===0&&S.world.guideAuto!==false&&michelinKnown()){ const on=michelinHere();   // the Guide arrives in, or leaves, the city
     if(on&&!S.world.guide){ S.world.guide=true; R.events.push({tone:"warn",text:`The Michelin Guide announced its first edition covering ${S.locations[0].name}'s city. Inspectors eat anonymously, and nobody knows when they've been.`}); }
     else if(!on&&S.world.guide){ S.world.guide=false; for(const l of S.locations){ l.stars=0; l.bib=false; l.selected=false; l.green=false; } R.events.push({tone:"warn",text:`The Michelin Guide stopped publishing here. Whatever it had given the city lapses with it.`}); } }
@@ -1078,6 +1079,7 @@ function advanceMonth(){
   if(jobs.length){ closingOverlay(R); Promise.race([Promise.allSettled(jobs),new Promise(r=>setTimeout(r,150000))]).then(reveal); } else reveal();
   // critics publish a few days later; guests post as the month goes
   for(const rv of R.reviews){ const loc=S.locations.find(l=>l.id===rv.locId); if(loc&&sampleFn) setTimeout(()=>writeReview(rv,loc),1500); }
+  if(R.michelinPending) for(const l of S.locations) if(l.guidePending) setTimeout(()=>michelinDecide(l),900);
   if(sampleFn) for(const l of S.locations) if(l.status==="open") setTimeout(()=>writeGuestReviews(l),800);
 }
 
@@ -1657,6 +1659,7 @@ const EXPANSIONS={
   crews:{title:"Back of House",name:"Hourly crews & tips",desc:"Kitchen, floor and support crews with their own churn, and your tip policy."},
   credentials:{title:"Pedigree",name:"Credentials & exams",desc:"ACF, CMS, WSET and other certifications, and sitting exams."},
   sourcing:{title:"First In First Out",name:"Wholesale markets & contracts",desc:"Commodity prices that move, seasonal quality, supplier contracts and backup suppliers."},
+  guideai:{title:"The Committee",name:"Claude decides the Michelin Guide",desc:"Each year the Guide's committee reads the inspectors' reports and decides, within the engine's limits. Off, a formula decides.",def:()=>true},
   legal:{title:"Most Wanted",name:"Legal exposure",desc:"Audits, inspections of your paperwork, and raids when corners are cut."},
   world:{title:"Mr. Worldwide",name:"Countries, currencies & cultures",desc:"The currency you see money in, and what's different about running restaurants in other countries: payroll costs, card fees and cash, tipping, tax, alcohol law, inspections, customs and holidays, written by Claude for any country you name. Stores abroad report through a currency that moves."},
   heat:{title:"The Back Room",name:"Back room, forces, raids & laundering",desc:"What the restaurant is secretly used for, the dirty money it makes and has to launder, the forces that could come after it, and the raids they stage, written by Claude. A force takes over from the stock raids for whatever it's watching."},
@@ -6263,7 +6266,7 @@ function otherGuides(R){
 function guideRelease(R){
   for(const loc of S.locations){
     if(loc.status!=="open"||loc.monthsOpen<6) continue;
-    const P=loc.press, li=S.locations.indexOf(loc);
+    const P=loc.press;
     const cyc=P.inspections.filter(i=>i.m>S.monthIdx-12);
     const prev={stars:loc.stars||0,bib:!!loc.bib,sel:!!loc.selected,green:!!loc.green};
     if(!cyc.length){
@@ -6272,39 +6275,84 @@ function guideRelease(R){
     }
     const avg=cyc.reduce((a,i)=>a+i.score,0)/cyc.length;
     const sd=cyc.length>1? Math.sqrt(cyc.reduce((a,i)=>a+(i.score-avg)**2,0)/cyc.length) : 6;
-    const eff=avg-Math.max(0,sd-4)*.8-(loc.chefChange!=null&&S.monthIdx-loc.chefChange<12?4:0);
+    const chefNew=loc.chefChange!=null&&S.monthIdx-loc.chefChange<12;
+    const eff=avg-Math.max(0,sd-4)*.8-(chefNew?4:0);
+    // the formula's answer: the fallback, and what Claude's committee is checked against
     let stars=prev.stars;
     if(stars<3 && eff>=STAR_TH[stars+1] && cyc.length>=STAR_VISITS[stars+1]) stars++;
     else if(stars>0 && eff<STAR_TH[stars]-5) stars--;   // the Guide is slow to take a star away
-    loc.stars=stars;
-    loc.selected = eff>=74 || stars>0;
-    loc.bib = !stars && eff>=76 && (menuStats().valueCheck||menuStats().foodCheck)*S.dials.price <= bibCap(loc);
-    loc.green = eff>=66 && greenShare()>=.55;
-    P.history.unshift({when:`${dateName(S.calMonth,S.year)}`,stars,bib:loc.bib,green:loc.green,sel:loc.selected,visits:cyc.length});
-    P.history=P.history.slice(0,12);
+    const algo={stars,selected:eff>=74||stars>0,bib:!stars&&eff>=76&&guideCheck()<=bibCap(loc),green:eff>=66&&greenShare()>=.55};
+    const pend={prev,algo,avg,sd,eff,visits:cyc.length,scores:cyc.map(i=>Math.round(i.score)),chefNew,when:dateName(S.calMonth,S.year)};
     P.inspections=P.inspections.filter(i=>i.m>S.monthIdx-3);
-    const at=S.locations.length>1?` for ${loc.name}`:"";
-    if(stars>prev.stars){
-      loc.awareness=clamp(loc.awareness+15+8*stars,2,99); loc.rep=clamp(loc.rep+4,3,99); loc.morale=clamp(loc.morale+8,3,99);
-      if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:stars===1?"The star bump":`The ${stars}-star bump`,kind:"demand",value:.10,left:6,loc:S.locations.length<2?-1:li,src:"guide"});
-      R.events.push({tone:"good",text:stars===1?`The phone rang at 7am. One Michelin star${at}. The book is full for two months by lunchtime.`
-        :`${"★".repeat(stars)} — ${stars} Michelin stars${at}. ${stars===3?"Exceptional cuisine, worth a special journey. Almost nobody gets here.":"Excellent cooking, worth a detour."}`});
-      chronicle(`Awarded ${stars} Michelin star${stars>1?"s":""}${at}.`);
-    }else if(stars<prev.stars){
-      loc.rep=clamp(loc.rep-6,3,99); loc.morale=clamp(loc.morale-12,3,99);
-      if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:"Lost a star",kind:"demand",value:-.12,left:8,loc:S.locations.length<2?-1:li,src:"guide"});
-      R.events.push({tone:"bad",text:`The Guide took a star away${at}. ${stars?`You're down to ${stars}.`:"You have none now."} The inspectors don't explain, and the kitchen knows exactly why anyway.`});
-      chronicle(`Lost a Michelin star${at}; now ${stars}.`);
-    }else if(stars>0){
-      R.events.push({tone:"good",text:`The Guide came out. ${loc.name} kept ${stars===1?"its star":`its ${stars} stars`}.`});
-    }
-    if(loc.bib&&!prev.bib) R.events.push({tone:"good",text:`A Bib Gourmand${at}: good cooking at a fair price. Expect a line of people who read the Guide.`});
-    if(loc.green&&!prev.green) R.events.push({tone:"good",text:`A Green Star${at}, for the sourcing. The farms you buy from are putting it on their websites.`});
-    if(loc.selected&&!prev.sel&&!stars) R.events.push({tone:"good",text:`${loc.name} made it into the Guide as a recommended restaurant. No star — the inspectors have noticed you.`});
-    if(!loc.selected&&prev.sel) R.events.push({tone:"bad",text:`${loc.name} has been dropped from the Guide.`});
-    if(!loc.selected&&!prev.sel&&!stars) R.events.push({tone:"warn",text:`The Guide came out. ${loc.name} isn't in it.`});
+    if(sampleFn&&exp("guideai")!==false){ loc.guidePending=pend; R.michelinPending=true;
+      R.events.push({tone:"warn",text:`The Michelin Guide is announced this week. ${loc.name} waits for the phone to ring.`}); continue; }
+    applyGuideDecision(loc,algo,pend,R.events);
   }
 }
+function guideCheck(){ const ms=menuStats(); return (ms.valueCheck||ms.foodCheck)*S.dials.price; }
+/* the engine's rails around whatever the committee decides */
+function guideRails(loc,d,pend){
+  const p=pend.prev, e=pend.eff; let st=Math.round(clamp(Number(d.stars)||0,0,3));
+  st=clamp(st,p.stars-1,p.stars+1);   // one step a year, up or down
+  while(st>p.stars&&(e<STAR_TH[st]-6||pend.visits<STAR_VISITS[st])) st--;   // a star has to be within reach of the record
+  if(st<p.stars&&e>=STAR_TH[p.stars]-2) st=p.stars;   // nobody loses a star with a record that clearly holds it
+  if(st===p.stars&&st>0&&e<STAR_TH[st]-9) st--;   // or keeps one the record plainly doesn't
+  const bib=!!d.bib&&st===0&&e>=70&&guideCheck()<=bibCap(loc);
+  const green=!!d.green&&e>=60&&greenShare()>=.45;
+  const sel=st>0||bib||(!!(d.recommended??d.selected)&&e>=66);
+  return {stars:st,bib,selected:sel,green,note:clip(String(d.note||"").trim(),600)};
+}
+function applyGuideDecision(loc,dec,pend,sink){
+  const push=e=>{ if(sink) sink.push(e); else S.log.unshift({when:when(),tone:e.tone,text:e.text}); };
+  const P=loc.press, li=S.locations.indexOf(loc), prev=pend.prev, stars=dec.stars;
+  loc.stars=stars; loc.selected=dec.selected; loc.bib=dec.bib; loc.green=dec.green; delete loc.guidePending;
+  P.history.unshift({when:pend.when,stars,bib:loc.bib,green:loc.green,sel:loc.selected,visits:pend.visits,note:dec.note||""});
+  P.history=P.history.slice(0,12);
+  const at=S.locations.length>1?` for ${loc.name}`:"";
+  if(stars>prev.stars){
+    loc.awareness=clamp(loc.awareness+15+8*stars,2,99); loc.rep=clamp(loc.rep+4,3,99); loc.morale=clamp(loc.morale+8,3,99);
+    if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:stars===1?"The star bump":`The ${stars}-star bump`,kind:"demand",value:.10,left:6,loc:S.locations.length<2?-1:li,src:"guide"});
+    push({tone:"good",text:stars===1?`The phone rang at 7am. One Michelin star${at}. The book is full for two months by lunchtime.`
+      :`${"★".repeat(stars)} — ${stars} Michelin stars${at}. ${stars===3?"Exceptional cuisine, worth a special journey. Almost nobody gets here.":"Excellent cooking, worth a detour."}`});
+    chronicle(`Awarded ${stars} Michelin star${stars>1?"s":""}${at}.`);
+  }else if(stars<prev.stars){
+    loc.rep=clamp(loc.rep-6,3,99); loc.morale=clamp(loc.morale-12,3,99);
+    if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:"Lost a star",kind:"demand",value:-.12,left:8,loc:S.locations.length<2?-1:li,src:"guide"});
+    push({tone:"bad",text:`The Guide took a star away${at}. ${stars?`You're down to ${stars}.`:"You have none now."} The inspectors don't explain, and the kitchen knows exactly why anyway.`});
+    chronicle(`Lost a Michelin star${at}; now ${stars}.`);
+  }else if(stars>0){
+    push({tone:"good",text:`The Guide came out. ${loc.name} kept ${stars===1?"its star":`its ${stars} stars`}.`});
+  }
+  if(loc.bib&&!prev.bib) push({tone:"good",text:`A Bib Gourmand${at}: good cooking at a fair price. Expect a line of people who read the Guide.`});
+  if(loc.green&&!prev.green) push({tone:"good",text:`A Green Star${at}, for the sourcing. The farms you buy from are putting it on their websites.`});
+  if(loc.selected&&!prev.sel&&!stars&&!loc.bib) push({tone:"good",text:`${loc.name} made it into the Guide as a recommended restaurant. No star — the inspectors have noticed you.`});
+  if(!loc.selected&&prev.sel) push({tone:"bad",text:`${loc.name} has been dropped from the Guide.`});
+  if(!loc.selected&&!prev.sel&&!stars) push({tone:"warn",text:`The Guide came out. ${loc.name} isn't in it.`});
+  if(dec.note) push({tone:"warn",text:`What the Guide wrote about ${loc.name}: "${dec.note}"`});
+}
+const GUIDE_RULES=`You are the Michelin Guide's selection committee for this city, deciding one restaurant's listing for this year's edition inside a realistic simulation. You've read every inspector's report. Judge the way the Guide really does: only what's on the plate counts for stars (quality of ingredients, mastery of technique, harmony of flavours, the chef's personality in the cooking, consistency across visits and over time), never the decor, the service or the fame. Stars are rare: most very good restaurants never get one, one star means high-quality cooking worth a stop, two excellent cooking worth a detour, three exceptional cuisine worth a special journey. A place changes by at most one star a year, and a star is taken away only when the cooking has clearly slipped. The Bib Gourmand is for good cooking at a moderate price, never alongside a star. "Recommended" means good cooking the Guide lists without a distinction. The Green Star is for exceptional sustainability. Big, scene-driven or chain-like places rarely convince the inspectors however busy they are; a small counter can earn a Bib or a star if the cooking is special.
+Reply with ONLY JSON: {"stars":0,"bib":false,"recommended":false,"green":false,"note":"2-3 sentences in the Guide's own restrained voice about the cooking: what they ate and why it earned what it earned. No scores."}`;
+function guideDossier(loc,pend){
+  const C=CONCEPTS[S.concept]||{}, t=S.team.filter(m=>["chef","sous","pastry"].includes(m.role)), ms=menuStats(), D=((loc.menu||S.menu).dishes||[]).filter(d=>!d.off&&(d.sec||"food")==="food").slice(0,16);
+  const th=`(the formula's guide: about ${STAR_TH[1]} for one star, ${STAR_TH[2]} for two, ${STAR_TH[3]} for three, ${Math.max(70,76)} for a Bib Gourmand at the right price; consistency matters as much as the average)`;
+  return `\n\nTHE RESTAURANT: ${loc.name}, ${C.name||"restaurant"}, ${loc.seats} seats, in ${michelinPlace()}${storyYear()?`, ${storyYear()}`:""}. ${esc(String((S.customConcept&&S.customConcept.name)||""))}
+PRICE: a typical meal about ${money(guideCheck())} a head; the Bib Gourmand limit here is about ${money(bibCap(loc))}.
+LAST YEAR'S LISTING: ${pend.prev.stars?`${pend.prev.stars} star${pend.prev.stars>1?"s":""}`:pend.prev.bib?"Bib Gourmand":pend.prev.sel?"recommended":"not in the Guide"}${pend.prev.green?", Green Star":""}.
+THE INSPECTORS' REPORTS THIS CYCLE: ${pend.visits} visit${pend.visits>1?"s":""}, scores out of 100 for the cooking: ${pend.scores.join(", ")} (average ${Math.round(pend.avg)}, spread ${Math.round(pend.sd)})${pend.chefNew?"; the chef changed in the last year":""} ${th}.
+THE KITCHEN: ${t.map(m=>`${m.name}, ${ROLES[m.role].name.toLowerCase()}, skill ${Math.round(m.skill)}, ${Math.round(m.years||0)} years${certsOf(m).length?`, ${certsOf(m).map(k=>certInfo(k).name).join(", ")}`:""}`).join("; ")||"no named chef"}. Menu creativity ${Math.round(ms.creativity||0)}, coherence ${Math.round(ms.coherence||0)}.
+WHAT THEY'RE COOKING: ${D.map(d=>`${d.name}${d.desc?` (${clip(d.desc,90)})`:""}`).join("; ")}.
+SOURCING: ${Math.round(greenShare()*100)}% local, seasonal or sustainable.
+OTHER RECOGNITION: ${Object.values(loc.awards||{}).map(a=>`${a.guide}: ${a.name}`).join("; ")||"none"}.`;
+}
+async function michelinDecide(loc){
+  const pend=loc.guidePending; if(!pend) return;
+  let dec=null;
+  try{ if(sampleFn){ const r=await sampleFn.json(`${GUIDE_RULES}\n\n${STYLE_NOTE}${houseRules()}${guideDossier(loc,pend)}`,{cache:false}); if(r&&typeof r==="object") dec=guideRails(loc,r,pend); } }catch(e){ dec=null; }
+  if(!loc.guidePending) return;   // settled some other way meanwhile
+  applyGuideDecision(loc,dec||Object.assign({note:""},pend.algo),pend,null);
+  save(); if(typeof render==="function") render();
+}
+function settleGuidePending(R){ for(const l of S.locations) if(l.guidePending) applyGuideDecision(l,Object.assign({note:""},l.guidePending.algo),l.guidePending,R.events); }
 
 /* ---- monthly upkeep for the new systems ---- */
 function tickHighEnd(R){
@@ -9625,7 +9673,7 @@ function pressHTML(){
         <div class="kv"><span>Visits the floor suspected this cycle</span><span class="n">${P.suspected}</span></div>
         <div class="kv"><span>Actual inspections this cycle</span><span class="n note">unknown</span></div>
         ${P.history.length?`<div style="margin-top:10px"><div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:4px">Past Guides</div>
-          ${P.history.map(h=>`<div class="kv"><span>${esc(h.when)}</span><span class="n">${h.stars?starGlyphs(h.stars):h.bib?"Bib Gourmand":h.sel?"recommended":"—"}${h.green?" · green":""}</span></div>`).join("")}</div>`:""}
+          ${P.history.map(h=>`<div class="kv"><span>${esc(h.when)}</span><span class="n">${h.stars?starGlyphs(h.stars):h.bib?"Bib Gourmand":h.sel?"recommended":"—"}${h.green?" · green":""}</span></div>${h.note?`<div class="hint" style="margin:-2px 0 6px;font-style:italic">"${esc(h.note)}"</div>`:""}`).join("")}</div>`:""}
       </div></div>
       <div class="panel"><div class="hd"><h3>What an inspector would taste</h3></div><div class="bd">${critBars(l.lastCrit,"Your chef's honest read of last month. Inspectors see roughly this, give or take a bad night, averaged over their visits. Uneven cooking is marked down.")}</div></div>
     </div>
