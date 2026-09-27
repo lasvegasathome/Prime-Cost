@@ -1033,6 +1033,9 @@ function advanceMonth(){
   leaseDecision();
   mediaDecision();
   tickHighEnd(R);
+  if(R.calMonth===0&&S.world.guideAuto!==false&&michelinKnown()){ const on=michelinHere();   // the Guide arrives in, or leaves, the city
+    if(on&&!S.world.guide){ S.world.guide=true; R.events.push({tone:"warn",text:`The Michelin Guide announced its first edition covering ${S.locations[0].name}'s city. Inspectors eat anonymously, and nobody knows when they've been.`}); }
+    else if(!on&&S.world.guide){ S.world.guide=false; for(const l of S.locations){ l.stars=0; l.bib=false; l.selected=false; l.green=false; } R.events.push({tone:"warn",text:`The Michelin Guide stopped publishing here. Whatever it had given the city lapses with it.`}); } }
   if(S.world.guide && R.calMonth===S.world.guideMonth) guideRelease(R);
   otherGuides(R);
   resolveBids(R);
@@ -2596,7 +2599,7 @@ function backfillPerson(m){
   if(m.fame==null) m.fame=m.role==="chef"||m.role==="pastry"||m.role==="somm"? clamp(Math.round((m.skill-55)*1.2+certsOf(m).reduce((a,k)=>a+(certInfo(k).prestige||0)*5,0)+rnd(-5,5)),0,100) : 0;
   if(!Array.isArray(m.certs)) m.certs=plausibleCerts(m.role,m.skill,m.years);
 }
-const STAR_TH=[0,77,86,93], STAR_VISITS=[0,2,3,4];
+const STAR_TH=[0,84,91,95], STAR_VISITS=[0,2,3,4];
 const CRITICS=["The city paper's critic","A national food magazine","The regional daily","An influential food newsletter","A wine-and-food monthly","A national newspaper's restaurant critic","An international food and travel site","A city lifestyle magazine"];
 const CRITIC_WORDS=["Poor","Good","Very good","Excellent","Extraordinary"];
 const FIRST=["Dani","Marco","Aiko","Tomás","Priya","Élodie","Kwame","Sofia","Mateo","Hye-jin","Olu","Camille","Rafael","Ingrid","Yusuf","Beatriz","Luca","Nadia","Jonah","Mei","Ana","Idris","Fern","Theo"];
@@ -2780,6 +2783,7 @@ function ensureHighEnd(s){
   s.archOffers=Array.isArray(s.archOffers)?s.archOffers:[];
   s.trainOffers=Array.isArray(s.trainOffers)?s.trainOffers:[];
   if(s.world.guide===undefined) s.world.guide = ["core","resort"].includes(s.market) || (s.concept==="fine");
+  if(s.world.guideAuto==null) s.world.guideAuto=true;
   if(s.world.guideMonth==null) s.world.guideMonth=10;
   if(s.actionsMax==null) s.actionsMax=3;
 }
@@ -3896,9 +3900,10 @@ function pressVisits(loc,crit,R){
   perfTick(loc,crit);
   guestReviewTick(loc);
   if(S.world.guide && loc.monthsOpen>=3){
-    const p=.10+(loc.selected?.12:0)+(loc.stars?.18:0)+(loc.rep>68?.1:0)+(loc.awareness>60?.05:0);
+    const p=(.10+(loc.selected?.12:0)+(loc.stars?.18:0)+(loc.rep>68?.1:0)+(loc.awareness>60?.05:0))*(locTier(loc)==="low"?.35:1);   // inspectors rarely queue at a counter
     if(Math.random()<p){
-      P.inspections.push({m:S.monthIdx,score:clamp(crit.overall+rnd(-5,5),0,100)});
+      const scale=clamp(((loc.seats||0)-100)/20,0,8);   // a 200-seat room rarely cooks every plate the way a 40-seat one can, and inspectors know it
+      P.inspections.push({m:S.monthIdx,score:clamp(crit.overall+rnd(-5,5)-scale,0,100)});
       if(Math.random()<.45){ P.suspected++; R.events.push({tone:"warn",text:pick(SUSPECT)}); }
     }
   }
@@ -4159,6 +4164,24 @@ function envTick(R){
     const dr=DRIFT[loc.env]; if(dr&&(loc.monthsOpen||0)>dr[1]&&Math.random()<dr[2]){ loc.env=dr[0]; R.events.push({tone:"warn",text:dr[3]}); chronicle(`The setting around ${loc.name} changed: now ${ENVS[dr[0]].name.toLowerCase()}.`); }
   }
 }
+
+/* ---- where and since when the Michelin Guide publishes (the city edition's first year; a guide that stopped has an end year) ---- */
+const MICHELIN_PLACES=[
+  [/new york|manhattan|brooklyn|queens|\bnyc\b/,2005],[/san francisco|napa|yountville|sonoma|oakland|berkeley|palo alto|silicon valley|bay area/,2006],
+  [/los angeles|hollywood|santa monica|beverly hills|pasadena/,2007,2009],[/california|los angeles|hollywood|santa monica|beverly hills|san diego|sacramento|orange county|carmel|monterey/,2019],
+  [/chicago/,2010],[/washington,? d\.?c|\bd\.c\.\b/,2016],[/miami|orlando|tampa|florida/,2022],[/atlanta/,2023],[/denver|boulder|aspen|colorado/,2023],
+  [/austin|dallas|houston|san antonio|texas/,2024],[/las vegas|the strip/,2008,2009],[/toronto|vancouver/,2022],[/montr[eé]al|qu[eé]bec/,2025],[/mexico city|cdmx|oaxaca|baja|los cabos|mexico/,2024],
+  [/tokyo|kyoto|osaka|japan|nara|hokkaido|fukuoka/,2007],[/hong kong|kowloon|macau|macao|cotai/,2009],[/singapore/,2016],[/seoul|busan|korea/,2016],[/shanghai/,2016],[/guangzhou/,2018],
+  [/beijing/,2019],[/taipei|taichung|tainan|kaohsiung|taiwan/,2018],[/bangkok|phuket|chiang mai|thailand/,2017],[/kuala lumpur|penang|malaysia/,2022],[/hanoi|ho chi minh|saigon|da nang|vietnam/,2023],
+  [/dubai/,2022],[/abu dhabi/,2023],[/\bdoha\b|qatar/,2025],
+  [/london|united kingdom|\buk\b|england|scotland|wales|ireland|edinburgh|manchester|bristol|dublin/,1974],[/paris|lyon|marseille|bordeaux|france|nice/,1926],[/brussels|belgium|amsterdam|netherlands/,1957],
+  [/rome|milan|florence|venice|naples|italy/,1956],[/madrid|barcelona|san sebasti[aá]n|spain|lisbon|porto|portugal/,1974],[/berlin|munich|hamburg|germany/,1964],[/zurich|geneva|switzerland/,1994],
+  [/vienna|salzburg|austria/,2019],[/copenhagen|stockholm|oslo|helsinki|denmark|sweden|norway|finland|reykjavik|iceland/,2015]];
+function michelinPlace(){ const L=S.locations||[]; return [S.intl&&S.intl.home, MARKETS[S.market]&&MARKETS[S.market].name, S.customMarket&&S.customMarket.name].concat(L.map(l=>(l.setting&&l.setting.name)||"")).filter(Boolean).join(" ").toLowerCase(); }
+function michelinHere(){ const t=michelinPlace(), y=storyYear()||2026; return MICHELIN_PLACES.some(([re,from,to])=>re.test(t)&&y>=from&&(!to||y<=to)); }
+function michelinKnown(){ const t=michelinPlace(); return MICHELIN_PLACES.some(([re])=>re.test(t)); }
+// the Bib Gourmand's price limit: about $52 today for a meal there, in that year's money
+function bibCap(loc){ return 52*((MARKETS[loc.market]||{}).checkMult||1)*eraPriceFactor(); }
 function placeText(){ return [MARKETS[S.market]&&MARKETS[S.market].name, S.customMarket&&S.customMarket.name, S.world&&S.world.notes, S.circumstances, S.origin].filter(Boolean).join(" ").toLowerCase(); }
 function conceptText(){ const C=CONCEPTS[S.concept]||{}; return [C.name, C.blurb, S.customConcept&&S.customConcept.name, S.origin].filter(Boolean).join(" ").toLowerCase(); }
 function regionTags(){
@@ -6100,57 +6123,97 @@ function perfTick(loc,crit){
   for(const k in cur) loc.perf[k]=loc.perf[k]==null?cur[k]:loc.perf[k]*.8+cur[k]*.2;
 }
 const GUIDES=[
-  {key:"wsra",name:"Wine Spectator Restaurant Awards",month:5,p:3,fit:()=>(CONCEPTS[S.concept].alcohol||0)>=.08||S.cellar.value>20000,
+  {key:"wsra",since:1981,name:"Wine Spectator Restaurant Awards",month:5,p:3,fit:()=>(CONCEPTS[S.concept].alcohol||0)>=.08||S.cellar.value>20000,
    score:(P)=>P.wine*.8+Math.min(20,S.cellar.rare.reduce((a,b)=>a+(b.qty>0?(b.prestige||0)*(b.rarity||1)/2:0),0)),
    levels:[["Award of Excellence",48],["Best of Award of Excellence",70],["Grand Award",90]],
    extra:(lvl)=>lvl===0||(lvl===1&&S.cellar.value>=40000)||(lvl===2&&S.cellar.value>=150000&&S.team.some(t=>t.role==="somm"&&effSkill(t)>=80)&&S.cellar.rare.filter(b=>b.qty>0).length>=6)},
-  {key:"forbes",name:"Forbes Travel Guide",month:1,p:4,tiers:["mid","high"],score:P=>.35*P.service+.25*P.room+.25*P.food+.15*P.cons,
+  {key:"forbes",since:1958,name:"Forbes Travel Guide",month:1,p:4,tiers:["mid","high"],score:P=>.35*P.service+.25*P.room+.25*P.food+.15*P.cons,
    levels:[["Recommended",74],["Four-Star",85],["Five-Star",94]]},
-  {key:"aaa",name:"AAA Diamond",month:3,p:3,regions:["us","canada","mexico"],tiers:["mid","high"],score:P=>.35*P.food+.25*P.service+.25*P.room+.15*P.cons,
+  {key:"aaa",since:1977,name:"AAA Diamond",month:3,p:3,regions:["us","canada","mexico"],tiers:["mid","high"],score:P=>.35*P.food+.25*P.service+.25*P.room+.15*P.cons,
    levels:[["Four Diamond",84],["Five Diamond",94]]},
-  {key:"w50b",name:"The World's 50 Best Restaurants",month:10,p:5,tiers:["high"],score:P=>.3*P.food+.3*P.pers+.2*P.buzz+.2*P.rep,
+  {key:"w50b",since:2002,name:"The World's 50 Best Restaurants",month:10,p:5,tiers:["high"],score:P=>.3*P.food+.3*P.pers+.2*P.buzz+.2*P.rep,
    levels:[["No. 51-100",91],["The World's 50 Best",95],["Top 10 in the world",98],["The World's Best Restaurant",99.5]],retireAt:3},
-  {key:"laliste",name:"La Liste",month:10,p:3,tiers:["mid","high"],score:(P,loc)=>.45*P.food+.2*P.service+.2*P.cons+.15*P.rep+Math.min(6,Object.keys(loc.awards||{}).length*1.5),
+  {key:"laliste",since:2015,name:"La Liste",month:10,p:3,tiers:["mid","high"],score:(P,loc)=>.45*P.food+.2*P.service+.2*P.cons+.15*P.rep+Math.min(6,Object.keys(loc.awards||{}).length*1.5),
    levels:[["Listed",82],["90+ points",90],["Top 100 in the world",96]]},
-  {key:"gault",name:"Gault&Millau",month:1,p:3,regions:["europe"],score:P=>.5*P.food+.2*P.pers+.15*P.cons+.15*P.service,
+  {key:"gault",since:1972,name:"Gault&Millau",month:1,p:3,regions:["europe"],score:P=>.5*P.food+.2*P.pers+.15*P.cons+.15*P.service,
    levels:[["1 toque",70],["2 toques",78],["3 toques",85],["4 toques",91],["5 toques",96]]},
-  {key:"tmbbq",name:"Texas Monthly Top 50 BBQ Joints",month:4,cycle:4,p:4,regions:["texas"],genres:["bbq"],score:P=>.55*P.food+.2*P.cons+.15*P.buzz+.1*P.value,
+  {key:"tmbbq",since:1997,name:"Texas Monthly Top 50 BBQ Joints",month:4,cycle:4,p:4,regions:["texas"],genres:["bbq"],score:P=>.55*P.food+.2*P.cons+.15*P.buzz+.1*P.value,
    levels:[["Honorable mention",76],["Top 50",80],["Top 10",90],["No. 1 in Texas",96]]},
-  {key:"pizza50",name:"50 Top Pizza",month:6,p:3,genres:["pizza"],score:P=>.6*P.food+.2*P.cons+.2*P.buzz,
+  {key:"pizza50",since:2017,name:"50 Top Pizza",month:6,p:3,genres:["pizza"],score:P=>.6*P.food+.2*P.cons+.2*P.buzz,
    levels:[["Excellent Pizzerias list",76],["Top 50 in the country",86],["World's top 50",93]]},
-  {key:"tabelog",name:"The Tabelog Award",month:1,p:4,regions:["japan"],score:P=>.5*P.food+.3*P.rep+.2*P.cons,
+  {key:"tabelog",since:2017,name:"The Tabelog Award",month:1,p:4,regions:["japan"],score:P=>.5*P.food+.3*P.rep+.2*P.cons,
    levels:[["Bronze",83],["Silver",89],["Gold",95]]},
-  {key:"gfguk",name:"The Good Food Guide",month:8,p:3,regions:["uk"],score:P=>.55*P.food+.2*P.cons+.15*P.service+.1*P.room,
+  {key:"gfguk",since:1951,name:"The Good Food Guide",month:8,p:3,regions:["uk"],score:P=>.55*P.food+.2*P.cons+.15*P.service+.1*P.room,
    levels:[["Listed",70],["Top 100",86],["Top 20",93]]},
-  {key:"gfgau",name:"Good Food Guide hats",month:9,p:3,regions:["australia"],score:P=>.55*P.food+.2*P.service+.15*P.room+.1*P.cons,
+  {key:"gfgau",since:1985,name:"Good Food Guide hats",month:9,p:3,regions:["australia"],score:P=>.55*P.food+.2*P.service+.15*P.room+.1*P.cons,
    levels:[["One hat",78],["Two hats",86],["Three hats",93]]},
-  {key:"vendy",name:"The Vendy Awards",month:8,p:2,regions:["us"],genres:["truck"],score:P=>.5*P.food+.25*P.buzz+.25*P.value,
+  {key:"vendy",since:2005,name:"The Vendy Awards",month:8,p:2,regions:["us"],genres:["truck"],score:P=>.5*P.food+.25*P.buzz+.25*P.value,
    levels:[["Finalist",78],["Vendy Cup",88]]},
-  {key:"eater",name:"the local Eater 38",month:[0,3,6,9],p:2,regions:["us"],score:P=>.45*P.food+.3*P.buzz+.25*P.pers,
+  {key:"eater",since:2011,name:"the local Eater 38",month:[0,3,6,9],p:2,regions:["us"],score:P=>.45*P.food+.3*P.buzz+.25*P.pers,
    levels:[["On the Eater 38",74]]},
-  {key:"beard_new",name:"James Beard Awards · Best New Restaurant",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],minOpen:6,maxOpen:26,score:P=>.45*P.food+.25*P.pers+.15*P.service+.15*P.buzz,
+  {key:"beard_new",since:1995,name:"James Beard Awards · Best New Restaurant",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],minOpen:6,maxOpen:26,score:P=>.45*P.food+.25*P.pers+.15*P.service+.15*P.buzz,
    levels:[["Semifinalist",84],["Nominee",90],["Winner",95]]},
-  {key:"beard_emerging",name:"James Beard Awards · Emerging Chef",month:[0,2,5],stages:{0:0,2:1,5:2},p:3,regions:["us"],need:"chef",fit:()=>{const c=S.team.find(t=>t.role==="chef"); return c&&(c.years||0)<=10;},score:P=>.5*P.food+.35*P.pers+.15*P.buzz,
+  {key:"beard_emerging",since:1991,name:"James Beard Awards · Emerging Chef",month:[0,2,5],stages:{0:0,2:1,5:2},p:3,regions:["us"],need:"chef",fit:()=>{const c=S.team.find(t=>t.role==="chef"); return c&&(c.years||0)<=10;},score:P=>.5*P.food+.35*P.pers+.15*P.buzz,
    levels:[["Semifinalist",82],["Nominee",89],["Winner",94]]},
-  {key:"beard_chef",name:"James Beard Awards · Best Chef",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],need:"chef",score:P=>.55*P.food+.3*P.pers+.15*P.cons,
+  {key:"beard_chef",since:1991,name:"James Beard Awards · Best Chef",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],need:"chef",score:P=>.55*P.food+.3*P.pers+.15*P.cons,
    levels:[["Semifinalist",84],["Nominee",90],["Winner",95]]},
-  {key:"beard_pastry",name:"James Beard Awards · Outstanding Pastry Chef",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],need:"pastry",score:(P)=>{const m=S.team.find(t=>t.role==="pastry"); return .6*(m?effSkill(m):0)+.4*P.food;},
+  {key:"beard_pastry",since:1991,name:"James Beard Awards · Outstanding Pastry Chef",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],need:"pastry",score:(P)=>{const m=S.team.find(t=>t.role==="pastry"); return .6*(m?effSkill(m):0)+.4*P.food;},
    levels:[["Semifinalist",84],["Nominee",90],["Winner",95]]},
-  {key:"beard_bev",name:"James Beard Awards · Outstanding Professional in Beverage Service",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],need:"somm",score:(P)=>{const m=S.team.find(t=>t.role==="somm"); return .5*P.wine+.5*(m?effSkill(m):0);},
+  {key:"beard_bev",since:1991,name:"James Beard Awards · Outstanding Professional in Beverage Service",month:[0,2,5],stages:{0:0,2:1,5:2},p:4,regions:["us"],need:"somm",score:(P)=>{const m=S.team.find(t=>t.role==="somm"); return .5*P.wine+.5*(m?effSkill(m):0);},
    levels:[["Semifinalist",84],["Nominee",90],["Winner",95]]},
-  {key:"beard_rest",name:"James Beard Awards · Outstanding Restaurant",month:[0,2,5],stages:{0:0,2:1,5:2},p:5,regions:["us"],minOpen:120,score:P=>.4*P.food+.2*P.service+.2*P.cons+.2*P.rep,
+  {key:"beard_rest",since:1991,name:"James Beard Awards · Outstanding Restaurant",month:[0,2,5],stages:{0:0,2:1,5:2},p:5,regions:["us"],minOpen:120,score:P=>.4*P.food+.2*P.service+.2*P.cons+.2*P.rep,
    levels:[["Semifinalist",86],["Nominee",92],["Winner",96]]},
-  {key:"beard_classic",name:"James Beard Awards · America's Classics",month:1,p:4,regions:["us"],tiers:["low","mid"],minOpen:120,score:P=>.35*P.rep+.35*P.food+.3*P.value,
-   levels:[["Honoree",88]]}
+  {key:"beard_classic",since:1998,name:"James Beard Awards · America's Classics",month:1,p:4,regions:["us"],tiers:["low","mid"],minOpen:120,score:P=>.35*P.rep+.35*P.food+.3*P.value,
+   levels:[["Honoree",88]]},
+  // the rest of the world
+  {key:"asia50",since:2013,name:"Asia's 50 Best Restaurants",month:2,p:5,regions:["asia"],tiers:["high"],score:P=>.3*P.food+.3*P.pers+.2*P.buzz+.2*P.rep,
+   levels:[["No. 51-100",89],["Asia's 50 Best",93],["Top 10 in Asia",97],["Asia's Best Restaurant",99.3]],retireAt:3},
+  {key:"lat50",since:2013,name:"Latin America's 50 Best Restaurants",month:10,p:5,regions:["latam"],tiers:["high"],score:P=>.3*P.food+.3*P.pers+.2*P.buzz+.2*P.rep,
+   levels:[["No. 51-100",89],["Latin America's 50 Best",93],["Top 10 in Latin America",97],["Latin America's Best Restaurant",99.3]],retireAt:3},
+  {key:"mena50",since:2022,name:"Middle East & North Africa's 50 Best Restaurants",month:1,p:5,regions:["mena"],tiers:["mid","high"],score:P=>.3*P.food+.3*P.pers+.2*P.buzz+.2*P.rep,
+   levels:[["MENA's 50 Best",92],["Top 10 in the region",96],["MENA's Best Restaurant",99.3]],retireAt:2},
+  {key:"blackpearl",since:2018,name:"Black Pearl Restaurant Guide",month:0,p:4,regions:["cn","hk","mo"],tiers:["mid","high"],score:P=>.5*P.food+.2*P.service+.15*P.room+.15*P.cons,
+   levels:[["One Diamond",84],["Two Diamonds",90],["Three Diamonds",95]]},
+  {key:"tatler",since:2019,name:"Tatler Dining",month:4,p:2,regions:["hk","mo","sg","th","tw"],tiers:["mid","high"],score:P=>.45*P.food+.2*P.service+.2*P.room+.15*P.buzz,
+   levels:[["Tatler Best",80],["Tatler Dining 20",93]]},
+  {key:"openrice",since:2010,name:"OpenRice Best Restaurant Awards",month:3,p:2,regions:["hk","mo"],score:P=>.4*P.food+.3*P.value+.3*P.buzz,
+   levels:[["Best Restaurant Award",80]]},
+  {key:"hyakumeiten",since:2017,name:"Tabelog Hyakumeiten",month:[3,9],p:2,regions:["jp"],score:P=>.55*P.food+.25*P.rep+.2*P.value,
+   levels:[["Tabelog 100, in its genre",82]]},
+  {key:"blueribbon",since:2005,name:"Blue Ribbon Survey",month:11,p:3,regions:["kr"],score:P=>.5*P.food+.2*P.service+.15*P.cons+.15*P.rep,
+   levels:[["One ribbon",78],["Two ribbons",86],["Three ribbons",93]]},
+  {key:"gambero",since:1990,name:"Gambero Rosso Ristoranti d'Italia",month:9,p:3,regions:["italy"],score:P=>.55*P.food+.2*P.service+.15*P.room+.1*P.cons,
+   levels:[["One fork",78],["Two forks",86],["Three forks",93]]},
+  {key:"repsol",since:2016,name:"Guía Repsol",month:1,p:3,regions:["spain"],score:P=>.55*P.food+.2*P.service+.15*P.pers+.1*P.cons,
+   levels:[["One Sun",80],["Two Suns",88],["Three Suns",94]]},
+  {key:"can100",since:2015,name:"Canada's 100 Best Restaurants",month:3,p:3,regions:["canada"],tiers:["mid","high"],score:P=>.45*P.food+.2*P.pers+.2*P.service+.15*P.buzz,
+   levels:[["Canada's 100 Best",84],["Top 10 in Canada",93],["No. 1 in Canada",97]]}
 ];
 function guideName(g){
+  const y=storyYear();
+  if(g.key==="forbes"&&y&&y<2009) return "Mobil Travel Guide";
+  if(g.key==="beard_emerging"&&y&&y<2022) return "James Beard Awards · Rising Star Chef of the Year";
+  if(g.key==="beard_bev"&&y&&y<2012) return "James Beard Awards · Outstanding Wine Service";
   if(g.key!=="beard_chef") return g.name;
-  const r=regionTags(), t=placeText();
-  const reg=r.has("texas")?"Texas":r.has("nyc")?"New York State":/california|los angeles|san francisco|san diego/.test(t)?"California":/chicago|illinois|ohio|michigan|minnesota|wisconsin/.test(t)?"Great Lakes or Midwest":/nevada|las vegas|arizona|utah|colorado|new mexico/.test(t)?"Mountain or Southwest":/florida|georgia|carolina|tennessee|louisiana|new orleans/.test(t)?"South or Southeast":"your region";
+  const r=regionTags(), t=michelinPlace()||placeText();   // where the restaurant is, not every place its notes mention
+  const reg=/new york|manhattan|brooklyn|queens|\bnyc\b/.test(t)?"New York State":/texas|austin|dallas|houston|san antonio/.test(t)?"Texas":r.has("texas")&&!r.has("nyc")?"Texas":r.has("nyc")?"New York State":/california|los angeles|san francisco|san diego/.test(t)?"California":/chicago|illinois|ohio|michigan|minnesota|wisconsin/.test(t)?"Great Lakes or Midwest":/nevada|las vegas|arizona|utah|colorado|new mexico/.test(t)?"Mountain or Southwest":/florida|georgia|carolina|tennessee|louisiana|new orleans/.test(t)?"South or Southeast":"your region";
   return `${g.name}: ${reg}`;
 }
+// the regions a guide can cover: the engine's own tags plus countries and blocs, read from where the restaurant actually is
+function guideTags(){ const g=new Set(regionTags()), t=((S.intl&&S.intl.home)||"").toLowerCase()+" "+michelinPlace();
+  const add=(tag,re)=>{ if(re.test(t)) g.add(tag); };
+  add("sg",/singapore/); add("hk",/hong kong|kowloon/); add("mo",/macau|macao|cotai/); add("jp",/japan|tokyo|kyoto|osaka/); add("kr",/korea|seoul|busan/);
+  add("cn",/china|shanghai|beijing|guangzhou|shenzhen|chengdu|hangzhou/); add("tw",/taiwan|taipei/); add("th",/thailand|bangkok|phuket/);
+  add("italy",/italy|rome|milan|florence|venice|naples/); add("spain",/spain|madrid|barcelona|san sebasti/); add("canada",/canada|toronto|vancouver|montr/);
+  add("latam",/mexico|cdmx|oaxaca|peru|lima|brazil|s[aã]o paulo|rio de janeiro|argentina|buenos aires|chile|santiago|colombia|bogot/);
+  add("mena",/dubai|abu dhabi|emirates|\buae\b|qatar|doha|saudi|riyadh|lebanon|beirut|morocco|marrakech|egypt|cairo|israel|tel aviv|bahrain|oman|jordan/);
+  if(["sg","hk","mo","jp","kr","cn","tw","th"].some(x=>g.has(x))||/malaysia|vietnam|indonesia|philippines|india|kuala lumpur|jakarta|manila|mumbai|delhi/.test(t)) g.add("asia");
+  if(g.size>1&&!/united states/.test(t)&&["sg","hk","mo","jp","kr","cn","tw","th","italy","spain","canada","latam","mena"].some(x=>g.has(x))) g.delete("us");
+  return g; }
+function allGuides(){ return GUIDES.concat(((S&&S.localGuides)||[]).map(localGuideObj)); }
 function guideApplies(g,loc){
-  const rg=regionTags(), gn=genreTags();
+  const rg=guideTags(), gn=genreTags(), y=storyYear();
+  if(y&&g.since&&y<g.since) return false; if(y&&g.until&&y>g.until) return false;
   if(g.regions&&!g.regions.some(r=>rg.has(r))) return false;
   if(g.genres&&!g.genres.some(x=>gn.has(x))) return false;
   if(g.tiers&&!g.tiers.includes(locTier(loc))) return false;
@@ -6165,7 +6228,7 @@ function otherGuides(R){
     if(loc.status!=="open"||!loc.perf) continue;
     loc.awards=loc.awards||{};
     const li=S.locations.indexOf(loc);
-    for(const g of GUIDES){
+    for(const g of allGuides()){
       if(!guideDue(g,R.calMonth)) continue;
       const prev=loc.awards[g.key]||null;
       if(!guideApplies(g,loc)||(loc.monthsOpen<(g.minOpen||6))||(g.maxOpen&&loc.monthsOpen>g.maxOpen)){ if(prev&&g.stages&&!prev.retired) delete loc.awards[g.key]; continue; }
@@ -6212,10 +6275,10 @@ function guideRelease(R){
     const eff=avg-Math.max(0,sd-4)*.8-(loc.chefChange!=null&&S.monthIdx-loc.chefChange<12?4:0);
     let stars=prev.stars;
     if(stars<3 && eff>=STAR_TH[stars+1] && cyc.length>=STAR_VISITS[stars+1]) stars++;
-    else if(stars>0 && eff<STAR_TH[stars]-3) stars--;
+    else if(stars>0 && eff<STAR_TH[stars]-5) stars--;   // the Guide is slow to take a star away
     loc.stars=stars;
-    loc.selected = eff>=62 || stars>0;
-    loc.bib = !stars && eff>=66 && (menuStats().valueCheck||menuStats().foodCheck)*S.dials.price <= 52*MARKETS[loc.market].checkMult;
+    loc.selected = eff>=74 || stars>0;
+    loc.bib = !stars && eff>=76 && (menuStats().valueCheck||menuStats().foodCheck)*S.dials.price <= bibCap(loc);
     loc.green = eff>=66 && greenShare()>=.55;
     P.history.unshift({when:`${dateName(S.calMonth,S.year)}`,stars,bib:loc.bib,green:loc.green,sel:loc.selected,visits:cyc.length});
     P.history=P.history.slice(0,12);
@@ -8573,7 +8636,7 @@ function wireOffice(){
     setTimeout(()=>{ if(rb.isConnected){ delete rb.dataset.armed; rb.className="btn sm sec"; rb.textContent="Delete this save"; } },4000);
   };
   const wl=$("#worldLiving"); if(wl) wl.onchange=()=>{ S.world.living=wl.checked; save(); };
-  const wg=$("#worldGuide"); if(wg) wg.onchange=()=>{ S.world.guide=wg.checked; save(); };
+  const wg=$("#worldGuide"); if(wg) wg.onchange=()=>{ S.world.guide=wg.checked; S.world.guideAuto=false; save(); };
   const wgm=$("#worldGuideMonth"); if(wgm) wgm.onchange=()=>{ S.world.guideMonth=+wgm.value; save(); };
   const ig=$("#injGo"); if(ig) ig.onclick=()=>{ const t=$("#injT").value.trim(); if(!t){ $("#injOut").textContent="Write what happens first."; return; } injectEvent(t,ig,$("#injOut")); };
   wireSaves();
@@ -9517,21 +9580,45 @@ function rivalsHTML(){
     rv.map(r=>`<div class="kv"><span>${esc(r.name)}<span class="note"> · chef ${esc(r.chef)}${r.price&&!r.closed?` · prices ${r.price<S.dials.price*.97?"below":r.price>S.dials.price*1.03?"above":"about the same as"} yours`:""}${r.closed?" · closed":r.opened!=null&&S.monthIdx-r.opened<14?` · opened ${Math.max(1,S.monthIdx-r.opened)} mo ago, still finding its feet`:""}</span></span><span class="n">${r.closed?"—":`quality ${Math.round(r.q)} · buzz ${Math.round(r.buzz)}`}</span></div>`).join("")+
     `<p class="note" style="margin:8px 0 0">Rivals who cook better than you make guide recognition harder to win. ${locTier(S.locations[0])==="high"?"At this level they compete for talent, press, hosts and the same guides, rarely on price.":"At this level they compete on price, location and whatever's going viral this week."}</p></div></div>`;
 }
+
+/* ---- the awards that matter wherever the restaurant is, looked up by Claude ---- */
+const PERF_KEYS=["food","service","room","cons","pers","value","wine","buzz","rep"];
+function localGuideObj(d){ const w=d.weights||{}, tot=PERF_KEYS.reduce((a,k)=>a+(+w[k]||0),0)||1;
+  return {key:d.key,name:d.name,since:d.since||null,month:d.month,p:d.p||3,tiers:d.tiers&&d.tiers.length?d.tiers:null,local:true,
+    score:P=>PERF_KEYS.reduce((a,k)=>a+(+w[k]||0)/tot*(P[k]==null?50:P[k]),0),levels:d.levels}; }
+const LOCALGUIDE_RULES=()=>`You know the restaurant guides, awards and rankings that matter country by country. List the ones a restaurant here could really earn${storyYear()?` as they stood in ${storyYear()}`:""}: national and city guides, newspaper and magazine rankings, industry awards, the ones locals and the local press actually care about. Only real ones that existed then. Leave out any the game already runs here: ${allGuides().filter(g=>guideApplies(g,S.locations[0])).map(g=>guideName(g)).join("; ")||"none"}; and the Michelin Guide.
+For each: name; since (the year it began); month (0-11, when results come out); tiers (which price levels it covers, from low, mid, high; [] for all); weights (how much it cares about each, summing to 1: food, service, room, cons for consistency, pers for the chef's personality, value, wine, buzz, rep); levels (1-5 steps from lowest to highest, each [name, the 0-100 score needed], where 70 is a good restaurant, 85 excellent and 95 among the country's very best); p (1-5, how much it moves business).
+Reply with ONLY JSON: {"guides":[{"name":"","since":2000,"month":3,"tiers":[],"weights":{"food":0.5,"service":0.2,"room":0.1,"cons":0.1,"rep":0.1},"levels":[["",80]],"p":3}]}`;
+function applyLocalGuides(r){ const list=(Array.isArray(r&&r.guides)?r.guides:[]).slice(0,8), out=[]; S.localGuides=S.localGuides||[];
+  for(const g of list){ const name=clip(String(g.name||"").trim(),70); if(!name||/michelin/i.test(name)||allGuides().some(x=>x.name.toLowerCase()===name.toLowerCase())) continue;
+    const levels=(Array.isArray(g.levels)?g.levels:[]).map(l=>[clip(String((l&&l[0])||"Listed"),40),clamp(Number(l&&l[1])||80,55,99.5)]).slice(0,5).sort((a,b)=>a[1]-b[1]); if(!levels.length) continue;
+    const w={}; for(const k of PERF_KEYS) if(Number((g.weights||{})[k])>0) w[k]=Number(g.weights[k]);
+    const d={key:"x:"+name,name,since:Math.round(Number(g.since)||0)||null,month:Math.round(clamp(Number(g.month)||0,0,11)),tiers:(Array.isArray(g.tiers)?g.tiers:[]).filter(x=>["low","mid","high"].includes(x)),weights:Object.keys(w).length?w:{food:.6,service:.2,rep:.2},levels,p:Math.round(clamp(Number(g.p)||3,1,5))};
+    S.localGuides.push(d); out.push(name); }
+  return out; }
+function localGuidesHTML(){
+  if(!exp("guides")) return ""; const lg=S.localGuides||[];
+  return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Local guides and awards</h3></div><div class="bd">
+    <p class="note" style="margin:0 0 8px">The game runs the big international and national guides for the places it knows. Claude can look up the ones that matter here${storyYear()?` as of ${storyYear()}`:""}, and they'll judge you like the rest.</p>
+    ${lg.map(d=>`<div class="kv"><span>${esc(d.name)}<span class="note"> · ${MONTHS[d.month]}${d.since?` · since ${d.since}`:""}</span></span><span class="n">${d.levels.map(l=>esc(l[0])).join(" · ")}</span></div>`).join("")}
+    <button class="btn sm${lg.length?" sec":""}" id="localGuideGo" style="margin-top:8px" ${sampleFn?"":"disabled"}>${lg.length?"Look for more":"Look up the local awards"}</button><div class="note" id="localGuideOut" style="margin-top:6px">${sampleFn?"":"Needs Claude, which this view can't reach."}</div></div></div>`;
+}
 function pressHTML(){
   const monthsTo=(S.world.guideMonth-S.calMonth+12)%12;
   return `<div class="sec" style="padding-top:18px">
   <h2>Press &amp; the Guide</h2>
   <p class="lede">Michelin inspectors book under ordinary names, pay for every meal and come back several times before anything changes. They judge five things on the plate: ingredients, technique, harmony, the chef's personality and consistency. ${S.world.guide?`The Guide is released every ${MONTHS[S.world.guideMonth]}${monthsTo?`; the next one is ${monthsTo} month${monthsTo>1?"s":""} away`:"; it comes out at the end of this month"}.`:"There's no Michelin Guide in this market. You can change that in the Office."}</p>
   ${exp("rivals")?rivalsHTML():""}
+  ${localGuidesHTML()}
   ${S.locations.map(l=>{const P=l.press; const cyc=P.inspections.filter(i=>i.m>S.monthIdx-12).length;
     return `<div class="grid g2" style="margin-bottom:14px">
     <div class="stack">
       <div class="panel"><div class="hd"><h3>${esc(l.name)}</h3></div><div class="bd">
-        <div class="accolade">${l.stars?`${starGlyphs(l.stars)} <span>${l.stars} Michelin star${l.stars>1?"s":""}</span>`:l.bib?`<span>Bib Gourmand</span>`:l.selected?`<span>Recommended in the Guide</span>`:`<span class="note" style="font-size:15px">Not in the Guide</span>`}${l.green?' <span class="pill g">Green Star</span>':""}</div>
+        <div class="accolade">${l.stars?`${starGlyphs(l.stars)} <span>${l.stars} Michelin star${l.stars>1?"s":""}</span>`:l.bib?`<span>Bib Gourmand</span>`:l.selected?`<span>Recommended in the Guide</span>`:`<span class="note" style="font-size:15px">${S.world.guide?"Not in the Guide":"No Michelin Guide covers this city"}</span>`}${l.green?' <span class="pill g">Green Star</span>':""}</div>
         <div style="margin-bottom:8px"><div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:4px">Who eats here</div>${Object.entries(segmentMix(l)).filter(([k,v])=>v>.01).map(([k,v])=>`<div class="kv"><span>${SEGMENTS[k].name}</span><span class="n">${Math.round(v*100)}%</span></div>`).join("")}</div>
         <div class="kv"><span>Guest rating</span><span class="n">${guestRating(l).toFixed(1)} / 5${l.gr?` <span class="note">from ${Math.round(l.gr.n)} recent reviews</span>`:""}</span></div>
         ${(l.grRecent||[]).length?`<div style="margin-top:8px">`+(l.grRecent||[]).slice(0,6).map(g=>`<div class="hint" style="margin-top:6px">${"★".repeat(g.stars)}${"☆".repeat(5-g.stars)} ${esc(g.when)}${g.who&&SEGMENTS[g.who]?` · <span class="note">${esc(SEGMENTS[g.who].name.toLowerCase())}</span>`:""} · “${esc(g.text)}”${g.stars<=2&&!g.replied?` <button class="btn sm sec" data-grreply="${l.id}|${g.id}|0">Reply publicly</button> <button class="btn sm sec" data-grreply="${l.id}|${g.id}|1">Reply and invite them back</button>`:g.replied?` <span class="note">· you replied</span>`:""}</div>`).join("")+`</div>`:""}
-        ${(()=>{ const gs=exp("guides")?GUIDES.filter(g=>guideApplies(g,l)):[]; if(!gs.length) return "";
+        ${(()=>{ const gs=exp("guides")?allGuides().filter(g=>guideApplies(g,l)):[]; if(!gs.length) return "";
           return `<div style="margin-top:10px"><div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:4px">Other guides and awards that cover you</div>`+
             gs.map(g=>{ const a=(l.awards||{})[g.key]; const ms=Array.isArray(g.month)?g.month:[g.month];
               return `<div class="kv"><span>${esc(guideName(g))}<span class="note"> · ${ms.map(m=>MONTHS[m]).join("/")}${g.cycle?`, every ${g.cycle} years`:""}</span></span><span class="n">${a?esc(a.name):"—"}</span></div>`; }).join("")+`</div>`; })()}
@@ -9568,6 +9655,9 @@ async function writeReview(rv,loc,btn){
   }catch(e){ if(btn){ btn.disabled=false; btn.textContent=sampleError(e,"review")||"Try again"; } }
 }
 function wirePress(){
+  const lgg=$("#localGuideGo"); if(lgg) lgg.onclick=async()=>{ lgg.disabled=true;
+    const r=await claudeJSON(LOCALGUIDE_RULES(),`\n\nWHERE: ${S.locations[0].name}, ${michelinPlace()}`,$("#localGuideOut"),"guides","Asking around about the local awards…"); lgg.disabled=false; if(!r) return;
+    const got=applyLocalGuides(r); logIt("warn",got.length?`Local awards now tracked: ${got.join(", ")}.`:"No new local awards turned up."); keepY(); };
   document.querySelectorAll("[data-grreply]").forEach(b=>b.onclick=()=>{
     const [lid,gid,inv]=b.dataset.grreply.split("|"), l=S.locations.find(x=>x.id===lid), g=l&&(l.grRecent||[]).find(x=>x.id===gid); if(!g||g.replied) return;
     g.replied=true;
