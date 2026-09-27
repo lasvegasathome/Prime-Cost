@@ -555,6 +555,7 @@ function hoursOfInner(loc){
     loc.hours={days,svc:{breakfast:P.part[0]>0,lunch:P.part[1]>0,dinner:P.part[2]>0,late:P.part[3]>0}}; }
   return loc.hours;
 }
+function svcDaysLabel(a){ const on=DAYS.filter((d,i)=>a[i]); return on.length===3&&a[4]&&a[5]&&a[6]?"Fri–Sun":on.join(", "); }
 function hoursHTML(){
   return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Opening hours</h3></div><div class="bd">`+
     S.locations.filter(l=>l.status!=="closed").map(l=>{ const _c=enterLoc(l); try{ const H=hoursOf(l), P=weekProfile(), D=demandCore(S,l,S.calMonth), svcs=SVCS.filter((sv,k)=>P.part[k]>0||H.svc[sv]);
@@ -562,7 +563,7 @@ function hoursHTML(){
         const f=x.cap>0?x.cov/x.cap:0, full=x.dem>x.cap*1.02; return `<td style="text-align:center;padding:4px;background:color-mix(in srgb, var(--${full||f>.75?"good":f>.4?"warn":"rule2"}) ${Math.round(12+f*40)}%, transparent)${full?";font-weight:600":""}">${full?"full":Math.round(f*100)+"%"}</td>`; };
       return `<div style="margin-bottom:12px"><b style="font-weight:600">${esc(l.name)}</b>
         <div class="seg" style="margin-top:6px;flex-wrap:wrap">${DAYS.map((d,i)=>`<button data-hday="${l.id}|${i}" aria-pressed="${H.days[i]}">${d}</button>`).join("")}</div>
-        <div class="seg" style="margin-top:6px;flex-wrap:wrap">${SVCS.map(sv=>`<button data-hsvc="${l.id}|${sv}" aria-pressed="${!!H.svc[sv]}">${SVC_NAMES[sv]}</button>`).join("")}</div>
+        <div class="seg" style="margin-top:6px;flex-wrap:wrap">${SVCS.map(sv=>`<button data-hsvc="${l.id}|${sv}" aria-pressed="${!!H.svc[sv]}">${SVC_NAMES[sv]}${H.svc[sv]&&H.svcDays&&H.svcDays[sv]?` <span style="font-weight:400">(${svcDaysLabel(H.svcDays[sv])})</span>`:""}</button>`).join("")}</div>
         <div class="seg" style="margin-top:6px;flex-wrap:wrap"><button data-hcash="${l.id}" aria-pressed="${!!l.cashOnly}">Cash only</button></div>
         <div style="overflow-x:auto;margin-top:8px"><table style="border-collapse:collapse;font-size:12px;width:100%"><tr><th></th>${DAYS.map(d=>`<th class="note" style="padding:2px 4px">${d}</th>`).join("")}</tr>
           ${svcs.map(sv=>`<tr><td class="note" style="padding:4px 6px 4px 0;white-space:nowrap">${SVC_NAMES[sv]}</td>${DAYS.map((d,i)=>cell(i,sv)).join("")}</tr>`).join("")}</table></div>
@@ -615,7 +616,7 @@ function demandCoreInner(S,loc,calMonth){
     let dayLost=0; const daySlots=[];
     for(let k=0;k<4;k++){ const sv=SVCS[k], share=P.day[d]/7*P.part[k]; if(share<=0) continue;
       const dem=weekly*share;
-      if(!H.days[d]||!H.svc[sv]){ dayLost+=dem; continue; }
+      if(!H.days[d]||!H.svc[sv]||(H.svcDays&&H.svcDays[sv]&&!H.svcDays[sv][d])){ dayLost+=dem; continue; }   // svcDays: a service run on some days only (lunch Friday to Sunday)
       const turns=tasting? (sv==="dinner"?Math.min(2,turnCap):sv==="lunch"?1:0) : turnCap*capShare[k]/cs*(P.part.filter(x=>x>0).length>1?1.25:1);
       let cap=(C.seats>0? loc.seats*turns : C.truckCap*1.25*capShare[k]/cs)*capMult;
       if(tasting&&C.seats>0) cap=Math.min(cap,loc.seats*2*(1-closed));   // two full seatings is the physical ceiling
@@ -1421,7 +1422,7 @@ ${S.franchise?`FRANCHISE: ${S.bizName} is a ${S.franchise.brand} franchise owned
 MANAGEMENT & OFFICE: ${(S.office||[]).map(o=>`${o.name}, ${OFFICE_ROLES[o.role].name.toLowerCase()}${o.locId?` at ${(S.locations.find(l=>l.id===o.locId)||{}).name}`:""} (skill ${Math.round(o.skill)}, ${o.provider?`provided by ${o.provider}`:`${money(o.salary)}/yr`})`).join("; ")||"none; the owner runs everything"}
 ON THE DESK: ${[S.decision].concat(S.deskQueue||[]).filter(D=>D&&D.title).map(D=>D.title).join("; ")||"nothing"}
 LOCATIONS IN DETAIL: ${S.locations.map(l=>`${l.name}: ${locConcept(l).name}${l.status!=="open"?` (${l.status})`:""}, price adjustment ${pct(locPrice(l)-1,0)}, ${(l.menu||S.menu).dishes.length} dishes${l.menu?" (its own menu)":" (the group menu)"}, staff: ${staffAt(l).map(m=>`${m.name} (${ROLES[m.role].name.toLowerCase()})`).join(", ")||"no named staff; unnamed managers"}`).join(" | ")}
-HOURS: ${S.locations.map(l=>{ const H=hoursOf(l); return `${l.name}: ${DAYS.filter((d,i)=>H.days[i]).join(", ")}; ${SVCS.filter(x=>H.svc[x]).map(x=>SVC_NAMES[x].toLowerCase()).join(", ")}`; }).join(" | ")}
+HOURS: ${S.locations.map(l=>{ const H=hoursOf(l); return `${l.name}: ${DAYS.filter((d,i)=>H.days[i]).join(", ")}; ${SVCS.filter(x=>H.svc[x]).map(x=>SVC_NAMES[x].toLowerCase()+(H.svcDays&&H.svcDays[x]?` (${svcDaysLabel(H.svcDays[x])} only)`:"")).join(", ")}`; }).join(" | ")}
 SETTING: ${S.locations.map(l=>`${l.name}: ${envOf(l).name}. ${envOf(l).desc}`).join(" | ")}
 SERVICE MATH (last month, use these instead of guessing): ${(()=>{ const h=S.history[S.history.length-1], C=CONCEPTS[S.concept]||{}; if(!h||!h.covers) return "no full month yet";
   const l0=S.locations[0], seatsAll=S.locations.reduce((a,l)=>a+(l.seats||0),0), days=30, tpn=seatsAll?h.covers/(seatsAll*days):0, spend=h.rev/h.covers, tasting=S.menu&&S.menu.format==="tasting";
@@ -8149,7 +8150,7 @@ function wireOperate(){
   document.querySelectorAll("[data-hday]").forEach(b=>b.onclick=()=>{ const [lid,i]=b.dataset.hday.split("|"), l=S.locations.find(x=>x.id===lid); if(!l) return; const H=hoursOf(l);
     if(H.days[+i]&&H.days.filter(Boolean).length<=1) return; H.days[+i]=!H.days[+i]; re(); });
   document.querySelectorAll("[data-hsvc]").forEach(b=>b.onclick=()=>{ const [lid,sv]=b.dataset.hsvc.split("|"), l=S.locations.find(x=>x.id===lid); if(!l) return; const H=hoursOf(l);
-    if(H.svc[sv]&&SVCS.filter(x=>H.svc[x]).length<=1) return; H.svc[sv]=!H.svc[sv]; re(); });
+    if(H.svc[sv]&&SVCS.filter(x=>H.svc[x]).length<=1) return; H.svc[sv]=!H.svc[sv]; if(H.svcDays) delete H.svcDays[sv]; re(); });
   document.querySelectorAll("[data-hcash]").forEach(b=>b.onclick=()=>{ const l=S.locations.find(x=>x.id===b.dataset.hcash); if(!l) return; l.cashOnly=!l.cashOnly;
     logIt("warn",l.cashOnly?`${l.name} is cash only now: no card fees, but someone has to count it, bank it and keep it safe.`:`${l.name} takes cards again.`); re(); });
   document.querySelectorAll("[data-lpshare]").forEach(x=>x.onchange=()=>{ const l=S.locations.find(q=>q.id===x.dataset.lpshare); if(!l) return; l.price=x.checked?null:S.dials.price; re(); });
