@@ -392,6 +392,8 @@ const MONTHS_LONG=["January","February","March","April","May","June","July","Aug
 function playYear(cal,y){ return y; }
 function dateName(cal,y,st){ return `${MONTHS[cal]} Y${playYear(cal,y,st)}`; }
 function uid(){return Math.random().toString(36).slice(2,9);}
+// save slots need ids that differ between games, so they never come from the seeded generator: two games on the same seed would share one
+function newSlotId(){ const r=()=>_nativeRandom().toString(36).slice(2,9); return "s"+r()+r(); }
 
 function newLocation(cfg){
   const C=CONCEPTS[cfg.concept], M=MARKETS[cfg.market];
@@ -473,7 +475,7 @@ function newGameInner(cfg,seed0){
   const costs=openingCosts(cfg);
   cash-=costs.total;
 
-  return ensureState({
+  const g={
     v:2, seed:seed0,
     ownerName:cfg.ownerName||"You", bizName:cfg.bizName,
     concept:cfg.concept, market:cfg.market, traits:cfg.traits,
@@ -493,7 +495,10 @@ function newGameInner(cfg,seed0){
     history:[], log:[], flags:{}, actionsLeft:2, pendingEvents:[],
     gameOver:null, openingCosts:costs, ap:0, ar:0,
     savedAt:Date.now()
-  });
+  };
+  // ensureState's helpers (staff credentials, region, era) read the global S, so it has to be this game while they run
+  const prev=S; S=g;
+  try{ return ensureState(g); } finally{ S=prev; }
 }
 
 function amortPayment(P,annualRate,n){
@@ -639,7 +644,7 @@ function simulateMonth(S){
   const ms=menuStats();
   const R={month:S.monthIdx, calMonth:S.calMonth, year:S.year, locs:[], events:[], reviews:[]};
   let rev=0, revFood=0, revAlc=0, revDelivery=0, cogs=0, foodCogsT=0, bevCogsT=0, labor=0, occupancy=0, covers=0, lostCovers=0;
-  let utilities=0, repairs=0, supplies=0, cardFees=0, deliveryFee=0, otherFixed=0;
+  let utilities=0, repairs=0, supplies=0, cardFees=0, deliveryFee=0, otherFixed=0, salesTax=0;
 
   offlineKitTag();   // no Claude: the menu's equipment needs come from the rule of thumb
   S.inflation *= rnd(1.0012, 1.0055);   // food inflation grinds upward
@@ -753,6 +758,7 @@ function simulateMonth(S){
     const locDeliv = deliv*DP.rate;
 
     const fxk=fxFactor(loc);   // 1 at home; abroad, what the local currency is worth against home since you arrived
+    salesTax+=locRev*fxk*salesTaxRate(loc);
     rev+=locRev*fxk; revFood+=food*fxk; revAlc+=alc*fxk; revDelivery+=deliv*fxk;
     cogs+=(foodCogs+bevCogs+cateringCogs)*fxk; foodCogsT+=(foodCogs+cateringCogs)*fxk; bevCogsT+=bevCogs*fxk;
     labor+=locLabor*fxk; occupancy+=((loc.rent+loc.cam)*rentMult + locRev*((S.franchise&&S.franchise.rentPct)||0))*fxk;
@@ -809,7 +815,7 @@ function simulateMonth(S){
   }
 
   // virtual brands and delivery-only kitchens: their sales ride on the apps, their costs on the lines they belong to
-  const GK=ghostMonth(R); rev+=GK.rev; revDelivery+=GK.rev; cogs+=GK.food; foodCogsT+=GK.food; labor+=GK.labor; occupancy+=GK.rent; supplies+=GK.pack; deliveryFee+=GK.commission;
+  const GK=ghostMonth(R); salesTax+=GK.rev*salesTaxRate(null); rev+=GK.rev; revDelivery+=GK.rev; cogs+=GK.food; foodCogsT+=GK.food; labor+=GK.labor; occupancy+=GK.rent; supplies+=GK.pack; deliveryFee+=GK.commission;
   const marketing=mktTotal()+S.team.filter(m=>m.promo&&CELEB_ROLES.includes(m.role)).length*promoCost(); S.dials.marketing=mktTotal();   // publicists for the team count as marketing
   otherFixed = uniformEffects().monthly + policyEffects().monthly + (S.i9Program&&S.locations[0]? 900+Object.values(crewOf(S.locations[0])).reduce((a,c)=>a+c.n,0)*12 : 0) + 640 /*insurance*/ + 340 /*POS & software*/ + 420 /*accounting & payroll svc*/ + 190 /*pest, linen, music*/
              + S.locations.filter(l=>l.status!=="building").length*280 /*licences amortised*/
@@ -836,26 +842,33 @@ function simulateMonth(S){
 
   R.pl={rev,revFood,revAlc,revDelivery,cogs,foodCogs:foodCogsT,bevCogs:bevCogsT,labor,prime,occupancy,utilities,repairs,supplies,cardFees,
         deliveryFee,marketing,otherFixed,franchise,celebFee,depreciation,interest,ebitda,ebit,preTax,sideRev,covers:Math.round(covers),
-        lostCovers:Math.round(lostCovers),ghostRev:GK.rev,ghostOrders:GK.orders};
+        lostCovers:Math.round(lostCovers),ghostRev:GK.rev,ghostOrders:GK.orders,salesTax};
   return R;
+}
+// the tax on a meal where it's served: the country's rate abroad if it has one, otherwise the location's own market
+function salesTaxRate(loc){
+  const home=(MARKETS[S.market]||{}).taxRate||0;
+  if(!loc) return home;
+  if(intlOn()&&countryName(loc)!==intl().home){ const r=countryOf(loc).salesTax; if(r&&r.rate!=null) return r.rate; }
+  const M=MARKETS[loc.market]; return M&&M.taxRate!=null? M.taxRate : home;
 }
 
 function applyCashflow(S,R){
-  const M=MARKETS[S.market];
+  const M=MARKETS[S.market], cash0=S.cash;
   const pl=R.pl;
   // collections: cards settle in days, delivery apps pay weekly — a small tail rolls into next month
   const collected = pl.rev*0.972 + S.ar;
   S.ar = pl.rev*0.028;
   // sales tax is collected on top of the menu price and is never yours
-  const taxCollected = pl.rev*M.taxRate;
+  const taxCollected = pl.salesTax!=null? pl.salesTax : pl.rev*M.taxRate;
   S.salesTaxHeld += taxCollected;
 
   // purchases: you buy inventory, you don't buy "cost of goods sold"
   const foodBuy = pl.foodCogs*rnd(1.0,1.06);
   const capB = cellarCapacity()*48;
   const restock = Math.max(0, Math.min(S.cellar.target, capB) - S.cellar.value);   // the cellar is cash sitting on a shelf, and only as much shelf as you have
-  if(S.cellar.value>capB*1.02){ const lost=(S.cellar.value-capB)*.06; S.cellar.value-=lost;
-    R.events.push({tone:"bad",text:`About ${Math.round((S.cellar.value-capB)/48).toLocaleString()} bottles are stacked outside proper storage. Heat and light spoiled roughly ${money(lost)} of wine this month.`}); }
+  if(S.cellar.value>capB*1.02){ const over=S.cellar.value-capB, lost=over*.06; S.cellar.value-=lost;
+    R.events.push({tone:"bad",text:`About ${Math.round(over/48).toLocaleString()} bottles are stacked outside proper storage. Heat and light spoiled roughly ${money(lost)} of wine this month.`}); }
   S.cellar.value += restock;
   S.cellar.standing = clamp(S.cellar.standing + Math.min(3, restock/3000) + .3 - (S.flags.distress?4:0), 0, 100);
   const purchases = foodBuy + restock;
@@ -885,7 +898,7 @@ function applyCashflow(S,R){
   const net00 = collected + taxCollected - out;
   S.cash += net00;
   const backroom=heatCash(S,R), net0=net00+backroom;
-  const OWN=ownershipTick(S,R), net=net0-OWN.fees;
+  const OWN=ownershipTick(S,R), net=S.cash-cash0;   // everything that moved, owner distributions and funding included
 
   R.cf={collected,taxCollected,purchases,restock,apPaid,principal,draw:S.dials.draw,stOut,taxOut,out,net,backroom,fees:OWN.fees,dist:OWN.dist,funded:OWN.funded,
         closing:S.cash,clInterest,isQuarterEnd};
@@ -980,7 +993,7 @@ function rollEvents(S,R){
 function snapshotMonth(){
   if(!S||!S.slotId) return;
   const k=S.monthIdx%3, snap={at:Date.now(),label:`${dateName(S.calMonth,S.year)}`,monthIdx:S.monthIdx,state:JSON.parse(JSON.stringify(S))};
-  try{ lsSet("primecost.rw."+S.slotId+"."+k,JSON.stringify(snap)); }catch(e){}
+  try{ const key=RW_PREFIX+S.slotId+"."+k, v=JSON.stringify(snap); if(!lsSet(key,v)){ pruneOrphanRewinds(); lsSet(key,v); } }catch(e){}
   const col=userCol(); if(col){ try{ col.doc("rw_"+S.slotId+"_"+k).set(snap).catch(()=>{}); }catch(e){} }
 }
 let rewindList=null;
@@ -1173,7 +1186,7 @@ function ownershipTick(S,R){
   if(P){ O.liquidity=(O.liquidity==null?P.liquidity:O.liquidity)+dist+Math.round(P.netWorth/12*rnd(-.012,.014)*(1+P.leverage));
     if(Math.random()<.01){ const shock=rnd(-.35,.2); O.liquidity=Math.round(O.liquidity*(1+shock)); if(shock<-.15) R.events.push({tone:"bad",text:`${O.owner} took a hit elsewhere in its business this month. Expect them to watch every dollar for a while.`}); }
     // a stretched owner draws down the reserve it keeps with you
-    if(O.liquidity<opex*6&&S.cash>minRes*1.5&&Math.random()<.35){ const pull=Math.round((S.cash-minRes)*.15); S.cash-=pull; O.reserveFloor=Math.max(minRes,O.reserveFloor-pull); O.liquidity+=pull; O.distributed=(O.distributed||0)+pull;
+    if(O.liquidity<opex*6&&S.cash>minRes*1.5&&Math.random()<.35){ const pull=Math.round((S.cash-minRes)*.15); S.cash-=pull; dist+=pull; O.reserveFloor=Math.max(minRes,O.reserveFloor-pull); O.liquidity+=pull; O.distributed=(O.distributed||0)+pull;
       R.events.push({tone:"warn",text:`${O.owner} pulled ${money(pull)} out of the operating reserve. They need the cash more than you do.`}); } }
   if(S.cash<minRes){
     const need=Math.round(minRes-S.cash), liq=P?O.liquidity:Infinity;
@@ -1202,7 +1215,7 @@ function ownershipTick(S,R){
     const bud=O.budget||0, act=O.yearEbitda;
     const tol=O.profile?O.profile.terms.tolerance:.85, allowed=O.profile?O.profile.terms.missesAllowed:2;
     if(bud>0&&act<bud*tol){ O.misses=(O.misses||0)+1;
-      if(O.misses>=allowed){ S.gameOver={kind:"terminated",text:`${O.owner} exercised the termination clause after two years below the performance test (${money(act)} against a ${money(bud)} budget). Your fees end, and so does your time at ${S.bizName}. Over the contract you earned ${money(O.earned)} in fees.`}; }
+      if(O.misses>=allowed){ S.gameOver={kind:"terminated",text:`${O.owner} exercised the termination clause after ${allowed===1?"a year":`${["","","two","three","four","five"][allowed]||allowed} years`} below the performance test (${money(act)} against a ${money(bud)} budget). Your fees end, and so does your time at ${S.bizName}. Over the contract you earned ${money(O.earned)} in fees.`}; }
       else R.events.push({tone:"bad",text:`${S.bizName} missed ${poss(O.owner)} performance test: ${money(act)} of profit against a ${money(bud)} budget. Miss it again next year and they can terminate the agreement.`});
     } else { if(bud>0) R.events.push({tone:"good",text:`Passed ${poss(O.owner)} annual performance test: ${money(act)} of profit against a ${money(bud)} budget.`}); O.misses=0; }
     const g=O.profile?O.profile.terms.budgetGrowth:.03;
@@ -1360,6 +1373,13 @@ async function resetGame(){
   document.querySelectorAll(".modal").forEach(m=>m.remove());
   render(); window.scrollTo(0,0);
 }
+// the concept and market tables hold the loaded game's custom entries; loading another game swaps them, it doesn't add to them
+function applyTables(s){
+  if(s.customConcept) CONCEPTS.custom=s.customConcept; else delete CONCEPTS.custom;
+  if(s.customMarket) MARKETS.custom=s.customMarket; else delete MARKETS.custom;
+  for(const k of Object.keys(MARKETS)) if(k.startsWith("site_")&&!(s.siteMarkets&&k in s.siteMarkets)) delete MARKETS[k];
+  if(s.siteMarkets) Object.assign(MARKETS,s.siteMarkets);
+}
 function hydrate(s){
   if(!s) return null;
   if(!s.menu && s.concept==="fine"){
@@ -1369,10 +1389,9 @@ function hydrate(s){
     s.concept="custom";
     if(!s.cellar) s.cellar={value:45000,target:45000,ref:45000,markup:4.2,standing:12,rare:[]};
   }
-  if(s.customConcept) CONCEPTS.custom=s.customConcept;
-  if(s.customMarket) MARKETS.custom=s.customMarket;
-  if(s.siteMarkets) Object.assign(MARKETS,s.siteMarkets);
-  ensureState(s);
+  applyTables(s);
+  const prev=S; S=s;   // ensureState's helpers read the global S
+  try{ ensureState(s); } finally{ S=prev; }
   return s;
 }
 function loadLocal(){
@@ -1382,7 +1401,7 @@ function loadLocal(){
     // a save from before slots existed becomes the first slot
     const raw=lsGet(LSKEY); if(!raw) return null;
     const s=JSON.parse(raw); if(!(s&&s.v===2)) return null;
-    if(!s.slotId) s.slotId="s"+uid()+uid();
+    if(!s.slotId) s.slotId=newSlotId();
     hydrate(s); writeSlot(s,{remote:false}); lsSet(CUR_KEY,s.slotId); lsDel(LSKEY);
     return s;
   }catch(e){ return null; }
@@ -7178,11 +7197,39 @@ function showStale(){
   document.getElementById("staleLoad").onclick=async()=>{ const id=S.slotId; o.remove(); staleRemote=false; watchId=null; await loadSlot(id); ensureWatch(); };
   document.getElementById("staleKeep").onclick=()=>{ o.remove(); staleRemote=false; S.savedAt=Date.now(); writeSlot(S,{remote:true}); };
 }
+/* ---- browser storage is small (about five million characters) and every slot keeps three rewind copies, so it fills up ---- */
+const RW_PREFIX="primecost.rw.";
+function rewindKeys(){ const out=[]; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.startsWith(RW_PREFIX)) out.push(k); } }catch(e){} return out; }
+function rwSlot(k){ return k.slice(RW_PREFIX.length).replace(/\.\d+$/,""); }
+// rewinds of slots that no longer exist, left behind by older versions
+function pruneOrphanRewinds(){ const live=new Set(localIndex().map(m=>m.id)); if(S&&S.slotId) live.add(S.slotId); for(const k of rewindKeys()) if(!live.has(rwSlot(k))) lsDel(k); }
+// make room for a save: drop orphaned rewinds, then other games' rewinds from the least recently played, then this game's own
+function freeRoom(keepId){
+  pruneOrphanRewinds();
+  const order=localIndex().filter(m=>m.id!==keepId).sort((a,b)=>(a.savedAt||0)-(b.savedAt||0)).map(m=>m.id).concat([keepId]);
+  const byId=new Map(); for(const k of rewindKeys()){ const id=rwSlot(k); if(!byId.has(id)) byId.set(id,[]); byId.get(id).push(k); }
+  return function* (){ for(const id of order) if(byId.has(id)){ for(const k of byId.get(id)) lsDel(k); yield id; } }();
+}
+let storageFull=false, storageWarned=false;
+function lsSetWithRoom(k,v,keepId){
+  if(lsSet(k,v)) return true;
+  for(const _ of freeRoom(keepId)) if(lsSet(k,v)) return true;
+  return lsSet(k,v);
+}
+function warnStorageFull(){
+  storageFull=true;
+  if(storageWarned) return; storageWarned=true;
+  const synced=!!userCol();
+  const text=synced? "This browser is out of room for saves. Your account still has the latest copy, but this browser's copy is falling behind. Delete old saved games to make room."
+    : "This browser is out of room, and your last change was NOT saved. Delete old saved games, or export this one to a file, before you close the page.";
+  try{ if(S) logIt("bad",text); }catch(e){}
+  try{ alert(text); }catch(e){}
+}
 function writeSlot(s,{remote=true}={}){
   if(_ctxStack.length){ _pendingSave=true; return; }
-  if(!s.slotId) s.slotId="s"+uid()+uid();
+  if(!s.slotId) s.slotId=newSlotId();
   const meta=slotMeta(s);
-  lsSet("primecost.slot."+s.slotId,JSON.stringify(s));
+  if(lsSetWithRoom("primecost.slot."+s.slotId,JSON.stringify(s),s.slotId)) storageFull=false; else warnStorageFull();
   const ix=localIndex().filter(m=>m.id!==s.slotId); ix.unshift(meta); lsSet(SLOTS_KEY,JSON.stringify(ix.slice(0,40)));
   if(remote&&staleRemote) remote=false;
   if(remote){ ownWrites.add(s.savedAt); if(ownWrites.size>50) ownWrites=new Set([...ownWrites].slice(-20)); }
@@ -7203,9 +7250,10 @@ async function readSlot(id){
 }
 async function deleteSlot(id){
   lsDel("primecost.slot."+id);
+  for(let k=0;k<3;k++) lsDel(RW_PREFIX+id+"."+k);   // its rewind points go with it
   lsSet(SLOTS_KEY,JSON.stringify(localIndex().filter(m=>m.id!==id)));
   remoteMetas=remoteMetas.filter(m=>m.id!==id);
-  const col=userCol(); if(col){ try{ await col.doc("slot_"+id).delete(); }catch(e){} }
+  const col=userCol(); if(col){ try{ await col.doc("slot_"+id).delete(); }catch(e){} for(let k=0;k<3;k++){ try{ col.doc("rw_"+id+"_"+k).delete().catch(()=>{}); }catch(e){} } }
   if(lsGet(CUR_KEY)===id) lsDel(CUR_KEY);
 }
 async function loadSlot(id){
@@ -7226,11 +7274,11 @@ async function syncRemote(){
     const st=old.exists&&old.data().state;
     if(st&&st.v===2){
       const twin=allSlots().find(m=>m.seed&&m.seed===st.seed);
-      if(!twin){ const cp=JSON.parse(JSON.stringify(st)); cp.slotId="s"+uid()+uid(); hydrate(cp); writeSlot(cp); }
+      if(!twin){ const cp=JSON.parse(JSON.stringify(st)); cp.slotId=newSlotId(); hydrate(cp); writeSlot(cp); if(S) applyTables(S); }
       else if((st.savedAt||0)>(twin.savedAt||0)+5000){
         // the account copy is newer than this browser's: it wins, in the same slot
         const cp=JSON.parse(JSON.stringify(st)); cp.slotId=twin.id; hydrate(cp); writeSlot(cp);
-        if(S&&S.slotId===twin.id){ S=cp; render(); }
+        if(S&&S.slotId===twin.id){ S=cp; render(); } else if(S) applyTables(S);
       }
     }
   }catch(e){}
@@ -7253,12 +7301,13 @@ function importSave(text,msgEl){
   let o; try{ o=JSON.parse(text); }catch(e){ msgEl.textContent="That isn't a save file. It should be the JSON that Export produced."; return; }
   const st=o&&o.state?o.state:o;
   if(!st||st.v!==2||!st.bizName||!Array.isArray(st.locations)){ msgEl.textContent="That file doesn't contain a Prime Cost game."; return; }
-  st.slotId="s"+uid()+uid(); st.slotName=`${st.bizName} (imported)`;
+  st.slotId=newSlotId(); st.slotName=`${st.bizName} (imported)`;
   S=hydrate(st); save(); lsSet(CUR_KEY,S.slotId); view="dash"; render(); window.scrollTo(0,0);
 }
 function savesPanelHTML(inGame){
   const slots=allSlots();
   return `<div class="panel" id="savesPanel"><div class="hd"><h3>Saved games</h3><span class="spacer"></span><span class="note">${userCol()?"synced to your account":"kept in this browser"}</span></div><div class="bd">
+    ${storageFull?`<p class="note" style="margin:0 0 10px;color:var(--bad)"><b>This browser is out of room.</b> ${userCol()?"Saves are still reaching your account, but not this browser.":"Your latest changes aren't being saved."} Delete games you don't need${inGame?", or export this one to a file":""}.</p>`:""}
     ${slots.length?slots.map(m=>`<div class="kv" style="align-items:center">
         <span><b style="font-size:13px">${esc(m.name)}</b>${S&&S.slotId===m.id?' <span class="pill g">playing</span>':""}${m.over?' <span class="pill b">closed</span>':""}<br>
           <span class="note">${esc(m.concept)} · ${esc(m.when)} · ${money(m.cash||0)} · saved ${new Date(m.savedAt).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</span></span>
@@ -7289,7 +7338,7 @@ function wireSaves(){
     if(S&&S.slotId===id){ S=null; view="dash"; }
     const y=window.scrollY; render(); window.scrollTo(0,y); });
   const sa=$("#saveAs"); if(sa) sa.onclick=()=>{
-    const cp=JSON.parse(JSON.stringify(S)); cp.slotId="s"+uid()+uid();
+    const cp=JSON.parse(JSON.stringify(S)); cp.slotId=newSlotId();
     cp.slotName=($("#slotName").value.trim()||`${S.bizName} — ${dateName(S.calMonth,S.year)}`).slice(0,60); cp.savedAt=Date.now()-1;
     writeSlot(cp); save(); const y=window.scrollY; render(); window.scrollTo(0,y); const m=$("#saveMsg"); if(m) m.textContent=`Saved a copy: ${cp.slotName}.`; };
   const ex=$("#exportBtn"); if(ex) ex.onclick=()=>exportSave(msg);
@@ -8234,6 +8283,9 @@ function booksHTML(){
           ${cf.stOut>0?`<tr><td>Sales tax remitted (quarterly)</td><td class="n neg">${money(-cf.stOut)}</td></tr>`:""}
           ${cf.taxOut?`<tr><td>${cf.taxOut>0?"Income tax (estimates and true-up)":"Income tax refund"}</td><td class="n ${cf.taxOut>0?"neg":"pos"}">${money(-cf.taxOut)}</td></tr>`:""}
           ${cf.backroom?`<tr><td>Back-room costs and bribes the dirty cash didn't cover</td><td class="n neg">${money(cf.backroom)}</td></tr>`:""}
+          ${cf.fees?`<tr><td>Management fees, paid to you</td><td class="n neg">${money(-cf.fees)}</td></tr>`:""}
+          ${cf.dist?`<tr><td>Distributed to the owner</td><td class="n neg">${money(-cf.dist)}</td></tr>`:""}
+          ${cf.funded?`<tr><td>Wired in by the owner</td><td class="n pos">${money(cf.funded)}</td></tr>`:""}
           <tr class="tot"><td>Net cash movement</td><td class="n ${cf.net<0?"neg":"pos"}">${cf.net>=0?"+":""}${money(cf.net)}</td></tr>
           <tr class="tot"><td>Closing cash</td><td class="n ${cf.closing<10000?"neg":""}">${money(cf.closing)}</td></tr>
         </table>
@@ -9831,6 +9883,7 @@ function wireGameOver(){
    ------------------------------------------------------------ */
 let downloadsNS=null;
 S = loadLocal();
+pruneOrphanRewinds();
 render();
 try{ window.claude?.hot?.snapshot?.(()=>({S})); }catch(e){}
 
