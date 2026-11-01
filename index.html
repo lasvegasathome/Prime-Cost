@@ -1121,6 +1121,16 @@ function closingOverlay(R){
   o.innerHTML=`<div class="panel" style="max-width:420px;width:100%"><div class="bd"><h3 style="font-family:var(--serif);font-weight:400;font-size:22px;margin-bottom:6px">Closing ${MONTHS[R.calMonth]}</h3>
     <p class="note" style="margin:0">The books are done. Finding out what lands on your desk, so it arrives with the numbers.</p></div></div>`;
 }
+// the parts of a month's record that can be restated after the fact, and what to call them
+const REVISABLE={rev:"revenue",covers:"covers",ebitda:"EBITDA",preTax:"pre-tax profit",net:"cash movement",cash:"closing cash"};
+// someone removed from the record: every log, chronicle and advisor line that names them goes, as if they had never worked here
+function scrubName(name){
+  const n=String(name||"").trim(); if(!n) return;
+  const hit=x=>String(typeof x==="string"? x : x&&(x.text||x.q||x.a)||"").includes(n);
+  S.log=(S.log||[]).filter(x=>!hit(x)); S.chronicle=(S.chronicle||[]).filter(x=>!hit(x));
+  if(Array.isArray(S.advisorChat)) S.advisorChat=S.advisorChat.filter(x=>!hit(x));
+  if(Array.isArray(S.aiMemory)) S.aiMemory=S.aiMemory.filter(x=>!hit(x));
+}
 function compactResult(R){
   return {m:R.month,cal:R.calMonth,y:R.year,rev:R.pl.rev,cogs:R.pl.cogs,labor:R.pl.labor,prime:R.pl.prime,
     primePct:R.pl.rev>0?R.pl.prime/R.pl.rev:0,occ:R.pl.occupancy,ebitda:R.pl.ebitda,preTax:R.pl.preTax,
@@ -1826,6 +1836,9 @@ The people, the room, the supply chain and the cellar. Use these whenever the st
 {"op":"menu","creativity":4,"coherence":5}   (the whole menu, points on 0-100 scales)
 {"op":"brigade","delta":5}   (the whole kitchen's technique, permanent, on a 0-100 scale)
 {"op":"rarebottle","name":"producer, wine, vintage","qty":1,"cost":800,"price":2200,"prestige":5}   (a bottle enters the cellar; charge for it with a cash effect)
+{"op":"drinkmargin","mult":0.7,"why":"beer tie to the pub company"}   (multiplies what drinks sell for relative to what they cost: a supplier tie, a new distributor, a duty change. 1 is no change)
+{"op":"revise","field":"rev"|"covers"|"ebitda"|"preTax"|"net"|"cash","months":3,"pct":-0.08,"why":"the ministry corrected the figures"}   (rewrites the record of past months only, not the money: a regulator restating results, an auditor's correction, a state that edits its own history. Real cash and meters don't move)
+{"op":"staff","name":"their name","leaves":true,"erase":true,"why":"vaporised"}   (as leaving, but every mention of them is also scrubbed from the log: for a world where people are removed from the record)
 {"op":"risk","kind":"labor"|"tax"|"liquor"|"fraud"|"vice"|"crime"|"organized"|"political","delta":15,"ongoing":0}   (legal exposure. "fraud" is only food fraud: passing off cheaper fish, fake wagyu, a menu that lies about what's on the plate. "vice" is illegal trade run on the premises: drugs, gambling, after-hours sales. "crime" is any other crime the owner or staff commit, on or off the premises: assault, arson, insurance fraud, vandalism, threats, a car driven into someone. A crime already reported to the police starts high (40 or more for a felony), and one with an arrest higher still. Whenever the owner breaks the law or cuts a legal corner (cash wages off the books, hiring without paperwork, skimming cash, serving after hours, passing off cheaper fish, gambling or drugs on the premises, doing business with organized crime, anything a state would call sedition), record it: delta for a one-off, ongoing per month for a practice that continues, ongoing 0 when they stop. Exposure decides whether audits, regulators or police ever show up.)
 {"op":"shutdown","locIndex":0,"weeks":2,"reason":"why"}   (a forced closure: court order, police, fire, a regulator)
 {"op":"seats","locIndex":0,"delta":20}   (seats physically added or removed, e.g. when an expansion opens; capacity mods can't push a room past its physical ceiling, seats can)
@@ -1936,7 +1949,9 @@ function applyEffects(effects,opts){
         const m=(nm&&S.team.find(t=>t.name.toLowerCase()===nm||t.name.toLowerCase().split(" ")[0]===nm.split(" ")[0]&&(!e.role||t.role===e.role)))||S.team.find(t=>t.role===e.role);
         if(!m){ rejected.push(`there's no ${nm?`"${String(e.name).slice(0,40)}"`:ROLES[e.role]?ROLES[e.role].name.toLowerCase():"such person"} on staff`); break; }
         if(e.leaves){   // they quit, took another job, were arrested or otherwise stopped working here: no severance for someone who left
-          const why=clip(String(e.why||"left"),120); staffDeparture(m,why,null); done.push(`${m.name} is gone: ${why}`); break; }
+          const why=clip(String(e.why||"left"),120); staffDeparture(m,why,null);
+          if(e.erase){ scrubName(m.name); done.push(`${m.name} was removed from the record`); break; }
+          done.push(`${m.name} is gone: ${why}`); break; }
         const sk=Math.round(d(e.skill)), lo=Math.round(d(e.loyalty));
         m.skill=clamp(m.skill+sk,5,99); m.loyalty=clamp(m.loyalty+lo,0,100);
         if(e.cert){ const k=matchCert(e.cert); if(k&&!certsOf(m).includes(k)){ m.certs=certsOf(m).concat([k]); done.push(`${m.name} now holds ${certInfo(k).name}`); } }
@@ -1959,6 +1974,16 @@ function applyEffects(effects,opts){
       case "brigade":{
         const v=Math.round(d(e.delta)); S.brigade=clamp(S.brigade+v,5,99);
         done.push(`brigade technique ${v>0?"+":""}${v}`); break; }
+      case "drinkmargin":{
+        const k=clamp(d(e.mult)||1,.3,3), before=S.cellar.markup; S.cellar.markup=clamp(before*k,1.1,12);
+        done.push(`drinks now sell at ${S.cellar.markup.toFixed(1)}× what they cost (was ${before.toFixed(1)}×)${e.why?`: ${String(e.why).slice(0,60)}`:""}`); break; }
+      case "revise":{
+        const f=String(e.field||"rev"), n=Math.round(clamp(d(e.months)||1,1,24)), p=clamp(d(e.pct),-.9,5);
+        if(!REVISABLE[f]){ rejected.push(`can't revise "${f}"`); break; }
+        const H=S.history, from=Math.max(0,H.length-n);
+        for(let i=from;i<H.length;i++){ const h=H[i]; h[f]=Math.round((h[f]||0)*(1+p)); if(f==="rev"||f==="prime") h.primePct=h.rev>0? h.prime/h.rev : 0; h.revised=true; }
+        if(H.length>from) done.push(`the record for the last ${H.length-from} month${H.length-from>1?"s":""} now shows ${REVISABLE[f]} ${p>=0?"up":"down"} ${pct(Math.abs(p),0)}${e.why?` (${String(e.why).slice(0,60)})`:""}`);
+        break; }
       case "rarebottle":{
         const l=sanitizeLot(Object.assign({},e,{channel:"private"}));
         S.cellar.rare.push({id:l.id,name:l.name,cost:l.cost,price:l.price,prestige:l.prestige,qty:Math.max(1,l.qty)});
@@ -2111,6 +2136,8 @@ function previewEffect(e){
     case "menu": return `menu ${e.creativity?`creativity ${e.creativity>0?"+":""}${Math.round(e.creativity)} `:""}${e.coherence?`coherence ${e.coherence>0?"+":""}${Math.round(e.coherence)}`:""}`;
     case "brigade": return `brigade technique ${Number(e.delta)>0?"+":""}${Math.round(Number(e.delta)||0)}`;
     case "rarebottle": return `a bottle of ${String(e.name||"something rare").slice(0,40)}`;
+    case "drinkmargin": return `drink margins ${Number(e.mult)<1?"squeezed":"widened"}`;
+    case "revise": return `past ${REVISABLE[e.field]||"figures"} rewritten`;
     case "raid": return raidPreview(e);
     case "force": return `${String(e.name||"a force").slice(0,40)}: ${[e.attention?`attention ${Number(e.attention)>0?"+":""}${Math.round(Number(e.attention)||0)}`:"",e.case?`case ${Number(e.case)>0?"+":""}${Math.round(Number(e.case)||0)}`:"",e.status==="gone"?"off your back":""].filter(Boolean).join(", ")}`;
     case "backroom": return `${String(e.name||"the back room").slice(0,40)}: ${e.status==="shut"?"shut down":e.status==="quiet"?"kept quiet":"running"}`;
@@ -5955,9 +5982,9 @@ function paintCatalog(){
 }
 
 // what a dollar of 2026 equipment cost in the story's year (US CPI-U, annual averages)
-const CPI={1980:82.4,1985:107.6,1990:130.7,1995:152.4,1999:166.6,2000:172.2,2005:195.3,2009:214.5,2010:218.1,2015:237,2020:258.8,2022:292.7,2024:313.7,2026:325};
+const CPI={1940:14.0,1950:24.1,1960:29.6,1970:38.8,1975:53.8,1980:82.4,1985:107.6,1990:130.7,1995:152.4,1999:166.6,2000:172.2,2005:195.3,2009:214.5,2010:218.1,2015:237,2020:258.8,2022:292.7,2024:313.7,2026:325};
 function eraPriceFactor(){ const y=storyYear(); if(!y||y>=2026) return 1; const ks=Object.keys(CPI).map(Number).sort((a,b)=>a-b);
-  let lo=ks[0],hi=ks[ks.length-1]; for(const k of ks){ if(k<=y) lo=k; if(k>=y){ hi=k; break; } } const v=lo===hi?CPI[lo]:CPI[lo]+(CPI[hi]-CPI[lo])*(y-lo)/(hi-lo); return clamp(v/CPI[2026],.2,1); }
+  let lo=ks[0],hi=ks[ks.length-1]; for(const k of ks){ if(k<=y) lo=k; if(k>=y){ hi=k; break; } } const v=lo===hi?CPI[lo]:CPI[lo]+(CPI[hi]-CPI[lo])*(y-lo)/(hi-lo); return clamp(v/CPI[2026],.03,1); }
 function periodKit(){ const y=storyYear(); return !!(y&&y<2012); }
 const KIT_TIER_WORD=["Used","Standard","Professional","Top-of-the-range"];
 function kitModels(type,tier){
