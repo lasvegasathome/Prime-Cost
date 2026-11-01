@@ -726,7 +726,8 @@ function simulateMonth(S){
     _commAcc+=food*(commWaste(loc)+commFood(loc));
     const foodCogs = food*clamp(fp,.01,3);
     const bevCogs = (alc-rare.rev)/S.cellar.markup + rare.cost;
-    S.cellar.value = Math.max(0, S.cellar.value - (alc-rare.rev)/S.cellar.markup);
+    // drinks poured beyond what's on the shelf were bought and drunk the same month (a busy bar empties its stock every week); they still get paid for
+    { const drawn=(alc-rare.rev)/S.cellar.markup; S.cellar.boughtThrough=(S.cellar.boughtThrough||0)+Math.max(0,drawn-S.cellar.value); S.cellar.value=Math.max(0,S.cellar.value-drawn); }
     const cateringCogs = (S.programs.catering? grossFB*0.09 : 0)*0.28 + side*0.32 + (deliv? deliv/(1+dMark)*clamp(fp,.12,.75) + deliv*.04 : 0);   // delivery food, plus packaging
 
     // labour
@@ -887,10 +888,11 @@ function applyCashflow(S,R){
     R.events.push({tone:"bad",text:`About ${Math.round(over/48).toLocaleString()} bottles are stacked outside proper storage. Heat and light spoiled roughly ${money(lost)} of wine this month.`}); }
   S.cellar.value += restock;
   S.cellar.standing = clamp(S.cellar.standing + Math.min(3, restock/3000) + .3 - (S.flags.distress?4:0), 0, 100);
-  const purchases = foodBuy + restock;
+  const through = S.cellar.boughtThrough||0; S.cellar.boughtThrough=0;
+  const purchases = foodBuy + restock + through;
   const paidNow = supplierPaidShare();
-  const apPaid = S.ap + foodBuy*paidNow + restock*.62;
-  S.ap = foodBuy*(1-paidNow) + restock*.38;
+  const apPaid = S.ap + foodBuy*paidNow + (restock+through)*.62;
+  S.ap = foodBuy*(1-paidNow) + (restock+through)*.38;
 
   let principal=0;
   for(const L of S.loans){
