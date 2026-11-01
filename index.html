@@ -286,16 +286,16 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
    ------------------------------------------------------------ */
 const CONCEPTS={
   diner:{name:"All-day diner",blurb:"Eggs at 7am, meatloaf at 7pm. Thin checks, enormous volume, and a kitchen that never really stops.",
-    check:17,foodPct:.30,seats:72,turns:2.7,maxTurns:5.0,elast:1.25,hrsPerCover:.24,alcohol:.04,sqftSeat:18,buildSqft:120,equip:80000,
+    check:17,foodPct:.30,seats:72,turns:2.7,maxTurns:5.0,elast:1.25,hrsPerCover:.24,alcohol:.04,sqftSeat:30,buildSqft:120,equip:80000,
     chef:38000,gm:0},
   fast:{name:"Fast casual",blurb:"Counter service, a tight menu, a line out the door at noon and nothing at all at 3pm.",
-    check:14.5,foodPct:.315,seats:38,turns:4.3,maxTurns:8.0,elast:1.45,hrsPerCover:.17,alcohol:.02,sqftSeat:15,buildSqft:150,equip:95000,
+    check:14.5,foodPct:.315,seats:38,turns:4.3,maxTurns:8.0,elast:1.45,hrsPerCover:.17,alcohol:.02,sqftSeat:25,buildSqft:150,equip:95000,
     chef:38000,gm:0,counter:true},
   bistro:{name:"Neighbourhood bistro",blurb:"Forty seats, a chalkboard, a wine list you actually chose. The margin lives in the second glass.",
-    check:39,foodPct:.30,seats:58,turns:1.9,maxTurns:3.4,elast:.95,hrsPerCover:.45,alcohol:.29,sqftSeat:22,buildSqft:165,equip:120000,
+    check:39,foodPct:.30,seats:58,turns:1.9,maxTurns:3.4,elast:.95,hrsPerCover:.45,alcohol:.29,sqftSeat:37,buildSqft:165,equip:120000,
     chef:60000,gm:50000},
   pizza:{name:"Pizzeria",blurb:"The best food cost in the business and the worst labour peaks. Friday night is the whole week.",
-    check:23,foodPct:.255,seats:46,turns:2.9,maxTurns:5.2,elast:1.2,hrsPerCover:.24,alcohol:.13,sqftSeat:18,buildSqft:150,equip:105000,
+    check:23,foodPct:.255,seats:46,turns:2.9,maxTurns:5.2,elast:1.2,hrsPerCover:.24,alcohol:.13,sqftSeat:30,buildSqft:150,equip:105000,
     chef:52000,gm:44000},
   fine:{name:"Fine dining",blurb:"One seating, maybe two. Every cover costs a fortune in labour and every review is existential.",
     check:185,foodPct:.33,seats:44,turns:1.15,maxTurns:1.6,elast:.55,hrsPerCover:2.6,alcohol:.36,sqftSeat:50,buildSqft:350,equip:220000,
@@ -647,7 +647,8 @@ function simulateMonth(S){
   let utilities=0, repairs=0, supplies=0, cardFees=0, deliveryFee=0, otherFixed=0, salesTax=0;
 
   offlineKitTag();   // no Claude: the menu's equipment needs come from the rule of thumb
-  S.inflation *= rnd(1.0012, 1.0055);   // food inflation grinds upward
+  // food prices drift with the economy: about 2.8% a year unless the save or its home country says otherwise, and some months they fall
+  S.inflation *= 1 + inflationDrift() + rnd(-.0045, .0045);
   // what guests are used to paying follows the same prices, about six months behind
   S.guestIdx=(S.guestIdx||1)+(S.inflation-(S.guestIdx||1))*.15;
 
@@ -758,8 +759,10 @@ function simulateMonth(S){
     const locDeliv = deliv*DP.rate;
 
     const fxk=fxFactor(loc);   // 1 at home; abroad, what the local currency is worth against home since you arrived
-    salesTax+=locRev*fxk*salesTaxRate(loc);
-    rev+=locRev*fxk; revFood+=food*fxk; revAlc+=alc*fxk; revDelivery+=deliv*fxk;
+    // where menu prices include the tax (most of the world outside the US), part of every bill belongs to the state and never was revenue
+    const stR=salesTaxRate(loc), incl=taxIncluded(loc), net=incl? 1/(1+stR) : 1;
+    salesTax+=locRev*fxk*(incl? stR/(1+stR) : stR);
+    rev+=locRev*fxk*net; revFood+=food*fxk*net; revAlc+=alc*fxk*net; revDelivery+=deliv*fxk*net;
     cogs+=(foodCogs+bevCogs+cateringCogs)*fxk; foodCogsT+=(foodCogs+cateringCogs)*fxk; bevCogsT+=bevCogs*fxk;
     labor+=locLabor*fxk; occupancy+=((loc.rent+loc.cam)*rentMult + locRev*((S.franchise&&S.franchise.rentPct)||0))*fxk;
     utilities+=locUtil*fxk; repairs+=locRepairs*fxk; supplies+=locSupplies*fxk; cardFees+=locCard*fxk; deliveryFee+=locDeliv*fxk;
@@ -817,7 +820,7 @@ function simulateMonth(S){
   // virtual brands and delivery-only kitchens: their sales ride on the apps, their costs on the lines they belong to
   const GK=ghostMonth(R); salesTax+=GK.rev*salesTaxRate(null); rev+=GK.rev; revDelivery+=GK.rev; cogs+=GK.food; foodCogsT+=GK.food; labor+=GK.labor; occupancy+=GK.rent; supplies+=GK.pack; deliveryFee+=GK.commission;
   const marketing=mktTotal()+S.team.filter(m=>m.promo&&CELEB_ROLES.includes(m.role)).length*promoCost(); S.dials.marketing=mktTotal();   // publicists for the team count as marketing
-  otherFixed = uniformEffects().monthly + policyEffects().monthly + (S.i9Program&&S.locations[0]? 900+Object.values(crewOf(S.locations[0])).reduce((a,c)=>a+c.n,0)*12 : 0) + 640 /*insurance*/ + 340 /*POS & software*/ + 420 /*accounting & payroll svc*/ + 190 /*pest, linen, music*/
+  otherFixed = uniformEffects().monthly + policyEffects().monthly + (S.i9Program&&S.locations[0]? 900+Object.values(crewOf(S.locations[0])).reduce((a,c)=>a+c.n,0)*12 : 0) + fixedOverheads(rev)
              + S.locations.filter(l=>l.status!=="building").length*280 /*licences amortised*/
              + modFixedTotal() + S.locations.reduce((a,l)=>a+featSum(l,"fixed"),0) + trainingRunCost() + commissaryCost();
   const depreciation = depreciationMonth(S);
@@ -846,6 +849,19 @@ function simulateMonth(S){
   return R;
 }
 // the tax on a meal where it's served: the country's rate abroad if it has one, otherwise the location's own market
+function taxIncluded(loc){ if(!loc||!intlOn()) return false; const t=countryOf(loc).salesTax; return !!(t&&t.included); }
+// the overheads every business carries, which grow with it: insurance is a base per site plus a share of sales, software and pest control
+// are per site, and the accountant's bill rises with the volume of books to keep
+function fixedOverheads(rev){
+  const sites=Math.max(1,S.locations.filter(l=>l.status!=="building"&&l.status!=="closed").length);
+  return 300*sites + rev*.006 /*insurance*/ + 340*sites /*POS & software*/ + 420 + rev*.0015 /*accounting & payroll*/ + 190*sites /*pest, linen, music*/;
+}
+// monthly food inflation: a save can set its own rate (world.foodInflation), otherwise the home country's, otherwise about 2.8% a year
+function inflationDrift(){
+  const w=S.world||{}, H=intlOn()? homeProfile() : null;
+  const yr=w.foodInflation!=null? +w.foodInflation : (H&&H.inflation!=null? +H.inflation : .028);
+  return Math.pow(1+clamp(yr,-.5,20),1/12)-1;
+}
 function salesTaxRate(loc){
   const home=(MARKETS[S.market]||{}).taxRate||0;
   if(!loc) return home;
@@ -3616,6 +3632,7 @@ cardFee: a typical card-processing rate for a restaurant, as a share of the card
 cashShare: the share of restaurant sales paid in cash;
 tipping: {"norm":"tips"|"service charge"|"included"|"none","tipCredit":0-0.9 (the share of servers' pay an employer may legally cover with tips; 0 where that isn't allowed or tips aren't the norm)};
 salesTax: {"rate":the tax on restaurant meals as a decimal,"included":true if menu prices include it};
+inflation: food price inflation over a year at the story's date, as a decimal (0.03 for 3%; 1.5 for 150%);
 alcohol: {"status":"allowed"|"restricted"|"banned","note":"one sentence on licensing, who may sell it and when"};
 inspections: {"system":"one sentence on who inspects restaurants and how","public":true if results are posted or published};
 mealTimes: one sentence on when people eat lunch and dinner out;
@@ -3624,12 +3641,13 @@ labour: 1-2 sentences on working hours, overtime, contracts, unions and how hard
 holidays: up to 6 {"month":0-11,"name":"","note":"what it does to restaurant trade"};
 regionTag: one of us|uk|europe|japan|australia|canada|mexico|other.
 
-Reply with ONLY JSON: {"name":"","currency":{},"payrollBurden":0.2,"cardFee":0.02,"cashShare":0.2,"tipping":{},"salesTax":{},"alcohol":{},"inspections":{},"mealTimes":"","customs":"","labour":"","holidays":[],"regionTag":"other"}`;
+Reply with ONLY JSON: {"name":"","currency":{},"payrollBurden":0.2,"cardFee":0.02,"cashShare":0.2,"tipping":{},"salesTax":{},"inflation":0.03,"alcohol":{},"inspections":{},"mealTimes":"","customs":"","labour":"","holidays":[],"regionTag":"other"}`;
 function sanitizeCountry(r,src){ r=r||{}; const n=nnum, c=r.currency||{}, t=r.tipping||{}, st=r.salesTax||{}, a=r.alcohol||{}, ins=r.inspections||{};
   return {name:String(r.name||"").trim().slice(0,60),currency:{code:String(c.code||"USD").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3)||"USD",symbol:String(c.symbol||c.code||"$").slice(0,5),perUSD:n(c.perUSD,.000001,1e7,1),decimals:Math.round(n(c.decimals,0,3,2))},
     payrollBurden:n(r.payrollBurden,0,.9,.2),cardFee:n(r.cardFee,0,.08,.025),cashShare:n(r.cashShare,0,1,.2),
     tipping:{norm:["tips","service charge","included","none"].includes(t.norm)?t.norm:"none",tipCredit:n(t.tipCredit,0,.9,0)},
     salesTax:{rate:st.rate==null?null:n(st.rate,0,.5,.1),included:!!st.included},
+    inflation:r.inflation==null?null:n(r.inflation,-.5,20,.03),
     alcohol:{status:["allowed","restricted","banned"].includes(a.status)?a.status:"allowed",note:clip(String(a.note||""),300)},
     inspections:{system:clip(String(ins.system||""),300),public:!!ins.public},
     mealTimes:clip(String(r.mealTimes||""),240),customs:clip(String(r.customs||""),700),labour:clip(String(r.labour||""),400),
@@ -7430,7 +7448,7 @@ function renderTabs(){
 }
 
 /* ---------- SETUP ---------- */
-let setupCfg={env:null,ownerName:"",bizName:"",concept:"bistro",market:"suburb",traits:[],savings:150000,loanKind:"sba",loan:350000,investor:0,startMonth:2,custom:false,spec:null};
+let setupCfg={env:null,ownerName:"",bizName:"",concept:"bistro",market:"suburb",traits:[],savings:200000,loanKind:"sba",loan:450000,investor:0,startMonth:2,custom:false,spec:null};
 
 /* ---- custom starting conditions ---- */
 const nnum=(v,lo,hi,fb)=>{
