@@ -41,3 +41,36 @@ module.exports={
   brand:{accent:"#1A1A1A",base:"#A67C52",plate:false,hideName:true},
   after:"S.namesake={since:'2018',name:'Pia León',fame:82,kind:'handson',fee:0,staffId:(S.team.find(m=>m.name==='Pia León')||{}).id};"
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",2,"A heavy range line",84],
+  ["induction",2,"Induction at the pass",84],
+  ["grill",2,"A charcoal grill",84],
+  ["combi",2,"A combi oven",84],
+  ["sousvide",1,"Circulators",84],
+  ["blast",1,"A blast chiller",84],
+  ["pacojet",2,"A Pacojet",84],
+  ["thermomix",1,"Thermomixes for the creams and sauces",84],
+  ["juicer",2,"A cold press for the non-alcoholic pairing",84],
+  ["refrig",2,"Walk-ins and reach-ins",84],
+  ["dish",2,"A conveyor dish machine",82],
+  ["glasswasher",2,"A glasswasher",84],
+  ["hood",2,"A capture-jet hood",84],
+  ["vent",2,"Ducted extraction",84],
+  ["suppression",2,"A wet-chemical system",84],
+  ["extinguisher",2,"Extinguishers",84],
+  ["sprinkler",2,"Sprinklers",84],
+  ["greasetrap",1,"A grease trap",82],
+  ["bar",2,"A bar for pisco and the house ferments",84],
+  ["winestore",1,"Wine cabinets",84],
+  ["seating",3,"Wooden tables in the old house",86],
+  ["tableware",3,"Handmade Peruvian ceramics",88],
+  ["menus",2,"Printed menus",86],
+  ["pos",2,"A POS system",86],
+  ["hoststand",2,"An online booking system",86],
+  ["sound",1,"Quiet music",84],
+  ["waterservice",1,"Filtered water in carafes",86],
+  ["restroom",2,"Restrooms",84],
+  ["hvac",1,"Air conditioning",82],
+  ["smallwares",2,"A full set, plus the research team's scales",84]];

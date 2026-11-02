@@ -43,3 +43,36 @@ module.exports={
   brand:{accent:"#0E1D3D",base:"#C9B37E",plate:false,hideName:false},
   after:"S.namesake={since:'2020',name:'Alexander the Guest',fame:58,kind:'brand',fee:0};"
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",3,"A custom induction-and-gas line",86],
+  ["induction",2,"Induction at the counter",86],
+  ["combi",2,"A combi oven",86],
+  ["sousvide",2,"Circulators and a chamber sealer",86],
+  ["blast",2,"A blast chiller",86],
+  ["pacojet",2,"A Pacojet",86],
+  ["thermomix",1,"Thermomixes",86],
+  ["chocolate",1,"A chocolate tempering melter for the petit fours",86],
+  ["refrig",2,"A walk-in and drawered reach-ins",86],
+  ["dish",2,"A door-type dish machine",86],
+  ["glasswasher",2,"A glasswasher",86],
+  ["ice",1,"An ice machine",86],
+  ["espresso",1,"An espresso machine for the coffee after dinner",86],
+  ["hood",2,"A capture-jet hood over the open kitchen",86],
+  ["vent",2,"Ducted extraction",86],
+  ["suppression",2,"A wet-chemical system",86],
+  ["extinguisher",2,"Extinguishers",86],
+  ["sprinkler",2,"Sprinklers",86],
+  ["greasetrap",1,"A grease trap",86],
+  ["winestore",2,"Cabinets for thirty vintage champagnes and the Hungarian list",86],
+  ["seating",2,"A counter wrapped around the open kitchen",88],
+  ["tableware",3,"Handmade ceramics and fine stemware",88],
+  ["menus",2,"Printed menus",88],
+  ["pos",2,"A POS system",88],
+  ["hoststand",2,"An online booking system",88],
+  ["sound",1,"Quiet music",86],
+  ["waterservice",1,"Filtered water",86],
+  ["restroom",2,"Restrooms",86],
+  ["hvac",2,"Air conditioning",86],
+  ["smallwares",2,"Tweezers, moulds and probes",86]];

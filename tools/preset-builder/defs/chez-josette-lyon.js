@@ -7,7 +7,7 @@ module.exports={
   notes:"Chez Josette is a fictional bouchon, a traditional Lyonnais restaurant, on the slopes of the Croix-Rousse in Lyon, France, in March 2026, just after it received its first Bib Gourmand. Bouchons serve the city's working food: salade lyonnaise, quenelles de brochet with Nantua sauce, andouillette, tablier de sapeur, cervelle de canut, with wine poured in the 46cl pot lyonnais. Service is included in French prices and menu prices include 10% VAT. The Bib Gourmand rewards good cooking at moderate prices, so raising prices past what the Guide considers moderate puts it at risk. The restaurant, family, staff, rent and events are invented; the dishes, the pot lyonnais, the Guide's rules and French tax and labour rules are real.",
   world:{guide:true,guideAuto:true},
   spec:{conceptName:"Chez Josette",blurb:"A forty-seat family bouchon on the Croix-Rousse, with a brand-new Bib Gourmand.",
-    check:44,foodPct:.29,seats:40,turns:1.6,maxTurns:2.3,elast:.8,hrsPerCover:.55,alcohol:.3,sqftSeat:32,buildSqft:200,equip:95000,chef:40000,gm:36000,counter:false,
+    check:44,foodPct:.29,seats:40,turns:1.6,maxTurns:2.3,elast:.8,hrsPerCover:.5,alcohol:.3,sqftSeat:32,buildSqft:200,equip:95000,chef:40000,gm:36000,counter:false,
     marketName:"Croix-Rousse, Lyon",rentYr:34,wage:13.6,tipCredit:0,traffic:1.0,comp:1.35,checkMult:1,taxRate:.10,season:[.9,.92,1,1.02,1.05,1,.88,.6,1.05,1.05,1,1.15],
     meters:{rep:74,awareness:44,morale:68,skill:72,equipCond:62,health:82},savings:70000,loan:0},
   cash:68000, monthsOpen:520,
@@ -40,3 +40,43 @@ module.exports={
   cellar:{value:9000,target:9000,ref:9000,markup:3.2,standing:20,rare:[]},
   brand:{accent:"#8E1B2C",base:"#C9A24B",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",1,"A gas piano",78],
+  ["convection",1,"An oven for the gratins and gâteaux",78],
+  ["salamander",1,"A salamander to brown the quenelles",76],
+  ["processor",1,"A Robot-Coupe for the quenelle panade",80],
+  ["refrig",1,"A walk-in and two reach-ins",78],
+  ["dish",1,"A door-type dish machine",78],
+  ["hood",1,"A canopy hood",78],
+  ["vent",1,"A ducted extraction fan",78],
+  ["suppression",1,"A wet-chemical system",78],
+  ["extinguisher",1,"Class K and ABC extinguishers",78],
+  ["sprinkler",1,"The building's sprinklers",78],
+  ["greasetrap",1,"A grease trap",78],
+  ["bar",1,"A zinc bar with pots lyonnais",80],
+  ["espresso",1,"An espresso machine behind the zinc",78],
+  ["winestore",1,"Racks of Beaujolais and Côtes du Rhône",80],
+  ["seating",1,"Bouchon benches and tables pushed close",78],
+  ["linens",1,"Red-and-white checked tablecloths",84],
+  ["tableware",1,"Thick white plates and Duralex glasses",82],
+  ["menus",0,"A slate board",85],
+  ["pos",1,"A card terminal and a till",84],
+  ["restroom",0,"One small toilet down the stairs",62],
+  ["hvac",1,"Air conditioning",72],
+  ["smallwares",1,"Copper pans, terrines and a mandoline",80]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":3,"technique":3,"presentation":2.5,"creativity":35}},{more:[
+  ["Œufs en meurette","starter",11.36,"Poached eggs in a red-wine sauce with lardons and croutons.","d3p3m2y2"],
+  ["Grattons lyonnais","snack",6.82,"Crisp pork crackling, served with the apéritif.","m10"],
+  ["Museau de bœuf vinaigrette","starter",9.09,"Beef muzzle in a sharp vinaigrette with shallots.","m7p3"],
+  ["Lentilles vertes, saucisson chaud","starter",10.23,"Puy lentils with warm Lyon sausage.","p5m4y1"],
+  ["Poulet au vinaigre","main",21.59,"Chicken braised in wine vinegar and tomato.","m7p2y1"],
+  ["Gratin dauphinois","side",6.82,"Potatoes baked in cream and garlic.","p6d4"],
+  ["Saint-Marcellin","dessert",6.82,"A ripe Saint-Marcellin from the Isère.","d10"],
+  ["Île flottante aux pralines roses","dessert",9.09,"Poached meringue on custard with crushed pink pralines.","d6y4"],
+  ["Bugnes","dessert",6.82,"Fried dough dusted with sugar, for the carnival season.","y8d2"],
+  ["Café","drink",2.84,"An espresso.","y10"],
+  ["Verre de Côtes du Rhône","drink",6.82,"A glass of red.","y10"],
+  ["Kir","drink",5.68,"White wine with cassis.","y10"]]});

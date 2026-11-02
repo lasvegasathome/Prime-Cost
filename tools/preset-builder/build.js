@@ -10,7 +10,7 @@ const ROOT=path.resolve(__dirname,'../..'), DEFS=path.join(__dirname,'defs'), LO
   const only=process.argv.slice(2);
   const files=fs.readdirSync(DEFS).filter(f=>f.endsWith('.js')).filter(f=>!only.length||only.includes(f.replace(/\.js$/,''))).sort();
   const b=await chromium.launch();
-  const page=async()=>{ const p=await b.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(String(e).slice(0,200))); p.on('dialog',d=>d.dismiss());
+  const page=async()=>{ const p=await b.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(String(e).slice(0,200))); p.on('dialog',d=>d.dismiss()); p.on('console',m=>{ if(/^KIT /.test(m.text())) console.log('  '+m.text()); });
     await p.route(/fonts\.(googleapis|gstatic)/,r=>r.abort()); await p.goto('file://'+path.join(ROOT,'index.html')); return {p,errs}; };
   let failed=0;
   for(const f of files){

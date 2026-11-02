@@ -40,3 +40,47 @@ module.exports={
   cellar:{value:3000,target:3000,ref:3000,markup:3,standing:5,rare:[]},
   brand:{accent:"#E33B2E",base:"#1A1A1A",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["parrilla",2,"A parrilla with a crank-adjustable grate and a brasero, burning quebracho",80],
+  ["convection",0,"An old oven for the empanadas and the matambre",66],
+  ["range",1,"A four-burner for the provoleta pans and sauces",74],
+  ["fryer",1,"A fryer for the papas fritas",72],
+  ["bonesaw",1,"A band saw for the cuts",76],
+  ["refrig",1,"A walk-in for the beef",74],
+  ["dish",1,"A dish machine",72],
+  ["hood",1,"A tall chimney hood over the parrilla",72],
+  ["vent",1,"An exhaust fan up the chimney",72],
+  ["suppression",1,"A wet-chemical system over the fryer",72],
+  ["extinguisher",1,"Class K and ABC extinguishers",72],
+  ["sprinkler",1,"Sprinklers",72],
+  ["greasetrap",1,"A grease trap",72],
+  ["bar",0,"A small bar with beer and fernet",74],
+  ["winestore",1,"Racks of Malbec",76],
+  ["seating",1,"Bodegón tables and chairs",72],
+  ["patio",0,"A few tables on the sidewalk",70],
+  ["menus",1,"Printed menus with prices that change every month",80],
+  ["pos",1,"A till, a card terminal and a QR code for Mercado Pago",80],
+  ["tableware",1,"Wooden boards and steak knives",80],
+  ["restroom",0,"Two old bathrooms",58],
+  ["hvac",0,"Split air conditioners",62],
+  ["smallwares",1,"Grates, tongs, chimichurri jars and boards",76]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":2,"technique":2.5,"presentation":2,"creativity":25}},{more:[
+  ["Empanada de carne","starter",1.8,"Knife-cut beef empanada, baked.","m5y4p1"],
+  ["Asado de tira","main",11,"Short ribs cut across the bone.","m10",{"signature":true}],
+  ["Ojo de bife","main",15,"Ribeye.","m10"],
+  ["Lomo","main",16,"Tenderloin.","m10"],
+  ["Matambre a la pizza","main",9,"Flank, grilled and topped with tomato and mozzarella.","m6d3y1"],
+  ["Pollo deshuesado","main",8,"A boned half chicken from the parrilla.","m9p1"],
+  ["Chinchulines","starter",5,"Crisp grilled chitterlings.","m10"],
+  ["Riñones","starter",4.5,"Grilled kidneys.","m10"],
+  ["Papas a la provenzal","side",4,"Fries with garlic and parsley.","p8y2"],
+  ["Puré de calabaza","side",3,"Squash purée.","p8d2"],
+  ["Ensalada de rúcula y parmesano","side",4,"","p7d3"],
+  ["Panqueques con dulce de leche","dessert",3.5,"","d5y5"],
+  ["Queso y dulce","dessert",3,"Cheese with quince or sweet-potato paste: the vigilante.","d6y4"],
+  ["Quilmes (litro)","drink",3.5,"A litre bottle of beer.","y10"],
+  ["Fernet con Coca","drink",4,"","y10"],
+  ["Sifón de soda","drink",1,"","y10"]]});

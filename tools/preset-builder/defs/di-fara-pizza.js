@@ -35,3 +35,25 @@ module.exports={
   brand:{accent:"#C8102E",base:"#1A1A1A",plate:false,hideName:true},
   after:"S.namesake={since:'1965',name:'Dom DeMarco',fame:78,kind:'handson',fee:0,staffId:(S.team.find(m=>m.name==='Dom DeMarco')||{}).id};"
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["pizza",1,"Two old gas deck ovens Dom has baked in since 1965",58],
+  ["range",0,"An old six-burner for the sauce",55],
+  ["mixer",0,"A decades-old Hobart dough mixer",60],
+  ["refrig",0,"Reach-ins and a cramped walk-in",56],
+  ["preprail",0,"The prep counter where Dom cuts basil with scissors over every pie",60],
+  ["dish",0,"A three-compartment sink",60],
+  ["hood",0,"An old canopy hood",58],
+  ["vent",0,"The original exhaust fan",58],
+  ["suppression",0,"An ageing dry-chemical system",58],
+  ["extinguisher",0,"A couple of ABC extinguishers",58],
+  ["sprinkler",0,"The building's old sprinklers",58],
+  ["greasetrap",0,"An under-sink grease trap",58],
+  ["pos",0,"A cash register. Cash only",70],
+  ["menus",0,"A board on the wall",70],
+  ["seating",0,"A few tables and chairs for the lucky",55],
+  ["tableware",0,"Paper plates",80],
+  ["restroom",0,"One small restroom",50],
+  ["hvac",0,"A struggling air conditioner",45],
+  ["smallwares",0,"Peels, a cheese grater and a pair of scissors",65]];

@@ -30,8 +30,8 @@ module.exports={
   dials:{price:1,quality:"good",staffing:"full",marketing:200,draw:1200},
   menu:{format:"carte",coherence:90,identity:"Ukrainian home cooking: borscht, varenyky, holubtsi and banosh, cooked on whatever fire there is.",dishes:[
     {name:"Borscht with pampushky",course:"starter",desc:"Beetroot and beef borscht with sour cream and garlic buns.",cats:{produce:.5,meat:.3,dairy:.1,pantry:.1},grade:3,technique:3,presentation:3,creativity:30,cost:1.1,price:4.5,signature:true},
-    {name:"Varenyky with potato",course:"main",desc:"Dumplings filled with potato and fried onion, with sour cream.",cats:{pantry:.5,produce:.35,dairy:.15},grade:3,technique:3,presentation:2.5,creativity:25,cost:.8,price:4},
-    {name:"Varenyky with cherries",course:"dessert",desc:"Sweet dumplings with sour cherries and cream.",cats:{pantry:.5,produce:.35,dairy:.15},grade:3,technique:3,presentation:2.5,creativity:30,cost:.9,price:4},
+    {name:"Varenyky with potato",course:"main",desc:"Boiled varenyky filled with potato and fried onion, with sour cream.",cats:{pantry:.5,produce:.35,dairy:.15},grade:3,technique:3,presentation:2.5,creativity:25,cost:.8,price:4},
+    {name:"Varenyky with cherries",course:"dessert",desc:"Boiled sweet varenyky with sour cherries and cream.",cats:{pantry:.5,produce:.35,dairy:.15},grade:3,technique:3,presentation:2.5,creativity:30,cost:.9,price:4},
     {name:"Chicken Kyiv",course:"main",desc:"Chicken breast rolled round herb butter, crumbed and fried, with potatoes.",cats:{meat:.55,dairy:.25,pantry:.1,produce:.1},grade:3,technique:3.5,presentation:3,creativity:30,cost:2.2,price:8,signature:true},
     {name:"Holubtsi",course:"main",desc:"Cabbage rolls of rice and pork in tomato.",cats:{produce:.45,meat:.35,pantry:.2},grade:3,technique:3,presentation:2.5,creativity:25,cost:1.5,price:6},
     {name:"Banosh",course:"main",desc:"Hutsul cornmeal cooked in cream with bryndza and mushrooms.",cats:{dairy:.5,pantry:.3,produce:.2},grade:3,technique:3,presentation:3,creativity:40,cost:1.6,price:6.5},
@@ -41,3 +41,41 @@ module.exports={
   mods:[{label:"Candles, batteries and gas canisters",kind:"fixed",value:150}],
   brand:{accent:"#1C2B49",base:"#C2402E",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["generator",2,"A diesel generator for the blackouts",80],
+  ["range",1,"A gas range, which works when the power doesn't",76],
+  ["convection",1,"An oven for the pampushky",76],
+  ["fryer",1,"A fryer for the chicken Kyiv",76],
+  ["mixer",1,"A dough mixer for varenyky and pampushky",76],
+  ["plancha",1,"A griddle for the deruny and syrnyky",76],
+  ["refrig",1,"A walk-in and reach-ins",74],
+  ["dish",1,"A door-type dish machine",74],
+  ["hood",1,"A canopy hood",74],
+  ["vent",1,"An exhaust fan",74],
+  ["suppression",1,"A wet-chemical system",74],
+  ["extinguisher",1,"Extinguishers",74],
+  ["sprinkler",1,"Sprinklers",74],
+  ["greasetrap",1,"A grease trap",74],
+  ["bar",1,"A bar with horilka and Ukrainian beer",76],
+  ["seating",1,"Wooden tables",76],
+  ["menus",1,"Printed menus",80],
+  ["pos",1,"A card terminal and a cash drawer for the blackouts",78],
+  ["tableware",1,"Painted ceramic plates",80],
+  ["restroom",1,"Restrooms",74],
+  ["hvac",1,"Heating",72],
+  ["smallwares",1,"Rolling pins, pots and dumpling cutters",78]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":3,"technique":3,"presentation":2.5,"creativity":30}},{more:[
+  ["Deruny","main",4,"Potato pancakes with sour cream.","p7d3"],
+  ["Syrnyky","dessert",3.5,"Cottage-cheese fritters with sour cream and jam.","d6y4"],
+  ["Mlyntsi with cottage cheese","dessert",3.5,"","y5d5"],
+  ["Kruchenyky","main",7,"Pork rolls stuffed with mushrooms and prunes.","m8p1y1"],
+  ["Mushroom soup","starter",3.5,"Forest mushrooms and barley.","p8y2"],
+  ["Herring under a fur coat","starter",3.5,"Herring layered with beetroot, potato and mayonnaise.","s4p5d1"],
+  ["Pyrizhky","snack",1,"Baked buns with cabbage or meat.","y6m2p2"],
+  ["Kyiv cake","dessert",3,"Hazelnut meringue and buttercream.","y6d4"],
+  ["Kvass","drink",1.2,"","y10"],
+  ["Horilka","drink",1.8,"A shot.","y10"],
+  ["Chernihivske beer","drink",2,"","y10"]]});

@@ -36,3 +36,17 @@ module.exports={
   brand:{accent:"#E8462A",base:"#1A1A1A",plate:false,hideName:false},
   after:"S.namesake={since:'2008',name:'Roy Choi',fame:28,kind:'handson',fee:0,staffId:(S.team.find(m=>m.name==='Roy Choi')||{}).id};"
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["plancha",1,"A long flat-top on the truck for meat and tortillas",82],
+  ["refrig",1,"Truck reach-ins and a prep cooler",80],
+  ["preprail",1,"A refrigerated rail for slaw, relish and salsas",82],
+  ["hood",1,"The truck's hood",80],
+  ["suppression",1,"The truck's wet-chemical system",80],
+  ["extinguisher",1,"Class K and ABC extinguishers by the door",85],
+  ["generator",1,"The truck's generator",78],
+  ["greasetrap",1,"The truck's grey-water and grease tanks",80],
+  ["pos",0,"A cash box, and a phone for Twitter",85],
+  ["menus",0,"The menu painted by the window",85],
+  ["smallwares",1,"Tongs, squeeze bottles and hotel pans",80]];

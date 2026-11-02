@@ -40,3 +40,41 @@ module.exports={
   cellar:{value:1500,target:1500,ref:1500,markup:3.5,standing:5,rare:[]},
   brand:{accent:"#B5462E",base:"#3B2416",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["injera",2,"A bank of four electric mitads",80],
+  ["range",1,"Gas burners for the wats",78],
+  ["plancha",1,"A griddle for the tibs",76],
+  ["espresso",1,"An old Italian espresso machine for macchiatos",74],
+  ["refrig",1,"A walk-in and reach-ins",74],
+  ["dish",0,"Washing-up sinks",70],
+  ["hood",1,"A canopy hood",74],
+  ["vent",1,"An exhaust fan",74],
+  ["suppression",1,"A wet-chemical system",74],
+  ["extinguisher",1,"Extinguishers",74],
+  ["sprinkler",1,"Sprinklers",74],
+  ["greasetrap",1,"A grease trap",74],
+  ["bar",1,"A bar for tej, tella and beer",78],
+  ["sound",2,"A stage and sound for the azmari and the dancers",82],
+  ["seating",2,"Mesob baskets and low carved stools",84],
+  ["tableware",1,"Woven platters, clay pots and berele flasks for the tej",84],
+  ["menus",1,"Printed menus",82],
+  ["pos",1,"A till",80],
+  ["restroom",1,"Restrooms",72],
+  ["hvac",0,"Fans",70],
+  ["smallwares",1,"Pots, a mortar and the jebena for the coffee ceremony",80]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":3,"technique":3,"presentation":3,"creativity":30}},{more:[
+  ["Shekla tibs","main",8,"Lamb brought sizzling to the table in a clay pot with a brazier.","m9p1"],
+  ["Tibs firfir","main",4,"Beef tibs tossed with torn injera.","m5y4p1"],
+  ["Misir wat","main",3,"Red lentils in berbere.","y8p2"],
+  ["Gomen","side",2.5,"Collard greens with garlic.","p10"],
+  ["Ayib","side",1.5,"Fresh cottage cheese to cool the kitfo.","d10"],
+  ["Asa tibs","main",5.5,"Fried fish from the Rift Valley lakes.","s8p2"],
+  ["Chechebsa","main",3,"Torn flatbread with berbere and spiced butter.","y8d2"],
+  ["Genfo","main",2.5,"Barley porridge with a well of spiced butter.","y8d2"],
+  ["Macchiato","drink",0.8,"The Addis espresso macchiato.","y10"],
+  ["Tella","drink",1.2,"Home-brewed barley beer.","y10"],
+  ["St. George beer","drink",1.5,"","y10"],
+  ["Ambo mineral water","drink",0.8,"","y10"]]});

@@ -39,3 +39,47 @@ module.exports={
   cellar:{value:8000,target:8000,ref:8000,markup:2.25,standing:10,rare:[]},
   brand:{accent:"#1E3B2C",base:"#C9A24B",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["bar",2,"Cask beer engines and keg fonts",80],
+  ["glasswasher",1,"A glasswasher behind the bar",80],
+  ["range",1,"A six-burner range",78],
+  ["fryer",1,"Twin fryers for fish and chips",78],
+  ["grill",1,"A chargrill for steaks and burgers",78],
+  ["combi",1,"A combi oven for the Sunday roasts",80],
+  ["carving",1,"A carving station for Sundays",80],
+  ["refrig",1,"A walk-in and reach-ins",78],
+  ["dish",1,"A door-type dish machine",78],
+  ["hood",1,"A canopy hood",78],
+  ["vent",1,"A ducted extraction fan",78],
+  ["suppression",1,"A wet-chemical system",78],
+  ["extinguisher",1,"Class K and ABC extinguishers",78],
+  ["sprinkler",1,"Sprinklers",78],
+  ["greasetrap",1,"A grease trap",78],
+  ["ice",1,"An ice machine",80],
+  ["sound",1,"Speakers for the quiz night",80],
+  ["seating",1,"Pub tables and settles",76],
+  ["stools",1,"Bar stools",76],
+  ["patio",1,"Benches in the beer garden",74],
+  ["menus",1,"Printed menus and a specials board",84],
+  ["pos",1,"Tills at the bar",84],
+  ["tableware",1,"Pub china and pint glasses",82],
+  ["restroom",1,"Pub toilets",74],
+  ["hvac",1,"Heating and air conditioning",74],
+  ["smallwares",1,"Roasting tins, pie dishes and fish baskets",80]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":2,"technique":2.5,"presentation":2,"creativity":30}},{more:[
+  ["Sausage and mash","main",20.51,"Pork sausages on mash with onion gravy.","m5p4y1"],
+  ["Ploughman's lunch","main",16.67,"Cheddar, ham, pickle, apple and crusty bread.","d4m3y2p1"],
+  ["Sunday roast chicken","main",23.08,"Half a roast chicken with Yorkshire pudding, roast potatoes and gravy.","m6p3y1"],
+  ["Nut roast","main",20.51,"The vegetarian Sunday roast.","p6y4"],
+  ["Ham, egg and chips","main",17.95,"Thick-cut ham with two fried eggs and chips.","m5p4d1"],
+  ["Chips","side",6.41,"A bowl of chips.","p9y1"],
+  ["Pork scratchings","snack",3.21,"A bag from behind the bar.","m10"],
+  ["Crumble and custard","dessert",8.97,"Fruit crumble of the day with custard.","p5y3d2"],
+  ["Cheeseboard","dessert",12.82,"Three British cheeses with crackers and chutney.","d8y2"],
+  ["Pint of Guinness","drink",8.33,"","y10"],
+  ["Glass of house red","drink",8.97,"","y10"],
+  ["Gin and tonic","drink",10.9,"","y10"],
+  ["Lime and soda","drink",3.21,"","y10"]]});

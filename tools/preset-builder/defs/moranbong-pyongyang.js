@@ -39,3 +39,40 @@ module.exports={
   brand:{accent:"#C8161D",base:"#F2C230",plate:false,hideName:true},
   after:"S.risk=Object.assign(S.risk||{},{political:12});"
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["noodlemachine",1,"A press for the buckwheat noodles",74],
+  ["range",1,"Gas burners for the broths",70],
+  ["plancha",1,"A griddle for the nokdu jijim",70],
+  ["grill",1,"A charcoal grill for the bulgogi",70],
+  ["steamer",1,"Steamers for the mandu",70],
+  ["ricecooker",1,"Rice cookers",72],
+  ["generator",1,"A generator for the power cuts",68],
+  ["refrig",0,"Old refrigerators and a cold store for the kimchi",62],
+  ["dish",0,"Washing-up sinks",66],
+  ["hood",0,"A hood over the line",62],
+  ["vent",0,"An exhaust fan",62],
+  ["suppression",0,"Sand and a fire blanket",62],
+  ["extinguisher",0,"Extinguishers",62],
+  ["sprinkler",0,"No sprinklers",62],
+  ["greasetrap",0,"A grease trap",60],
+  ["bar",0,"Taedonggang beer on tap",70],
+  ["seating",1,"Tables for families and work units",74],
+  ["tableware",1,"Brass bowls for the naengmyeon",80],
+  ["menus",1,"Printed menus",76],
+  ["pos",0,"A cash register",76],
+  ["restroom",0,"Restrooms",62],
+  ["hvac",0,"Coal heating",60],
+  ["smallwares",0,"Pots, ladles and scissors for the noodles",68]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":3,"technique":3,"presentation":2.5,"creativity":25}},{more:[
+  ["Taedonggang sungeoguk","starter",5,"Pyongyang's grey-mullet soup.","s8p2"],
+  ["Ori bulgogi","main",7,"Grilled duck.","m9p1"],
+  ["Pyongyang soondae","starter",3,"Blood sausage.","m8y2"],
+  ["Injogogi bap","snack",1.5,"Soy-bean 'man-made meat' wrapped around rice with chilli sauce.","y8p2"],
+  ["Dubu bap","snack",1.5,"Fried tofu pockets stuffed with rice.","y8p2"],
+  ["Haeju bibimbap","main",3.5,"Rice with vegetables, chicken and seaweed.","y5p3m2"],
+  ["Pyongyang soju","drink",2,"","y10"],
+  ["Insam-ju","drink",4,"Ginseng liquor.","y10"],
+  ["Corn tea","drink",0.5,"","y10"]]});

@@ -38,3 +38,24 @@ module.exports={
   cellar:{value:60,target:60,ref:60,markup:3.3,standing:0,rare:[]},
   brand:{accent:"#3F4A3C",base:"#D9D3C2",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",0,"A battered gas stove",40],
+  ["refrig",0,"A refrigerator that hums and leaks",38],
+  ["dish",0,"A sink and greasy cloths",40],
+  ["hood",0,"A stained extractor",36],
+  ["vent",0,"A grating in the wall",36],
+  ["suppression",0,"A bucket of sand",36],
+  ["extinguisher",0,"A fire bucket",36],
+  ["sprinkler",0,"None",36],
+  ["greasetrap",0,"A blocked drain",30],
+  ["batchbrew",0,"An urn of Victory Coffee",42],
+  ["bar",0,"Bottles of Victory Gin with china stoppers",45],
+  ["sound",0,"The telescreen, which cannot be turned off",95],
+  ["seating",0,"Small tables, and a corner table with a chessboard",42],
+  ["tableware",0,"Chipped cups and thick glasses",40],
+  ["menus",0,"No menu; the waiter brings what there is",60],
+  ["pos",0,"A cash drawer",50],
+  ["restroom",0,"A lavatory with no seat",30],
+  ["smallwares",0,"Dented pans and tin spoons",40]];

@@ -44,3 +44,44 @@ module.exports={
   brand:{accent:"#7A1426",base:"#1F1B16",plate:false,hideName:true},
   after:"S.cellar.rare=[{id:uid(),name:'Cognac Clos du Griffier 1788',cost:120,price:600,prestige:9,qty:1},{id:uid(),name:'Château Lafite 1870',cost:20,price:90,prestige:7,qty:6}];"
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",3,"A great coal-fired range",80],
+  ["rotisserie",2,"A rotisserie before the fire for the ducks",80],
+  ["salamander",1,"A gas salamander to glaze the sole Cardinal",78],
+  ["fryer",1,"Pans of beef fat for the pommes soufflées",78],
+  ["gueridon",3,"Silver duck presses and flambé trolleys",88],
+  ["refrig",1,"Ice boxes and an electric cold room",72],
+  ["dish",0,"The scullery",72],
+  ["potwasher",0,"Sinks for the copper",72],
+  ["hood",0,"A great hood over the range",70],
+  ["vent",0,"A chimney",70],
+  ["suppression",0,"Sand buckets and fire blankets",70],
+  ["extinguisher",0,"Soda-acid extinguishers",70],
+  ["sprinkler",0,"No sprinklers; the building is older than them",70],
+  ["greasetrap",0,"A grease trap in the drains",65],
+  ["winestore",3,"The cellar, one of the greatest in Paris",92],
+  ["seating",3,"The dining room over the Seine and Notre-Dame",90],
+  ["tableware",3,"Silver, crystal and fine porcelain",90],
+  ["linens",3,"Starched damask",90],
+  ["menus",3,"Engraved menus",90],
+  ["pos",0,"A cashier's desk and a ledger",80],
+  ["hoststand",0,"The reservation book",85],
+  ["restroom",1,"Restrooms",72],
+  ["hvac",0,"Radiators and open windows",68],
+  ["smallwares",2,"Copper pans, carving knives and the numbered cards for the ducks",85]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":4,"technique":4.5,"presentation":4.5,"creativity":50}},{more:[
+  ["Consommé double","starter",0.4,"","m6p4"],
+  ["Foie gras de Strasbourg","starter",1.4,"","l8y2"],
+  ["Asperges, sauce mousseline","starter",0.7,"June asparagus.","p7d3"],
+  ["Homard Thermidor","main",2.2,"","s8d2"],
+  ["Tournedos Rossini","main",2.4,"Beef fillet with foie gras and truffle.","m7l3"],
+  ["Poularde de Bresse truffée","main",2.6,"","m7l3"],
+  ["Fraises des bois","dessert",0.6,"Wild strawberries with cream.","p8d2"],
+  ["Soufflé au Grand Marnier","dessert",0.7,"","d6y4"],
+  ["Bottle of Champagne","drink",3,"","y10"],
+  ["Glass of Bordeaux","drink",0.5,"","y10"],
+  ["Cognac","drink",0.6,"","y10"],
+  ["Café","drink",0.15,"","y10"]]});

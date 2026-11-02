@@ -63,3 +63,46 @@ module.exports={
              {key:"ital",name:"Altona Italian importer",cats:["dairy","pantry","luxury"],q:80,price:1.08,reliability:.94,terms:"net14",relation:55,monthsWith:2,blurb:"Real mozzarella, San Marzano tomatoes and Parma ham."}],
   brand:{accent:"#C8102E",base:"#1F7A3A",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["pizza",2,"The wood-fired oven in view of the street",84],
+  ["mixer",1,"A spiral dough mixer",80],
+  ["preprail",1,"A refrigerated pizza prep counter",80],
+  ["range",1,"A four-burner for the pasta and the Bolognese",78],
+  ["refrig",1,"A walk-in and reach-ins",78],
+  ["dish",1,"A door-type dish machine",78],
+  ["espresso",1,"A Faema espresso machine",80],
+  ["hood",1,"A canopy hood",78],
+  ["vent",1,"An exhaust fan",78],
+  ["suppression",1,"A dry-chemical system",78],
+  ["extinguisher",1,"Extinguishers",78],
+  ["sprinkler",1,"Sprinklers",78],
+  ["greasetrap",1,"A grease trap",76],
+  ["bar",1,"Astra on tap",80],
+  ["seating",1,"Fifty seats with checked tablecloths",78],
+  ["linens",0,"Paper placemats",82],
+  ["pos",0,"A cash register; nearly everyone pays cash",82],
+  ["deliverytab",0,"Two phone lines and an order pad",80],
+  ["menus",1,"Printed menus and delivery flyers",82],
+  ["tableware",1,"Plates, pizza cutters and wine glasses",80],
+  ["restroom",1,"Restrooms",76],
+  ["hvac",0,"Radiators and a fan",70],
+  ["smallwares",1,"Peels, pizza boxes and pasta pans",80]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":2,"technique":3,"presentation":2.5,"creativity":25}},{more:[
+  ["Funghi","main",7,"Tomato, mozzarella and mushrooms.","y4d4p2"],
+  ["Prosciutto","main",7.5,"Tomato, mozzarella and ham.","y4d3m3"],
+  ["Diavolo","main",8,"Spicy salami and peperoni.","y4d3m3"],
+  ["Vegetaria","main",8,"Peppers, mushrooms, onion, spinach and artichoke.","y4d3p3"],
+  ["Calzone","main",9.5,"Folded, with ham, mushrooms and ricotta.","y4d4m2"],
+  ["Frutti di mare","main",10,"Prawns, mussels and squid.","y4d3s3"],
+  ["Tortellini alla panna","main",7.5,"With ham and cream.","y5d3m2"],
+  ["Lasagne al forno","main",8,"","y4m3d3"],
+  ["Spaghetti carbonara","main",7.5,"","y5m2d3"],
+  ["Insalata mista","starter",4,"","p10"],
+  ["Pizzabrötchen","starter",3,"Garlic rolls from the pizza oven.","y8d2"],
+  ["Tartufo","dessert",4,"Ice cream dusted in cocoa.","d6y4"],
+  ["Espresso","drink",1.5,"","y10"],
+  ["Coca-Cola","drink",1.8,"","y10"],
+  ["Bottle of Lambrusco","drink",9,"","y10"]]});

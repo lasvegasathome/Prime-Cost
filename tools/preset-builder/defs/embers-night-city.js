@@ -43,3 +43,52 @@ module.exports={
   ownership:{owner:"Embers' owners",baseFee:.02,incentiveFee:.1,capexLimit:300000},
   brand:{accent:"#2E6F73",base:"#0E1A1E",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",3,"A custom French suite",90],
+  ["grill",3,"A Josper charcoal oven",90],
+  ["induction",2,"Induction at the pass",90],
+  ["combi",2,"A combi oven",90],
+  ["salamander",2,"A salamander",90],
+  ["blast",2,"A blast chiller",90],
+  ["rawbar",2,"A raw bar for the real oysters",90],
+  ["refrig",3,"Secured walk-ins for the imported food",90],
+  ["dish",3,"A flight-type dish machine",88],
+  ["glasswasher",2,"A glasswasher",90],
+  ["ice",2,"Ice machines",90],
+  ["hood",3,"A capture-jet hood",90],
+  ["vent",3,"Demand-controlled ventilation",90],
+  ["suppression",3,"A hybrid water-mist and wet-chemical system",90],
+  ["extinguisher",3,"Extinguishers at every station",90],
+  ["sprinkler",3,"Sprinklers with a dedicated pump",90],
+  ["greasetrap",2,"A grease interceptor",88],
+  ["bar",3,"The bar under the mezzanine",92],
+  ["winestore",3,"A cellar of real wine",92],
+  ["seating",3,"Tables under the tall windows and on the mezzanine",92],
+  ["booths",3,"Leather banquettes",92],
+  ["tableware",3,"Porcelain, crystal and silver",92],
+  ["linens",3,"Pressed linens",92],
+  ["menus",3,"Bound menus",92],
+  ["pos",3,"Handhelds and kitchen screens",92],
+  ["hoststand",3,"The members' book and the elevator desk",92],
+  ["sound",3,"The grand piano on its ring of light",94],
+  ["cameras",3,"Monitored security",92],
+  ["safe",2,"A smart safe",90],
+  ["generator",3,"The tower's power, with a private backup",90],
+  ["waterservice",3,"Real spring water in the house's own bottles",92],
+  ["restroom",3,"Designer restrooms",92],
+  ["hvac",3,"Filtered, climate-controlled air",92],
+  ["smallwares",3,"A complete set",92]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":4,"technique":4.5,"presentation":4.5,"creativity":50}},{more:[
+  ["Bread and real butter","snack",25,"Bread from real wheat, and butter from a cow.","y6d4"],
+  ["Wagyu tartare","starter",120,"","m8l2"],
+  ["Lobster Thermidor","main",240,"A whole real lobster.","s8d2"],
+  ["Farm duck","main",180,"A duck that lived outdoors.","m9p1"],
+  ["Wild salmon","main",160,"Caught at sea, not grown.","s9p1"],
+  ["Cheese trolley","dessert",70,"Real cheeses from real milk.","d10"],
+  ["Chocolate soufflé","dessert",55,"Made with cacao from a tree.","y5d5"],
+  ["Glass of real Champagne","drink",95,"","y10"],
+  ["Real Scotch, 18 years","drink",120,"","y10"],
+  ["Martini","drink",60,"With real gin and vermouth.","y10"]]});

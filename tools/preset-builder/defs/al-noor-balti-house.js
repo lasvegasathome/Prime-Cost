@@ -40,3 +40,48 @@ module.exports={
   suppliers:[{key:"cash",name:"Sparkbrook cash-and-carry",cats:["produce","meat","dairy","pantry","seafood","luxury"],q:52,price:1.02,reliability:.94,terms:"cod",relation:62,monthsWith:300,blurb:"Halal meat, spices, flour and onions by the sack, cash on delivery since the loan fell behind."}],
   brand:{accent:"#7A1F2B",base:"#E39B2D",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["tandoor",1,"One gas-fired clay tandoor",62],
+  ["grill",0,"An old charcoal grill for the kebabs",55],
+  ["range",1,"High-pressure burners for the balti bowls",60],
+  ["fryer",0,"An old fryer for the pakora and bhajis",55],
+  ["ricecooker",0,"Big pots for the pilau",60],
+  ["refrig",0,"A tired walk-in and two reach-ins",54],
+  ["dish",0,"A dish machine that leaks",50],
+  ["processor",0,"An old Robot-Coupe for the masala",58],
+  ["hood",0,"An old canopy hood",56],
+  ["vent",0,"An exhaust fan",56],
+  ["suppression",0,"An ageing dry-chemical system",56],
+  ["extinguisher",0,"Two extinguishers",56],
+  ["sprinkler",0,"The building's sprinklers",56],
+  ["greasetrap",0,"An undersized grease trap",48],
+  ["menus",1,"Laminated menus",70],
+  ["pos",0,"A till and a card machine",70],
+  ["deliverytab",1,"A delivery app on one tablet",72],
+  ["tableware",0,"Steel balti bowls and plain plates",66],
+  ["seating",0,"Tired chairs and tables",55],
+  ["restroom",0,"Old toilets",50],
+  ["hvac",0,"An old heater",50],
+  ["smallwares",0,"Balti bowls, skewers and dented pans",58]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":2,"technique":2.5,"presentation":2,"creativity":25}},{more:[
+  ["Chicken tikka balti","main",14.74,"Tandoori chicken tikka finished in the balti bowl.","m6p3y1"],
+  ["Prawn balti","main",15.38,"King prawns in a balti sauce.","s6p3y1"],
+  ["Chicken tikka masala","main",13.46,"The creamy, mild favourite.","m5d3p1y1"],
+  ["Lamb karahi","main",16.03,"Lamb on the bone with tomato, ginger and green chilli.","m7p2y1"],
+  ["Saag paneer balti","main",12.18,"Spinach and paneer.","p6d4"],
+  ["Chana balti","main",10.26,"Chickpeas in a balti sauce.","p5y5"],
+  ["Tarka dal","side",7.69,"Yellow lentils with fried garlic.","y8p2"],
+  ["Pilau rice","side",4.49,"","y10"],
+  ["Plain naan","side",3.21,"From the tandoor.","y10"],
+  ["Garlic naan","side",3.85,"From the tandoor, with garlic and coriander.","y9p1"],
+  ["Keema naan","side",4.49,"Stuffed with spiced mince.","y6m4"],
+  ["Onion bhaji","starter",5.13,"Deep-fried onion fritters.","p6y4"],
+  ["Chicken tikka starter","starter",7.05,"From the tandoor, with salad and mint sauce.","m8p2"],
+  ["Tandoori lamb chops","starter",10.26,"Four chops from the tandoor.","m9p1"],
+  ["Poppadoms and pickle tray","snack",3.21,"","y7p3"],
+  ["Gulab jamun","dessert",4.49,"Fried milk balls soaked in rose syrup.","d6y4"],
+  ["Masala chai","drink",2.56,"","y10"],
+  ["Can of mango juice","drink",1.92,"","y10"]]});

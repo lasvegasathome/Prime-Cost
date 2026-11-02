@@ -41,3 +41,42 @@ module.exports={
              {key:"badlands",name:"A nomad contact",cats:["luxury"],q:85,price:1.4,reliability:.6,terms:"cod",relation:62,monthsWith:20,blurb:"Real eggs and butter from the Badlands, cash on delivery, no questions."}],
   brand:{accent:"#E2B100",base:"#2B3036",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["plancha",2,"A flat-top griddle",72],
+  ["fryer",1,"Fryers",68],
+  ["range",1,"A range",66],
+  ["microwave",1,"Microwaves for the synth-noodles",70],
+  ["batchbrew",1,"Synth-coffee urns",70],
+  ["fountain",1,"A Nicola fountain",72],
+  ["refrig",1,"Reach-ins and a cold store for the SCOP",66],
+  ["dish",1,"A dish machine",64],
+  ["hood",1,"A hood over the griddle",66],
+  ["vent",1,"An exhaust fan",66],
+  ["suppression",1,"A wet-chemical system",66],
+  ["extinguisher",1,"Extinguishers",66],
+  ["sprinkler",1,"Sprinklers",66],
+  ["greasetrap",1,"A grease trap",62],
+  ["generator",1,"A backup power cell",70],
+  ["cameras",2,"Security cams over the door and the till",76],
+  ["safe",1,"A drop safe",76],
+  ["booths",1,"Vinyl booths",64],
+  ["stools",1,"Counter stools",64],
+  ["seating",0,"A few tables",60],
+  ["menus",1,"A flickering holo menu over the counter",66],
+  ["pos",1,"Eddie terminals at the counter",76],
+  ["tableware",0,"Plastic trays and cups",70],
+  ["restroom",0,"One restroom",50],
+  ["hvac",0,"An air scrubber that rattles",52],
+  ["smallwares",1,"Spatulas, ladles and squeeze bottles",66]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":1,"technique":1.5,"presentation":1.5,"creativity":20}},{more:[
+  ["Kibble bowl","main",3,"The cheapest thing on the board, with hot sauce.","y10"],
+  ["SCOP burrito","main",6,"","y8p2"],
+  ["SCOP nuggets","main",5,"Deep-fried, with dipping sauce.","y10"],
+  ["Synth-pancakes","main",5,"Griddled, with syrup that has never seen a tree.","y10"],
+  ["Fries","side",3,"Vat potatoes.","p8y2"],
+  ["Synth-apple pie","dessert",3.5,"","y10"],
+  ["Broseph Ale","drink",3,"","y10"],
+  ["Chromanticore","drink",3.5,"An energy drink for the second shift.","y10"]]});

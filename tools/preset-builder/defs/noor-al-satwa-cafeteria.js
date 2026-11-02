@@ -41,3 +41,47 @@ module.exports={
              {key:"food",name:"Al Quoz foodservice",cats:["meat","dairy","pantry","seafood","luxury"],q:55,price:1,reliability:.96,terms:"net30",relation:52,monthsWith:90,blurb:"Brazilian chicken, akkawi, bread, oil and packaging."}],
   brand:{accent:"#D7261E",base:"#0F8A4A",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["vertbroiler",2,"Two shawarma broilers in the window",80],
+  ["bakery",1,"A deck oven for the man'oushe",76],
+  ["plancha",1,"A tawa for parotta",76],
+  ["fryer",1,"Fryers for falafel and chips",74],
+  ["juicer",1,"A Zumex orange juicer",80],
+  ["blender",1,"Blenders for the shakes",78],
+  ["refrig",1,"Reach-ins and a small walk-in",74],
+  ["merch",1,"A drinks fridge",78],
+  ["dish",0,"Sinks",68],
+  ["hood",1,"A canopy hood",74],
+  ["vent",1,"An exhaust fan",74],
+  ["suppression",1,"A wet-chemical system",74],
+  ["extinguisher",1,"Extinguishers",74],
+  ["sprinkler",1,"Sprinklers",74],
+  ["greasetrap",1,"A grease trap",72],
+  ["menus",0,"A lit photo board above the counter",80],
+  ["pos",1,"A till and a card terminal",80],
+  ["deliverytab",1,"Delivery apps on one tablet",82],
+  ["seating",0,"Plastic chairs and tables",70],
+  ["patio",0,"Tables on the pavement",70],
+  ["tableware",0,"Foil, paper and plastic",80],
+  ["restroom",0,"One small toilet",60],
+  ["hvac",1,"Split air conditioners",72],
+  ["smallwares",1,"Shawarma knives, tongs and juice jugs",76]];
+// the rest of the menu: [name, course, price in US$, description, ingredients code, extra]
+Object.assign(module.exports.menu,{"base":{"grade":2,"technique":2.5,"presentation":2,"creativity":20}},{more:[
+  ["Beef shawarma sandwich","main",2.72,"","m6y3p1"],
+  ["Arabic shawarma meal","main",4.9,"A shawarma cut into pieces, with fries, garlic sauce and pickles.","m5y3p2"],
+  ["Chicken tikka paratha roll","main",3.27,"","m5y4p1"],
+  ["Egg paratha","main",1.91,"","y6d4"],
+  ["Falafel plate","main",4.08,"With hummus, salad and bread.","p5y5"],
+  ["Hummus","starter",3.27,"","p5y5"],
+  ["Fattoush","starter",3.81,"","p8y2"],
+  ["Mutabbal","starter",3.27,"Smoky aubergine with tahini.","p7y3"],
+  ["Lahm bi ajeen","main",2.18,"Flatbread with spiced minced meat.","y6m4"],
+  ["Chicken biryani","main",4.9,"Kerala-style.","m4y5p1"],
+  ["Chips","side",1.36,"","p9y1"],
+  ["Mango juice","drink",2.72,"","p10"],
+  ["Lemon mint","drink",2.72,"","p10"],
+  ["Cocktail juice","drink",3.81,"Layered avocado, mango and strawberry.","p10"],
+  ["Suleimani tea","drink",0.54,"","y10"]]});

@@ -26,11 +26,31 @@ module.exports={
   mods:[{label:"Every bowl cooked one at a time",kind:"capacity",value:-.15}],
   dials:{price:1,quality:"good",staffing:"lean",marketing:0,draw:3000},
   menu:{format:"carte",coherence:96,identity:"One dish done one way: bak chor mee, dressed in black vinegar, with pork, liver and dumplings.",dishes:[
-    {name:"Bak chor mee (small)",course:"main",desc:"Mee pok tossed in black vinegar, chilli and lard with minced pork, sliced pork, liver, dumplings and crisp sole.",cats:{meat:.45,pantry:.4,seafood:.1,produce:.05},grade:3,technique:4,presentation:2,creativity:40,cost:1.3,price:3.6,signature:true},
+    {name:"Bak chor mee (small)",course:"main",desc:"Mee pok tossed in black vinegar, chilli and lard with minced pork, sliced pork, liver, boiled wontons and crisp sole.",cats:{meat:.45,pantry:.4,seafood:.1,produce:.05},grade:3,technique:4,presentation:2,creativity:40,cost:1.3,price:3.6,signature:true},
     {name:"Bak chor mee (medium)",course:"main",desc:"The same, more of everything.",cats:{meat:.45,pantry:.4,seafood:.1,produce:.05},grade:3,technique:4,presentation:2,creativity:40,cost:1.65,price:4.35},
-    {name:"Bak chor mee (large)",course:"main",desc:"The large bowl, with extra dumplings.",cats:{meat:.45,pantry:.4,seafood:.1,produce:.05},grade:3,technique:4,presentation:2,creativity:40,cost:2.1,price:5.8},
-    {name:"Pork soup",course:"side",desc:"Clear soup with pork slices, liver and dumplings.",cats:{meat:.7,produce:.2,pantry:.1},grade:3,technique:3,presentation:2,creativity:25,cost:1.2,price:3.6}]},
+    {name:"Bak chor mee (large)",course:"main",desc:"The large bowl, with extra wontons.",cats:{meat:.45,pantry:.4,seafood:.1,produce:.05},grade:3,technique:4,presentation:2,creativity:40,cost:2.1,price:5.8},
+    {name:"Pork soup",course:"side",desc:"Clear soup with pork slices, liver and wontons.",cats:{meat:.7,produce:.2,pantry:.1},grade:3,technique:3,presentation:2,creativity:25,cost:1.2,price:3.6}]},
   suppliers:[{key:"pork",name:"Wet-market pork supplier",cats:["meat"],q:80,price:1.03,reliability:.94,terms:"cod",relation:85,monthsWith:300,blurb:"Fresh pork, minced and sliced before dawn, and the liver."},
              {key:"noodle",name:"Noodle factory",cats:["pantry","produce","dairy","seafood","luxury"],q:72,price:1,reliability:.97,terms:"net14",relation:80,monthsWith:300,blurb:"Mee pok made to the stall's specification, vinegar, dried sole and dumpling skins."}],
   brand:{accent:"#E8331C",base:"#FFE600",plate:false,hideName:true}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["pastacooker",1,"A noodle boiler and the blanching baskets",84],
+  ["range",1,"High-pressure burners under the pork-bone stockpots",80],
+  ["wok",1,"A wok for the lard and the fried ti poh",80],
+  ["refrig",0,"A chest chiller under the counter",72],
+  ["dish",0,"The stall's sinks",72],
+  ["hood",0,"The stall's exhaust hood",74],
+  ["vent",0,"The centre's extraction",74],
+  ["suppression",0,"A dry-chemical system",74],
+  ["extinguisher",0,"An extinguisher",74],
+  ["sprinkler",0,"The hawker centre's sprinklers",74],
+  ["greasetrap",1,"The centre's grease trap",76],
+  ["pager",1,"A queue-number display",80],
+  ["pos",0,"A cash tin",82],
+  ["menus",0,"The signboard with the prices",84],
+  ["seating",0,"The hawker centre's shared tables",72],
+  ["tableware",0,"Melamine bowls and plastic spoons",80],
+  ["smallwares",0,"Noodle baskets, ladles and the vinegar bottle",80]];

@@ -1,7 +1,29 @@
 /* Runs inside index.html (through Playwright). Takes a preset definition and builds a starting save through the same path the
    setup screen uses: a sanitized spec becomes the custom concept and market, newGame() creates the business, and then the parts a
    preset defines by hand (menu, team, suppliers, setting, brand, country, ownership) are set before the engine backfills the rest. */
+/* compact dishes: [name, course, price, desc, cats, extra]. cats is a code such as "m6p3y1" (m meat, s seafood, p produce,
+   d dairy, y pantry, l luxury, in tenths); a drink is course "drink". Cost defaults to price × the concept's food cost. */
+function moreDish(a){ const [name,course,price,desc,code,extra]=a, K={m:"meat",s:"seafood",p:"produce",d:"dairy",y:"pantry",l:"luxury"}, cats={};
+  String(code||"y10").replace(/([mspdyl])(\d+)/g,(_,k,n)=>{ cats[K[k]]=(+n)/10; return ""; });
+  const drink=course==="drink", fp=moreDish.ratio||(CONCEPTS[S.concept]||{}).foodPct||.3;
+  return Object.assign({name,course:drink?"side":course,desc:desc||"",cats,price,cost:Math.round(price*(drink?.24:fp)*100)/100},drink?{sec:"drink",technique:1,presentation:1.5,creativity:10}:{},extra||{}); }
+/* a hand-written kitchen: [type, tier, model, condition]. Replaces the engine's template kitchen entirely. */
+function buildKit(L,list){ const warn=[];
+  L.kit=list.map(([type,tier,model,cond])=>{ if(!KIT[type]) throw new Error("no kit type "+type); let t=tier; while(t>0&&!kitModel(type,t)) t--; while(t<3&&!kitModel(type,t)) t++;
+    const np=newPiece(L,type,t,"owned",cond==null?82:cond); np.model=model; np.warranty=0; return np; });
+  Object.assign(L,{kitDedup:true,kitSeatSeeded:true,kitFohSeeded:true,kitV3:true,kitFireSplit:true});
+  L.fire=L.fire||{hoodLast:S.monthIdx-1,supLast:S.monthIdx-2,hoodPlan:true,supPlan:true};
+  for(const t of kitMissing(L)) warn.push("missing required "+t);
+  for(const d of S.menu.dishes) for(const n of offlineDishNeeds(d)) if(!kitHasAny(L,n.any)) warn.push(`${d.name}: ${n.hard?"blocked":"−"+Math.round(n.loss*100)+"%"} without ${n.any.join("/")}`);
+  if(warn.length) console.warn("KIT "+warn.join("; ")); }
 window.__buildPreset = function(D){
+  // a longer menu: new dishes cost what the preset's own dishes cost, relative to price, and the engine's extra labour for a
+  // longer menu (laborMult in menuStats) is taken back out of hours per cover, so the kitchen's labour stays where it was set
+  moreDish.ratio=null;
+  if(D.menu&&D.menu.more){ const F=D.menu.dishes.filter(d=>!d.sec&&d.price>0&&d.cost>0);
+    if(D.menu.ratio) moreDish.ratio=D.menu.ratio; else if(F.length) moreDish.ratio=F.reduce((a,d)=>a+d.cost/d.price,0)/F.length;
+    const LM=n=>.85+.15*Math.min(2.2,Math.max(.5,n/12)), n0=D.menu.dishes.length, n1=(D.menu.replace?(D.menu.keep||[]).length:n0)+D.menu.more.length;
+    D=Object.assign({},D,{spec:Object.assign({},D.spec,{hrsPerCover:D.spec.hrsPerCover*LM(n0)/LM(n1)})}); }
   const cats=["produce","meat","seafood","dairy","pantry","luxury"];
   const base=specFromPreset(D.baseConcept||"bistro",D.baseMarket||"suburb");
   const sp=sanitizeSpec(Object.assign({},D.spec,{bizName:D.bizName,ownerName:D.ownerName||"You",circumstances:D.circumstances,
@@ -41,7 +63,8 @@ window.__buildPreset = function(D){
 
   // the menu
   if(D.menu){ S.menu=Object.assign({format:"carte",tastingPrice:0,pairing:false,pairingPrice:0,coherence:80,creBonus:0,notes:"",v2:1},D.menu,
-    {dishes:D.menu.dishes.map(d=>Object.assign({id:uid(),signature:false,off:false,note:"",src:"preset",sec:"food",grade:2,technique:2,presentation:2,creativity:40},d))}); }
+    {dishes:(D.menu.replace?D.menu.dishes.filter(d=>(D.menu.keep||[]).includes(d.name)):D.menu.dishes).concat((D.menu.more||[]).map(moreDish)).map(d=>Object.assign({id:uid(),signature:false,off:false,note:"",src:"preset",sec:"food",grade:2,technique:2,presentation:2,creativity:40},D.menu.base||{},d))});
+    delete S.menu.more; delete S.menu.base; delete S.menu.replace; delete S.menu.keep; delete S.menu.ratio; }
 
   // the supply chain
   if(D.suppliers){ S.supplierPool=D.suppliers.map((s,i)=>Object.assign({id:"sp_"+(s.key||i),q:55,price:1,reliability:.95,terms:"net14",relation:55,green:false,monthsWith:24},s));
@@ -61,7 +84,7 @@ window.__buildPreset = function(D){
   S.brand=Object.assign({logo:D.logo},D.brand||{});
 
   // the engine fills in everything that follows from the above: equipment the menu needs, people's backstories, prices it derives
-  kitForStarterMenu(S);
+  if(D.kit) buildKit(S.locations[0],D.kit); else kitForStarterMenu(S);
   if(D.after) (new Function("S",D.after))(S);
   const st=hydrate(JSON.parse(JSON.stringify(S)));
   st.savedAt=Date.now();

@@ -38,3 +38,37 @@ module.exports={
   ownership:{owner:"Brooklyn Fare's owner",baseFee:.02,incentiveFee:.1,capexLimit:150000},
   brand:{accent:"#111111",base:"#C9A24B",plate:false,hideName:false}
 };
+
+// the kitchen, written by hand: [type, tier, model, condition]
+module.exports.kit=[
+  ["range",3,"A custom French suite",86],
+  ["induction",2,"Hidden induction at the pass",86],
+  ["combi",2,"A combi oven",86],
+  ["robata",1,"A binchotan konro for the yellowtail",84],
+  ["salamander",2,"A salamander",86],
+  ["sousvide",2,"Circulators and a chamber sealer",86],
+  ["blast",2,"A blast chiller",86],
+  ["pacojet",2,"A Pacojet for the sorbets",86],
+  ["waffle",1,"One waffle iron, for the grandmother's-recipe waffle under the uni",86],
+  ["refrig",3,"Custom walk-ins and drawered reach-ins",86],
+  ["dish",2,"A conveyor dish machine",84],
+  ["glasswasher",2,"An undercounter glasswasher",86],
+  ["ice",2,"An ice machine",86],
+  ["hood",2,"A capture-jet hood over the open kitchen",86],
+  ["vent",2,"Variable-speed fans and tempered makeup air",86],
+  ["suppression",2,"A wet-chemical system",86],
+  ["extinguisher",2,"Extinguishers at every station",86],
+  ["sprinkler",2,"Monitored sprinklers",86],
+  ["greasetrap",2,"A grease interceptor",84],
+  ["winestore",3,"A climate-controlled wine room",86],
+  ["seating",3,"A lacquered dark-wood counter around the kitchen, and tables with white cloths",88],
+  ["tableware",3,"Fine porcelain, crystal and silver",88],
+  ["linens",2,"Tablecloths and napkins",88],
+  ["menus",0,"No printed menu; the chefs describe each course",88],
+  ["pos",2,"A POS system",88],
+  ["hoststand",2,"Reservations with guest profiles",88],
+  ["sound",1,"Background music",86],
+  ["waterservice",2,"Still and sparkling",88],
+  ["restroom",2,"Restrooms",86],
+  ["hvac",2,"Zoned air conditioning",86],
+  ["smallwares",3,"Tweezers, ring moulds, probes and Japanese knives",88]];
