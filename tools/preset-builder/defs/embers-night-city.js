@@ -40,5 +40,5 @@ module.exports={
              {key:"farm",name:"Corporate greenhouse growers",cats:["produce","meat","dairy","pantry"],q:90,price:1.18,reliability:.9,terms:"net30",relation:58,monthsWith:60,blurb:"Real vegetables, beef and dairy from corporate farms outside the city."}],
   cellar:{value:400000,target:400000,ref:400000,markup:3.6,standing:60,rare:[]},
   ownership:{owner:"Embers' owners",baseFee:.02,incentiveFee:.1,capexLimit:300000},
-  brand:{accent:"#E8552B",base:"#14100E",plate:false,hideName:false}
+  brand:{accent:"#E8552B",base:"#14100E",plate:false,hideName:true}
 };

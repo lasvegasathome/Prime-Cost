@@ -32,4 +32,5 @@ Each preset save carries its restaurant's logo so the game can show it. The logo
 | Fallow | Fallow website icon (fallowrestaurant.com) |
 | 42 | 42 website icon (42restaurant.hu) |
 | La Tour d'Argent | Tour d'Argent website logo (tourdargent.com), recoloured dark |
-| Chez Josette, The Lamb & Lantern, Al-Noor Balti House, Parrilla Don Ernesto, Gojo Bet, Noor Al Satwa Cafeteria, Pichka, Moranbong District Restaurant, Chestnut Tree Café, Second Shift, Embers, Pizza Fortuna (fictional or fan presets) | Drawn for this project |
+| Chez Josette, The Lamb & Lantern, Al-Noor Balti House, Parrilla Don Ernesto, Gojo Bet, Noor Al Satwa Cafeteria, Pichka, Moranbong District Restaurant, Chestnut Tree Café, Second Shift, Pizza Fortuna (fictional or fan presets) | Drawn for this project |
+| Embers (Cyberpunk 2077) | The restaurant's logo from the game, used as a fair-use identifier; the setting belongs to CD Projekt Red |
