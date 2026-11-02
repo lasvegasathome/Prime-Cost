@@ -23,3 +23,13 @@ Each preset save carries its restaurant's logo so the game can show it. The logo
 | The French Laundry | [The French Laundry logo.svg](https://commons.wikimedia.org/wiki/File:The_French_Laundry_logo.svg) on Wikipedia / Wikimedia Commons (Public domain) |
 | Waffle House | [Waffle House Logo.svg](https://commons.wikimedia.org/wiki/File:Waffle_House_Logo.svg) on Wikipedia / Wikimedia Commons (Public domain) |
 | Windows on the World | [Windows on the world logo.png](https://en.wikipedia.org/wiki/File:Windows_on_the_world_logo.png) on Wikipedia / Wikimedia Commons (Fair use) |
+| Di Fara Pizza | Di Fara website header (difarapizzany.com) |
+| Kogi BBQ | Kogi website (kogibbq.com), white artwork recoloured dark |
+| Casa Carmela | Casa Carmela website (casa-carmela.com), cropped from its centenary mark and recoloured dark |
+| Chef's Table at Brooklyn Fare | Brooklyn Fare website icon (brooklynfare.com) |
+| Hill Street Tai Hwa Pork Noodle | Redrawn for this project from photographs of the stall's own signboard; Michelin plaque and food photos left off |
+| Kjolle | Kjolle website wordmark (kjolle.com), recoloured dark |
+| Fallow | Fallow website icon (fallowrestaurant.com) |
+| 42 | 42 website icon (42restaurant.hu) |
+| La Tour d'Argent | Tour d'Argent website logo (tourdargent.com), recoloured dark |
+| Chez Josette, The Lamb & Lantern, Al-Noor Balti House, Parrilla Don Ernesto, Gojo Bet, Noor Al Satwa Cafeteria, Pichka, Moranbong District Restaurant, Chestnut Tree Café, Second Shift, Embers, Pizza Fortuna (fictional or fan presets) | Drawn for this project |

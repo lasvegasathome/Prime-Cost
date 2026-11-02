@@ -35,10 +35,33 @@ The `presets/` folder holds ready-made restaurants to start from. Download one, 
 | The French Laundry | `prime-cost-the-french-laundry.json` | Yountville, Napa Valley |
 | Waffle House | `prime-cost-waffle-house.json` | Metro Atlanta |
 | Windows on the World | `prime-cost-windows-on-the-world.json` | World Trade Center, January 1999 |
+| Di Fara Pizza | `prime-cost-di-fara-pizza.json` | Midwood, Brooklyn, May 2011 |
+| Kogi BBQ (taco truck) | `prime-cost-kogi-bbq.json` | Los Angeles, December 2008 |
+| Casa Carmela | `prime-cost-casa-carmela.json` | Malvarrosa, Valencia |
+| Chez Josette (fictional bouchon, new Bib Gourmand) | `prime-cost-chez-josette-lyon.json` | Croix-Rousse, Lyon |
+| The Lamb & Lantern (fictional tied pub) | `prime-cost-the-lamb-and-lantern.json` | Bermondsey, London |
+| Al-Noor Balti House (fictional, a rescue) | `prime-cost-al-noor-balti-house.json` | Ladypool Road, Birmingham |
+| Parrilla Don Ernesto (fictional) | `prime-cost-parrilla-don-ernesto.json` | Boedo, Buenos Aires, September 2023 |
+| Gojo Bet (fictional cultural restaurant) | `prime-cost-gojo-bet-addis-ababa.json` | Bole, Addis Ababa, January 2019 |
+| Noor Al Satwa Cafeteria (fictional) | `prime-cost-noor-al-satwa-cafeteria.json` | Al Satwa, Dubai |
+| Chef's Table at Brooklyn Fare | `prime-cost-chefs-table-brooklyn-fare.json` | West 37th Street, Manhattan, December 2023 |
+| Hill Street Tai Hwa Pork Noodle (hawker stall) | `prime-cost-hill-street-tai-hwa.json` | Crawford Lane, Singapore, July 2016 |
+| Kjolle | `prime-cost-kjolle-lima.json` | Barranco, Lima |
+| Fallow | `prime-cost-fallow-london.json` | St James's Market, London |
+| 42 | `prime-cost-42-esztergom.json` | Esztergom, Hungary, November 2022 |
+| La Tour d'Argent | `prime-cost-tour-d-argent-1940.json` | Occupied Paris, June 1940 |
+| Pichka (fictional) | `prime-cost-pichka-kyiv.json` | Podil, Kyiv, October 2022 |
+| Moranbong District Restaurant (fictional) | `prime-cost-moranbong-pyongyang.json` | Pyongyang, January 2020 |
+| Chestnut Tree Café (*Nineteen Eighty-Four*) | `prime-cost-chestnut-tree-cafe-1984.json` | Airstrip One |
+| Second Shift (Cyberpunk 2077, fictional diner) | `prime-cost-second-shift-night-city.json` | Santo Domingo, Night City, 2077 |
+| Embers (Cyberpunk 2077) | `prime-cost-embers-night-city.json` | The Glen, Night City, 2077 |
+| Pizza Fortuna (homage to *Pizza Connection*) | `prime-cost-pizza-fortuna-hamburg.json` | St. Pauli, Hamburg, April 1994 |
 
 Each preset's world notes say which parts come from published sources (menus, prices, company filings, reviews) and which are estimated or invented, such as staff names, rent and local events.
 
-The Windows on the World preset begins in January 1999 and is written to stay in its own time.
+The Windows on the World, Tour d'Argent, Pichka and Moranbong presets are set in real, difficult moments and are written to stay in their own time. The Chestnut Tree Café, Second Shift and Embers presets are unofficial fan presets set in other people's fictional worlds; Pizza Fortuna borrows only the premise of *Pizza Connection*, none of its names or art.
+
+The presets added in November 2026 are built from definitions in `tools/preset-builder/`; `node tools/preset-builder/build.js` rebuilds them and plays a year of each as a check.
 
 ## License
 

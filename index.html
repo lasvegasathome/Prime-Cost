@@ -1060,8 +1060,8 @@ function advanceMonth(){
   applyCashflow(S,R);
   rollEvents(S,R);
   rivalTick(R);
-  legalTick(R);
-  heatTick(R);
+  // fines, settlements and bribes are written in today's dollars; scale them to the business's era or economy like the stock events
+  { const ps=priceScale(), c=S.cash; legalTick(R); heatTick(R); if(ps!==1&&S.cash!==c) S.cash=c+(S.cash-c)*ps; }
   officeTick(R);
   commissaryTick(R);
   intlTick(R);
