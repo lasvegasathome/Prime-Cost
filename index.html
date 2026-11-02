@@ -528,9 +528,10 @@ function openingCosts(cfg){
 /* ------------------------------------------------------------
    THE SIMULATION
    ------------------------------------------------------------ */
-function forecastCovers(S,loc){
-  // what the operator *thinks* next month looks like — noisy unless a CPA is involved
-  const d=demandCore(S,loc,S.calMonth);
+function forecastCovers(S,loc,cal){
+  // what the operator *thinks* a month looks like — noisy unless a CPA is involved. It's made at the end of a month, for the
+  // month after it, so the caller passes that month; on its own it forecasts the current calendar month.
+  const d=demandCore(S,loc,cal==null?S.calMonth:cal);
   const band = S.traits.includes("cpa") ? .03 : clamp(.16 - adminEff()*.0011, .05, .16);
   const noise = rnd(1-band,1+band);
   return Math.round(d.covers*noise);
@@ -811,7 +812,7 @@ function simulateMonth(S){
     loc.rep=clamp(loc.rep,3,99); loc.awareness=clamp(loc.awareness,2,99); loc.morale=clamp(loc.morale,3,99);
     loc.monthsOpen++;
     if(loc.tempFoodLeft>0){ loc.tempFoodLeft--; if(loc.tempFoodLeft===0) loc.tempFood=0; }
-    loc.lastForecast=forecastCovers(S,loc);
+    loc.lastForecast=forecastCovers(S,loc,(S.calMonth+1)%12);   // scheduled now, for next month
     loc.turnover=Math.max(0,(loc.turnover||0)*.5);
 
     pressVisits(loc,crit,R);
