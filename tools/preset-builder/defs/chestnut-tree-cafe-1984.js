@@ -1,9 +1,11 @@
+const C=require("../countries");
 module.exports={
   bizName:"Chestnut Tree Café", seed:"chestnut-tree-1984", startMonth:3,
   baseConcept:"bistro", baseMarket:"core",
+  country:C.oceania,
   circumstances:"April 1984, Airstrip One. You manage the Chestnut Tree Café, licensed by the Ministry of Plenty, haunt of painters and musicians, and of men the Party has already finished with. The waiters top up the Victory Gin with saccharine flavoured with cloves without being asked. The telescreen is never off. The Ministry sets your prices, your supplies and your quota, and when it revises its figures, your books are revised with them.",
   notes:"This preset is set in the world of George Orwell's Nineteen Eighty-Four (1949), not in the real 1984. The Chestnut Tree Café is described in the novel as the haunt of painters and musicians, where the old, discredited leaders of the Party gathered before they were purged; its speciality is Victory Gin flavoured with cloves (a few drops of clove-flavoured saccharine from a bottle with a quill through the cork); the telescreen plays 'Under the spreading chestnut tree / I sold you and you sold me'. Oceania's money is dollars and cents. The Ministry of Plenty controls rations and supplies and routinely rewrites its own figures (it pledged no cut to the chocolate ration, cut it from thirty grammes to twenty, and announced the twenty as an increase). Buying from ordinary shops is 'dealing on the free market'; real coffee and sugar exist only for the Inner Party. The Thought Police watch everyone; people who are vaporised are removed from every record. The café's staff and events here are invented; the setting, the café's character and its speciality come from the novel. Tone: bleak and plain, no comedy. Effects available: revise (the record of past months is restated), and staff leaving with erase (someone is vaporised and disappears from the log).",
-  world:{guide:false,guideAuto:false,priceLevel:.08},
+  world:{guide:false,guideAuto:false,priceLevel:.08,outside:false},
   expansions:{heat:true,rivals:false},
   spec:{conceptName:"Chestnut Tree Café",blurb:"Victory Gin with cloves, chess problems, a telescreen, and the Ministry's prices.",
     check:2.6,foodPct:.36,seats:44,turns:2.2,maxTurns:3.4,elast:.4,hrsPerCover:.3,alcohol:.72,sqftSeat:22,buildSqft:40,equip:8000,chef:900,gm:0,counter:false,

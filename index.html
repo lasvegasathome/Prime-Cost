@@ -976,7 +976,8 @@ const EVENT_POOL=[
   {id:"landlord",w:3,tone:"warn",when:S=>S.locations.some(l=>l.leaseLeft<26),
    text:S=>`Your landlord at ${pick(S.locations).name} sold the building. The new owner's letter mentions "bringing rents to market."`,
    apply:S=>{const l=pick(S.locations); l.escalator=0.075; return "your rent at renewal";}},
-  {id:"slip",w:3,tone:"bad",
+  // personal-injury claims are a fact of American restaurant life; elsewhere they're rarer, and in a closed world they don't exist
+  {id:"slip",w:1,tone:"bad",when:S=>S.world.outside!==false&&(certRegion()==="us"||Math.random()<.35),
    text:()=>`A guest slipped on a wet floor and retained a lawyer. Your insurer is handling it; your premium is not going to survive it.`,
    apply:S=>{S.cash-=rnd(3500,9000); return "insurance";}},
   {id:"regulars",w:5,tone:"good",when:S=>S.locations.some(l=>l.monthsOpen>8&&l.rep>55),
@@ -2552,7 +2553,7 @@ function certRegion(){ const h=S&&S.intl&&S.intl.home;
   if(h&&H[h]) return H[h]; const g=regionTags(); return g.has("japan")?"jp":g.has("uk")?"uk":g.has("europe")?"eu":g.has("australia")?"au":g.has("canada")?"ca":g.has("mexico")?"mx":g.has("us")?"us":"other"; }
 function storyYear(){ return S&&S.epoch? S.epoch+S.year-1 : null; }
 function localCerts(){ return Object.keys((S&&S.customCerts)||{}).filter(k=>S.customCerts[k].local); }
-function certAvailable(k){ if(!CERTS[k]) return localCerts().includes(k); const c=CERTS[k]; const y=storyYear();
+function certAvailable(k){ if(!CERTS[k]) return localCerts().includes(k); if(S&&S.world&&S.world.outside===false) return false; const c=CERTS[k]; const y=storyYear();
   if(c.regions&&!c.regions.includes(certRegion())) return false; if(c.since&&y&&y<c.since) return false;
   if(c.fit){ try{ if(!c.fit.test(conceptText())) return false; }catch(e){} }
   if(c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)) return false;
@@ -2611,7 +2612,7 @@ const STAFF_TRAITS={
 const ucf=t=>String(t).charAt(0).toUpperCase()+String(t).slice(1);
 function staffTrait(m){ return STAFF_TRAITS[m&&m.trait]||null; }
 function stressDrag(m){ return 1-Math.max(0,((m&&m.stress)||0)-65)/140; }
-function pickRival(){ const r=(S.rivals||[]).filter(x=>!x.closed); return r.length? pick(r).name : pick(["a rival across town","a new hotel group","a restaurant that just landed a big backer"]); }
+function pickRival(){ const r=(S.rivals||[]).filter(x=>!x.closed); return r.length? pick(r).name : S.world&&S.world.outside===false? pick(["a canteen with a better allocation","another café the Ministry favours","a Party canteen across the district"]) : pick(["a rival across town","a new hotel group","a restaurant that just landed a big backer"]); }
 function staffDeparture(m,why,R){
   S.team=S.team.filter(x=>x!==m); S.training=S.training.filter(t=>t.memberId!==m.id);
   const loc0=S.locations[0]; if(!loc0) return;
@@ -3939,16 +3940,26 @@ function crewTick(loc,R){
   if(quits>=Math.max(4,need*.2)) R.events.push({tone:"warn",text:`${quits} hourly staff quit at ${loc.name} this month. Replacing and training them cost ${money(cost)}, and the new people are still learning.`});
 }
 /* salaried pay tracks local wages, less steeply than hourly pay does */
-function localPay(loc){ const M=MARKETS[(loc||(S&&S.locations[0])||{}).market]||{}; return clamp(Math.pow((M.wage||17)/17,.6),.7,1.25); }
+function localPay(loc){ const mk=(loc||(S&&S.locations[0])||{}).market, M=MARKETS[mk]||{};
+  // a custom market's wage is in the story's own money; the built-in American markets are in today's dollars and stay in a narrow band
+  if(mk==="custom") return clamp(Math.pow((M.wage||17)/(17*priceScale()),.85),.04,1.6);
+  return clamp(Math.pow((M.wage||17)/17,.6),.7,1.25); }
+/* round a salary to a sensible step for its size: $10 at Ministry wages, $50 in the low thousands, $500 for modern pay */
+function payRound(x){ const st=x>=20000?500:x>=2000?50:10; return Math.round(x/st)*st; }
 function teamPayroll(){ return S.team.reduce((a,m)=>a+m.salary,0)+(S.office||[]).reduce((a,o)=>a+o.salary,0); }
 function marketSalary(role,skill){
   // what this kind of restaurant pays: a diner's cook isn't priced like a starred kitchen's
   // the head chef's pay tracks the concept; everyone else's moves much less (a starred room's sous chef still earns sous-chef money)
-  const C=CONCEPTS[S.concept]||{}; const raw=C.chef>0? C.chef/ROLES.chef.base : .7;
+  // a custom concept's chef salary is already in the story's money, so it's compared with today's base at today's prices
+  const C=CONCEPTS[S.concept]||{}, ps=priceScale();
+  // in a closed world there's no labour market: the state pays by grade, scaled from the chef's official rate
+  if(S.world&&S.world.outside===false&&S.concept==="custom"&&C.chef>0) return payRound(C.chef*ROLES[role].base/ROLES.chef.base*(0.65+skill*0.007)/(0.65+60*0.007));
+  const raw=C.chef>0? C.chef/(ROLES.chef.base*(S.concept==="custom"?ps:1)) : .7;
   const scale=role==="chef"? Math.min(2.2,raw) : clamp(1+(raw-1)*.35,.7,1.35);
   const stars=S.locations[0]?S.locations[0].stars||0:0;   // a star on your jacket is worth money elsewhere
   const lp=(role==="chef"&&C.chef>0&&S.concept==="custom")?1:localPay();   // a custom concept's chef salary was set for this market already
-  return Math.round(ROLES[role].base*scale*lp*(0.65+skill*0.007)/(0.65+60*0.007)*(1+.12*stars)/500)*500;
+  // in dollars of the story's own date and place, the same scale as every other price in the game
+  return payRound(ROLES[role].base*scale*lp*(0.65+skill*0.007)/(0.65+60*0.007)*(1+.12*stars)*ps);
 }
 function staffAt(loc){ const l0=S.locations[0]; loc=loc||l0; return S.team.filter(t=>(t.locId||(l0&&l0.id))===loc.id); }
 function teamTargets(loc){
@@ -6224,9 +6235,11 @@ function perfTick(loc,crit){
 }
 const GUIDES=[
   {key:"wsra",since:1981,name:"Wine Spectator Restaurant Awards",month:5,p:3,fit:()=>(CONCEPTS[S.concept].alcohol||0)>=.08||S.cellar.value>20000,
-   score:(P)=>P.wine*.8+Math.min(20,S.cellar.rare.reduce((a,b)=>a+(b.qty>0?(b.prestige||0)*(b.rarity||1)/2:0),0)),
+   score:(P)=>{ const rare=Math.min(20,S.cellar.rare.reduce((a,b)=>a+(b.qty>0?(b.prestige||0)*(b.rarity||1)/2:0),0)),
+     depth=clamp(Math.log10(Math.max(1,S.cellar.value/priceScale())/20000)/Math.log10(50),0,1);   // $20k of wine is 0, $1M is 1
+     return Math.max(P.wine*.8, 38+.2*P.wine+45*depth)+rare; },
    levels:[["Award of Excellence",48],["Best of Award of Excellence",70],["Grand Award",90]],
-   extra:(lvl)=>lvl===0||(lvl===1&&S.cellar.value>=40000)||(lvl===2&&S.cellar.value>=150000&&S.team.some(t=>t.role==="somm"&&effSkill(t)>=80)&&S.cellar.rare.filter(b=>b.qty>0).length>=6)},
+   extra:(lvl)=>lvl===0||(lvl===1&&S.cellar.value>=40000)||(lvl===2&&S.cellar.value>=150000&&S.team.some(t=>t.role==="somm"&&effSkill(t)>=80)&&(S.cellar.rare.filter(b=>b.qty>0).length>=6||S.cellar.value/priceScale()>=500000))},   // a Grand Award list is judged on its depth, not on a handful of trophy bottles
   {key:"forbes",since:1958,name:"Forbes Travel Guide",month:1,p:4,tiers:["mid","high"],score:P=>.35*P.service+.25*P.room+.25*P.food+.15*P.cons,
    levels:[["Recommended",74],["Four-Star",85],["Five-Star",94]]},
   {key:"aaa",since:1977,name:"AAA Diamond",month:3,p:3,regions:["us","canada","mexico"],tiers:["mid","high"],score:P=>.35*P.food+.25*P.service+.25*P.room+.15*P.cons,
@@ -6312,6 +6325,7 @@ function guideTags(){ const g=new Set(regionTags()), t=((S.intl&&S.intl.home)||"
   return g; }
 function allGuides(){ return GUIDES.concat(((S&&S.localGuides)||[]).map(localGuideObj)); }
 function guideApplies(g,loc){
+  if(S.world&&S.world.outside===false&&!g.local) return false;   // a closed world: no outside guide covers it
   const rg=guideTags(), gn=genreTags(), y=storyYear();
   if(y&&g.since&&y<g.since) return false; if(y&&g.until&&y>g.until) return false;
   if(g.regions&&!g.regions.some(r=>rg.has(r))) return false;
@@ -6827,11 +6841,12 @@ function sanitizeCandidate(r,role){
   r=r||{};
   const rl=ROLES[r.role]?r.role:(role||"chef");
   const skill=Math.round(nnum(r.skill,1,99,55));
-  const floor=Math.round(marketSalary(rl,skill)*.7);
-  return {id:uid(),role:rl,name:String(r.name||personName()).slice(0,40),skill,salary:Math.round(nnum(r.salary,0,1e11,marketSalary(rl,skill))),
+  // pay stays on this market's scale (a star can ask four times the going rate, nobody works for half), whatever the headhunter says
+  const mk=marketSalary(rl,skill), salary=payRound(clamp(nnum(r.salary,0,1e11,mk),mk*.5,mk*4));
+  return {id:uid(),role:rl,name:String(r.name||personName()).slice(0,40),skill,salary,
     loyalty:Math.round(nnum(r.loyalty,0,100,55)),ambition:Math.round(nnum(r.ambition,0,100,50)),
     bio:clip(String(r.bio||""),780),catch:clip(String(r.catch||""),600),
-    years:Math.round(nnum(r.years,0,100,estYears(skill))),certs:[...new Set((Array.isArray(r.certs)?r.certs:[]).map(matchCert).filter(Boolean))].slice(0,10)};
+    years:Math.round(nnum(r.years,0,100,estYears(skill))),certs:[...new Set((Array.isArray(r.certs)?r.certs:[]).map(matchCert).filter(k=>k&&certAvailable(k)))].slice(0,10)};
 }
 function sanitizeTraining(r){
   r=r||{}; const e=r.eff||{};
@@ -7129,7 +7144,7 @@ const WINE_MARKET=[
 ];
 function genCandidate(role){
   const skill=Math.round(clamp(rnd(38,72)+(S.locations[0].stars||0)*6+(S.locations[0].rep-50)*.2,20,92));
-  const sal=Math.round(marketSalary(role,skill)*rnd(.92,1.12)/500)*500;
+  const sal=payRound(marketSalary(role,skill)*rnd(.92,1.12));
   const bios={chef:["Eight years as sous in a serious hotel kitchen; wants their name on the menu.","Ran a well-reviewed neighbourhood place that closed in the pandemic.","Cooked in two starred kitchens in Europe and has the scars and the ego to show it."],
     sous:["Organised, fast, and the one who actually writes the prep lists.","Came up through pastry and switched sides; a perfectionist.","Worked a decade of Saturday nights at the busiest brasserie in the city."],
     pastry:["Laminated dough obsessive with a following for their croissants.","Trained in Paris, plates like a jeweller.","Self-taught, bold, and a little inconsistent."],
@@ -9574,7 +9589,7 @@ function teamOverviewHTML(){
   </div></div></div>`;
 }
 function staffCardHTML(m){
-  const mkt=Math.round(marketSalary(m.role,m.skill)*(1+certPremium(m))/500)*500, tr=S.training.find(t=>t.memberId===m.id);
+  const mkt=payRound(marketSalary(m.role,m.skill)*(1+certPremium(m))), tr=S.training.find(t=>t.memberId===m.id);
   const next=certOptions(m);
   return `<div class="choice" style="cursor:default">
     <div class="row" style="align-items:baseline"><b style="margin:0">${esc(m.name)}</b><span class="note">${esc(ROLES[m.role].name)}</span><span class="spacer"></span>${m.away?'<span class="pill w">away</span>':""}${m.loyalty<35?'<span class="pill b">flight risk</span>':""}</div>
@@ -9691,7 +9706,7 @@ function wireTeam(){
     S.cash-=c.cost; S.training.push({id:uid(),name:`${c.name} exam`,memberId:m.id,left:c.months,months:c.months,monthly:0,eff:{},away:false,cert:k});
     logIt("good",`${m.name} is sitting ${c.name}: ${money(c.cost)} in fees and prep, results in ${c.months} month${c.months>1?"s":""}.`); keepY(); });
   document.querySelectorAll("[data-raise]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.raise); if(!m) return;
-    m.salary=Math.round(m.salary*1.1/500)*500; m.loyalty=clamp(m.loyalty+12,0,100); logIt("good",`Gave ${m.name} a raise to ${money(m.salary)}.`); keepY(); });
+    m.salary=payRound(m.salary*1.1); m.loyalty=clamp(m.loyalty+12,0,100); logIt("good",`Gave ${m.name} a raise to ${money(m.salary)}.`); keepY(); });
   document.querySelectorAll("[data-quit]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.quit); if(!m) return;
     if(!confirm(`Record that ${m.name} has quit? They come off the payroll with no severance, since they left.`)) return;
     if(m.poach) delete m.poach; staffDeparture(m,"quit",null); logIt("warn",`${m.name} quit and came off the payroll.`); keepY(); });
@@ -9706,7 +9721,8 @@ function wireTeam(){
   const hg=$("#hireGo"); if(hg) hg.onclick=async()=>{
     const role=$("#hireRole").value, t=$("#hireIdea").value.trim()||`A strong ${ROLES[role].name.toLowerCase()} for this restaurant.`;
     hg.disabled=true;
-    const r=await claudeJSON(HIRE_RULES,`\n\nROLE: ${role} (${ROLES[role].name})\nTHE OWNER WANTS:\n${t}`,$("#hireOut"),"search","Making discreet calls…");
+    const certsHere=Object.keys(CERTS).filter(certAvailable).map(k=>CERTS[k].name).concat(localCerts().map(k=>S.customCerts[k].name));
+    const r=await claudeJSON(HIRE_RULES,`\n\nROLE: ${role} (${ROLES[role].name})\nMARKET PAY HERE: about ${money(marketSalary(role,50))} a year for a competent ${ROLES[role].name.toLowerCase()} and ${money(marketSalary(role,80))} for an excellent one, in this game's money at this story's date and place. Price candidates on that scale.\nCREDENTIALS THAT EXIST HERE: ${certsHere.length?certsHere.join(", "):"none; give everyone an empty certs list"}. Never list any other.\nTHE OWNER WANTS:\n${t}`,$("#hireOut"),"search","Making discreet calls…");
     hg.disabled=false; if(!r) return;
     const list=(Array.isArray(r.candidates)?r.candidates:[]).slice(0,3).map(c=>sanitizeCandidate(c,role));
     if(!list.length){ $("#hireOut").textContent="Nobody suitable turned up. Try again."; return; }
