@@ -18,12 +18,14 @@ function buildKit(L,list){ const warn=[];
   if(warn.length) console.warn("KIT "+warn.join("; ")); }
 window.__buildPreset = function(D){
   // a longer menu: new dishes cost what the preset's own dishes cost, relative to price, and the engine's extra labour for a
-  // longer menu (laborMult in menuStats) is taken back out of hours per cover, so the kitchen's labour stays where it was set
+  // longer menu (laborMult in menuStats, from each dish's estimated kitchen work) is taken back out of hours per cover, so the kitchen's labour stays where it was set
   moreDish.ratio=null;
   if(D.menu&&D.menu.more){ const F=D.menu.dishes.filter(d=>!d.sec&&d.price>0&&d.cost>0);
     if(D.menu.ratio) moreDish.ratio=D.menu.ratio; else if(F.length) moreDish.ratio=F.reduce((a,d)=>a+d.cost/d.price,0)/F.length;
-    const LM=n=>.85+.15*Math.min(2.2,Math.max(.5,n/12)), n0=D.menu.dishes.length, n1=(D.menu.replace?(D.menu.keep||[]).length:n0)+D.menu.more.length;
-    D=Object.assign({},D,{spec:Object.assign({},D.spec,{hrsPerCover:D.spec.hrsPerCover*LM(n0)/LM(n1)})}); }
+    const LM=w=>.85+.15*Math.min(2.2,Math.max(.5,w/12)), W=list=>list.reduce((a,d)=>a+offlineWork(d),0),
+      kept=D.menu.replace?D.menu.dishes.filter(d=>(D.menu.keep||[]).includes(d.name)):D.menu.dishes,
+      added=D.menu.more.map(([name,course,price,desc])=>course==="drink"?{name,sec:"drink"}:{name,course,desc});
+    D=Object.assign({},D,{spec:Object.assign({},D.spec,{hrsPerCover:D.spec.hrsPerCover*LM(W(D.menu.dishes))/LM(W(kept.concat(added)))})}); }
   const cats=["produce","meat","seafood","dairy","pantry","luxury"];
   const base=specFromPreset(D.baseConcept||"bistro",D.baseMarket||"suburb");
   const sp=sanitizeSpec(Object.assign({},D.spec,{bizName:D.bizName,ownerName:D.ownerName||"You",circumstances:D.circumstances,
