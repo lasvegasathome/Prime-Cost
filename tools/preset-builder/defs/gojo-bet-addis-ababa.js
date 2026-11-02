@@ -8,7 +8,7 @@ module.exports={
   world:{guide:false,guideAuto:false},
   spec:{conceptName:"Gojo Bet",blurb:"Injera from the mitads, tej in flasks, and a band and dancers every night.",
     check:11,foodPct:.36,seats:140,turns:1.2,maxTurns:1.8,elast:.9,hrsPerCover:.5,alcohol:.22,sqftSeat:30,buildSqft:60,equip:40000,chef:3200,gm:3000,counter:false,
-    marketName:"Bole, Addis Ababa",rentYr:9,wage:.7,tipCredit:0,traffic:1.1,comp:1.2,checkMult:1,taxRate:.15,season:[1.2,.95,.85,.95,1,.95,.9,.9,1.1,1,1,1.15],
+    marketName:"Bole, Addis Ababa",rentYr:9,wage:.9,tipCredit:0,traffic:1.1,comp:1.2,checkMult:1,taxRate:.15,season:[1.2,.95,.85,.95,1,.95,.9,.9,1.1,1,1,1.15],
     meters:{rep:70,awareness:62,morale:70,skill:68,equipCond:66,health:74},savings:30000,loan:0},
   cash:30000, monthsOpen:120,
   loc:{rent:3200,cam:0,leaseLeft:48,escalator:.08,env:"tourist",ambBase:72,foh:62},

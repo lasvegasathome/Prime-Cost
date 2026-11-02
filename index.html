@@ -662,7 +662,7 @@ function simulateMonth(S){
     if(loc.status==="building"){
       // dark rent: you pay while you build and take nothing
       occupancy += (loc.rent+loc.cam)*rentMult;
-      utilities += 420;
+      utilities += 420*priceScale();
       loc.buildLeft--;
       if(loc.buildLeft<=0){ loc.status="open"; loc.monthsOpen=0;
         R.events.push({tone:"good",text:`${loc.name} passed final inspection and opened its doors.`}); }
@@ -752,8 +752,8 @@ function simulateMonth(S){
     // energy per guest follows how long they stay and how much is cooked for them, which the check tracks: a diner's eggs aren't a bistro's
     // ninety minutes under the lights, and a counter guest eats off disposables in fifteen
     const perCover=.6*clamp((C.check||39)/39,.4,1.6)*(C.counter?.8:1);
-    const locUtil = C.seats>0? 600 + realCovers*perCover + KE.energy : 180 + realCovers*0.2 + KE.energy*.35;
-    const locRepairs = (C.seats>0? 480:260)*(1+(100-loc.equip)/55) + kitServiceCost(loc) + kitMonthly(loc) + (KE.fee||0);   // equipment, plus subscriptions like booking and POS software
+    const locUtil = (C.seats>0? 600 : 180)*priceScale() + realCovers*(C.seats>0? perCover : .2*priceScale()) + KE.energy*(C.seats>0?1:.35)*priceScale();
+    const locRepairs = (C.seats>0? 480:260)*priceScale()*(1+(100-loc.equip)/55) + kitServiceCost(loc) + kitMonthly(loc) + (KE.fee||0)*priceScale();   // equipment, plus subscriptions like booking and POS software
     const locSupplies = locRev*(C.opex||(C.counter?0.042:0.055));  // direct operating: linen, china, uniforms, cleaning, menus, waste
     // the apps pay you directly; cash pays no fee. A cash-only house pays none at all, but counting, the safe and the armoured pickup aren't free
     const locCard = loc.cashOnly? (locRev-deliv)*.004 : (locRev-deliv)*(1-countryOf(loc).cashShare)*countryOf(loc).cardFee;
@@ -822,7 +822,7 @@ function simulateMonth(S){
   const GK=ghostMonth(R); salesTax+=GK.rev*salesTaxRate(null); rev+=GK.rev; revDelivery+=GK.rev; cogs+=GK.food; foodCogsT+=GK.food; labor+=GK.labor; occupancy+=GK.rent; supplies+=GK.pack; deliveryFee+=GK.commission;
   const marketing=mktTotal()+S.team.filter(m=>m.promo&&CELEB_ROLES.includes(m.role)).length*promoCost(); S.dials.marketing=mktTotal();   // publicists for the team count as marketing
   otherFixed = uniformEffects().monthly + policyEffects().monthly + (S.i9Program&&S.locations[0]? 900+Object.values(crewOf(S.locations[0])).reduce((a,c)=>a+c.n,0)*12 : 0) + fixedOverheads(rev)
-             + S.locations.filter(l=>l.status!=="building").length*280 /*licences amortised*/
+             + S.locations.filter(l=>l.status!=="building").length*280*priceScale() /*licences amortised*/
              + modFixedTotal() + S.locations.reduce((a,l)=>a+featSum(l,"fixed"),0) + trainingRunCost() + commissaryCost();
   const depreciation = depreciationMonth(S);
 
@@ -850,12 +850,15 @@ function simulateMonth(S){
   return R;
 }
 // the tax on a meal where it's served: the country's rate abroad if it has one, otherwise the location's own market
+// the price level the business lives in, as a share of US prices today: its era's, or what the setting declares (world.priceLevel) for a cheap
+// economy or a fictional world. Flat running costs (overheads, base utilities and repairs, licences) are written in today's dollars and scale by it
+function priceScale(){ const w=(S&&S.world)||{}; if(w.priceLevel!=null&&isFinite(+w.priceLevel)) return clamp(+w.priceLevel,.01,10); return eraPriceFactor(); }
 function taxIncluded(loc){ if(!loc||!intlOn()) return false; const t=countryOf(loc).salesTax; return !!(t&&t.included); }
 // the overheads every business carries, which grow with it: insurance is a base per site plus a share of sales, software and pest control
 // are per site, and the accountant's bill rises with the volume of books to keep
 function fixedOverheads(rev){
   const sites=Math.max(1,S.locations.filter(l=>l.status!=="building"&&l.status!=="closed").length);
-  return 300*sites + rev*.006 /*insurance*/ + 340*sites /*POS & software*/ + 420 + rev*.0015 /*accounting & payroll*/ + 190*sites /*pest, linen, music*/;
+  return (300*sites /*insurance*/ + 340*sites /*POS & software*/ + 420 /*accounting & payroll*/ + 190*sites /*pest, linen, music*/)*priceScale() + rev*(.006+.0015);
 }
 // monthly food inflation: a save can set its own rate (world.foodInflation), otherwise the home country's, otherwise about 2.8% a year
 function inflationDrift(){
@@ -998,7 +1001,9 @@ function rollEvents(S,R){
     pool.splice(pool.indexOf(chosen),1);
     if(Math.random()<0.30) continue;
     const text=typeof chosen.text==="function"?chosen.text(S):chosen.text;
-    const detail=chosen.apply(S);
+    const cash0=S.cash, detail=chosen.apply(S);
+    // the stock events' bills are written in today's dollars; a business in another era or a cheaper economy pays its own prices
+    const ps=priceScale(); if(ps!==1&&S.cash!==cash0) S.cash=cash0+(S.cash-cash0)*ps;
     for(const l of S.locations){ l.rep=clamp(l.rep,3,99); l.awareness=clamp(l.awareness,2,99); l.morale=clamp(l.morale,3,99); l.health=clamp(l.health,10,100); }
     R.events.push({tone:chosen.tone,text,detail:typeof detail==="string"?detail:""});
   }
