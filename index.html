@@ -3042,6 +3042,9 @@ function ensureHighEnd(s){
   if(s.rngState==null) s.rngState=(s.seed>>>0)||1;
   if(!s.cellar){ const v=starterCellar(s.concept); s.cellar={value:v,target:v,ref:Math.max(v,1),markup:4.2,standing:12,rare:[]}; }
   s.lots=Array.isArray(s.lots)?s.lots:[];
+  // world catalogue text is plain text interpolated into markup; saves written before railItem stripped it may still hold tags
+  if(s.worldCat&&typeof s.worldCat==="object") for(const c of Object.values(s.worldCat)) if(c&&Array.isArray(c.items)) c.items.forEach(it=>{ if(!it||typeof it!=="object") return;
+    for(const k of Object.keys(it)){ const v=it[k]; if(typeof v==="string") it[k]=v.replace(/[<>]/g,""); else if(Array.isArray(v)) it[k]=v.map(x=>typeof x==="string"?x.replace(/[<>]/g,""):x); } });
   s.candidates=Array.isArray(s.candidates)?s.candidates:[];
   s.supplierOffers=Array.isArray(s.supplierOffers)?s.supplierOffers:[];
   s.archOffers=Array.isArray(s.archOffers)?s.archOffers:[];
