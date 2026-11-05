@@ -291,28 +291,28 @@ const CONCEPTS={
   fast:{name:"Fast casual",blurb:"Counter service, a tight menu, a line out the door at noon and nothing at all at 3pm.",
     check:14.5,foodPct:.315,seats:38,turns:4.3,maxTurns:8.0,elast:1.45,hrsPerCover:.17,alcohol:.02,sqftSeat:25,buildSqft:150,equip:95000,
     chef:38000,gm:0,counter:true},
-  bistro:{name:"Neighbourhood bistro",blurb:"Forty seats, a chalkboard, a wine list you actually chose. The margin lives in the second glass.",
+  bistro:{name:"Neighbourhood bistro",blurb:"Forty seats, a chalkboard and a wine list you actually chose, with most of the margin in the second glass.",
     check:39,foodPct:.30,seats:58,turns:1.9,maxTurns:3.4,elast:.95,hrsPerCover:.45,alcohol:.29,sqftSeat:37,buildSqft:165,equip:120000,
     chef:60000,gm:50000},
-  pizza:{name:"Pizzeria",blurb:"The best food cost in the business and the worst labour peaks. Friday night is the whole week.",
+  pizza:{name:"Pizzeria",blurb:"The best food cost in the business and the worst labour peaks, with Friday night carrying most of the week.",
     check:23,foodPct:.255,seats:46,turns:2.9,maxTurns:5.2,elast:1.2,hrsPerCover:.24,alcohol:.13,sqftSeat:30,buildSqft:150,equip:105000,
     chef:52000,gm:44000},
   fine:{name:"Fine dining",blurb:"One seating, maybe two. Every cover costs a fortune in labour and every review is existential.",
     check:185,foodPct:.33,seats:44,turns:1.15,maxTurns:1.6,elast:.55,hrsPerCover:2.6,alcohol:.36,sqftSeat:50,buildSqft:350,equip:220000,
     chef:115000,gm:85000,opex:.08,days:21.7},
-  truck:{name:"Food truck",blurb:"Cheap to start, brutal to scale. No rent, no seats, and the weather is your landlord.",
+  truck:{name:"Food truck",blurb:"Cheap to start and brutal to scale, with no rent, no seats and takings that rise and fall with the weather.",
     check:13.5,foodPct:.30,seats:0,truckCap:210,turns:0,maxTurns:0,elast:1.35,hrsPerCover:.17,alcohol:0,sqftSeat:0,buildSqft:0,equip:85000,
     chef:0,gm:0,counter:true,truck:true}
 };
 function primeTarget(k){ const C=CONCEPTS[k||(S&&S.concept)]; return (C&&C.counter)?.60:.65; }
 const MARKETS={
-  core:{name:"Dense metro core",blurb:"Endless footfall, endless competition, and rent that does not care how you feel.",
+  core:{name:"Dense metro core",blurb:"Endless footfall, endless competition, and rent that doesn't care how you feel.",
     rentYr:85,wage:21.5,tipCredit:.35,traffic:1.30,comp:1.55,checkMult:1.18,taxRate:.0875,
     season:[.90,.90,.98,1.02,1.06,1.05,.97,.95,1.05,1.07,1.04,1.01]},
-  college:{name:"College town",blurb:"Nine months of a gold rush and three months of an empty street. Plan for the summer or die in it.",
+  college:{name:"College town",blurb:"Nine months of a gold rush, then three months of an empty street that the rest of the year has to carry.",
     rentYr:27,wage:15.25,tipCredit:.6,traffic:1.05,comp:.92,checkMult:.88,taxRate:.07,
     season:[1.05,1.10,1.12,1.10,.78,.52,.50,.72,1.20,1.22,1.14,.85]},
-  suburb:{name:"Suburban strip centre",blurb:"Parking, families, and a hard ceiling. Nobody walks past by accident.",
+  suburb:{name:"Suburban strip centre",blurb:"Parking, families and a hard ceiling on the check. Almost nobody walks past, so every guest drove here on purpose.",
     rentYr:31,wage:16.5,tipCredit:.6,traffic:.95,comp:1.12,checkMult:.97,taxRate:.0725,
     season:[.92,.93,.99,1.02,1.06,1.05,1.02,1.03,1.00,1.01,1.02,.99]},
   resort:{name:"Coastal resort town",blurb:"You earn a year's money in fourteen weeks and then you pay rent on an empty room until May.",
@@ -324,33 +324,33 @@ const MARKETS={
 };
 const TRAITS={
   lifer:{name:"Fifteen years on the line",blurb:"You can cook, you can expedite, and you can tell in four seconds whether a new hire will last.",tag:"+ kitchen skill  + food quality  − paperwork"},
-  civilian:{name:"You have never worked a shift",blurb:"You have enthusiasm and a spreadsheet. The spreadsheet is wrong. You will learn fast, because you have to.",tag:"−− skill  −− morale  ++ learning rate"},
-  inherited:{name:"Your uncle's old lease",blurb:"Rent from another decade, on a street that has since stopped being one.",tag:"−35% rent  −22% footfall  worn equipment"},
-  cpa:{name:"Your partner does the books",blurb:"Someone in this operation understands accrual accounting, and it isn't you.",tag:"accurate forecasts  cash warnings"},
+  civilian:{name:"You've never worked a shift",blurb:"You've got enthusiasm and a spreadsheet built on assumptions nobody in the trade would sign off on, and you'll be learning all of it on the job.",tag:"−− skill  −− morale  ++ learning rate"},
+  inherited:{name:"Your uncle's old lease",blurb:"Rent from another decade, on a street that's lost most of its foot traffic since.",tag:"−35% rent  −22% footfall  worn equipment"},
+  cpa:{name:"Your partner does the books",blurb:"Your partner understands accrual accounting and keeps the books honest, so the numbers you see are close to the real ones.",tag:"accurate forecasts  cash warnings"},
   following:{name:"Two years of pop-ups",blurb:"Four hundred people already know your name and have been waiting for this.",tag:"+45 awareness  +12 reputation"},
   silent:{name:"A silent partner who isn't",blurb:"Sixty thousand dollars and a phone that rings every quarter asking about distributions.",tag:"+$60,000  −25% equity  pressure"},
-  usedkit:{name:"The kitchen came with the space",blurb:"Every piece of it works. Most of it works today.",tag:"−$48,000 capex  poor equipment"},
-  pg:{name:"You signed personally for everything",blurb:"The bank is comfortable. You should not be.",tag:"−2pp loan rate  failure is personal"},
-  health:{name:"The space failed its last two inspections",blurb:"The county remembers the address even if it has forgotten your uncle.",tag:"low health score  frequent inspections"},
-  neighbour:{name:"The chef next door hates you",blurb:"He was here first, he has regulars, and he has decided you are a problem.",tag:"+competition  rival events"}
+  usedkit:{name:"The kitchen came with the space",blurb:"Every piece of it works, though on any given day something's waiting on a repair.",tag:"−$48,000 capex  poor equipment"},
+  pg:{name:"You signed personally for everything",blurb:"The bank's comfortable with the loan because your house is behind it.",tag:"−2pp loan rate  failure is personal"},
+  health:{name:"The space failed its last two inspections",blurb:"The county still has the address flagged, and inspectors will keep coming back until your scores say otherwise.",tag:"low health score  frequent inspections"},
+  neighbour:{name:"The chef next door hates you",blurb:"He was here first, he's got regulars, and he's decided you're a problem.",tag:"+competition  rival events"}
 };
 const PROGRAMS={
-  bar:{name:"Full bar programme",cost:48000,blurb:"Liquor licence, back bar, a bartender who knows what they're doing. Alcohol carries a 78% margin — it's where restaurants actually make money.",req:l=>l.seats>0},
-  brunch:{name:"Weekend brunch",cost:9000,blurb:"Two extra services a week at high margin. Also two more shifts your staff have to cover, which they will resent.",req:l=>l.seats>0},
+  bar:{name:"Full bar programme",cost:48000,blurb:"Liquor licence, back bar, a bartender who knows what they're doing. Alcohol carries a 78% margin, and it's where restaurants actually make money.",req:l=>l.seats>0},
+  brunch:{name:"Weekend brunch",cost:9000,blurb:"Two extra services a week at high margin. Also two more shifts your staff have to cover, which they'll resent.",req:l=>l.seats>0},
   delivery:{name:"Third-party delivery",cost:2500,blurb:"Orders cooked with the kitchen's spare capacity, not the dining room's seats. The apps take 15-30% of every order depending on your plan, and own the customer relationship.",req:()=>true},
   catering:{name:"Catering & private events",cost:16000,blurb:"Booked weeks ahead, paid in advance, and flat through the seasons. Eats kitchen capacity on weekdays.",req:()=>true}
 };
 const STAFFING=[
-  {k:"skeleton",name:"Skeleton",mult:.76,blurb:"You are personally on the line and the dish pit is always behind."},
-  {k:"lean",name:"Lean",mult:.90,blurb:"Covered on a normal night. Exposed on a good one."},
+  {k:"skeleton",name:"Skeleton",mult:.76,blurb:"You're personally on the line and the dish pit is always behind."},
+  {k:"lean",name:"Lean",mult:.90,blurb:"Covered on a normal night, and short whenever it gets busy."},
   {k:"full",name:"Full",mult:1.03,blurb:"Properly staffed to forecast, with a little slack."},
-  {k:"deep",name:"Deep bench",mult:1.20,blurb:"Nobody is ever in the weeds. You are paying handsomely for that."}
+  {k:"deep",name:"Deep bench",mult:1.20,blurb:"Nobody's ever in the weeds, and you're paying handsomely for the slack."}
 ];
 const QUALITY=[
   {k:"cheap",name:"Commodity",mult:.86,rep:-.14,blurb:"Broadline distributor, frozen where you can get away with it."},
   {k:"standard",name:"Standard",mult:1.00,rep:0,blurb:"What your guests expect for the price. Nothing more."},
   {k:"good",name:"Better",mult:1.13,rep:.10,blurb:"Real produce, a better protein programme, fewer shortcuts."},
-  {k:"premium",name:"Best in class",mult:1.30,rep:.20,blurb:"Named farms on the menu. Your food cost will show it."}
+  {k:"premium",name:"Best in class",mult:1.30,rep:.20,blurb:"Named farms on the menu and a food cost that shows it."}
 ];
 
 /* ------------------------------------------------------------
@@ -2786,10 +2786,10 @@ function starterSuppliers(ck){
   return {pool,map};
 }
 const SUPPLIER_MARKET=[
-  {name:"Hudson Valley Growers' Co-op",cats:["produce"],q:84,price:1.3,reliability:.86,terms:"net7",green:true,blurb:"Twelve farms, one truck, a standing order you commit to weeks ahead. What comes is what grew."},
+  {name:"Hudson Valley Growers' Co-op",cats:["produce"],q:84,price:1.3,reliability:.86,terms:"net7",green:true,blurb:"Twelve farms, one truck and a standing order you commit to weeks ahead, filled with whatever grew."},
   {name:"The forager",cats:["produce","luxury"],q:91,price:1.55,reliability:.72,terms:"cod",green:true,blurb:"Ramps, chanterelles, wild sorrel and whatever else she found. Cash, and no guarantees."},
   {name:"Day-boat fisherman",cats:["seafood"],q:90,price:1.42,reliability:.78,terms:"cod",green:true,blurb:"Line-caught, landed this morning, and nothing at all when the weather turns."},
-  {name:"Toyosu air-freight broker",cats:["seafood","luxury"],q:95,price:1.9,reliability:.9,terms:"net7",green:false,blurb:"Tuna, uni and hikarimono flown overnight from Tokyo. Spectacular, and priced like it."},
+  {name:"Toyosu air-freight broker",cats:["seafood","luxury"],q:95,price:1.9,reliability:.9,terms:"net7",green:false,blurb:"Spectacular tuna, uni and hikarimono flown overnight from Tokyo, at prices to match."},
   {name:"Heritage-breed ranch",cats:["meat"],q:86,price:1.38,reliability:.86,terms:"net14",green:true,blurb:"Pasture-raised pork and beef from a family ranch. Whole animals only, so the kitchen learns to butcher."},
   {name:"Dry-ageing specialist butcher",cats:["meat"],q:83,price:1.32,reliability:.94,terms:"net14",green:false,blurb:"Sixty-day ribeye and aged duck, cut to spec and delivered twice a week."},
   {name:"Cheese cave & affineur",cats:["dairy"],q:88,price:1.34,reliability:.93,terms:"net30",green:false,blurb:"Farmhouse cheeses aged in their own caves, plus cultured butter that ruins you for anything else."},
@@ -4002,9 +4002,9 @@ function mealCriteria(loc,ctx){
 
 const SUSPECT=[
   "A solo diner booked under a common name, ordered the full tasting, asked two very precise questions about the sauce and paid cash. The floor thinks it was an inspector.",
-  "Two diners at table six took notes between courses and asked for the menu to keep. Your maître d' is convinced.",
+  "Two diners at table six took notes between courses and asked to keep the menu, which has your maître d' convinced.",
   "Someone ordered the signature and the dish the kitchen is least sure of, drank little, and left no name. The kitchen is rattled.",
-  "A regular-looking couple asked where the fish came from and who made the bread. Nobody can stop talking about it."
+  "A regular-looking couple asked where the fish came from and who made the bread, and the floor's been talking about it since."
 ];
 function pressVisits(loc,crit,R){
   const P=loc.press;
@@ -4121,7 +4121,7 @@ function wireCeleb(){
    seasons, who walks in, safety and ambient events apply to everyone. */
 const FLAT=[1,1,1,1,1,1,1,1,1,1,1,1];
 const ENVS={
-  hood:{name:"Inner-city neighborhood",desc:"Dense, working-class blocks where people know each other. Money is tight, loyalty is real, and break-ins come with the lease.",markets:["core","rust"],check:.78,traffic:1.05,season:FLAT,seg:{regulars:15,locals:10,occasion:-5,business:-5,tourists:-5},crime:55,
+  hood:{name:"Inner-city neighborhood",desc:"Dense, working-class blocks where people know each other. Money's tight, loyalty runs deep, and break-ins come with the lease.",markets:["core","rust"],check:.78,traffic:1.05,season:FLAT,seg:{regulars:15,locals:10,occasion:-5,business:-5,tourists:-5},crime:55,
     ev:[{p:.25,m:[5,6,7],tone:"good",text:"The block association's summer street party ended up at your counter.",fx:[{op:"awareness",delta:4},{op:"rep",delta:2}]},
         {p:.03,tone:"bad",text:"A shooting two blocks over kept people home for a week.",fx:[{op:"mod",kind:"demand",label:"People staying home",value:-.06,months:1}]},
         {p:.02,tone:"good",text:"A local radio host called you the best thing to happen to the neighborhood in years.",fx:[{op:"awareness",delta:5}]}]},
@@ -4141,7 +4141,7 @@ const ENVS={
     ev:[{p:.08,desk:{title:"A family office wants the whole room",text:"A family office wants to book out the entire restaurant for a private Saturday dinner. They haven't asked the price. Your regulars booked for that night would have to be moved.",
           choices:[{label:"Take the buyout",blurb:"A very good night's money, and some unhappy regulars.",effects:[{op:"cash",amount:25000,why:"private buyout"},{op:"rep",delta:-1}]},{label:"Keep the night for your regulars",blurb:"",effects:[{op:"rep",delta:1}]}]}},
         {p:.02,tone:"warn",text:"The homeowners' association objected to your signage. It has to come down to something smaller and beige.",fx:[{op:"awareness",delta:-2}]}]},
-  cbd:{name:"Downtown business district",desc:"Towers, expense accounts and lunch meetings. Weekdays are packed, weekends are a ghost town, and December is holiday-party season.",markets:["core"],check:1.12,traffic:1.05,season:[.95,1,1.02,1,1,.95,.88,.88,1,1.02,1.05,1.18],seg:{business:15,locals:-5,regulars:-3},crime:18,
+  cbd:{name:"Downtown business district",desc:"Expense accounts and lunch meetings fill the tower restaurants on weekdays. Weekends are a ghost town, and December is holiday-party season.",markets:["core"],check:1.12,traffic:1.05,season:[.95,1,1.02,1,1,.95,.88,.88,1,1.02,1.05,1.18],seg:{business:15,locals:-5,regulars:-3},crime:18,
     ev:[{p:.45,m:[10,11],tone:"good",text:"A big firm booked the room for its holiday party and didn't look at the wine prices.",fx:[{op:"cash",amount:9000,why:"holiday party buyout"}]},
         {p:.1,m:[2,3,4,8,9,10],tone:"good",text:"A large conference in town filled the lunch tables all week.",fx:[{op:"mod",kind:"demand",label:"Conference week",value:.04,months:1}]},
         {p:.015,tone:"bad",text:"Two anchor tenants in the tower next door announced they're going mostly remote.",fx:[{op:"mod",kind:"demand",label:"Emptier towers",value:-.04,months:12}]}]},
@@ -4152,12 +4152,12 @@ const ENVS={
         {p:.06,m:[0,1,2,3,4],tone:"warn",text:"A protest march closed the streets around the capitol for a weekend.",fx:[{op:"mod",kind:"demand",label:"Streets closed",value:-.04,months:1}]}]},
   rooftop:{name:"Rooftop of a high-rise",desc:"Forty floors up with a view people propose in front of. Hard to find, weather-exposed, and one elevator away from a very bad night.",markets:["core","resort"],check:1.2,traffic:.92,season:[.85,.85,.92,1,1.08,1.15,1.18,1.15,1.05,.98,.9,.95],seg:{occasion:10,tourists:8,locals:-6},crime:6,
     ev:[{p:.2,m:[10,11,0,1,2],tone:"bad",text:"High winds closed the terrace for two weekends.",fx:[{op:"mod",kind:"capacity",label:"Terrace closed by wind",value:-.12,months:1}]},
-        {p:.015,tone:"bad",text:"The building's express elevator broke down on a Saturday. Guests climbed, or left.",fx:[{op:"shutdown",weeks:1,reason:"elevator outage"}]},
+        {p:.015,tone:"bad",text:"The building's express elevator broke down on a Saturday. Some guests took the stairs and the rest went home.",fx:[{op:"shutdown",weeks:1,reason:"elevator outage"}]},
         {p:.04,m:[4,5,6,7,8],tone:"good",text:"A sunset proposal on your terrace went viral.",fx:[{op:"awareness",delta:6}]}]},
-  tourist:{name:"Tourist district",desc:"Crowds, cameras and people who'll never be back. Huge foot traffic, few regulars, and reviews from strangers.",markets:["core","resort"],check:1.05,traffic:1.2,season:[.85,.85,.95,1,1.05,1.15,1.2,1.2,1.05,1,.9,1],seg:{tourists:20,regulars:-10,locals:-5},crime:25,
+  tourist:{name:"Tourist district",desc:"Huge foot traffic from people with their cameras out who'll never be back, which means few regulars and reviews written by strangers.",markets:["core","resort"],check:1.05,traffic:1.2,season:[.85,.85,.95,1,1.05,1.15,1.2,1.2,1.05,1,.9,1],seg:{tourists:20,regulars:-10,locals:-5},crime:25,
     ev:[{p:.3,m:[4,5,6,7,8],tone:"good",text:"A cruise ship docked and a thousand people went looking for lunch.",fx:[{op:"mod",kind:"demand",label:"Cruise crowd",value:.06,months:1}]},
         {p:.05,tone:"bad",text:"A tour bus group left a wave of one-star reviews over a wait they'd been warned about.",fx:[{op:"rep",delta:-2}]}]},
-  college:{name:"Edge of campus",desc:"Students, professors and parents' weekends. Cheap, loud, busy nine months a year and dead in summer.",markets:["college"],check:.82,traffic:1.05,season:[.95,1,1,1.05,1.2,.72,.7,.8,1.1,1.05,1.05,.85],seg:{locals:10,regulars:6,occasion:-2},crime:15,
+  college:{name:"Edge of campus",desc:"Students and professors keep it cheap, loud and busy nine months a year, with parents' weekends as the peaks, and it's dead all summer.",markets:["college"],check:.82,traffic:1.05,season:[.95,1,1,1.05,1.2,.72,.7,.8,1.1,1.05,1.05,.85],seg:{locals:10,regulars:6,occasion:-2},crime:15,
     ev:[{p:.9,m:[4],tone:"good",text:"Graduation weekend: every table booked by proud parents.",fx:[{op:"mod",kind:"demand",label:"Graduation",value:.1,months:1}]},
         {p:.8,m:[7],tone:"good",text:"Move-in week brought every family in town to dinner.",fx:[{op:"mod",kind:"demand",label:"Move-in week",value:.05,months:1}]},
         {p:.06,m:[8,9,1,2],desk:{title:"A fraternity wants the back room",text:"A fraternity wants to book your back room for a formal. They'll pay well, and your floor manager has seen how these go.",
@@ -4165,7 +4165,7 @@ const ENVS={
   mainstreet:{name:"Main street of a small city",desc:"The old downtown two blocks from the courthouse. Everyone knows the owner, and the whole town reads the local paper.",markets:["rust","suburb"],check:.9,traffic:.9,season:FLAT,seg:{regulars:18,locals:6,tourists:-6},crime:12,
     ev:[{p:.03,tone:"good",text:"The local paper ran a full-page feature on you.",fx:[{op:"awareness",delta:5},{op:"rep",delta:1}]},
         {p:.6,m:[7],tone:"good",text:"The county fair brought the whole region downtown.",fx:[{op:"mod",kind:"demand",label:"County fair",value:.08,months:1}]}]},
-  waterfront:{name:"Waterfront",desc:"Docks, boardwalk and weather. Summer pays for the year; storm season decides whether you get one.",markets:["resort","core"],check:1.05,traffic:1.05,season:[.75,.78,.88,.98,1.1,1.25,1.3,1.28,1.05,.92,.8,.8],seg:{tourists:12,occasion:4},crime:14,
+  waterfront:{name:"Waterfront",desc:"A boardwalk town on the docks where summer pays for the year, and a bad storm season can take a month of it away.",markets:["resort","core"],check:1.05,traffic:1.05,season:[.75,.78,.88,.98,1.1,1.25,1.3,1.28,1.05,.92,.8,.8],seg:{tourists:12,occasion:4},crime:14,
     ev:[{p:.08,m:[7,8,9],tone:"bad",text:"A storm flooded the lower level. Two weeks of drying out and a new walk-in floor.",fx:[{op:"shutdown",weeks:2,reason:"flooding"},{op:"cash",amount:-18000,why:"flood repairs"}]},
         {p:.2,m:[5,6,7],tone:"good",text:"A regatta weekend filled the harbor with people who like good wine.",fx:[{op:"mod",kind:"demand",label:"Regatta",value:.06,months:1}]}]},
   megaresort:{name:"Inside a casino megaresort",desc:"Twenty-four hours, conventions, fight nights and high rollers steered by casino hosts. The resort decides how much of its traffic finds your door.",markets:["core","resort"],check:1.15,traffic:1.15,season:[1,1.05,1.05,1,1.05,1,.95,.95,1,1.02,1.03,1.08],seg:{tourists:15,business:6,regulars:-10,locals:-8},crime:10,
@@ -5365,7 +5365,7 @@ kitType("antigriddle",{name:"Anti-griddle",aisle:"lab",desc:"A metal plate chill
   models:[["PolyScience Anti-Griddle",2,1600]],
   eff:{pers:2,energy:30}});
 /* what each tier is, in general, and what it means for each kind of equipment */
-const KIT_TIER_BLURB=["Second-hand, usually from a restaurant that closed. It works today; nobody promises tomorrow.","The industry workhorse most kitchens run on: reliable, serviceable, parts everywhere.","Heavier build, tighter control and more output. What busy, serious kitchens buy.","The best made. The pieces other chefs notice when they walk through your kitchen."];
+const KIT_TIER_BLURB=["Second-hand, usually from a restaurant that closed, and working for now with no promises after that.","The industry workhorse most kitchens run on: reliable, serviceable, parts everywhere.","Heavier build, tighter control and more output. What busy, serious kitchens buy.","The best made, and the pieces other chefs notice when they walk through your kitchen."];
 const KIT_FLAVOR={
   range:["Burner grates that don't sit level, one oven that runs 40° hot, and a pilot everyone relights by habit.","Cast-iron grates, 30,000-BTU burners and a standard oven underneath. It'll take ten years of Saturdays.","Heavy-duty welded frame, higher-output burners and thick flat-tops that hold heat through the push.","A custom-built suite with a solid French top that runs hot in the middle and gentle at the edges, made to your line's measurements."],
   hood:["An old canopy with a suppression system that may or may not pass its next inspection.","A code-compliant canopy with a standard wet-chemical system. Inspectors know it well.","Better capture, quieter fans and a suppression system with wider nozzle coverage.","Demand-controlled ventilation that slows the fans when the line is quiet: lower bills, better air, a calmer kitchen."],
@@ -5402,7 +5402,7 @@ const KIT_FLAVOR={
   steamer:["An older countertop steamer with scaled-up generators; it recovers slowly after the door opens.","A connectionless steamer that needs no water line or drain: vegetables, rice and seafood cooked fast without drying out.","A bigger cavity, faster steam and programmable timers, so a full pan of greens comes out bright every time.","Paired full-size convection steamers that do a banquet's vegetables and rice at once and keep them consistent to the last pan."],
   pastacooker:["A used cooker with a sluggish element and a drain valve that sticks.","A dedicated tank that holds a rolling boil through a rush, with baskets for every portion.","Auto-lift baskets that pull each portion at exactly the programmed second, so nobody has to watch the clock.","Twin tanks with auto-lift and continuous starch skimming: an Italian kitchen's full night of pasta with no drift in texture."],
   convection:["A second-hand fan oven: the thermostat's a little optimistic and the door seal is tired.","A single fan-forced oven that roasts and bakes evenly in volume, the plainest reliable oven there is.","A double stack: twice the capacity in the same floor space, two temperatures running at once.","A double stack that adds humidity to the fan, so bread gets a real crust and roasts stay juicy."],
-  cookhold:["An older cook-and-hold cabinet with a door gasket that needs replacing.","A low-temperature oven that roasts overnight and holds at serving heat for hours with far less shrink.","More shelves, probe-controlled cooking and holding: the prime rib is ready when you are, not the other way round.","Four independent chambers, each at its own temperature and humidity, so one oven cooks four different things at once."],
+  cookhold:["An older cook-and-hold cabinet with a door gasket that needs replacing.","A low-temperature oven that roasts overnight and holds at serving heat for hours with far less shrink.","More shelves, probe-controlled cooking and holding: the prime rib holds until you need it.","Four independent chambers, each at its own temperature and humidity, so one oven cooks four different things at once."],
   speedoven:["A used rapid-cook oven with a tired magnetron and a cavity that's been cleaned too hard.","A countertop high-speed oven: a toasted sandwich or reheated pastry in under a minute, no hood needed.","A larger, faster oven with impingement and microwave in balance, for a café that never stops at lunch.","A double-batch oven that cooks two orders at once, built for drive-through and quick-service volume."],
   doughpress:["A used sheeter: the rollers still run true, mostly.","A press that flattens a dough ball into an even base in a couple of seconds, no rolling pin, no skill required.","A reversible sheeter for dead-even thickness across every base, and pastry and laminated doughs as well.","An automatic divider-rounder that portions and balls bulk dough by the hundred, the way large pizza chains do."],
   fryrobot:[null,null,"A robotic arm in an enclosure over the fryers: it drops, shakes and hangs baskets on its own. Leased, and serviced by the maker.","A fully automated fry station with a hopper and auto-dispense: frozen product goes in one end and cooked portions come out the other with no one touching the oil."],
@@ -5415,7 +5415,7 @@ const KIT_FLAVOR={
   slicer:["A used slicer; the blade needs sharpening and the guard is scratched.","A reliable gear-driven slicer for deli meats, cheese and vegetables.","An automatic slicer that cuts paper-thin and even, which is where the yield on charcuterie comes from.","A hand-cranked red flywheel slicer: prosciutto sliced at the counter in front of guests, a showpiece."],
   bonesaw:["A used band saw with a guard that sticks.","A floor band saw for breaking primals into steaks and chops.","A heavier saw with a bigger throat for whole-animal and bone-in butchery.","Saw and grinder together: an in-house butchery programme, from whole carcass to burger."],
   tumbler:["A used tumbler with a pump that struggles to hold vacuum.","A vacuum tumbler: marinades and brines work in minutes instead of overnight.","An industrial tumbler for big batches of meat and poultry.",null],
-  ricecooker:["A countertop electric cooker: fine rice, not great rice.","A gas rice cooker that turns out restaurant volumes, evenly cooked.","A pair of gas cookers so there's always a fresh batch on the pass.","An automated rice line that washes, soaks and cooks: sushi-grade rice all service."],
+  ricecooker:["A countertop electric cooker that makes decent rice and nothing better.","A gas rice cooker that turns out restaurant volumes, evenly cooked.","A pair of gas cookers so there's always a fresh batch on the pass.","An automated rice line that washes, soaks and cooks: sushi-grade rice all service."],
   grinder:["A used grinder with burrs that need replacing.","A fast on-demand espresso grinder built for busy service.","A single-dose grinder with large flat burrs: the grinder specialty coffee people trust.","A pair: one dialled in for espresso, one for filter, so both are at their best."],
   batchbrew:["A used brewer with scale in the spray head.","A batch brewer that makes drip coffee and tea by the urn, all morning.","A twin brewer with precise temperature for high-volume cafés.","A pour-over bar that brews single cups of single-origin coffee to recipe."],
   blender:["A basic bar blender, loud enough to stop conversation.","A commercial blender with a sound enclosure, quiet enough to run in a dining room.","A pair of high-performance blenders with programs for smoothies, soups and sauces.","A four-blender station built for a smoothie bar's queue."],
@@ -5776,7 +5776,7 @@ kitType("toppingdisp",{name:"Topping dispensers",aisle:"hosp",desc:"Dispensers f
 kitType("selfserve",{name:"Self-serve stations",aisle:"hosp",desc:"Napkin, straw, cutlery, cup and lid dispensers and the counter they sit on, so guests help themselves and staff don't have to.",
   models:[["Napkins in a basket",0,30],["Napkin, straw & cutlery dispensers",1,600],["Self-serve condiment & utensil station",2,2500],["Built-in self-serve island with trash & recycling",3,10000]],
   eff:{labor:[0,-.002,-.004,-.006],health:[-.05,0,.02,.04]}});
-kitType("tableware",{name:"Tableware & glassware",aisle:"hosp",desc:"Plates, bowls, flatware and stemware for every seat, with spares for breakage. The first thing a guest touches and the last thing a critic forgets.",
+kitType("tableware",{name:"Tableware & glassware",aisle:"hosp",desc:"Plates, bowls, flatware and stemware for every seat, with spares for breakage. Guests touch it before anything else, and critics remember it.",
   models:[["Mismatched second-hand china & glassware",0,2000],["Standard hotel china, flatware & glassware",1,8000],["Steelite porcelain & Schott Zwiesel stems",2,20000],["Handmade ceramics, Zalto stems & silver-plate flatware",3,60000]],
   eff:{pers:[-1,0,1.5,3],cons:[-.5,0,.5,1]},flags:{scale:1,fail:.003}});
 kitType("sound",{name:"Sound system",aisle:"hosp",desc:"The music and how it reaches the room: loud enough to give the place energy, quiet enough to talk over.",
@@ -7020,12 +7020,12 @@ const FEATURES=[
   {fit:{formats:["seated"],tiers:["mid"],minAlc:.08},clash:/happy hour|bar rail/,name:"Bar rail & happy hour setup",pitch:"Eight stools along a rail, taps and a short happy-hour list for the 4 to 6 dead zone.",cost:32000,weeks:2,seats:8,bev:.07,risk:"Happy hour trains some regulars to only show up at half price."},
 ];
 const TRAIN_CATALOG=[
-  {name:"Food safety audit and refresher",role:null,cost:1800,months:1,eff:{health:14,brigade:2},blurb:"A consultant walks the kitchen with your logs, retrains everyone on the spot and leaves you a list. No certificate, just fewer violations."},
+  {name:"Food safety audit and refresher",role:null,cost:1800,months:1,eff:{health:14,brigade:2},blurb:"A consultant walks the kitchen with your logs, retrains everyone on the spot and leaves you a list. It doesn't come with a certificate, though it should mean fewer violations."},
   {name:"Stage abroad for the sous chef",role:"sous",cost:9000,months:2,away:true,eff:{skill:12,loyalty:6,creativity:4},blurb:"Two months in a serious kitchen abroad. You pay their salary and flights while they're gone."},
   {name:"Brigade technique programme",role:null,cost:7500,months:3,eff:{brigade:12,morale:2},blurb:"Saturday mornings with a visiting chef-instructor: butchery, sauces, fish, consistency drills."},
-  {name:"Service choreography",role:null,cost:6000,months:2,eff:{fohTrain:12,morale:2},blurb:"Pre-shift drills, table maintenance, reading a table, the three-minute rule. The floor starts moving as one."},
+  {name:"Service choreography",role:null,cost:6000,months:2,eff:{fohTrain:12,morale:2},blurb:"Pre-shift drills, table maintenance, reading a table and the three-minute rule, until the floor moves as one team."},
   {name:"Pastry & chocolate intensive",role:"pastry",cost:4500,months:1,eff:{skill:9},blurb:"A week with a master pâtissier and a month of practice."},
-  {name:"Leadership coaching for the chef",role:"chef",cost:8000,months:3,eff:{loyalty:15,morale:6,skill:3},blurb:"A coach who has worked with other chefs. Fewer thrown pans."},
+  {name:"Leadership coaching for the chef",role:"chef",cost:8000,months:3,eff:{loyalty:15,morale:6,skill:3},blurb:"A coach who's worked with other chefs on temper, delegation and running a pass without shouting."},
   {name:"Weekly R&D days",role:null,cost:0,monthly:3200,months:6,eff:{creativity:8,coherence:5},blurb:"One day a week the kitchen is closed to service and open to ideas. You pay for the product and the hours."},
   {name:"Line cook bootcamp",role:null,cost:4200,months:2,eff:{crewKitchen:8,morale:1},blurb:"Knife skills, station setup and ticket reading for the hourly cooks, taught by your sous on paid mornings."},
   {name:"Steps of service for the floor",role:null,cost:3000,months:1,eff:{crewFloor:8,fohTrain:3},blurb:"Greeting, pacing, clearing and upselling drilled with every server and busser until it's habit."},
@@ -7036,7 +7036,7 @@ const TRAIN_CATALOG=[
    Costs are per person on payroll: salaried team, office and every hourly crew member. */
 function headcount(){ return (S.team||[]).length+(S.office||[]).length+S.locations.filter(l=>l.status==="open").reduce((a,l)=>a+Object.values(crewOf(l)).reduce((b,c)=>b+c.n,0),0); }
 const UNIFORMS=[
-  {name:"Whatever they turn up in",blurb:"No uniform at all. Free, and it shows.",perHead:0,monthly:0,foh:-4,morale:-1,amb:-2},
+  {name:"Whatever they turn up in",blurb:"No uniform at all, which costs nothing and makes the floor look unprofessional.",perHead:0,monthly:0,foh:-4,morale:-1,amb:-2},
   {name:"Aprons and branded T-shirts",blurb:"Canvas aprons, a logo tee and a cap for the kitchen. The fast-casual and diner standard.",perHead:60,monthly:6,foh:0,morale:0,amb:0},
   {name:"Chef whites and pressed server uniforms",blurb:"Double-breasted whites for the kitchen, shirts, trousers and long aprons on the floor, laundered every week.",perHead:220,monthly:22,foh:3,morale:1,amb:1},
   {name:"Tailored uniforms from a designer",blurb:"Cut to fit each person by a workwear designer, with a spare set and a tailor on call.",perHead:900,monthly:45,foh:6,morale:2,amb:3}
