@@ -7212,8 +7212,8 @@ const FEATURES=[
 /* ============ WORLD CATALOGUES ============
    The hard-coded lists in this file describe a restaurant in the modern real world. With Claude on, every save
    gets its own version of each list, written for its world (Night City, Airstrip One, 1940 Paris, today's Lima),
-   cached in the save and kept inside the engine's rails: same fields, effect keys the engine knows, costs and
-   effects clamped to the range the defaults span. Read a list with wcList(kind); never index the constant directly.
+   cached in the save and kept to the engine's shape: same fields, effect keys the engine knows, finite numbers
+   and plain text. Values aren't capped; Claude sets the scale. Read a list with wcList(kind); never index the constant directly.
    A kind registers with worldCat(kind,{base,what,n,enums,fix,notes}). Offline, wcList() returns the defaults.
    Optional: notes can be a function; sample() gives the defaults shown in the prompt when base() isn't JSON-friendly or is too long;
    when() skips a kind that doesn't apply to this save; after(items) runs once a fresh list is saved. */
@@ -7237,13 +7237,12 @@ function railItem(it,base,enums){
   for(const k of keys){ const vals=base.map(b=>b[k]).filter(v=>v!==undefined), v=it[k], t=vals.find(x=>x!==null);
     if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
     if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
-    if(typeof t==="number"){ const n=+v; if(!isFinite(n)){ if(vals.length===base.length) return null; continue; } const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
+    if(typeof t==="number"){ const n=+v; if(!isFinite(n)){ if(vals.length===base.length) return null; continue; } const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=Math.round(n*100)/100; if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
     else if(typeof t==="string"){ const s=String(v).replace(/[<>]/g,"").trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }   // plain text only: many lists are interpolated into markup
     else if(typeof t==="boolean") out[k]=!!v;
-    else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
+    else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, at whatever size Claude gives
       const ks=new Set(vals.flatMap(o=>o?Object.keys(o):[])), o={};
-      for(const [ek,ev] of Object.entries(v)){ if(!ks.has(ek)||!isFinite(+ev)) continue; const all=vals.map(x=>x&&x[ek]).filter(x=>x!=null&&isFinite(x)); const hi=Math.max(0,...all), lo=Math.min(0,...all);
-        o[ek]=Math.round(clamp(+ev,lo<0?lo*1.5:-Math.max(2,hi*.3),Math.max(hi*1.25,1))*10)/10; }
+      for(const [ek,ev] of Object.entries(v)){ if(!ks.has(ek)||!isFinite(+ev)) continue; o[ek]=Math.round(+ev*10)/10; }
       out[k]=o; }
     else if(Array.isArray(t)&&Array.isArray(v)) out[k]=v.slice(0,12).filter(x=>typeof x!=="object").map(x=>typeof x==="string"?x.replace(/[<>]/g,"").slice(0,120):x);
   }
@@ -7308,11 +7307,11 @@ const worldGoodsRule=()=>`\n\nTHIS WORLD'S GOODS: everything you offer has to ex
 worldCat("wine",{base:()=>WINE_MARKET,what:"prized bottles and spirits on offer for the restaurant's list (distributor allocations, auction lots, private cellars, back-room sellers)",n:[6,12],
   enums:{channel:["allocation","auction","private"]},when:()=>((CONCEPTS[S.concept]||{}).alcohol||0)>0||!!(S.cellar&&S.cellar.value>0),
   notes:'- These are what this world drinks at the top end, from its own vineyards, distilleries, breweries or vats, priced the way this world prices them. Where wine is scarce, rationed or banned, offer whatever stands in for it there.\n- "channel": allocation (through a distributor; "req" 0-100 is the standing needed, 35-75 for prized bottles), auction (req 0), private (a collector or a back-room seller; req 0). "cost" is per bottle; "price" is the list price per bottle, about 2 to 3 times cost. "prestige" 1-10. "qty" 1-6. "note" is one sentence: provenance, drinking window or the catch.',
-  fix:x=>{ x.req=x.channel==="allocation"?clamp(Math.round(x.req||0),0,100):0; x.qty=clamp(Math.round(x.qty||1),1,12); x.cost=Math.max(10,x.cost||0); if(!(x.price>x.cost)) x.price=Math.round(x.cost*2.2); x.prestige=clamp(Math.round(x.prestige||1),1,10); return x; }});
+  fix:x=>{ x.req=x.channel==="allocation"?clamp(Math.round(x.req||0),0,100):0; x.qty=Math.max(1,Math.round(x.qty||1)); x.cost=Math.max(0,x.cost||0); if(!(x.price>x.cost)) x.price=Math.round(x.cost*2.2); x.prestige=Math.max(0,Math.round(x.prestige||1)); return x; }});
 worldCat("suppliers",{base:()=>SUPPLIER_MARKET,what:"specialist suppliers a restaurant could open an account with (growers, fishers, butchers, importers, distributors, and whoever else supplies kitchens here)",n:[6,12],
   enums:{terms:Object.keys(TERMS)},
   notes:'- Use the businesses, institutions, depots and black markets that would really supply a kitchen in this world.\n- "cats" lists the ingredient categories they supply, from: produce, meat, seafood, dairy, pantry, luxury (luxury is whatever counts as a delicacy here). "q" is quality 0-100 (broadline 45, the best small producers 88-97). "price" is an index against broadline (1.0): specialists 1.1-1.4, the rarest 1.5-2. "reliability" is the chance an order arrives complete, 0.7-0.97. "green" means direct, traceable and sustainable. Better quality always costs something: price, reliability or terms.',
-  fix:x=>{ x.cats=[...new Set((x.cats||[]).filter(c=>CATS[c]))]; if(!x.cats.length) return null; x.q=clamp(Math.round(x.q||60),20,99); x.price=clamp(x.price||1.1,.6,2.2); x.reliability=clamp(x.reliability||.9,.5,.995); return x; }});
+  fix:x=>{ x.cats=[...new Set((x.cats||[]).filter(c=>CATS[c]))]; if(!x.cats.length) return null; x.q=clamp(Math.round(x.q||60),0,100); x.price=x.price>0?x.price:1.1; x.reliability=clamp(x.reliability||.9,0,1); return x; }});
 /* the accounts a new restaurant opens with: same mechanics everywhere, named for this world */
 const HOUSE_SUPPLIERS=()=>starterSuppliers("fine").pool.map(p=>({id:p.id,name:p.name,blurb:p.blurb}));
 function applyHouseSuppliers(){ if(!S||!catalogFitted("house_suppliers")) return; const it=wcList("house_suppliers"), def=HOUSE_SUPPLIERS();
@@ -7324,7 +7323,7 @@ const CRITIC_BASE=()=>CRITICS.map(c=>Object.assign({name:c},CRITIC_PROFILES[c],{
 function criticList(){ return wcList("critics"); }
 worldCat("critics",{base:CRITIC_BASE,what:"critics, publications and outlets whose reviews move trade",n:[5,10],
   notes:'- Each item is an outlet or reviewer that exists in this world: a paper, a broadcaster, a feed, a guidebook, an official inspectorate or Party organ, a gossip sheet. "name" is how a sentence names it, the way the defaults do ("The city paper\'s critic").\n- The weights food, pers (the chef\'s personality), service, room, value and wine say what they care about; leave out the ones they ignore. "minAware" (0-80) is how well known a restaurant must be before they bother; "minAlc" only for a drinks-led outlet.\n- "verdicts" is five words or short phrases their scale runs through, worst to best, in this world\'s idiom.',
-  fix:(x,it)=>{ x.minAware=x.minAware?clamp(Math.round(x.minAware),0,85):undefined; if(x.minAware===undefined) delete x.minAware;
+  fix:(x,it)=>{ x.minAware=x.minAware?clamp(Math.round(x.minAware),0,100):undefined; if(x.minAware===undefined) delete x.minAware;
     if(!["food","pers","service","room","value","wine"].some(k=>x[k]>0)) x.food=1;
     const v=Array.isArray(it&&it.verdicts)?it.verdicts.map(s=>String(s).trim().slice(0,40)).filter(Boolean):[]; x.verdicts=v.length===5?v:CRITIC_WORDS.slice(); return x; }});
 /* which of our world's guides and awards exist in this one */
@@ -7368,12 +7367,12 @@ worldCat("features",{base:()=>FEATURES,what:"standard building and equipment upg
   fix:(x,it)=>{ const f=it&&it.fit&&typeof it.fit==="object"?it.fit:{}, fit={};
     const fm=(Array.isArray(f.formats)?f.formats:[]).filter(v=>["seated","counter","truck"].includes(v)); fit.formats=fm.length?fm:[locFormat()];
     const tr=(Array.isArray(f.tiers)?f.tiers:[]).filter(v=>["low","mid","high"].includes(v)); if(tr.length) fit.tiers=tr;
-    if(+f.minAlc>0) fit.minAlc=clamp(+f.minAlc,0,.3); x.fit=fit;
+    if(+f.minAlc>0) fit.minAlc=clamp(+f.minAlc,0,1); x.fit=fit;
     x.clash=featClashRe(it&&it.clash)?String(it.clash).toLowerCase().split("|").map(w=>w.replace(/[^a-z0-9 '\-]/g,"").trim()).filter(Boolean).slice(0,6).join("|"):String(x.name).toLowerCase().replace(/[^a-z0-9 ]/g,"");
     const ef=(Array.isArray(it&&it.effects)?it.effects:[]).filter(e=>e&&FEAT_FX[e.kind]&&isFinite(+e.value)).slice(0,3)
-      .map(e=>({op:"mod",kind:e.kind,label:String(e.label||x.name).slice(0,40),value:Math.round(clamp(+e.value,FEAT_FX[e.kind][0],FEAT_FX[e.kind][1])*1000)/1000,months:clamp(Math.round(+e.months||0),0,24)}));
+      .map(e=>({op:"mod",kind:e.kind,label:String(e.label||x.name).slice(0,40),value:Math.round((+e.value||0)*1000)/1000,months:Math.max(0,Math.round(+e.months||0))}));
     if(ef.length) x.effects=ef; else delete x.effects;
-    x.cost=Math.max(500,x.cost||0); x.weeks=clamp(x.weeks||0,0,12); if(x.ambience) x.ambience=clamp(x.ambience,-10,25); return x; }});
+    x.cost=Math.max(0,x.cost||0); x.weeks=Math.max(0,x.weeks||0); return x; }});
 /* marketing channels keep their keys and maths; what they're called follows the world */
 const MKT_BASE=()=>Object.entries(MKT_CH).map(([key,C])=>({key,name:C.name,hint:C.hint}));
 worldCat("marketing",{base:MKT_BASE,sample:MKT_BASE,what:"names and one-line descriptions for the restaurant's eight marketing channels, as they'd exist here",n:[8,8],enums:{key:Object.keys(MKT_CH)},
@@ -7386,8 +7385,8 @@ function mktHint(k){ const w=catalogFitted("marketing")&&wcList("marketing").fin
 worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hold or sit here: the food-safety or hygiene card and its higher level, cooks' and pastry cooks' qualifications, sommelier and service qualifications, licences the local cuisine needs, and the top honours of the trade",n:[6,16],
   notes:'- Who certifies cooks, sommeliers and food handlers here, in this era or fiction, and what they call it. If almost nothing formal exists, list the few things that do (an apprenticeship, a guild mark, a permit, a Party card for canteen work).\n- "roles" uses only: chef, sous, pastry, somm, maitre. "food" is true for a food-safety or hygiene credential; give at least one, with no "requires". "requires" is the exact name of another item in your list that must come first; leave it out otherwise.\n- level is the skill (0-100) it\'s pitched at, years the experience needed, pass the chance (0-1) someone at that level passes, skill (0-8) what it adds to their craft, prestige (0-6) how much it impresses guests and critics, health (0-8) only for food safety.',
   fix:x=>{ x.roles=[].concat(x.roles||[]).filter(r=>ROLES[r]); if(!x.roles.length) return null;
-    x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.round(clamp(x.years||0,0,20)); x.months=Math.round(clamp(x.months||1,1,36)); x.pass=clamp(x.pass||.5,.05,.98);
-    x.skill=Math.round(clamp(x.skill||0,0,8)); x.prestige=Math.round(clamp(x.prestige||0,0,6)); x.health=Math.round(clamp(x.health||0,0,8)); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
+    x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.max(0,Math.round(x.years||0)); x.months=Math.max(1,Math.round(x.months||1)); x.pass=clamp(x.pass||.5,0,1);
+    x.skill=Math.round(x.skill||0); x.prestige=Math.round(x.prestige||0); x.health=Math.round(x.health||0); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
 /* short viral video and online reviews: only in an open world from the smartphone years on, and, once the world has named its
    marketing channels, only where its social channel is plainly an online one (feeds, the Net, apps). No Claude call: it reads the list. */
 function socialVideo(){ if(!S||(S.world&&S.world.outside===false)) return false; const y=storyYear(); if(y&&y<2012) return false;
@@ -7404,7 +7403,7 @@ const INSPECTORS=[
 let _inspLoc=null;
 worldCat("inspectors",{base:()=>INSPECTORS,what:"authorities who inspect a restaurant here: one for hygiene and food safety, one for fire safety",n:[2,2],enums:{role:["health","fire"]},
   notes:'- Exactly two items: role "health" and role "fire". Who comes, who sends them and what they look for, as this world has it (a district sanitation committee, a corporate compliance unit, a city prefecture\'s inspector). A closed world with no inspectors gets whoever plays that part.\n- "who" is how a sentence refers to them mid-sentence, lowercase, with its article ("the fire marshal"). "body" is who sends them, the same way. "score" is what the kitchen\'s hygiene rating is called here, lowercase. "visit" is one sentence announcing an unannounced visit, with {place} where the restaurant\'s name goes. "pass" and "fail" are one sentence each on how it went. "freq" is how often they come compared with an ordinary modern city (1), from 0.3 to 2.',
-  fix:(x,it)=>{ for(const k of ["who","body","score"]) if(x[k]) x[k]=x[k].replace(/^The /,"the ").replace(/[.]+$/,""); if(x.score) x.score=x.score.charAt(0).toLowerCase()+x.score.slice(1); if(x.role==="health") x.freq=clamp(+it.freq||1,.3,2); return x; }});
+  fix:(x,it)=>{ for(const k of ["who","body","score"]) if(x[k]) x[k]=x[k].replace(/^The /,"the ").replace(/[.]+$/,""); if(x.score) x.score=x.score.charAt(0).toLowerCase()+x.score.slice(1); if(x.role==="health") x.freq=+it.freq>0?+it.freq:1; return x; }});
 function insp(role){ const d=INSPECTORS.find(x=>x.role===role)||{}, w=wcList("inspectors").find(x=>x.role===role)||{}; return Object.assign({},d,w); }
 function fireWho(){ return insp("fire").who||"the fire marshal"; }
 function healthWord(){ return insp("health").score||"health score"; }
@@ -7456,11 +7455,11 @@ const POLICY_PRESETS=[
 ];
 worldCat("policies",{base:()=>POLICY_PRESETS,what:"staff perks, benefits and workplace policies an owner here could offer (meals, cover for illness, time off, pay arrangements, housing, rations, whatever this world's workers would actually value)",n:[4,8],
   notes:'- "key" is a short lowercase id, unique in the list. "monthly" is the cost per person on payroll a month.\n- morale is points on the morale the team settles at, quit the change in how often hourly staff quit (negative keeps people), stress points a month on salaried staff (negative is calmer), loyalty points a month.',
-  fix:(x,it)=>{ x.key=String(x.key||x.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,24)||"p"+uid(); x.quit=clamp(x.quit||0,-.4,.3); return x; }});
+  fix:(x,it)=>{ x.key=String(x.key||x.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,24)||"p"+uid(); x.quit=clamp(x.quit||0,-1,1); return x; }});
 function policiesOn(){ return (S.policies||[]).filter(x=>x.on); }
 function policyEffects(){ const o={morale:0,quit:0,stress:0,loyalty:0,monthly:0}; if(!S) return o; const n=headcount();
   for(const x of policiesOn()){ o.morale+=x.morale; o.quit+=x.quit; o.stress+=x.stress; o.loyalty+=x.loyalty; o.monthly+=Math.round(x.monthly*n)+(x.fixed||0); }
-  o.quit=clamp(o.quit,-.6,.6); return o; }
+  o.quit=clamp(o.quit,-1,1); return o; }
 function staffDigest(){
   const u=S.uniform?`${S.uniform.name}${S.uniform.custom?` (the owner's own: ${S.uniform.desc})`:""}`:`${uniformBase().name.toLowerCase()} (the usual for this kind of place)`;
   return `UNIFORMS: ${u}. STAFF POLICIES: ${policiesOn().map(x=>`${x.name}${x.custom?` (${x.blurb})`:""}`).join("; ")||"none beyond the legal minimum"}.`; }
