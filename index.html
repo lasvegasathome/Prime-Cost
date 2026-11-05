@@ -798,7 +798,7 @@ function simulateMonth(S){
     loc.morale += (clamp(moraleT,5,96)-loc.morale)*0.3;
     if(loc.morale<32 && Math.random()<0.4){
       loc.skill-=rnd(2,6); loc.turnover=(loc.turnover||0)+1;
-      R.events.push({tone:"bad",text:`Two cooks walked out of ${loc.name} mid-service. You are training again.`});
+      R.events.push({tone:"bad",text:`Two cooks walked out of ${loc.name} mid-service, and you're training replacements again.`});
     }
     loc.skill += (loc.morale>60? rnd(.3,1.1):rnd(-.9,.2)) * (S.traits.includes("civilian")?1.5:1);
     { const t=teamTargets(loc); if(li===0||t.named){ if(t.skill!=null) loc.skill += (t.skill-loc.skill)*0.12; loc.foh += (t.foh-loc.foh)*0.15; } else loc.foh += (50-loc.foh)*0.1; }
@@ -940,10 +940,10 @@ const EVENT_POOL=[
   {id:"inspect",w:7,tone:"warn",
    text:S=>`Unannounced health inspection at ${pick(S.locations).name}.`,
    apply:S=>{const l=pick(S.locations);
-     if(l.health<62){ l.rep-=rnd(5,12); S.cash-=rnd(900,3400); return "You were written up. It is a matter of public record and somebody will find it."; }
+     if(l.health<62){ l.rep-=rnd(5,12); S.cash-=rnd(900,3400); return "You were written up, and it's on the public record where anyone can find it."; }
      l.rep+=rnd(1,3); return "Clean. They took a photo of the certificate and left.";}},
   {id:"beefspike",w:6,tone:"bad",
-   text:()=>`Protein prices spiked. Your distributor's price sheet went up across the board and it is not coming back down this quarter.`,
+   text:()=>`Protein prices spiked. Your distributor's price sheet went up across the board and it isn't coming back down this quarter.`,
    apply:S=>{for(const l of S.locations){l.tempFood=rnd(.018,.042); l.tempFoodLeft=Math.round(rnd(3,7));} return "food cost";}},
   {id:"review",w:8,tone:"good",when:S=>S.locations.some(l=>l.rep>58),
    text:S=>`A food writer ate at ${pick(S.locations).name} unannounced and liked it.`,
@@ -961,7 +961,7 @@ const EVENT_POOL=[
    text:S=>{ ensureRivals(); const r=newRival(true); S.rivals.push(r); const l=S.locations[0], t=locTier(l);
      return t==="high"? `${r.name} announced its opening nearby, with ${r.chef} in the kitchen and a menu aimed squarely at ${l.name}'s guests. Expect the comparison pieces.`
        : t==="mid"? `${r.name} opened a few blocks from ${l.name}: a similar menu, a younger crowd and a very good publicist.`
-       : `${r.name} signed a lease two doors down from ${l.name}. Same price point, better signage.`; },
+       : `${r.name} signed a lease two doors down from ${l.name}, at the same price point and with better signage.`; },
    // with rivals tracked, the new rival is the competition; without them, a new opening takes a share that the market slowly wins back
    apply:S=>{ if(!exp("rivals")){ const l=S.locations[0], t=locTier(l); if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:"A new competitor nearby",kind:"demand",value:t==="high"?-.03:t==="mid"?-.05:-.08,left:18,loc:-1,src:"rivals"}); } return "competition";}},
   {id:"pipe",w:5,tone:"bad",when:S=>Math.random()<Math.max(...S.locations.filter(l=>l.status==="open").map(greaseRisk),0),
@@ -971,17 +971,17 @@ const EVENT_POOL=[
    text:S=>`A thirty-second video of one of your dishes has four hundred thousand views.`,
    apply:S=>{const l=pick(S.locations); l.awareness=clamp(l.awareness+rnd(18,34),0,99); return "a wave of strangers";}},
   {id:"theft",w:4,tone:"bad",when:S=>S.locations.some(l=>l.attention<50&&Math.random()<camRisk(l)),
-   text:S=>`Your inventory counts at ${pick(S.locations).name} have not reconciled for three months. Somebody is taking product out the back door.`,
+   text:S=>`Your inventory counts at ${pick(S.locations).name} haven't reconciled for three months. Somebody's taking product out the back door.`,
    apply:S=>{const l=pick(S.locations); l.tempFood=rnd(.02,.05); l.tempFoodLeft=Math.round(rnd(2,5)); return "shrink";}},
   {id:"landlord",w:3,tone:"warn",when:S=>S.locations.some(l=>l.leaseLeft<26),
    text:S=>`Your landlord at ${pick(S.locations).name} sold the building. The new owner's letter mentions "bringing rents to market."`,
    apply:S=>{const l=pick(S.locations); l.escalator=0.075; return "your rent at renewal";}},
   // personal-injury claims are a fact of American restaurant life; elsewhere they're rarer, and in a closed world they don't exist
   {id:"slip",w:1,tone:"bad",when:S=>S.world.outside!==false&&(certRegion()==="us"||Math.random()<.35),
-   text:()=>`A guest slipped on a wet floor and retained a lawyer. Your insurer is handling it; your premium is not going to survive it.`,
+   text:()=>`A guest slipped on a wet floor and retained a lawyer. Your insurer is handling it, and your premium will go up at renewal.`,
    apply:S=>{S.cash-=rnd(3500,9000); return "insurance";}},
   {id:"regulars",w:5,tone:"good",when:S=>S.locations.some(l=>l.monthsOpen>8&&l.rep>55),
-   text:S=>`A table of regulars has started coming three times a week and bringing people. This is what the business is actually built on.`,
+   text:S=>`A table of regulars has started coming three times a week and bringing people.`,
    apply:S=>{const l=pick(S.locations); l.rep+=rnd(1,4); return "reputation";}},
   {id:"storm",w:4,tone:"bad",
    text:()=>`A weather event closed the street for the better part of a week.`,
@@ -1230,11 +1230,11 @@ function ownershipTick(S,R){
     if(Math.random()<.01){ const shock=rnd(-.35,.2); O.liquidity=Math.round(O.liquidity*(1+shock)); if(shock<-.15) R.events.push({tone:"bad",text:`${O.owner} took a hit elsewhere in its business this month. Expect them to watch every dollar for a while.`}); }
     // a stretched owner draws down the reserve it keeps with you
     if(O.liquidity<opex*6&&S.cash>minRes*1.5&&Math.random()<.35){ const pull=Math.round((S.cash-minRes)*.15); S.cash-=pull; dist+=pull; O.reserveFloor=Math.max(minRes,O.reserveFloor-pull); O.liquidity+=pull; O.distributed=(O.distributed||0)+pull;
-      R.events.push({tone:"warn",text:`${O.owner} pulled ${money(pull)} out of the operating reserve. They need the cash more than you do.`}); } }
+      R.events.push({tone:"warn",text:`${O.owner} pulled ${money(pull)} out of the operating reserve to cover needs elsewhere in their business.`}); } }
   if(S.cash<minRes){
     const need=Math.round(minRes-S.cash), liq=P?O.liquidity:Infinity;
     if(liq>=need*3){ funded=need; S.cash+=need; if(P) O.liquidity-=need; O.funded=(O.funded||0)+need; O.reserveFloor=Math.max(O.reserveFloor,S.cash); O.strain=Math.max(0,(O.strain||0)-.5);
-      R.events.push({tone:"bad",text:`${O.owner} wired ${money(need)} to cover operating costs.${P&&P.patience<40?" It came with a phone call you won't forget.":" They noticed."}`}); }
+      R.events.push({tone:"bad",text:`${O.owner} wired ${money(need)} to cover operating costs.${P&&P.patience<40?" It came with an angry phone call from the top.":" They noticed."}`}); }
     else if(liq>=need){ funded=need; S.cash+=need; O.liquidity-=need; O.funded=(O.funded||0)+need; O.strain=(O.strain||0)+1;
       R.events.push({tone:"bad",text:`${O.owner} scraped together ${money(need)} to keep the doors open, and made clear it can't do that often.`}); }
     else { O.strain=(O.strain||0)+2;
@@ -1374,7 +1374,7 @@ function checkSolvency(S,R){
   const avail=S.creditLine.limit-S.creditLine.drawn;
   if(avail>=need){
     S.creditLine.drawn+=need; S.cash=0;
-    R.events.push({tone:"warn",text:`You drew ${money(need)} on the line of credit to make payroll. That is what it is for, once.`});
+    R.events.push({tone:"warn",text:`You drew ${money(need)} on the line of credit to make payroll.`});
     S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"warn",text:`Drew ${money(need)} on the credit line to cover the month.`});
     return;
   }
@@ -1389,8 +1389,8 @@ function checkSolvency(S,R){
   if(S.flags.distress>=2 || S.cash < -45000){
     S.gameOver={kind:"insolvent",
       text:S.traits.includes("pg")
-        ? "You could not make payroll and the line was already drawn to the ceiling. Because you signed personally, the bank's claim does not stop at the business. It follows you home."
-        : "You could not make payroll. The line of credit is exhausted, the vendors are on COD, and there is no version of next month that works. You call a lawyer about an orderly wind-down."};
+        ? "You couldn't make payroll and the line was already drawn to the ceiling. Because you signed personally, the bank's claim doesn't stop at the business; it reaches your house and your savings."
+        : "You couldn't make payroll. The line of credit is exhausted, the vendors are on COD, and there's no version of next month that works. You call a lawyer about an orderly wind-down."};
   }else{
     R.events.push({tone:"bad",text:`You missed vendor payments. Two distributors have put you on cash-on-delivery, which means you now need cash you don't have to buy food you must have.`});
   }
@@ -1614,16 +1614,16 @@ function offlineAdvisor(){
   const out=[];
   out.push(`${dateName(a.cal,a.y)}: ${money(a.rev)} sales, prime cost ${pct(a.primePct)}, EBITDA ${money(a.ebitda)}, cash ${a.net>=0?"+":""}${money(a.net)}.`);
   const target = primeTarget();
-  if(a.primePct>target) out.push(`Prime cost is ${pct(a.primePct)} against a ${pct(target,0)} target. Food plus labour is ${money(a.prime-a.rev*target)} more than this sales volume can carry. Prices or portions or hours — one of the three has to move.`);
+  if(a.primePct>target) out.push(`Prime cost is ${pct(a.primePct)} against a ${pct(target,0)} target. Food plus labour is ${money(a.prime-a.rev*target)} more than this sales volume can carry. Prices, portions or hours: one of the three has to move.`);
   else out.push(`Prime cost is ${pct(a.primePct)}, inside the ${pct(target,0)} benchmark. That part is working.`);
   const occPct=a.occ/Math.max(a.rev,1);
-  if(occPct>.10) out.push(`Rent is ${pct(occPct)} of sales. Above 10% you are really in the property business. You cannot cut it, so you have to outgrow it.`);
+  if(occPct>.10) out.push(`Rent is ${pct(occPct)} of sales. Above 10% you're really in the property business, and since rent can't be cut, sales have to outgrow it.`);
   if(b){
     const d=a.rev-b.rev;
     out.push(`Sales moved ${d>=0?"up":"down"} ${money(Math.abs(d))} versus last month${Math.abs(MARKETS[S.market].season[a.cal]-MARKETS[S.market].season[b.cal])>.08?", most of which is seasonal":""}.`);
   }
-  if(a.ebitda>0 && a.net<0) out.push(`Note the gap: the business made ${money(a.ebitda)} and still lost ${money(Math.abs(a.net))} of cash. Loan principal, your draw and the tax remittance are cash but not expenses. Profitable and broke is the usual way this ends.`);
-  if(S.salesTaxHeld>8000) out.push(`You are holding ${money(S.salesTaxHeld)} of sales tax. It is not your money and it comes out at quarter end.`);
+  if(a.ebitda>0 && a.net<0) out.push(`Note the gap: the business made ${money(a.ebitda)} and still lost ${money(Math.abs(a.net))} of cash. Loan principal, your draw and the tax remittance are cash but not expenses.`);
+  if(S.salesTaxHeld>8000) out.push(`You're holding ${money(S.salesTaxHeld)} of sales tax. It isn't your money, and it goes to the state at quarter end.`);
   const runway=a.net<0? S.cash/Math.abs(a.net):null;
   if(runway!==null) out.push(`At this burn you have ${runway.toFixed(1)} months of cash.`);
   if(a.lost>200) out.push(`Fully booked: roughly ${a.lost.toLocaleString()} requests couldn't get a table. That's pricing power, and marketing you don't need to buy.`);
@@ -4220,7 +4220,7 @@ async function generateSetting(loc,text,outEl){
   if(!st.desc){ if(outEl) outEl.textContent="That came back empty. Try again."; return false; }
   const first=!loc.setting; loc.setting=st; loc.segBase=null;
   S.corrections=S.corrections||[];
-  S.corrections.push(`${when()}: the setting of ${loc.name} is defined as "${st.name}". That is how the place has always been; nobody in the world noticed a change.`);
+  S.corrections.push(`${when()}: the setting of ${loc.name} is defined as "${st.name}". That's how the place has always been; nobody in the world noticed a change.`);
   logIt("warn",`${first?"Setting written":"Setting rewritten"} for ${loc.name}: ${st.name}.`);
   if(outEl) outEl.textContent="";
   return true;
@@ -4367,8 +4367,8 @@ function rivalTick(R){
     else if(ev==="hosts"){ rivalMod(`${r.name} courting your guests`,"demand",-.02,3); R.events.push({tone:"warn",text:`${r.name} is working the concierges and hosts hard: comped tables, private tastings. You'll feel it at the margins.`}); }
     else if(ev==="raid"){ const m=pick(S.team.filter(t=>!t.poach&&effSkill(t)>=55)); if(m){ m.poach={at:S.monthIdx,from:r.name,salary:Math.round(marketSalary(m.role,m.skill)*(1+certPremium(m))*rnd(1.15,1.4)/500)*500,due:S.monthIdx+1};
       R.events.push({tone:"warn",text:`${r.name} offered ${m.name} ${money(m.poach.salary)} a year. Answer on the Team tab.`}); } }
-    else if(ev==="price"){ rivalMod(`${r.name} price war`,"demand",-.05,3); R.events.push({tone:"bad",text:`${r.name} is running a two-for-one deal all month. Your walk-ins noticed.`}); }
-    else if(ev==="viral"){ r.buzz=clamp(r.buzz+20,5,99); rivalMod(`${r.name} went viral`,"demand",-.02,2); R.events.push({tone:"warn",text:`A dish at ${r.name} went viral. There's a line down the block, and it isn't yours.`}); }
+    else if(ev==="price"){ rivalMod(`${r.name} price war`,"demand",-.05,3); R.events.push({tone:"bad",text:`${r.name} is running a two-for-one deal all month, and your walk-in trade has dropped off.`}); }
+    else if(ev==="viral"){ r.buzz=clamp(r.buzz+20,5,99); rivalMod(`${r.name} went viral`,"demand",-.02,2); R.events.push({tone:"warn",text:`A dish at ${r.name} went viral, and there's a line down the block outside their door.`}); }
     else if(ev==="close"){ r.closed=true; rivalMod(`${r.name} closed`,"demand",.05,8); R.events.push({tone:"good",text:`${r.name} closed for good. Their customers are looking for a new place.`}); }
     else if(ev==="scandal"){ r.buzz=clamp(r.buzz-15,5,99); rivalMod(`${r.name} health scare`,"demand",.03,3); R.events.push({tone:"good",text:`${r.name} failed a health inspection publicly. People are eating elsewhere for a while.`}); }
   }
@@ -4562,7 +4562,7 @@ function heat(){ S.heat=S.heat||{}; const H=S.heat;
   H.dirty=H.dirty||0; H.wash=WASH_LEVELS.some(w=>w.v===H.wash)?H.wash:0; H.washedTotal=H.washedTotal||0; return H; }
 /* laundering: dirty cash only becomes spendable by passing through the till as sales, and sales get taxed and looked at */
 const WASH_LEVELS=[{v:0,name:"None",blurb:"Dirty cash piles up in the back office."},{v:.05,name:"A little",blurb:"About 5% on top of real sales. Easy to explain."},
-  {v:.15,name:"A lot",blurb:"About 15% on top. The average check starts to look strange."},{v:.3,name:"Everything it'll take",blurb:"About 30% on top. Nobody's kitchen sells that many ghost plates."}];
+  {v:.15,name:"A lot",blurb:"About 15% on top. The average check starts to look strange."},{v:.3,name:"Everything it'll take",blurb:"About 30% on top, more than any real kitchen's sales could explain."}];
 /* the location a back-room operation runs out of */
 function opLoc(o){ return (o&&S.locations.find(l=>l.id===o.locId&&l.status!=="closed"))||S.locations.find(l=>l.status==="open")||S.locations[0]; }
 /* pays from the dirty pile first, then the account; returns what came out of the account */
@@ -4734,7 +4734,7 @@ function raidLoc(rd){ return S.locations.find(l=>l.id===rd.locId)||S.locations.f
 function raidFallback(rd,f){
   const l=raidLoc(rd), who=f.leader.name?`${f.leader.name}${f.leader.title?` (${f.leader.title})`:""}`:`Someone from ${f.name}`;
   return [null,
-    {title:`${f.name} is asking questions`,text:`${who} came by ${l.name} and asked about ${watchWords(f)}. Nothing formal yet, but they took notes, and they'll be back.`},
+    {title:`${f.name} is asking questions`,text:`${who} came by ${l.name} and asked about ${watchWords(f)}. Nothing formal yet, though they took notes.`},
     {title:`${f.name} is leaning on you`,text:`${who} made it plain that ${f.name} knows more than you'd like about ${watchWords(f)}. They want something, and they'll be back if they don't get it.`},
     {title:`${f.name} came through the door`,text:`${f.name} hit ${l.name} during service. ${who} ran it: records boxed, staff questioned, every back room opened.`},
     {title:`${f.name} came to finish it`,text:`${f.name} moved on ${l.name} in force. ${who} has what they need, and this is where they use it.`}][rd.tier];
@@ -4816,8 +4816,8 @@ function opMods(o,on){ S.mods=S.mods.filter(m=>m.src!=="backroom:"+o.id); if(!on
   for(const m of S.mods.slice(n)) m.src="backroom:"+o.id; }
 function endByForce(rd,f,fled){
   const b=S.bizName;
-  const text=fled?(rd.fled||`You left the night ${f.name} came, with what cash you could carry. ${b} opened the next day without you, and then it didn't open at all.`)
-    :(rd.end||(f.kind==="criminal"?`${f.name} took ${b} from you. The name stayed on the door; you didn't.`:f.kind==="state security"||f.kind==="military"?`${f.name} took you from the restaurant. ${b} was sealed the same night.`:`${f.name} arrested you and moved to seize ${b} as the proceeds of a crime.`));
+  const text=fled?(rd.fled||`You left the night ${f.name} came, with what cash you could carry. ${b} opened the next day without you and closed for good soon after.`)
+    :(rd.end||(f.kind==="criminal"?`${f.name} took ${b} from you and kept the name on the door.`:f.kind==="state security"||f.kind==="military"?`${f.name} took you from the restaurant. ${b} was sealed the same night.`:`${f.name} arrested you and moved to seize ${b} as the proceeds of a crime.`));
   S.gameOver={kind:fled?"fled":"seized",text}; chronicle(text);
 }
 function raidHit(rd,f,t,mult){
@@ -4865,7 +4865,7 @@ function resolveRaid(id,resp){
       if(t>=3){ say(true,"You didn't wait to see how it ended."); endByForce(rd,f,true); out.push("you ran"); break; }
       for(const o of liveOps()) shutOp(o,"closed"); const l=raidLoc(rd); if(l) l.closedWeeks=(l.closedWeeks||0)+2;
       for(const x of liveForces()) x.attention=clamp(x.attention-(x===f?30:10),0,100); f.case=Math.round(f.case*.8);
-      say(true,"The back room went dark and the shutters came down. Whoever was watching had nothing to watch."); out.push("the back room is shut; closed 2 weeks; everyone's attention down"); break; }
+      say(true,"The back room went dark and the shutters came down."); out.push("the back room is shut; closed 2 weeks; everyone's attention down"); break; }
     default:{ ok=null; say(false,t<=1?"You answered what you had to and nothing more.":"You let it happen."); out.push(...raidHit(rd,f,t,1)); }
   }
   H.history.unshift({when:rd.when,force:f.name,tier:RAID_TIERS[t].name,resp:(raidDefaults(rd,f)[resp]||{label:resp}).label.toLowerCase(),ok});
@@ -5006,7 +5006,7 @@ function legalTick(R){
   if(lic.pending&&S.monthIdx>=lic.pending.due){ lic.type=lic.pending.type; delete lic.pending; R.events.push({tone:"good",text:`Your ${lic.type==="full"?"full liquor":"beer and wine"} licence came through.`}); }
   if(lic.suspended&&S.monthIdx>=lic.suspended.until){ lic.type=lic.suspended.type; delete lic.suspended; R.events.push({tone:"good",text:"Your liquor licence suspension is over."}); }
   for(const loc of S.locations){ const g=inspectionGrade(loc); if(!g) continue;
-    if(g.grade!==loc.grade){ R.events.push({tone:g.grade==="A"?"good":"bad",text:`${loc.name} posted a ${g.grade} (${g.sys}, ${g.detail}). ${g.grade==="A"?"":"People read the window before the menu."}`}); loc.grade=g.grade; }
+    if(g.grade!==loc.grade){ R.events.push({tone:g.grade==="A"?"good":"bad",text:`${loc.name} posted a ${g.grade} (${g.sys}, ${g.detail}). ${g.grade==="A"?"":"It's posted in the window for everyone walking past."}`}); loc.grade=g.grade; }
     if(g.grade!=="A"&&S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${g.grade} grade in the window`,kind:"demand",value:g.grade==="B"?-.04:-.1,left:1,loc:S.locations.length<2?-1:S.locations.indexOf(loc),src:"inspection"}); }
   const cr=l.crew||{}, kSkill=cr.kitchen?cr.kitchen.skill:60;
   if(Math.random()<.004+(l.health<60?.006:0)+(kSkill<45?.004:0)){ const c=Math.round(rnd(15000,60000)); S.cash-=c; l.rep=clamp(l.rep-6,3,99);
@@ -6424,19 +6424,19 @@ function applyGuideDecision(loc,dec,pend,sink){
     loc.awareness=clamp(loc.awareness+15+8*stars,2,99); loc.rep=clamp(loc.rep+4,3,99); loc.morale=clamp(loc.morale+8,3,99);
     if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:stars===1?"The star bump":`The ${stars}-star bump`,kind:"demand",value:.10,left:6,loc:S.locations.length<2?-1:li,src:"guide"});
     push({tone:"good",text:stars===1?`The phone rang at 7am. One Michelin star${at}. The book is full for two months by lunchtime.`
-      :`${"★".repeat(stars)} — ${stars} Michelin stars${at}. ${stars===3?"Exceptional cuisine, worth a special journey. Almost nobody gets here.":"Excellent cooking, worth a detour."}`});
+      :`${"★".repeat(stars)} — ${stars} Michelin stars${at}. ${stars===3?"Exceptional cuisine, worth a special journey.":"Excellent cooking, worth a detour."}`});
     chronicle(`Awarded ${stars} Michelin star${stars>1?"s":""}${at}.`);
   }else if(stars<prev.stars){
     loc.rep=clamp(loc.rep-6,3,99); loc.morale=clamp(loc.morale-12,3,99);
     if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:"Lost a star",kind:"demand",value:-.12,left:8,loc:S.locations.length<2?-1:li,src:"guide"});
-    push({tone:"bad",text:`The Guide took a star away${at}. ${stars?`You're down to ${stars}.`:"You have none now."} The inspectors don't explain, and the kitchen knows exactly why anyway.`});
+    push({tone:"bad",text:`The Guide took a star away${at}. ${stars?`You're down to ${stars}.`:"You have none now."} The inspectors don't give reasons.`});
     chronicle(`Lost a Michelin star${at}; now ${stars}.`);
   }else if(stars>0){
     push({tone:"good",text:`The Guide came out. ${loc.name} kept ${stars===1?"its star":`its ${stars} stars`}.`});
   }
   if(loc.bib&&!prev.bib) push({tone:"good",text:`A Bib Gourmand${at}: good cooking at a fair price. Expect a line of people who read the Guide.`});
   if(loc.green&&!prev.green) push({tone:"good",text:`A Green Star${at}, for the sourcing. The farms you buy from are putting it on their websites.`});
-  if(loc.selected&&!prev.sel&&!stars&&!loc.bib) push({tone:"good",text:`${loc.name} made it into the Guide as a recommended restaurant. No star — the inspectors have noticed you.`});
+  if(loc.selected&&!prev.sel&&!stars&&!loc.bib) push({tone:"good",text:`${loc.name} made it into the Guide as a recommended restaurant. There's no star yet, though the inspectors have clearly noticed you.`});
   if(!loc.selected&&prev.sel) push({tone:"bad",text:`${loc.name} has been dropped from the Guide.`});
   if(!loc.selected&&!prev.sel&&!stars) push({tone:"warn",text:`The Guide came out. ${loc.name} isn't in it.`});
   if(dec.note) push({tone:"warn",text:`What the Guide wrote about ${loc.name}: "${dec.note}"`});
@@ -7677,7 +7677,7 @@ async function buildSpec(text,outEl,btn){
   }catch(e){
     if(e.code==="cancelled"){ outEl.innerHTML=""; }
     else if(e.code==="not_granted"||e.code==="sampling_disabled"){ sampleFn=null;
-      outEl.innerHTML=`<p class="note">Claude isn't available in this view. Opening the blank sheet instead — every number is yours to set.</p>`;
+      outEl.innerHTML=`<p class="note">Claude isn't available in this view. Opening the blank sheet instead, where every number is yours to set.</p>`;
       adoptSpec(sanitizeSpec({},specFromPreset(setupCfg.concept,setupCfg.market))); render(); }
     else if(e.code==="rate_limited") outEl.innerHTML=`<p class="note">You've hit your Claude usage limit for now. You can still fill the sheet in by hand.</p>`;
     else if(e.code==="invalid_json") outEl.innerHTML=`<p class="note">That came back garbled. Try describing it again, or fill the sheet in by hand.</p>`;
@@ -7690,13 +7690,13 @@ function resumeBannerHTML(){
 }
 function describeBoxHTML(){
   return `<div class="panel" style="margin-bottom:8px"><div class="hd"><h3>Describe it yourself</h3></div><div class="bd">
-    <p class="note" style="margin:0 0 9px">Write the situation you actually want to start from — who you are, what you're opening, where, and with what money. It gets turned into a full specification, and you can change every number on it before you commit to anything.</p>
+    <p class="note" style="margin:0 0 9px">Write the situation you actually want to start from: who you are, what you're opening, where, and with what money. It gets turned into a full specification, and you can change every number on it before you commit to anything.</p>
     <textarea id="descBox" placeholder="I'm 26. My father died and left me his pizzeria in a mill town of 18,000 people that lost its mill. Forty covers, rent's $1,100 because he owned the building outright and now I do. There's $40,000 in the account and a walk-in that's older than I am. I've worked the ovens since I was fifteen but I've never done a schedule or a P&amp;L in my life." ${sampleFn?"":"disabled"}>${esc(setupCfg.desc||"")}</textarea>
     <div class="row" style="margin-top:9px">
       <button class="btn" id="buildSpec" ${sampleFn?"":"disabled"}>Build this</button>
       <button class="btn sec" id="manualSheet">Fill the sheet in myself</button>
       <span class="spacer"></span>
-      <span class="note">${sampleFn?"Uses one Claude call.":"Claude isn't available in this view — the manual sheet still works."}</span>
+      <span class="note">${sampleFn?"Uses one Claude call.":"Claude isn't available in this view, but the manual sheet still works."}</span>
     </div>
     <div id="descOut"></div>
   </div></div>
@@ -7712,8 +7712,8 @@ function setupHTML(){
   const months=cushion>0? (cushion/burnEst) : 0;
   return `<div class="setup" style="padding-top:30px">
   ${resumeBannerHTML()}
-  <h1>You are about to open<br>a restaurant.</h1>
-  <p class="sub">Most of them close. The ones that don't are usually run by someone who watched the cash, not the reviews. Everything below is a real decision with real consequences, and the game will explain every number it charges you.</p>
+  <h1>You're about to open<br>a restaurant.</h1>
+  <p class="sub">Most of them close, and the ones that last are usually run by someone who watched the cash more closely than the reviews. Everything below is a real decision with real consequences, and the game will explain every number it charges you.</p>
   ${describeBoxHTML()}
 
   <div class="step"><h3>1 — The concept <small>sets your check average, your food cost and how hard the kitchen works</small></h3>
@@ -7750,7 +7750,7 @@ function setupHTML(){
         <div class="dial" style="padding:0 0 12px">
           <div class="lab"><b>Your own money</b><span class="val" id="savingsVal">${money(c.savings)}</span></div>
           <div class="numf"><button type="button" class="nfb" data-nf="-1" aria-label="less">−</button><input type="number" inputmode="numeric" id="savings" min="0" max="10000000000" step="5000" value="${c.savings}"><button type="button" class="nfb" data-nf="1" aria-label="more">+</button></div>
-          <div class="hint">Costs nothing and can't be taken away. It is also all of it.</div>
+          <div class="hint">Costs nothing and can't be taken away, though once it's spent there isn't any more.</div>
         </div>
         <div class="dial" style="padding:12px 0">
           <div class="lab"><b>Borrowed</b><span class="val" id="loanVal">${money(c.loan)}</span></div>
@@ -7787,7 +7787,7 @@ function setupHTML(){
           ${cushion<0
             ? `<span class="pill b">Underfunded</span><p class="note" style="margin:8px 0 0">You are ${money(-cushion)} short of opening the doors. Raise more or choose a cheaper concept.</p>`
             : `<span class="pill ${months<3?"b":months<6?"w":"g"}">${months.toFixed(1)} months of cushion</span>
-               <p class="note" style="margin:8px 0 0">Fixed costs run about ${money(burnEst)} a month before you sell anything. Restaurants take four to nine months to find their footing; under three months of cushion is how most of them die.</p>`}
+               <p class="note" style="margin:8px 0 0">Fixed costs run about ${money(burnEst)} a month before you sell anything. Restaurants take four to nine months to find their footing, and most of the ones that fail opened with under three months of cushion.</p>`}
         </div>
       </div>
     </div>
@@ -7801,7 +7801,7 @@ function setupHTML(){
     <div class="row" style="margin-top:10px">
       <label class="note">Opening month</label>
       <select id="startMonth" style="width:auto">${MONTHS.map((m,i)=>`<option value="${i}" ${c.startMonth===i?"selected":""}>${m}</option>`).join("")}</select>
-      <span class="note">Opening into your market's slow season is a choice people make by accident.</span>
+      <span class="note">Plenty of owners open into their market's slow season without noticing, so check before you pick.</span>
     </div>
   </div>
 
@@ -7831,7 +7831,7 @@ function customCostHTML(){
       ${C.seats>0?`<tr><td>Fit-out — ${costs.sqft.toLocaleString()} sqft at ${money(C.buildSqft)}</td><td class="n">${money(costs.build)}</td></tr>`:""}
       <tr><td>Kitchen equipment</td><td class="n">${money(costs.equip)}</td></tr>
       <tr><td>Smallwares, china, uniforms</td><td class="n">${money(costs.smallwares)}</td></tr>
-      <tr><td>Security deposit — three months' rent</td><td class="n">${money(costs.deposit)}</td></tr>
+      <tr><td>Security deposit (three months' rent)</td><td class="n">${money(costs.deposit)}</td></tr>
       <tr><td>Licences, permits, professional fees</td><td class="n">${money(costs.licences)}</td></tr>
       <tr><td>Pre-opening payroll and training</td><td class="n">${money(costs.preopen)}</td></tr>
       <tr><td>Opening inventory</td><td class="n">${money(costs.openingInv)}</td></tr>
@@ -7901,7 +7901,7 @@ function customSetupHTML(){
         ${nf("taxRate","Sales tax",s.taxRate,"0.25","Collected on top of the menu price and remitted quarterly.",true)}
       </div>
       <div style="margin-top:14px">
-        <div class="note" style="margin-bottom:6px"><b>Seasonality</b> — multiplier on trade each month. 1.0 is average; a resort town swings from 0.5 to 1.9.</div>
+        <div class="note" style="margin-bottom:6px"><b>Seasonality</b> · multiplier on trade each month. 1.0 is average; a resort town swings from 0.5 to 1.9.</div>
         <div class="seasongrid">${MONTHS.map((m,i)=>`<label><span>${m}</span><input type="number" data-spec="season.${i}" value="${(s.season[i]).toFixed(2)}" step="0.05"></label>`).join("")}</div>
       </div>
     </div></div></div>
@@ -7941,7 +7941,7 @@ function customSetupHTML(){
       <select id="startMonth" style="width:auto">${MONTHS.map((m,i)=>`<option value="${i}" ${c.startMonth===i?"selected":""}>${m}</option>`).join("")}</select>
       <span class="note">Check your seasonality before you pick.</span>
     </div>
-    <div style="margin-top:12px"><label class="note">Your circumstances — kept in front of the advisor for the rest of the game</label>
+    <div style="margin-top:12px"><label class="note">Your circumstances, kept in front of the advisor for the rest of the game</label>
       <textarea id="circum" maxlength="600">${esc(s.circumstances)}</textarea></div>
   </div>
 
@@ -8078,7 +8078,7 @@ function dashHTML(){
         <div class="panel"><div class="hd"><h3>${MONTHS[S.calMonth]}, year ${playYear(S.calMonth,S.year)} — ahead of you</h3></div>
           <div class="bd">
             ${alerts.length? alerts.map(a=>`<div class="kv" style="align-items:flex-start;gap:9px"><span class="pill ${a.c}" style="flex:none">${a.t}</span><span style="font-size:13px;text-align:right">${esc(a.m)}</span></div>`).join("")
-              : `<p class="note" style="margin:0">Nothing is on fire. Set your dials on the Operate tab and run the month.</p>`}
+              : `<p class="note" style="margin:0">Nothing's on fire. Set your dials on the Operate tab and run the month.</p>`}
             <button class="btn big" id="advance" style="margin-top:14px">Run ${MONTHS[S.calMonth]} →</button>
             <p class="note" style="margin:8px 0 0;text-align:center">Your decisions lock in when the month runs.</p>
           </div></div>
@@ -8090,7 +8090,7 @@ function dashHTML(){
             ${h.lost>40?`<tr><td>Sold out: requests on the waitlist</td><td class="n">${h.lost.toLocaleString()}</td></tr>`:""}
             <tr><td>Prime cost <button class="help" title="Food cost plus labour cost, as a share of sales. The single number restaurant operators live by.">?</button></td>
                 <td class="n ${h.primePct>target?"neg":"pos"}">${pct(h.primePct)}</td></tr>
-            <tr><td>EBITDA <button class="help" title="Earnings before interest, tax, depreciation and amortisation — what the operation itself earned, before financing.">?</button></td>
+            <tr><td>EBITDA <button class="help" title="Earnings before interest, tax, depreciation and amortisation: what the operation itself earned before financing.">?</button></td>
                 <td class="n ${h.ebitda<0?"neg":"pos"}">${money(h.ebitda)}</td></tr>
             <tr class="tot"><td>Cash movement</td><td class="n ${h.net<0?"neg":"pos"}">${h.net>=0?"+":""}${money(h.net)}</td></tr>
           </table></div>`:`
@@ -8128,7 +8128,7 @@ function worldStatePanel(){
 }
 function buildAlerts(){
   const a=[], h=S.history[S.history.length-1];
-  if(S.cash<15000) a.push({c:"b",t:"Cash",m:`${money(S.cash)} in the bank. Payroll does not wait.`});
+  if(S.cash<15000) a.push({c:"b",t:"Cash",m:`${money(S.cash)} in the bank, with payroll still to meet.`});
   if(h&&h.net<0&&S.cash/Math.abs(h.net)<3) a.push({c:"b",t:"Runway",m:`Under three months at the current burn.`});
   if(S.salesTaxHeld>7000&&(S.calMonth%3)===2) a.push({c:"w",t:"Tax",m:`${money(S.salesTaxHeld)} of sales tax is remitted at the end of this month.`});
   const t=primeTarget();
@@ -8136,7 +8136,7 @@ function buildAlerts(){
   for(const l of S.locations){
     if(l.equip<35) a.push({c:"w",t:"Kit",m:`${l.name}'s equipment is failing. Something expensive is about to break.`});
     if(l.morale<38) a.push({c:"w",t:"Staff",m:`Morale at ${l.name} is bad enough that people are looking.`});
-    if(l.health<55) a.push({c:"b",t:"Health",m:`${l.name} would not pass an inspection today.`});
+    if(l.health<55) a.push({c:"b",t:"Health",m:`${l.name} wouldn't pass an inspection today.`});
   }
   if(S.creditLine.drawn>0) a.push({c:"w",t:"Debt",m:`${money(S.creditLine.drawn)} drawn on the credit line at ${pct(S.creditLine.rate,2)}.`});
   return a.slice(0,6);
@@ -8203,7 +8203,7 @@ function operateHTML(){
   const rp=relPrice(S,l0);
   return `<div class="sec" style="padding-top:18px">
     <h2>Operate</h2>
-    <p class="lede">These are brand standards — they apply everywhere you trade. They lock in when you run the month. Dishes, ingredients and suppliers live on the Menu and Sourcing tabs.</p>
+    <p class="lede">These brand standards apply everywhere you trade, and they lock in when you run the month. Dishes, ingredients and suppliers live on the Menu and Sourcing tabs.</p>
     ${hoursHTML()}
     <div class="grid g2">
       <div class="panel"><div class="hd"><h3>Pricing</h3></div><div class="bd tight">
@@ -8224,7 +8224,7 @@ function operateHTML(){
         <div class="dial">
           <div class="lab"><b>Staffing level</b><span class="val">${esc(ST.name)}</span></div>
           <div class="seg" id="dStaff">${STAFFING.map(s=>`<button data-s="${s.k}" aria-pressed="${d.staffing===s.k}">${s.name}</button>`).join("")}</div>
-          <div class="hint">${esc(ST.blurb)} You schedule against a <em>forecast</em> — about <b class="num">${fore.toLocaleString()}</b> covers next month${S.traits.includes("cpa")?" (your partner's numbers are reliable)":" (and your forecasts are guesses, so some months you'll be caught short)"}. Understaffing a busy month costs you covers, reviews and cooks.</div>
+          <div class="hint">${esc(ST.blurb)} You schedule against a <em>forecast</em> of about <b class="num">${fore.toLocaleString()}</b> covers next month${S.traits.includes("cpa")?" (your partner's numbers are reliable)":" (and your forecasts are guesses, so some months you'll be caught short)"}. Understaffing a busy month costs you covers, reviews and cooks.</div>
         </div>
         <div class="dial">
           <div class="lab"><b>Marketing</b><span class="val">${money(mktTotal())}/mo in total</span></div>
@@ -8233,23 +8233,23 @@ function operateHTML(){
               <div class="numf"><button type="button" class="nfb" data-nf="-1" aria-label="less">−</button><input type="number" inputmode="numeric" class="mktIn" data-cur data-loc="${l.id}" data-ch="${k}" min="0" max="${lc(10000000,0)}" step="${lc(250,0)||1}" value="${lc(+m[k]||0,0)}"><button type="button" class="nfb" data-nf="1" aria-label="more">+</button></div>
               <div class="hint">${esc(C.hint)}</div></div>`).join("")}
             ${campaignsHTML(l)}</details>`; }).join("")}
-          <div class="hint" style="margin-top:8px">Each channel has diminishing returns: the first dollars do the most, and past saturation extra spend barely moves anything. Buys awareness, not reputation.</div>
+          <div class="hint" style="margin-top:8px">Each channel has diminishing returns: the first dollars do the most, and past saturation extra spend barely moves anything. It raises awareness only.</div>
         </div>
         <div class="dial" style="display:none">
           <div class="lab"><b>Marketing spend</b><span class="val">${money(d.marketing)}/mo</span></div>
           <div class="numf"><button type="button" class="nfb" data-nf="-1" aria-label="less">−</button><input type="number" inputmode="numeric" id="dMktg" data-cur min="0" max="${lc(10000000,0)}" step="${lc(250,0)||1}" value="${lc(d.marketing,0)}"><button type="button" class="nfb" data-nf="1" aria-label="more">+</button></div>
-          <div class="hint">Buys awareness, not reputation. Bringing strangers to a restaurant that isn't ready is how you convert marketing spend into bad reviews.</div>
+          <div class="hint">It raises awareness and does nothing for reputation, and strangers who turn up before the restaurant's ready will write the bad reviews.</div>
         </div>
         <div class="dial">
           <div class="lab"><b>Your own draw</b><span class="val">${money(d.draw)}/mo</span></div>
           <div class="numf"><button type="button" class="nfb" data-nf="-1" aria-label="less">−</button><input type="number" inputmode="numeric" id="dDraw" data-cur min="0" max="${lc(10000000,0)}" step="${lc(250,0)||1}" value="${lc(d.draw,0)}"><button type="button" class="nfb" data-nf="1" aria-label="more">+</button></div>
-          <div class="hint">What you pay yourself. Taking nothing is not heroic — it hides whether the business can actually support an owner. Taking too much starves it.</div>
+          <div class="hint">What you pay yourself. Taking nothing hides whether the business can actually support an owner, and taking too much starves it.</div>
         </div>
       </div></div>
     </div>
 
     <div class="panel" style="margin-top:14px"><div class="hd"><h3>Your attention</h3></div><div class="bd">
-      <p class="note" style="margin:0 0 12px">You have one of you. A location you're not standing in drifts: standards slip, morale sags, product walks out the back door. Split your month.</p>
+      <p class="note" style="margin:0 0 12px">There's only one of you, and a location you're not standing in drifts: standards slip, morale sags, product walks out the back door. Split your month.</p>
       <div class="stack">
         ${S.locations.filter(l=>l.status==="open").map(l=>`
           <div class="dial" style="padding:0 0 10px">
@@ -8346,7 +8346,7 @@ function booksHTML(){
   const rows=(label,val,cls,sub)=>`<tr class="${sub?"sub":""}"><td>${label}</td><td class="pct">${p(val)}</td><td class="n ${cls||""}">${money(val)}</td></tr>`;
   return `<div class="sec" style="padding-top:18px">
   <h2>Books — ${MONTHS[h.cal]}, year ${playYear(h.cal,h.y)}</h2>
-  <p class="lede">Two statements, and they disagree. The profit and loss says whether the business works. The cash flow says whether it survives until it does.</p>
+  <p class="lede">These two statements often disagree: the profit and loss says whether the business works, while the cash flow says whether it'll survive long enough for that to matter.</p>
   ${ownershipHTML()}
   <div class="grid g2">
     <div class="panel"><div class="hd"><h3>Profit &amp; loss</h3></div>
@@ -8373,7 +8373,7 @@ function booksHTML(){
           <tr><td>Sales tax collected <button class="help" title="You add it to the bill and hold it. It belongs to the state, and it leaves every quarter.">?</button></td><td class="n">${money(cf.taxCollected)}</td></tr>
           <tr><td>Paid to food and wine vendors${cf.restock>0?` <span class="note">(incl. ${money(cf.restock)} of wine restock)</span>`:""}</td><td class="n neg">${money(-cf.apPaid)}</td></tr>
           <tr><td>Payroll, rent and operating costs</td><td class="n neg">${money(-(cf.out-cf.apPaid-cf.principal-cf.draw-cf.stOut-cf.taxOut))}</td></tr>
-          <tr><td>Loan principal <button class="help" title="Principal repayment is cash leaving, but it is not an expense — it never appears on the P&amp;L. This is the main reason profitable restaurants run out of money.">?</button></td><td class="n neg">${money(-cf.principal)}</td></tr>
+          <tr><td>Loan principal <button class="help" title="Principal repayment is cash leaving, but it isn't an expense and never appears on the P&amp;L, which is the main reason profitable restaurants run out of money.">?</button></td><td class="n neg">${money(-cf.principal)}</td></tr>
           <tr><td>Your draw</td><td class="n neg">${money(-cf.draw)}</td></tr>
           ${cf.stOut>0?`<tr><td>Sales tax remitted (quarterly)</td><td class="n neg">${money(-cf.stOut)}</td></tr>`:""}
           ${cf.taxOut?`<tr><td>${cf.taxOut>0?"Income tax (estimates and true-up)":"Income tax refund"}</td><td class="n ${cf.taxOut>0?"neg":"pos"}">${money(-cf.taxOut)}</td></tr>`:""}
@@ -8426,7 +8426,7 @@ function wireBooks(){
   const ts=$("#taxState"); if(ts) ts.onchange=()=>{ taxOf(S).stateRate=numVal(ts)/100; keepY(); };
   const to=$("#taxOwner"); if(to) to.onchange=()=>{ taxOf(S).ownerRate=numVal(to)/100; keepY(); };
   const og=$("#ownGo"); if(og) og.onclick=async()=>{ og.disabled=true; const ok=await generateOwner(($("#ownText").value||"").trim(),$("#ownOut"),true); og.disabled=false;
-    if(ok){ S.corrections=S.corrections||[]; S.corrections.push(`${when()}: ${S.bizName}'s owner is described as ${S.ownership.owner}. That is who they have always been; nothing changed in the world.`); logIt("warn",`Owner written: ${S.ownership.owner}.`); keepY(); } };
+    if(ok){ S.corrections=S.corrections||[]; S.corrections.push(`${when()}: ${S.bizName}'s owner is described as ${S.ownership.owner}. That's who they've always been; nothing changed in the world.`); logIt("warn",`Owner written: ${S.ownership.owner}.`); keepY(); } };
   document.querySelectorAll("[data-lic]").forEach(b=>b.onclick=()=>{ const t=b.dataset.lic, Q=S.licQuote&&S.licQuote[t]; if(!Q||S.cash<Q.cost) return;
     S.cash-=Q.cost; licenceOf().pending={type:t,due:S.monthIdx+Q.months}; delete S.licQuote[t];
     logIt("good",`Applied for ${t==="full"?"a full liquor licence":"a beer and wine licence"}: ${money(Q.cost)}, about ${Q.months} months.`); keepY(); });
@@ -8592,7 +8592,7 @@ function growthHTML(){
   const newCost=openingCosts({concept:S.concept,market:S.market,traits:[],noCellar:true});
   return `<div class="sec" style="padding-top:18px">
   <h2>Growth</h2>
-  <p class="lede">Every one of these is a decision to spend cash you have on revenue you might get. The second location is the most common way a good restaurant becomes a failed group.</p>
+  <p class="lede">Every one of these spends cash you have on revenue you might get, and a second location is the most common route from a good restaurant to a failed group.</p>
   ${opportunitiesHTML()}
   ${commissaryHTML()}
   ${ghostHTML()}
@@ -8624,7 +8624,7 @@ function growthHTML(){
         <div class="hint">Buying, leasing, servicing and replacing kit, station by station, is on the House tab.</div>
         <button class="btn sm sec" data-goto="house" style="margin-top:8px">Go to the kitchen</button></div>
       <div class="dial"><div class="lab"><b>Deep clean &amp; compliance audit</b><span class="val">${money(7500)}</span></div>
-        <div class="hint">Brings the health score back up before an inspector does it for you, expensively.</div>
+        <div class="hint">Brings the health score back up before an inspection finds the problems and fines you for them.</div>
         <button class="btn sm sec" id="deepclean" style="margin-top:8px" ${S.cash<7500?"disabled":""}>Book it</button></div>
       <div class="dial"><div class="lab"><b>Pay down the credit line</b><span class="val">${money(S.creditLine.drawn)}</span></div>
         <div class="hint">Costs you ${pct(S.creditLine.rate,2)} a year while it's out, and you want the headroom back before you need it.</div>
@@ -8713,7 +8713,7 @@ function wireGrowth(){ wireCommissary(); wireGhost();
     save();render();};
   const dc=$("#deepclean"); if(dc) dc.onclick=()=>{ if(S.cash<7500)return; S.cash-=7500;
     for(const l of S.locations) l.health=clamp(l.health+28,0,100);
-    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:"Deep clean and a compliance audit. The consultant found three things you did not want to know about."});
+    S.log.unshift({when:`${dateName(S.calMonth,S.year)}`,tone:"good",text:"Deep clean and a compliance audit. The consultant found three things you didn't want to know about."});
     save();render();};
   const pl=$("#payline"); if(pl) pl.onclick=()=>{ const amt=Math.min(S.cash,S.creditLine.drawn); if(amt<=0)return;
     S.cash-=amt; S.creditLine.drawn-=amt;
@@ -8739,12 +8739,12 @@ function officeHTML(){
   const off=!sampleFn;
   return `<div class="sec" style="padding-top:18px">
   <h2>The office</h2>
-  <p class="lede">The part of running a restaurant that isn't a slider. Ask someone who has done this before, or go do something the game doesn't have a button for.</p>
+  <p class="lede">Everything about running a restaurant that a slider can't cover. Ask someone who's done this before, or go and do something the game doesn't have a button for.</p>
   ${off?`<div class="panel" style="margin-bottom:14px"><div class="bd"><span class="pill w">Claude unavailable in this view</span>
     <p class="note" style="margin:7px 0 0">Free-form actions need Claude. The advisor below falls back to a mechanical read of your books, which is less conversational and, for questions about your own numbers, frequently more accurate.</p></div></div>`:""}
   <div class="grid g2">
     <div class="panel"><div class="hd"><h3>Ask your advisor</h3></div><div class="bd">
-      <p class="note" style="margin:0 0 9px">A former operator who has read your books and remembers what you've talked about. Ask anything: "why did we lose money", "should I raise prices", "what is prime cost".</p>
+      <p class="note" style="margin:0 0 9px">A former operator who's read your books and remembers what you've talked about. Ask anything: "why did we lose money", "should I raise prices", "what is prime cost".</p>
       <div id="advLog" class="advlog">${advisorLogHTML()}</div>
       <textarea id="advQ" placeholder="Why did profit fall when sales went up?" style="margin-top:10px"></textarea>
       <div class="row" style="margin-top:9px">
@@ -8799,7 +8799,7 @@ function officeHTML(){
 
   <div class="grid g2" style="margin-top:14px">
     <div class="panel"><div class="hd"><h3>Write the world</h3><span class="spacer"></span><span class="note">doesn't use an action</span></div><div class="bd">
-      <p class="note" style="margin:0 0 9px">You're the author. Declare something that happens in this world — to the city, the industry, your street, your people — and Claude works out what it realistically does to the business. It happens; the only question is how it lands.</p>
+      <p class="note" style="margin:0 0 9px">You're the author. Declare something that happens in this world, whether to the city, the industry, your street or your people, and Claude works out what it realistically does to the business. It will happen, and Claude decides only how it lands.</p>
       <textarea id="injT" placeholder="A heatwave closes half the city's terraces for three weeks in August. / A celebrity chef opens a 200-seat place two blocks away. / The city paper fires its critic and hires a famous food writer." ${sampleFn?"":"disabled"}></textarea>
       <button class="btn" id="injGo" style="margin-top:9px" ${sampleFn?"":"disabled"}>Make it happen</button>
       <div id="injOut" style="margin-top:12px"></div>
@@ -8848,7 +8848,7 @@ function critBars(c,label){
   const row=(k,n,hint)=>`<div style="margin-bottom:8px"><div class="kv" style="border:0;padding:0 0 3px"><span>${n} <button class="help" title="${esc(hint)}">?</button></span><span class="n">${Math.round(c[k])}</span></div><div class="meter ${c[k]>=STAR_TH[1]?"g":c[k]>=55?"w":"b"}"><i style="width:${clamp(c[k],0,100)}%"></i></div></div>`;
   return `${label?`<p class="note" style="margin:0 0 10px">${label}</p>`:""}
     ${row("ingredients","Quality of ingredients","Your suppliers' quality for each dish's ingredients, lifted by the grade you buy.")}
-    ${row("technique","Mastery of technique","Kitchen skill against how hard the menu is. Ambitious food cooked well scores highest; ambitious food cooked badly scores lowest.")}
+    ${row("technique","Mastery of technique","Kitchen skill against how hard the menu is. Ambitious food scores highest when it's cooked well and lowest when it isn't.")}
     ${row("harmony","Harmony of flavours","Menu coherence and plating. A critique from Claude can move coherence; so can R&D.")}
     ${row("personality","The chef's personality","Creativity across the menu, signatures, and the chef's own skill.")}
     ${row("consistency","Consistency","Skill gaps, understaffing, low morale, supplier shortfalls, turnover and failing equipment all show up here. Michelin weighs it heavily.")}
@@ -8934,7 +8934,7 @@ function oldDishEditorHTML(d){
       ${f("presentation","Plating (1–5)",d.presentation,"0.5",1,5)}
       ${f("creativity","Creativity (0–100)",d.creativity,"1",0,100)}
     </div>
-    <div class="note" style="margin:8px 0 4px"><b>What it's made of</b> — share of ingredient cost</div>
+    <div class="note" style="margin:8px 0 4px"><b>What it's made of</b> · share of ingredient cost</div>
     <div class="seasongrid">${CAT_KEYS.map(k=>`<label><span>${esc(CATS[k].name.split(/[ ,—]/)[0])}</span><input type="number" id="de_cat_${k}" value="${Math.round((d.cats[k]||0)*100)}" step="5" min="0" max="100"></label>`).join("")}</div>
     <div class="row" style="margin-top:10px"><button class="btn sm" id="de_save">Save dish</button><button class="btn sm sec" id="de_cancel">Cancel</button></div>
   </div>`;
@@ -9162,7 +9162,7 @@ function sourcingHTML(){
   const c=S.cellar, off=!sampleFn, ls=listScore(), cap=cellarCapacity();
   return `<div class="sec" style="padding-top:18px">
   <h2>Sourcing &amp; cellar</h2>
-  <p class="lede">Your food is only as good as the people who sell it to you. Better suppliers raise ingredient quality and cost more; small producers are less reliable and want cash sooner.</p>
+  <p class="lede">Ingredient quality starts with the people who sell to you. Better suppliers raise it and cost more; small producers are less reliable and want cash sooner.</p>
   <div class="grid g2">
     <div class="panel"><div class="hd"><h3>Who you buy from</h3><span class="spacer"></span><span class="note">green share ${pct(Math.min(1,greenShare()),0)}</span></div><div class="bd tight">
       ${CAT_KEYS.map(supplierRowHTML).join("")}
@@ -9297,7 +9297,7 @@ function houseHTML(){
   const built=new Set(loc.features.map(f=>f.name));
   return `<div class="sec" style="padding-top:18px">
   <h2>The house</h2>
-  <p class="lede">The room is half of what a guest pays for. It moves reputation, what people will pay and how many you can seat. Michelin doesn't judge the room, only the plate; everyone else does.</p>
+  <p class="lede">The room is a large part of what a guest pays for, and it moves reputation, what people will pay and how many you can seat. Michelin judges only the plate, but critics and guests judge the room as well.</p>
   ${S.locations.length>1?`<div class="seg" id="houseLocSeg" style="max-width:520px;margin-bottom:12px">${S.locations.map((l,i)=>`<button data-hl="${i}" aria-pressed="${i===houseLoc}">${esc(l.name)}</button>`).join("")}</div>`:""}
   <div class="grid g2">
     <div class="stack">
@@ -9326,7 +9326,7 @@ function houseHTML(){
       ${FEATURES.filter(f=>!built.has(f.name)&&featureFits(f,loc)).map((f,i)=>featureOfferHTML(Object.assign({id:"cat_"+FEATURES.indexOf(f)},f),"cat")).join("")||`<p class="note" style="margin:0">Nothing on the usual list suits this place right now. Commission something of your own.</p>`}
     </details></div></div>
   </div></div>
-  <div class="panel" style="margin-top:14px"><div class="hd"><h3>Setting</h3><span class="spacer"></span><span class="note">you can't change this, only live with it</span></div><div class="bd">
+  <div class="panel" style="margin-top:14px"><div class="hd"><h3>Setting</h3><span class="spacer"></span><span class="note">you can't change this</span></div><div class="bd">
     <b style="font-size:15px">${esc(envOf(loc).name)}</b><p class="note" style="margin:4px 0 8px">${esc(envOf(loc).desc)}</p>
     ${envOf(loc).ev&&envOf(loc).ev.length?`<details style="margin-bottom:8px"><summary class="note" style="cursor:pointer">What happens around here (${envOf(loc).ev.length})</summary>${envOf(loc).ev.map(e=>`<div class="hint" style="margin-top:4px">${esc(e.desk?e.desk.title+" (a decision)":e.text)}${e.m?` <span class="note">· ${e.m.map(x=>MONTHS[x]).join("/")}</span>`:""}</div>`).join("")}</details>`:""}
     <div class="kv"><span>Spending here</span><span class="n">${envPriced(loc)?`${envOf(loc).check>=1?"+":""}${Math.round((envOf(loc).check-1)*100)}%`:"priced into your market"}</span></div>
@@ -9967,7 +9967,7 @@ function gameOverHTML(){
         <tr><td>Covers served</td><td class="n">${h.reduce((a,r)=>a+r.covers,0).toLocaleString()}</td></tr>
         <tr class="tot"><td>Best month</td><td class="n">${h.length?money(Math.max(...h.map(r=>r.ebitda))):"—"}</td></tr>
       </table></div>
-    <p class="note" style="margin-top:16px">Roughly half of independent restaurants close within five years, and the great majority of them do it exactly this way: solvent on paper right up until the week payroll clears and the account doesn't.</p>
+    <p class="note" style="margin-top:16px">Roughly half of independent restaurants close within five years, and most of them go this way, looking solvent on paper until the week the account can't cover payroll.</p>
     <button class="btn big" id="restart" style="margin-top:18px">Start again</button>
   </div>`;
 }
