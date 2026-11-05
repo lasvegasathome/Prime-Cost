@@ -2041,7 +2041,7 @@ function applyEffects(effects,opts){
     const all = raw===-1;
     const li=clamp(Math.round(raw)||0,0,S.locations.length-1);
     const loc=S.locations[li];
-    const d=v=>{ const n=Number(v); return isFinite(n)?clamp(n,-1e9,1e9):0; }, MS=moneyScale();
+    const d=v=>{ const n=Number(v); return isFinite(n)?n:0; }, MS=moneyScale();
     const meter=(key,lo,hi,label)=>{
       const v=Math.round(d(e.delta));
       for(const l of (all?S.locations:[loc])) l[key]=clamp(l[key]+v,lo,hi);
@@ -2054,7 +2054,7 @@ function applyEffects(effects,opts){
         if(amt<0 && S.cash+amt< -1000){ rejected.push(`can't spend ${money(-amt)}, it isn't in the account`); break; }
         S.cash+=amt; done.push(`${amt<0?"paid":"received"} ${money(Math.abs(amt))}${e.why?` (${String(e.why).slice(0,60)})`:""}`); break; }
       case "rent":{
-        const p=clamp(d(e.pctChange),-1,5);
+        const p=Math.max(-1,d(e.pctChange));
         if(Number(e.months)>0){ addMod({label:e.label||"Rent concession",kind:"rent",value:p,months:e.months,locIndex:raw},opts,done,rejected); break; }
         loc.rent=Math.round(loc.rent*(1+p));
         done.push(`base rent${locLabel(li)} ${p<0?"down":"up"} ${pct(Math.abs(p),0)} to ${money(loc.rent)}/mo`); break; }
@@ -2068,19 +2068,19 @@ function applyEffects(effects,opts){
         const dv=clamp(d(e.delta),-.9,5);
         addMod({label:e.label||(dv<0?"Better purchasing":"Supplier trouble"),kind:"foodcost",value:dv,months:e.months||4,locIndex:raw},opts,done,rejected); break; }
       case "wage":{
-        const dv=clamp(d(e.delta),-.95,3);
-        for(const l of (all?S.locations:[loc])) l.wagePremium=clamp((l.wagePremium||0)+dv,-.95,5);
+        const dv=d(e.delta);
+        for(const l of (all?S.locations:[loc])) l.wagePremium=Math.max(-.95,l.wagePremium+dv);
         done.push(`wages ${dv<0?"down":"up"} ${pct(Math.abs(dv),0)}`); break; }
       case "competition":{
-        const m=clamp(d(e.mult)||1,.1,10);
-        for(const l of (all?S.locations:[loc])) l.compMod=clamp((l.compMod||1)*m,.01,100);
+        const m=Math.max(.001,Number(e.mult)||1);
+        for(const l of (all?S.locations:[loc])) l.compMod*=m;
         done.push(`competitive pressure ${m<1?"eased":"increased"}`); break; }
       case "mod": addMod(e,opts,done,rejected); break;
       case "loan":{
         if(loans++>0){ rejected.push("a second loan in one go"); break; }
         const amount=Math.round(Math.max(0,d(e.amount)));
         if(amount<500){ rejected.push("a loan too small to bother with"); break; }
-        const rate=clamp(d(e.rate)||.12,0,1), term=Math.round(clamp(d(e.term)||36,1,360));
+        const rate=Math.max(0,Number(e.rate)||.12), term=Math.round(Math.max(1,Number(e.term)||36));
         const L={id:uid(),kind:"hard",label:String(e.why||"Loan").slice(0,40),principal:amount,rate,term,remaining:amount,monthsLeft:term,payment:amortPayment(amount,rate,term)};
         S.loans.push(L); S.cash+=amount;
         done.push(`borrowed ${money(amount)} at ${pct(rate,1)} over ${term} months (${money(L.payment)}/mo)`); break; }
@@ -2090,7 +2090,7 @@ function applyEffects(effects,opts){
         done.push(`credit line ${c<0?"cut":"raised"} to ${money(S.creditLine.limit)}`); break; }
       case "followup":{
         if(S.followups.length>=MAX_FOLLOWUPS){ rejected.push("too many loose ends already"); break; }
-        const n=Math.round(clamp(d(e.inMonths)||2,1,60));
+        const n=Math.round(Math.max(1,Number(e.inMonths)||2));
         const hook=String(e.hook||"").trim().slice(0,600); if(!hook) break;
         S.followups.push({id:uid(),hook,due:S.monthIdx+n});
         done.push(`you'll hear back about ${hook} in ${n} month${n>1?"s":""}`); break; }
@@ -2121,13 +2121,13 @@ function applyEffects(effects,opts){
         const sk=Math.round(d(e.skill)), lo=Math.round(d(e.loyalty));
         m.skill=clamp(m.skill+sk,5,99); m.loyalty=clamp(m.loyalty+lo,0,100);
         if(e.cert){ const k=matchCert(e.cert); if(k&&!certsOf(m).includes(k)){ m.certs=certsOf(m).concat([k]); done.push(`${m.name} now holds ${certInfo(k).name}`); } }
-        if(d(e.years)) m.years=clamp((m.years||0)+d(e.years),0,70);
+        if(Number(e.years)) m.years=Math.max(0,(m.years||0)+d(e.years));
         done.push(`${m.name}: ${sk?`skill ${sk>0?"+":""}${sk}`:""}${sk&&lo?", ":""}${lo?`loyalty ${lo>0?"+":""}${lo}`:""}`); break; }
       case "supplier":{
         const sp=supFor(String(e.cat));
         if(!sp){ rejected.push("no supplier for that"); break; }
         const rl=Math.round(d(e.relation)), rb=d(e.reliability), pr=d(e.price);
-        sp.relation=clamp(sp.relation+rl,0,100); sp.reliability=clamp(sp.reliability+rb,.01,.999); sp.price=clamp(sp.price+pr,.05,10);
+        sp.relation=clamp(sp.relation+rl,0,100); sp.reliability=clamp(sp.reliability+rb,.01,.999); sp.price=Math.max(.05,sp.price+pr);
         done.push(`${sp.name}: ${[rl?`relationship ${rl>0?"+":""}${rl}`:"",rb?`reliability ${rb>0?"+":""}${Math.round(rb*100)}pts`:"",pr?`prices ${pr>0?"up":"down"} ${Math.round(Math.abs(pr)*100)}%`:""].filter(Boolean).join(", ")}`); break; }
       case "standing":{
         const v=Math.round(d(e.delta)); S.cellar.standing=clamp(S.cellar.standing+v,0,100);
@@ -2156,8 +2156,8 @@ function applyEffects(effects,opts){
         done.push(`${l.qty}× ${l.name} into the cellar`); break; }
       case "lease":{
         for(const l of (all?S.locations:[loc])){
-          if(e.owned){ l.owned=true; l.propertyValue=Math.round(Math.max(0,d(e.propertyValue))||l.rent*12/.065); l.rent=0; l.leaseLeft=999; done.push(`you own the building at ${l.name}`); continue; }
-          const rc=clamp(d(e.rentChange),-1,5); l.rent=Math.round(l.rent*(1+rc)); l.leaseLeft=Math.round(clamp(d(e.months)||120,1,999)); l.leaseAsked=false; l.holdover=Number(e.months)<=12; if(!l.holdover) l.reclaims=0;
+          if(e.owned){ l.owned=true; l.propertyValue=Math.round(Number(e.propertyValue)||l.rent*12/.065); l.rent=0; l.leaseLeft=999; done.push(`you own the building at ${l.name}`); continue; }
+          const rc=Math.max(-1,d(e.rentChange)); l.rent=Math.round(l.rent*(1+rc)); l.leaseLeft=Math.round(Math.max(1,Number(e.months)||120)); l.leaseAsked=false; l.holdover=Number(e.months)<=12; if(!l.holdover) l.reclaims=0;
           done.push(`lease at ${l.name}: ${l.leaseLeft} months, rent ${rc>=0?"up":"down"} ${pct(Math.abs(rc),0)} to ${money(l.rent)}/mo`); }
         if(e.guarantee&&!S.traits.includes("pg")){ S.traits.push("pg"); done.push("you signed a personal guarantee"); }
         break; }
@@ -2173,10 +2173,10 @@ function applyEffects(effects,opts){
         break; }
       case "seats":{
         const v=Math.round(d(e.delta));
-        for(const l of (all?S.locations:[loc])) l.seats=clamp((l.seats||0)+v,0,5000);
+        for(const l of (all?S.locations:[loc])) l.seats=Math.max(0,(l.seats||0)+v);
         done.push(`${v>=0?"+":""}${v} seats${all?"":locLabel(li)}`); break; }
       case "shutdown":{
-        const w=Math.round(clamp(d(e.weeks)||1,1,52)); for(const l of (all?S.locations:[loc])) l.closedWeeks=(l.closedWeeks||0)+w;
+        const w=Math.round(Math.max(1,Number(e.weeks)||1)); for(const l of (all?S.locations:[loc])) l.closedWeeks=(l.closedWeeks||0)+w;
         done.push(`closed ${w} week${w>1?"s":""}${e.reason?`: ${String(e.reason).slice(0,400)}`:""}`); break; }
       case "restructure":{
         for(const x of S.loans) x.remaining=Math.round((x.remaining||0)*.6);
@@ -2216,7 +2216,7 @@ function addMod(e,opts,done,rejected){
   if(K.f==="money") value=Math.round(value);
   if(!value) return;
   let m=Math.round(Number(e.months));
-  let left = (opts.permanent && !(m>0)) ? null : clamp(m||6,1,opts.maxMonths||60);
+  let left = (opts.permanent && !(m>0)) ? null : Math.max(1,m||6);
   const loc = (Number(e.locIndex)===-1||e.locIndex==null||S.locations.length<2) ? -1 : clamp(Math.round(Number(e.locIndex))||0,0,S.locations.length-1);
   const label=String(e.label||opts.label||K.name).trim().slice(0,48);
   S.mods.push({id:uid(),label,kind:e.kind,value,left,loc,src:String(opts.label||"").slice(0,48)});
