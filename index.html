@@ -7226,14 +7226,14 @@ function railItem(it,base,enums){
     if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
     if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
     if(typeof t==="number"){ const n=+v; if(!isFinite(n)){ if(vals.length===base.length) return null; continue; } const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
-    else if(typeof t==="string"){ const s=String(v).trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }
+    else if(typeof t==="string"){ const s=String(v).replace(/[<>]/g,"").trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }   // plain text only: many lists are interpolated into markup
     else if(typeof t==="boolean") out[k]=!!v;
     else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
       const ks=new Set(vals.flatMap(o=>o?Object.keys(o):[])), o={};
       for(const [ek,ev] of Object.entries(v)){ if(!ks.has(ek)||!isFinite(+ev)) continue; const all=vals.map(x=>x&&x[ek]).filter(x=>x!=null&&isFinite(x)); const hi=Math.max(0,...all), lo=Math.min(0,...all);
         o[ek]=Math.round(clamp(+ev,lo<0?lo*1.5:-Math.max(2,hi*.3),Math.max(hi*1.25,1))*10)/10; }
       out[k]=o; }
-    else if(Array.isArray(t)&&Array.isArray(v)) out[k]=v.slice(0,12).filter(x=>typeof x!=="object").map(x=>typeof x==="string"?x.slice(0,120):x);
+    else if(Array.isArray(t)&&Array.isArray(v)) out[k]=v.slice(0,12).filter(x=>typeof x!=="object").map(x=>typeof x==="string"?x.replace(/[<>]/g,"").slice(0,120):x);
   }
   return out.name||!keys.has("name")? out : null;
 }
