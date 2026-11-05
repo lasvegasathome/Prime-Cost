@@ -7104,6 +7104,70 @@ const FEATURES=[
   {fit:{formats:["truck"]},clash:/generator|inverter/,name:"Quiet generator & battery bank",pitch:"Swap the roaring generator for an inverter and battery setup that events and neighbourhoods will actually allow.",cost:12500,weeks:0,equip:true,effects:[{op:"mod",kind:"demand",label:"Allowed at more spots",value:.03,months:0}],risk:"The batteries are the most expensive thing on the truck to replace."},
   {fit:{formats:["seated"],tiers:["mid"],minAlc:.08},clash:/happy hour|bar rail/,name:"Bar rail & happy hour setup",pitch:"Eight stools along a rail, taps and a short happy-hour list for the 4 to 6 dead zone.",cost:32000,weeks:2,seats:8,bev:.07,risk:"Happy hour trains some regulars to only show up at half price."},
 ];
+/* ============ WORLD CATALOGUES ============
+   The hard-coded lists in this file describe a restaurant in the modern real world. With Claude on, every save
+   gets its own version of each list, written for its world (Night City, Airstrip One, 1940 Paris, today's Lima),
+   cached in the save and kept inside the engine's rails: same fields, effect keys the engine knows, costs and
+   effects clamped to the range the defaults span. Read a list with wcList(kind); never index the constant directly.
+   A kind registers with worldCat(kind,{base,what,n,enums,fix,notes}). Offline, wcList() returns the defaults. */
+const WORLD_CATS={};
+function worldCat(kind,spec){ WORLD_CATS[kind]=Object.assign({n:[4,12],enums:{},notes:""},spec); }
+function worldBrief(){
+  const C=CONCEPTS[S.concept]||{}, y=storyYear(), w=S.world||{}, home=intlOn()?intl().home:null;
+  const where=[MARKETS[S.market]&&MARKETS[S.market].name, S.customMarket&&S.customMarket.name, ...(S.locations||[]).map(l=>l.name)].filter(Boolean).join("; ");
+  return `THE WORLD THIS RESTAURANT IS IN\nRestaurant: ${S.bizName||"unnamed"} (${C.name||S.concept||"restaurant"}${C.blurb?`: ${C.blurb}`:""})\nWhere: ${where||"unspecified"}${home?` · country: ${home}`:""}\nWhen: ${y?`${MONTHS[S.calMonth]} ${y}`:"the present day"}`+
+    (w.outside===false?`\nClosed world: nothing from outside this setting exists here. No real-world brands, guides, credentials, institutions or countries unless the notes below say they exist.`:"")+
+    (w.notes?`\nWorld notes: ${String(w.notes).slice(0,6000)}`:"")+(S.origin?`\nHow this run began: ${String(S.origin).slice(0,1500)}`:"")+(S.circumstances&&S.circumstances.length?`\nCircumstances: ${[].concat(S.circumstances).join(", ")}`:"");
+}
+function worldKey(){ const w=S.world||{}; let h=0; const s=[w.notes,w.outside,S.market,S.customMarket&&S.customMarket.name,S.origin,S.concept,S.epoch,intlOn()&&intl().home].map(x=>String(x==null?"":x)).join("\u0001");
+  for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return "w"+(h>>>0).toString(36); }
+function wcList(kind){ const K=WORLD_CATS[kind], c=S&&S.worldCat&&S.worldCat[kind]; if(!K) return [];
+  return c&&c.key===worldKey()&&Array.isArray(c.items)&&c.items.length? c.items : K.base(); }
+function catalogFitted(kind){ const c=S&&S.worldCat&&S.worldCat[kind]; return !!(c&&c.key===worldKey()); }
+/* clamp a generated item to the shape and range of the defaults */
+function railItem(it,base,enums){
+  if(!it||typeof it!=="object") return null; const out={}, keys=new Set(base.flatMap(b=>Object.keys(b)));
+  for(const k of keys){ const vals=base.map(b=>b[k]).filter(v=>v!==undefined), v=it[k], t=vals.find(x=>x!==null);
+    if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
+    if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
+    if(typeof t==="number"){ const n=+v; if(!isFinite(n)) continue; const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi*2); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
+    else if(typeof t==="string"){ const s=String(v).trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }
+    else if(typeof t==="boolean") out[k]=!!v;
+    else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
+      const ks=new Set(vals.flatMap(o=>o?Object.keys(o):[])), o={};
+      for(const [ek,ev] of Object.entries(v)){ if(!ks.has(ek)||!isFinite(+ev)) continue; const all=vals.map(x=>x&&x[ek]).filter(x=>x!=null&&isFinite(x)); const hi=Math.max(0,...all), lo=Math.min(0,...all);
+        o[ek]=Math.round(clamp(+ev,lo<0?lo*1.5:-Math.max(2,hi*.3),Math.max(hi*1.25,1))*10)/10; }
+      out[k]=o; }
+    else if(Array.isArray(t)&&Array.isArray(v)) out[k]=v.slice(0,12).filter(x=>typeof x!=="object").map(x=>typeof x==="string"?x.slice(0,120):x);
+  }
+  return out.name||!keys.has("name")? out : null;
+}
+const _wcBusy={}, _wcTries={}; let _wcTimer=null;
+function queueWorldFit(){ if(!sampleFn||!S||S.gameOver) return; clearTimeout(_wcTimer); _wcTimer=setTimeout(fitWorldCatalogs,700); }
+async function fitWorldCatalogs(only){
+  if(!sampleFn||!S) return; const key=worldKey(), want=Object.keys(WORLD_CATS).filter(k=>(only?only===k:!catalogFitted(k))&&!_wcBusy[k]&&(only||(_wcTries[k+key]||0)<2));
+  if(!want.length) return; const brief=worldBrief(), slot=S.slotId; let running=0; const q=want.slice();
+  const one=async kind=>{ const K=WORLD_CATS[kind], base=K.base(); _wcBusy[kind]=true; _wcTries[kind+key]=(_wcTries[kind+key]||0)+1; refreshWorldNotes();
+    try{
+      const r=await sampleFn.json(`You're writing one of the option lists for a restaurant management game, so that it belongs to the world below. The game's default list describes a restaurant in today's real world; replace it with the ${K.what} that would actually exist for this restaurant, in this place and time. In a fictional setting use that setting's own institutions, brands, people, slang and technology, and never real-world ones it doesn't have. In a real place and era use what was really there then. If the defaults already fit, keep the ones that fit and localise the rest.\n\nRULES\n- Return JSON: {"items":[...]} with ${K.n[0]} to ${K.n[1]} items.\n- Every item has exactly the fields the defaults use, with the same meaning. Numbers stay in the same units and on the same scale as the defaults: costs are what the game charges before its own price and era scaling, so a cheaper or dearer option is fine but don't convert currencies. Effects use only the effect keys the defaults use.\n- Spread the items across the same range of price and purpose as the defaults, cheap to expensive.\n${Object.entries(K.enums).map(([k,v])=>`- "${k}" must be one of: ${v.map(x=>JSON.stringify(x)).join(", ")}.`).join("\n")}${K.notes?`\n${K.notes}`:""}\n\nTHE DEFAULTS (format and scale only)\n${JSON.stringify(base.slice(0,14))}\n\n${brief}\n\n${STYLE_NOTE}`,{cache:false});
+      if(!S||S.slotId!==slot||worldKey()!==key) return;
+      const items=(r&&Array.isArray(r.items)?r.items:[]).map(it=>{ const x=railItem(it,base,K.enums); return x&&K.fix? K.fix(x,it) : x; }).filter(Boolean)
+        .filter((x,i,a)=>!x.name||a.findIndex(y=>y.name===x.name)===i).slice(0,K.n[1]);
+      if(items.length>=Math.min(K.n[0],base.length)){ S.worldCat=S.worldCat||{}; S.worldCat[kind]={key,items,at:S.monthIdx}; save(); }
+    }catch(e){ if(e&&(e.code==="not_granted"||e.code==="sampling_disabled")) sampleFn=null; }
+    finally{ delete _wcBusy[kind]; }
+  };
+  /* three at a time; re-render once at the end so a page isn't redrawn under someone's cursor more than needed */
+  await new Promise(done=>{ const next=()=>{ if(!q.length&&!running) return done(); while(running<3&&q.length){ running++; one(q.shift()).finally(()=>{ running--; next(); }); } }; next(); });
+  if(S&&S.slotId===slot){ const y=window.scrollY, a=document.activeElement; if(!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))){ render(); window.scrollTo(0,y); } else refreshWorldNotes(); }
+}
+/* a small line under each world-written list: what's happening, and a way to rewrite it */
+function worldNote(kind){ if(!sampleFn) return ""; const busy=_wcBusy[kind], ok=catalogFitted(kind);
+  return `<p class="note wcnote" data-wcnote="${kind}" style="margin:6px 0 0">${worldNoteText(kind)}</p>`; }
+function worldNoteText(kind){ return _wcBusy[kind]? `<span class="spin"></span>Writing these for this world…` : catalogFitted(kind)? `Written for this world. <button class="help" data-refit="${kind}" style="cursor:pointer">Rewrite</button>` : `<button class="help" data-refit="${kind}" style="cursor:pointer">Write these for this world</button>`; }
+function refreshWorldNotes(){ document.querySelectorAll("[data-wcnote]").forEach(p=>p.innerHTML=worldNoteText(p.dataset.wcnote)); }
+document.addEventListener("click",e=>{ const b=e.target.closest&&e.target.closest("[data-refit]"); if(!b||!S) return; const k=b.dataset.refit; if(S.worldCat) delete S.worldCat[k]; fitWorldCatalogs(k); });
+
 const TRAIN_CATALOG=[
   {name:"Food safety audit and refresher",role:null,cost:1800,months:1,eff:{health:14,brigade:2},blurb:"A consultant walks the kitchen with your logs, retrains everyone on the spot and leaves you a list."},
   {name:"Stage abroad for the sous chef",role:"sous",cost:9000,months:2,away:true,eff:{skill:12,loyalty:6,creativity:4},blurb:"Two months in a serious kitchen abroad. You pay their salary and flights while they're gone."},
@@ -7116,6 +7180,9 @@ const TRAIN_CATALOG=[
   {name:"Steps of service for the floor",role:null,cost:3000,months:1,eff:{crewFloor:8,fohTrain:3},blurb:"Greeting, pacing, clearing and upselling drilled with every server and busser until it's habit."},
   {name:"Dish pit and porter safety course",role:null,cost:1500,months:1,eff:{crewSupport:6,health:4},blurb:"Chemical handling, machine care and lifting, so the back of house stops losing people to strains and burns."}
 ];
+worldCat("training",{base:()=>TRAIN_CATALOG,what:"staff training programmes (courses, coaching, apprenticeships, drills, outside instructors)",n:[6,12],
+  enums:{role:[null].concat(Object.keys(ROLES))},notes:'- "role" is null for a whole-team programme, or the one role it trains. "away":true only when that person leaves service for it. "monthly" is a running cost while it lasts; leave it out otherwise.\n- Effect keys: health = health score, brigade = brigade technique, fohTrain = floor training, crewKitchen/crewFloor/crewSupport = hourly crews, creativity/coherence = menu, skill/loyalty = the named person, morale = everyone.'});
+
 /* ============ UNIFORMS AND STAFF POLICIES ============
    Both are measured against what's normal for this kind of place, so a save that never chose either plays exactly as before.
    Costs are per person on payroll: salaried team, office and every hourly crew member. */
@@ -7582,6 +7649,7 @@ function render(){
     growth:[growthHTML,()=>{ wireGrowth(); wireGrowthExtra(); }],heat:[heatHTML,wireHeat],office:[officeHTML,()=>{ wireOffice(); wireRewind(); wireExpansions(); wireIntl(); }],log:[logHTML,()=>{}]}[view]||[dashHTML,wireDash];
   app.innerHTML=P[0]();
   P[1]();
+  queueWorldFit();
   app.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>{ view=b.dataset.goto; render(); window.scrollTo(0,0); });
 }
 
@@ -9792,8 +9860,8 @@ function teamHTML(){
       ${localCredHTML()}
       <div class="panel"><div class="hd"><h3>Training programmes</h3></div><div class="bd">
         ${S.training.length?`<div style="margin-bottom:10px">${S.training.map(t=>`<div class="kv"><span>${esc(t.name)}${t.memberId?`<span class="note"> · ${esc((S.team.find(x=>x.id===t.memberId)||{}).name||"")}</span>`:""}</span><span class="n">${t.left<=1?`finishes when ${MONTHS[S.calMonth]} closes`:`${t.left} of ${t.months} mo left`}</span></div>`).join("")}</div>`:""}
-        <p class="note" style="margin:0 0 8px">Credential exams (ACF, CMS, WSET, AHLEI, ServSafe) are on each person's card above, matched to what they already hold.</p>
-        ${TRAIN_CATALOG.concat(S.trainOffers).map((p,i)=>{const isAI=i>=TRAIN_CATALOG.length; if(!p.memberId&&trainingContradicts(p)) return "";
+        <p class="note" style="margin:0 0 8px">Credential exams are on each person's card above, matched to what they already hold.</p>${worldNote("training")}
+        ${wcList("training").concat(S.trainOffers).map((p,i)=>{const isAI=i>=wcList("training").length; if(!p.memberId&&trainingContradicts(p)) return "";
           const who=p.memberId&&S.team.find(t=>t.id===p.memberId), m=p.memberId?(who&&!who.away?who:null):p.role&&S.team.find(t=>t.role===p.role&&!t.away), needs=(p.memberId||p.role)&&!m;
           const fx=Object.entries(p.eff||{}).filter(([k,v])=>v).map(([k,v])=>`${({skill:"skill",loyalty:"loyalty",brigade:"brigade technique",fohTrain:"floor training",health:"health score",morale:"morale",creativity:"menu creativity",coherence:"menu coherence",crewKitchen:"kitchen crew skill",crewFloor:"floor crew skill",crewSupport:"dish & porter crew skill"})[k]||k} ${v>0?"+":""}${v}`).join(" · ");
           return `<div class="dial" style="padding:9px 0"><div class="lab"><b>${esc(p.name)}</b><span class="val">${money(p.cost)}${p.monthly?` + ${money(p.monthly)}/mo`:""}</span></div>
@@ -9865,7 +9933,7 @@ function wireTeam(){
   document.querySelectorAll("[data-hire]").forEach(b=>b.onclick=()=>{ const c=S.candidates.find(x=>x.id===b.dataset.hire); if(!c) return; const err=hire(c); if(err){ $("#hireOut").textContent=err; return; } keepY(); });
   document.querySelectorAll("[data-hdrop]").forEach(b=>b.onclick=()=>{ S.candidates=S.candidates.filter(x=>x.id!==b.dataset.hdrop); keepY(); });
   document.querySelectorAll("[data-enrol]").forEach(b=>b.onclick=()=>{
-    const k=b.dataset.enrol; const p=k[0]==="c"&&!k.startsWith("tr")?TRAIN_CATALOG[+k.slice(1)]:S.trainOffers.find(x=>x.id===k);
+    const k=b.dataset.enrol; const p=k[0]==="c"&&!k.startsWith("tr")?wcList("training")[+k.slice(1)]:S.trainOffers.find(x=>x.id===k);
     if(!p) return; const err=enrol(p); if(err){ $("#trainOut").textContent=err; return; }
     if(S.trainOffers.includes(p)) S.trainOffers=S.trainOffers.filter(x=>x!==p);
     keepY(); });
