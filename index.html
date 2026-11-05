@@ -7221,7 +7221,9 @@ worldCat("guides",{base:GUIDE_BASE,sample:GUIDE_BASE,what:"restaurant guides and
 /* rival restaurants, named the way this world names its places */
 worldCat("rivals",{base:()=>[{name:"Maison Okafor",tier:"high"},{name:"The Laurel Room",tier:"high"},{name:"Copper & Vine",tier:"mid"},{name:"Bistro Camille",tier:"mid"},{name:"The Lantern",tier:"mid"},{name:"Marco's Diner",tier:"low"},{name:"Ember Burger Co.",tier:"low"},{name:"The Orchard Café",tier:"low"}],
   what:"names of competing restaurants, cafés, canteens and stalls nearby",n:[9,18],enums:{tier:["low","mid","high"]},
-  notes:'- "tier" is where it sits in the market: low (cheap and quick), mid, high (expensive). Give at least three of each. Names only, as the sign over the door would read here.'});
+  notes:'- "tier" is where it sits in the market: low (cheap and quick), mid, high (expensive). Give at least three of each. Names only, as the sign over the door would read here.',after:()=>applyWorldRivals()});
+function applyWorldRivals(){ if(!S||(S.monthIdx||0)>1||!catalogFitted("rivals")||!Array.isArray(S.rivals)) return; const W=wcList("rivals"), names=new Set(W.map(r=>r.name));
+  for(const r of S.rivals){ if(names.has(r.name)) continue; const nm=worldRivalName(); if(nm) r.name=nm; } }
 function worldRivalName(){ if(!catalogFitted("rivals")) return null; const t=locTier(S.locations[0]), taken=new Set((S.rivals||[]).map(r=>r.name).concat(S.locations.map(x=>x.name),[S.bizName]));
   const all=wcList("rivals").filter(r=>!taken.has(r.name)), same=all.filter(r=>r.tier===t); const p=same.length?same:all; return p.length?pick(p).name:null; }
 /* the starting menu: same slots and maths, dishes this world would cook. Applied once, before the first month's trading */
@@ -10059,7 +10061,7 @@ function rivalsHTML(){
   const rv=ensureRivals(); if(!rv.length) return "";
   return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Your competitive set</h3></div><div class="bd">`+
     rv.map(r=>`<div class="kv"><span>${esc(r.name)}<span class="note"> · chef ${esc(r.chef)}${r.price&&!r.closed?` · prices ${r.price<S.dials.price*.97?"below":r.price>S.dials.price*1.03?"above":"about the same as"} yours`:""}${r.closed?" · closed":r.opened!=null&&S.monthIdx-r.opened<14?` · opened ${Math.max(1,S.monthIdx-r.opened)} mo ago, still finding its feet`:""}</span></span><span class="n">${r.closed?"—":`quality ${Math.round(r.q)} · buzz ${Math.round(r.buzz)}`}</span></div>`).join("")+
-    `<p class="note" style="margin:8px 0 0">Rivals who cook better than you make guide recognition harder to win. ${locTier(S.locations[0])==="high"?"At this level they compete for talent, press, hosts and the same guides, rarely on price.":"At this level they compete on price, location and whatever's going viral this week."}</p></div></div>`;
+    `<p class="note" style="margin:8px 0 0">Rivals who cook better than you make guide recognition harder to win. ${locTier(S.locations[0])==="high"?"At this level they compete for talent, press, hosts and the same guides, rarely on price.":"At this level they compete on price, location and whatever people are talking about this week."}</p>${worldNote("rivals")}</div></div>`;
 }
 
 /* ---- the awards that matter wherever the restaurant is, looked up by Claude ---- */
@@ -10088,7 +10090,7 @@ function pressHTML(){
   const monthsTo=(S.world.guideMonth-S.calMonth+12)%12;
   return `<div class="sec" style="padding-top:18px">
   <h2>Press &amp; the Guide</h2>
-  <p class="lede">Michelin inspectors book under ordinary names, pay for every meal and come back several times before anything changes. They judge five things on the plate: ingredients, technique, harmony, the chef's personality and consistency. ${S.world.guide?`The Guide is released every ${MONTHS[S.world.guideMonth]}${monthsTo?`; the next one is ${monthsTo} month${monthsTo>1?"s":""} away`:"; it comes out at the end of this month"}.`:"There's no Michelin Guide in this market. You can change that in the Office."}</p>
+  <p class="lede">${michelinAbsent()&&!S.world.guide?`Critics, inspectors and guests judge what's on the plate, how the room feels and how they're treated. Their verdicts move trade, and the ones that matter here are below.`:`Michelin inspectors book under ordinary names, pay for every meal and come back several times before anything changes. They judge five things on the plate: ingredients, technique, harmony, the chef's personality and consistency. ${S.world.guide?`The Guide is released every ${MONTHS[S.world.guideMonth]}${monthsTo?`; the next one is ${monthsTo} month${monthsTo>1?"s":""} away`:"; it comes out at the end of this month"}.`:"There's no Michelin Guide in this market. You can change that in the Office."}`}</p>
   ${exp("rivals")?rivalsHTML():""}
   ${localGuidesHTML()}
   ${S.locations.map(l=>{const P=l.press; const cyc=P.inspections.filter(i=>i.m>S.monthIdx-12).length;
@@ -10110,7 +10112,7 @@ function pressHTML(){
       </div></div>
       <div class="panel"><div class="hd"><h3>What an inspector would taste</h3></div><div class="bd">${critBars(l.lastCrit,"Your chef's honest read of last month. Inspectors see roughly this, give or take a bad night, averaged over their visits. Uneven cooking is marked down.")}</div></div>
     </div>
-    <div class="panel"><div class="hd"><h3>Reviews</h3></div><div class="bd tight">
+    <div class="panel"><div class="hd"><h3>Reviews</h3></div><div class="bd tight">${worldNote("critics")}
       ${P.reviews.length?P.reviews.map(r=>`<div class="entry ${r.stars>=2?"ev-good":r.stars===1?"ev-warn":"ev-bad"}"><div class="when">${esc(r.when)} · ${esc(r.src)}</div>
         <p><b>${esc(r.verdict||CRITIC_WORDS[r.stars])}</b>${r.stars?` <span class="stars small">${"★".repeat(r.stars)}</span>`:""}</p>
         ${r.text?`<p class="rv">${esc(String(r.text).replace(/^#+[^\n]*\n+/,"").replace(/[*_#]{1,3}/g,""))}</p>`:sampleFn?`<p class="note">The review is still being written… <button class="btn sm sec" data-rvwrite="${r.id}" data-rvloc="${l.id}">Read it now</button></p>`:`<p class="note">${esc(offlineReview(r,l))}</p>`}</div>`).join("")
