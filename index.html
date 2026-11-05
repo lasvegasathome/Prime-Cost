@@ -1151,7 +1151,7 @@ function rollEvents(S,R){
     const cash0=S.cash, detail=chosen.apply(S);
     // the stock events' bills are written in today's dollars; a business in another era or a cheaper economy pays its own prices
     const ps=priceScale(); if(ps!==1&&S.cash!==cash0) S.cash=cash0+(S.cash-cash0)*ps;
-    for(const l of S.locations){ l.rep=clamp(l.rep,3,99); l.awareness=clamp(l.awareness,2,99); l.morale=clamp(l.morale,3,99); l.health=clamp(l.health,10,100); }
+    for(const l of S.locations){ l.rep=clamp(l.rep,3,99); l.awareness=clamp(l.awareness,2,99); l.morale=clamp(l.morale,3,99); l.health=clamp(l.health,10,100); if(l.skill!=null) l.skill=clamp(l.skill,8,98); }
     R.events.push({tone:chosen.tone,text,detail:typeof detail==="string"?detail:""});
   }
 }
