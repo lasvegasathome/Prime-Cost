@@ -1181,9 +1181,12 @@ async function loadRewinds(){
     const pickR=[a,b].filter(Boolean).sort((x,y)=>y.at-x.at)[0];
     if(pickR&&pickR.monthIdx<S.monthIdx&&pickR.state&&pickR.state.slotId===S.slotId) out.push(pickR);
   }
-  rewindList=out.sort((x,y)=>y.monthIdx-x.monthIdx);
+  rewindList=out.sort((x,y)=>y.monthIdx-x.monthIdx); rewindList.slot=S.slotId; rewindList.mi=S.monthIdx;
 }
+/* the list belongs to the game and month it was loaded in; another save, an import or a month run makes it stale */
+function rewindFresh(){ if(rewindList&&(!S||rewindList.slot!==S.slotId||rewindList.mi!==S.monthIdx)) rewindList=null; return rewindList; }
 function rewindHTML(){
+  rewindFresh();
   return `<div class="panel" style="margin-top:14px"><div class="hd"><h3>Rewind</h3></div><div class="bd">
     <p class="note" style="margin:0 0 8px">Go back to the start of one of your last three months, exactly as it was before you ran it. Everything after that point is undone.</p>
     ${rewindList==null?`<button class="btn sm sec" id="rwLoad">Show rewind points</button>`:rewindList.length?rewindList.map(r=>`<div class="kv"><span>Start of ${esc(r.label)}<span class="note"> · cash ${money(r.state.cash)}</span></span><span class="n"><button class="btn sm sec" data-rw="${r.monthIdx}">Rewind</button></span></div>`).join(""):`<p class="note" style="margin:0">No rewind points yet. One is saved each time you run a month.</p>`}
@@ -1193,7 +1196,7 @@ function wireRewind(){
   const b=$("#rwLoad"); if(b) b.onclick=async()=>{ b.disabled=true; b.textContent="Loading…"; await loadRewinds(); keepY(); };
   document.querySelectorAll("[data-rw]").forEach(x=>x.onclick=()=>{
     if(!x.dataset.armed){ x.dataset.armed="1"; x.textContent="Tap again to rewind"; return; }
-    const r=(rewindList||[]).find(q=>q.monthIdx===+x.dataset.rw); if(!r) return;
+    const r=(rewindFresh()||[]).find(q=>q.monthIdx===+x.dataset.rw); if(!r){ keepY(); return; }
     const cur=S.slotId; S=hydrate(JSON.parse(JSON.stringify(r.state))); S.slotId=cur;
     logIt("warn",`Rewound to the start of ${r.label}.`); rewindList=null; pendingResult=null; view="dash"; save(); render(); window.scrollTo(0,0); });
 }
