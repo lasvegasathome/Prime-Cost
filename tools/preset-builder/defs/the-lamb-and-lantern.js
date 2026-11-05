@@ -24,7 +24,7 @@ module.exports={
         {p:.05,tone:"warn",text:"The pub company put the price of your best-selling lager up 6% on the tied price list.",fx:[{op:"drinkmargin",mult:.95,why:"tied price rise"}]}]},
   features:[{name:"The horseshoe bar",pitch:"A Victorian island bar with etched glass and brass.",prestige:3},{name:"The garden",pitch:"A walled beer garden under the plane tree.",prestige:2}],
   team:[{role:"chef",name:"Priya Natarajan",skill:60,years:9,trait:"steady",loyalty:70,ambition:50,salary:36000,bio:"Runs a two-person kitchen and a Sunday roast for two hundred, and wants to cook something of her own."},
-        {role:"maitre",name:"Declan Walsh",skill:62,years:14,trait:"connected",salary:34000,bio:"Bar manager. Keeps the cask lines clean and knows every brewer on the Beer Mile."}],
+        {role:"maitre",name:"Declan Walsh",skill:62,years:14,trait:"connected",salary:34000,bio:"Bar manager. Keeps the cask lines clean and drinks with half the brewers on the Beer Mile."}],
   dials:{price:1,quality:"standard",staffing:"full",marketing:500,draw:3000},
   menu:{format:"carte",coherence:82,identity:"A London pub's food: roasts, pies, fish and chips and bar snacks, behind a lot of beer.",dishes:[
     {name:"Sunday roast beef",course:"main",desc:"Roast sirloin, Yorkshire pudding, roast potatoes, greens and gravy.",cats:{meat:.6,produce:.3,pantry:.1},grade:2,technique:2.5,presentation:2.5,creativity:25,cost:6.8,price:26,signature:true},
