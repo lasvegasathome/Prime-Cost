@@ -23,25 +23,25 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#14160F; --panel:#1C1F16; --panel2:#262A1D; --ink:#E9EBE0; --ink2:#B4BAA6;
-  --muted:#9AA088; --rule:#31351F; --rule2:#434830;
+  --muted:#A6AC94; --rule:#31351F; --rule2:#434830;
   --accent:#D97078; --accent-soft:#3A2023;
-  --good:#84BA91; --good-soft:#1E2C21; --warn:#D6A951; --warn-soft:#2E2715; --bad:#D97078;
+  --good:#84BA91; --good-soft:#1E2C21; --warn:#D6A951; --warn-soft:#2E2715; --bad:#E2858C;
   --shadow:0 1px 0 rgba(0,0,0,.35);
 }}
 :root[data-theme="dark"]{
   --paper:#14160F; --panel:#1C1F16; --panel2:#262A1D; --ink:#E9EBE0; --ink2:#B4BAA6;
-  --muted:#9AA088; --rule:#31351F; --rule2:#434830;
+  --muted:#A6AC94; --rule:#31351F; --rule2:#434830;
   --accent:#D97078; --accent-soft:#3A2023;
-  --good:#84BA91; --good-soft:#1E2C21; --warn:#D6A951; --warn-soft:#2E2715; --bad:#D97078;
+  --good:#84BA91; --good-soft:#1E2C21; --warn:#D6A951; --warn-soft:#2E2715; --bad:#E2858C;
   --shadow:0 1px 0 rgba(0,0,0,.35);
 }
 /* a restaurant's own colours: the accent drives buttons and highlights, the base tints the page lightly so text stays readable */
 :root[data-brand]{--accent:var(--b-accent);--accent-soft:color-mix(in srgb,var(--b-accent) 16%,#F7F8F3);
   --paper:color-mix(in srgb,var(--b-base) 9%,#ECEEE7);--panel:color-mix(in srgb,var(--b-base) 5%,#F7F8F3);--panel2:color-mix(in srgb,var(--b-base) 8%,#E3E6DC);--rule:color-mix(in srgb,var(--b-base) 14%,#D2D6C7)}
 @media (prefers-color-scheme:dark){:root[data-brand]:not([data-theme="light"]){--accent:var(--b-accent-dk,color-mix(in srgb,var(--b-accent) 72%,#fff));--accent-soft:color-mix(in srgb,var(--b-accent) 24%,#1C1F16);
-  --paper:color-mix(in srgb,var(--b-base) 10%,#14160F);--panel:color-mix(in srgb,var(--b-base) 8%,#1C1F16);--panel2:color-mix(in srgb,var(--b-base) 13%,#262A1D);--rule:color-mix(in srgb,var(--b-base) 18%,#31351F)}}
+  --paper:color-mix(in srgb,var(--b-base) 7%,#14160F);--panel:color-mix(in srgb,var(--b-base) 6%,#1C1F16);--panel2:color-mix(in srgb,var(--b-base) 8%,#262A1D);--rule:color-mix(in srgb,var(--b-base) 18%,#31351F)}}
 :root[data-brand][data-theme="dark"]{--accent:var(--b-accent-dk,color-mix(in srgb,var(--b-accent) 72%,#fff));--accent-soft:color-mix(in srgb,var(--b-accent) 24%,#1C1F16);
-  --paper:color-mix(in srgb,var(--b-base) 10%,#14160F);--panel:color-mix(in srgb,var(--b-base) 8%,#1C1F16);--panel2:color-mix(in srgb,var(--b-base) 13%,#262A1D);--rule:color-mix(in srgb,var(--b-base) 18%,#31351F)}
+  --paper:color-mix(in srgb,var(--b-base) 7%,#14160F);--panel:color-mix(in srgb,var(--b-base) 6%,#1C1F16);--panel2:color-mix(in srgb,var(--b-base) 8%,#262A1D);--rule:color-mix(in srgb,var(--b-base) 18%,#31351F)}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .blogo{height:34px;width:auto;max-width:92px;object-fit:contain;flex:none;border-radius:4px}
 .blogo.solo{height:42px;max-width:230px}
@@ -353,6 +353,7 @@ body{height:auto;min-height:100%}
 .seg button:focus-visible,.tab:focus-visible{outline-offset:-3px}
 .panel>.hd h3[tabindex]:focus{outline:0}
 .why{display:inline-block;font-size:11.5px;color:var(--bad);margin:0 8px 0 6px;vertical-align:middle}
+.why.saynear{display:block;margin:6px 0 0;font-size:12.5px}
 #helpTip{display:block;margin:4px 0 2px;max-width:46ch;padding:7px 10px;background:var(--panel);border:1px solid var(--rule2);border-left:3px solid var(--accent);border-radius:var(--r);font-size:12.5px;font-weight:400;line-height:1.45;color:var(--ink);text-align:left;white-space:normal}
 .help{position:relative;color:var(--ink2)}.help::before{content:"";position:absolute;inset:-10px -8px}
 nav.jump{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--hdr,56px) + 40px);z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:7px 16px;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--rule)}
@@ -373,7 +374,8 @@ nav.jump a:hover{color:var(--ink);border-color:var(--ink2)}
 @media (forced-colors:active){
   .meter{border:1px solid CanvasText;background:Canvas}
   .meter i{forced-color-adjust:none;background:CanvasText!important}
-  .seg button[aria-pressed="true"],.choice[aria-pressed="true"],.tab[aria-selected="true"]{outline:3px solid Highlight;outline-offset:-3px}
+  .seg button[aria-pressed="true"],.choice[aria-pressed="true"]{outline:3px solid Highlight;outline-offset:-3px}
+  .tab{border-bottom-color:Canvas}.tab[aria-selected="true"]{border-bottom:3px solid Highlight}
   svg.vchart,svg.spark{forced-color-adjust:none;background:#fff;color:#000}
   .pill,.vital,.btn,#runFab,nav.jump a{border:1px solid ButtonText}
   li.lg>i,.legend i,.bswatch,.tab .dot,.tab .dnum{forced-color-adjust:none}
@@ -7114,7 +7116,7 @@ function secondLookNote(changes){
 function auditHTML(data){ return data&&data._audit&&data._audit.length? `<div class="note" style="margin-top:8px"><b>After a second look:</b> ${data._audit.map(esc).join(" ")}</div>` : ""; }
 async function claudeJSON(rules,extra,outEl,what,busy){
   if(!sampleFn){ if(outEl) outEl.textContent="This needs Claude, which this view can't reach."; return null; }
-  if(outEl) outEl.innerHTML=`<p class="note" style="margin:0">${esc(busy||"Working…")}</p>`;
+  if(outEl){ if(!outEl.hasAttribute("aria-live")) outEl.setAttribute("aria-live","polite"); outEl.innerHTML=`<p class="note" style="margin:0">${esc(busy||"Working…")}</p>`; }
   try{ const r=await sampleFn.json(`${rules}\n\n${STYLE_NOTE}${ctxBlock()}${extra||""}`,{cache:false}); return await secondLook(r,what||"a result",outEl); }
   catch(e){ if(outEl) outEl.textContent=sampleError(e,what); return null; }
 }
@@ -7517,6 +7519,7 @@ function warnStorageFull(){
   const text=synced? "This browser is out of room for saves. Your account still has the latest copy, but this browser's copy is falling behind. Delete old saved games to make room."
     : "This browser is out of room, and your last change was NOT saved. Delete old saved games, or export this one to a file, before you close the page.";
   try{ if(S) logIt("bad",text); }catch(e){}
+  try{ a11yToast("Out of room",text); }catch(e){}
   try{ alert(text); }catch(e){}
 }
 function writeSlot(s,{remote=true}={}){
@@ -7654,7 +7657,7 @@ function applyBrand(){ const r=document.documentElement, b=brandOf();
   if(b&&b.accent){ r.setAttribute("data-brand",""); const base=b.base||b.accent;
     /* the accent is also text and button colour, so it's nudged darker (light mode) or lighter (dark mode) until it reads at 4.6:1 on the tinted panels */
     r.style.setProperty("--b-accent",readableOn(b.accent,[mixHex(base,"#ECEEE7",.09),mixHex(base,"#E3E6DC",.08)],"#000"));
-    r.style.setProperty("--b-accent-dk",readableOn(mixHex(b.accent,"#ffffff",.72),[mixHex(base,"#262A1D",.13),mixHex(base,"#1C1F16",.08)],"#fff"));
+    r.style.setProperty("--b-accent-dk",readableOn(mixHex(b.accent,"#ffffff",.72),[mixHex(base,"#262A1D",.08),mixHex(base,"#1C1F16",.06)],"#fff"));
     r.style.setProperty("--b-base",base); }
   else { r.removeAttribute("data-brand"); r.style.removeProperty("--b-accent"); r.style.removeProperty("--b-accent-dk"); r.style.removeProperty("--b-base"); } }
 function hexRGB(h){ h=String(h).replace("#",""); if(h.length===3) h=h.replace(/./g,"$&$&"); return [0,2,4].map(i=>parseInt(h.substr(i,2),16)||0); }
@@ -7679,12 +7682,12 @@ function wireBrand(){ const e=$("#brandEdit"); if(!e) return;
   e.onclick=()=>{ brandEditing=!brandEditing; keepY(); };
   const set=(k,v)=>{ S.brand=Object.assign({},brandOf()||{}); if(v==null) delete S.brand[k]; else S.brand[k]=v; save(); keepY(); };
   const f=$("#brandFile"); if(f) f.onchange=()=>{ const file=f.files&&f.files[0]; if(!file) return;
-    if(file.size>8e6){ alert("That image is over 8 MB. Try a smaller one."); return; }
+    if(file.size>8e6){ sayNear(f.closest("label")||f,"That image is over 8 MB. Try a smaller one."); return; }
     const rd=new FileReader(); rd.onload=()=>{ const img=new Image(); img.onload=()=>{
         const k=Math.min(1,320/Math.max(img.naturalWidth||320,img.naturalHeight||320)), w=Math.max(1,Math.round((img.naturalWidth||320)*k)), h=Math.max(1,Math.round((img.naturalHeight||320)*k));
         const c=document.createElement("canvas"); c.width=w; c.height=h; c.getContext("2d").drawImage(img,0,0,w,h);
         let url=c.toDataURL("image/png"); if(url.length>400000) url=c.toDataURL("image/webp",.9); set("logo",url); };
-      img.onerror=()=>alert("That file couldn't be read as an image."); img.src=rd.result; }; rd.readAsDataURL(file); };
+      img.onerror=()=>sayNear(f.closest("label")||f,"That file couldn't be read as an image."); img.src=rd.result; }; rd.readAsDataURL(file); };
   const nl=$("#brandNoLogo"); if(nl) nl.onclick=()=>set("logo",null);
   const pl=$("#brandPlate"); if(pl) pl.onchange=()=>set("plate",pl.checked?true:null);
   const sn=$("#brandShowName"); if(sn) sn.onchange=()=>set("hideName",sn.checked?null:true);
@@ -8209,11 +8212,11 @@ function wireCommonSetup(){
   const sm=$("#startMonth"); if(sm) sm.onchange=()=>{setupCfg.startMonth=+sm.value;};
   wireSaves();
   const st=$("#start"); if(st) st.onclick=()=>{
-    if(!setupCfg.bizName.trim()){ alert("Name the restaurant first."); return; }
-    if(!setupCfg.custom && setupCfg.traits.length!==2){ alert("Choose exactly two circumstances."); return; }
+    if(!setupCfg.bizName.trim()){ sayNear(st,"Name the restaurant first."); return; }
+    if(!setupCfg.custom && setupCfg.traits.length!==2){ sayNear(st,"Choose exactly two circumstances."); return; }
     const costs=openingCosts(setupCfg);
     const capital=setupCfg.savings+setupCfg.loan+setupCfg.investor+(setupCfg.traits.includes("silent")?60000:0);
-    if(capital-costs.total<0){ alert("You can't cover the opening costs. Raise more capital or cut the build."); return; }
+    if(capital-costs.total<0){ sayNear(st,"You can't cover the opening costs. Raise more capital or cut the build."); return; }
     S=newGame(setupCfg);
     if(setupCfg.spec&&setupCfg.spec.opening)
       S.log.unshift({when:`${MONTHS[S.calMonth]} Y1`,tone:"warn",text:setupCfg.spec.opening});
@@ -10311,6 +10314,13 @@ function a11yScan(root){
   root.querySelectorAll("button[disabled][data-short]").forEach(b=>{ if(b.dataset.why||/short|needs|not enough/i.test(a11yText(b))) return; b.dataset.why="1";
     const n=document.createElement("span"); n.className="why"; n.id="why-"+Math.random().toString(36).slice(2,8); n.textContent=b.dataset.short; b.setAttribute("aria-describedby",n.id); b.insertAdjacentElement("afterend",n); });
 }
+// an error goes next to the control that caused it, and screen readers hear it straight away
+function sayNear(el,text){ if(!el||!el.parentNode){ a11yToast("",text); return; }
+  let n=el.nextElementSibling; if(!n||!n.classList.contains("saynear")){ n=document.createElement("div"); n.className="why saynear"; n.setAttribute("role","alert"); el.insertAdjacentElement("afterend",n); }
+  n.textContent=text; }
+function a11yToast(title,text){ let t=document.getElementById("auditToast"); if(!t){ t=document.createElement("div"); t.id="auditToast"; document.body.appendChild(t); }
+  t.setAttribute("role","status"); t.innerHTML=`${title?`<b>${esc(title)}</b>`:""}<div>${esc(text)}</div>`; t.className="show";
+  clearTimeout(a11yToast._t); a11yToast._t=setTimeout(()=>{ t.className=""; },14000); t.onclick=()=>{ t.className=""; }; }
 /* the game's "Tap again" confirmation: the first press arms the button and says what happens, the second does it, and it disarms itself after a few seconds */
 function tapAgain(b,label,what){
   if(b.dataset.armed) return true;
