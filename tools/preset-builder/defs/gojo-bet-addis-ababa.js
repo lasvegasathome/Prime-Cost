@@ -23,7 +23,7 @@ module.exports={
         {p:.08,tone:"good",text:"A tour company added your show to its Addis itinerary.",fx:[{op:"mod",kind:"demand",label:"Tour groups",value:.06,months:6}]}]},
   features:[{name:"The stage",pitch:"A band and dancers every night, a dozen regions' songs.",prestige:5},{name:"The coffee ceremony corner",pitch:"Beans roasted, ground and brewed in a jebena at the table.",prestige:3}],
   team:[{role:"chef",name:"Tsehay Bekele",skill:74,years:20,trait:"mentor",loyalty:80,ambition:30,salary:3200,bio:"Runs the mitads and the wot pots, and trains every new cook on her mother's berbere."},
-        {role:"maitre",name:"Dawit Alemu",skill:66,years:9,trait:"showman",salary:3000,bio:"Manages the floor and the stage, and keeps the tour guides who bring full coaches coming back."}],
+        {role:"maitre",name:"Dawit Alemu",skill:66,years:9,trait:"showman",salary:3000,bio:"Manages the floor, the stage and the tour guides."}],
   mods:[{label:"Nightly band and dancers",kind:"fixed",value:1600},{label:"Show draw",kind:"awareness",value:1}],
   dials:{price:1,quality:"good",staffing:"full",marketing:300,draw:1500},
   menu:{format:"carte",coherence:90,identity:"Ethiopian dishes on injera, shared from one platter: wots, tibs, kitfo and the fasting dishes.",dishes:[

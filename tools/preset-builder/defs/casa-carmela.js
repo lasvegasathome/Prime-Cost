@@ -20,7 +20,7 @@ module.exports={
         {p:.08,tone:"warn",text:"A tour operator wants twelve tables every Saturday at a discount, with paella at 8pm.",fx:[]},
         {p:.05,tone:"bad",text:"A supply of orange-tree wood fell through and the fire room ran on a lesser wood for a week.",fx:[{op:"rep",delta:-2}]}]},
   features:[{name:"The wood-fire room",pitch:"Paellas cooking over orange-tree wood, in view.",prestige:5},{name:"Azulejos and family photographs",pitch:"A century of the family on the walls.",prestige:3}],
-  team:[{role:"chef",name:"Vicent Llorens",skill:82,years:28,trait:"perfectionist",loyalty:90,ambition:20,salary:42000,bio:"Has tended the fires here since he was a teenager, and judges a paella by the sound its socarrat makes."},
+  team:[{role:"chef",name:"Vicent Llorens",skill:82,years:28,trait:"perfectionist",loyalty:90,ambition:20,salary:42000,bio:"Has tended the fires here since he was a teenager. Judges a paella by the sound the socarrat makes."},
         {role:"maitre",name:"Amparo Sanchis",skill:70,years:19,trait:"steady",salary:36000,bio:"Takes the paella orders with the bookings and remembers which families want their rabbit cut small."}],
   dials:{price:1,quality:"good",staffing:"full",marketing:900,draw:5000},
   tipPolicy:"service",

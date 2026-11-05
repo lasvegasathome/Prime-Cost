@@ -17,7 +17,7 @@ module.exports={
   hours:{days:[true,true,true,true,true,true,true],svc:{breakfast:false,lunch:false,dinner:true,late:false}},
   setting:{name:"Ladypool Road, Sparkbrook",desc:"A long road of sweet shops, sari shops and the last of the balti houses, in a mostly Pakistani and Kashmiri neighbourhood south of the city centre.",
     traffic:.9,seg:{locals:14,regulars:10,occasion:4,tourists:-4,business:-8},crime:48,
-    ev:[{p:.7,m:[2],tone:"warn",text:"During Ramadan half the kitchen is fasting, and the tables fill only after iftar.",fx:[{op:"mod",kind:"labor",label:"Ramadan shifts",value:.04,months:1},{op:"mod",kind:"demand",label:"Late nights",value:.05,months:1}]},
+    ev:[{p:.7,m:[2],tone:"warn",text:"During Ramadan, with half the kitchen fasting, the tables fill only after iftar.",fx:[{op:"mod",kind:"labor",label:"Ramadan shifts",value:.04,months:1},{op:"mod",kind:"demand",label:"Late nights",value:.05,months:1}]},
         {p:.7,m:[3],tone:"good",text:"Eid brought families in for the long tables three nights running.",fx:[{op:"mod",kind:"demand",label:"Eid",value:.1,months:1}]},
         {p:.1,tone:"warn",text:"An environmental health officer is due for a re-inspection; a 3 on the door is costing you.",fx:[{op:"health",locIndex:0,delta:-3}]},
         {p:.06,tone:"good",text:"A local food writer did a piece on the surviving balti houses and put Al-Noor's karahi on the front.",fx:[{op:"awareness",delta:6},{op:"rep",delta:2}]},
