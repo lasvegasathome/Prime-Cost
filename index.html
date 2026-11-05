@@ -415,7 +415,7 @@ const TRAITS={
   silent:{name:"A silent partner who isn't",blurb:"Sixty thousand dollars and a phone that rings every quarter asking about distributions.",tag:"+$60,000  −25% equity  pressure"},
   usedkit:{name:"The kitchen came with the space",blurb:"Every piece of it works, though on any given day something's waiting on a repair.",tag:"−$48,000 capex  poor equipment"},
   pg:{name:"You signed personally for everything",blurb:"The bank's comfortable with the loan because your house is behind it.",tag:"−2pp loan rate  failure is personal"},
-  health:{name:"The space failed its last two inspections",blurb:"The county still has the address flagged for repeat inspections.",tag:"low health score  frequent inspections"},
+  health:{name:"The space failed its last two inspections",blurb:"The inspectors still have the address flagged for repeat visits.",tag:"low health score  frequent inspections"},
   neighbour:{name:"The chef next door hates you",blurb:"He was here first, he's got regulars, and he's decided you're a problem.",tag:"+competition  rival events"}
 };
 const PROGRAMS={
@@ -1022,11 +1022,12 @@ const EVENT_POOL=[
   {id:"walkin",w:6,tone:"bad",when:S=>S.locations.some(l=>l.equip<55),
    text:S=>`The walk-in cooler at ${pick(S.locations).name} failed overnight. You threw out everything in it and paid a refrigeration tech to come at 6am.`,
    apply:S=>{const l=pick(S.locations); S.cash-=rnd(4200,11000); const w=ensureKit(l).find(p=>p.type==="refrig"); if(w){ w.broken=false; w.cond=clamp(w.cond+30,0,92); } l.equip=kitCondition(l); return "equipment";}},
-  {id:"inspect",w:7,tone:"warn",
-   text:S=>`Unannounced health inspection at ${pick(S.locations).name}.`,
-   apply:S=>{const l=pick(S.locations);
-     if(l.health<62){ l.rep-=rnd(5,12); S.cash-=rnd(900,3400); return "You were written up, which is a matter of public record."; }
-     l.rep+=rnd(1,3); return "Clean. They took a photo of the certificate and left.";}},
+  // who comes, what they're called and how often is the world's own (see the "inspectors" catalogue); the scoring is the engine's
+  {id:"inspect",get w(){ return 7*clamp(+insp("health").freq||1,.3,2); },tone:"warn",
+   text:S=>{ _inspLoc=pick(S.locations); return placeIn(insp("health").visit,_inspLoc.name); },
+   apply:S=>{const l=_inspLoc||pick(S.locations), I=insp("health"); _inspLoc=null;
+     if(l.health<62){ l.rep-=rnd(5,12); S.cash-=rnd(900,3400); return I.fail; }
+     l.rep+=rnd(1,3); return I.pass;}},
   {id:"beefspike",w:6,tone:"bad",
    text:()=>`Protein prices spiked. Your distributor's price sheet went up across the board and it isn't coming back down this quarter.`,
    apply:S=>{for(const l of S.locations){l.tempFood=rnd(.018,.042); l.tempFoodLeft=Math.round(rnd(3,7));} return "food cost";}},
@@ -2218,7 +2219,7 @@ function previewEffect(e){
       const ks=K.f==="money"?moneyScale():1, v=clamp(Number(e.value)||0,K.lo*ks,K.hi*ks);
       return `${K.name.toLowerCase()} ${fmtModValue(e.kind,K.f==="money"?Math.round(v):v)}${Number(e.months)>0?` for ${Math.round(e.months)} mo`:", permanent"}`; }
     case "rep":case "awareness":case "morale":case "skill":case "equip":case "health":{
-      const n={rep:"reputation",awareness:"awareness",morale:"morale",skill:"kitchen skill",equip:"equipment",health:"health score"}[e.op];
+      const n={rep:"reputation",awareness:"awareness",morale:"morale",skill:"kitchen skill",equip:"equipment",health:healthWord()}[e.op];
       const v=Math.round(Number(e.delta)||0); return `${n} ${v>0?"+":""}${v} (fades)`; }
     case "wage": return `wages ${Number(e.delta)<0?"down":"up"} ${pct(Math.abs(Number(e.delta)||0),0)}`;
     case "competition": return Number(e.mult)<1?"eases competition":"more competition";
@@ -4567,7 +4568,9 @@ function licenceQuote(type){
   }
   return {cost:Math.round(rnd(5000,20000)),months:Math.round(rnd(2,4)),note:"No quota here: fees, a lawyer, a background check and a public notice period."};
 }
-function gradeSystem(){ const t=placeText(); if(regionTags().has("nyc")) return "nyc"; if(/los angeles|hollywood|santa monica|pasadena|long beach/.test(t)) return "la"; return null; }
+// letter grades in the window: New York's since 2010, Los Angeles County's since 1998, and nowhere in a closed world
+function gradeSystem(){ if(S.world&&S.world.outside===false) return null; const t=placeText(), y=storyYear();
+  if(regionTags().has("nyc")) return y&&y<2010?null:"nyc"; if(/los angeles|hollywood|santa monica|pasadena|long beach/.test(t)) return y&&y<1998?null:"la"; return null; }
 function inspectionGrade(loc){
   const g=gradeSystem(); if(!g) return null;
   if(g==="nyc"){ const pts=Math.round((100-loc.health)*.55); return {sys:"NYC letter grade",grade:pts<=13?"A":pts<=27?"B":"C",detail:`${pts} violation points`}; }
@@ -5128,7 +5131,7 @@ function legalTick(R){
     R.events.push({tone:"bad",text:`A guest had an allergic reaction to something the server said was safe. Your insurer settled for ${money(c)} beyond the deductible, and the story got around.`}); }
   if(l.health<45&&Math.random()<.03){ const c=Math.round(rnd(10000,40000)); S.cash-=c; l.rep=clamp(l.rep-12,3,99); l.closedWeeks=(l.closedWeeks||0)+1;
     if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:"Outbreak traced to you",kind:"demand",value:-.15,left:4,loc:-1,src:"health"});
-    R.events.push({tone:"bad",text:`The health department traced a cluster of food poisoning cases to ${l.name}. You closed for a week to deep-clean, and it's in the news.`}); }
+    R.events.push({tone:"bad",text:`${ucf(insp("health").body)} traced a cluster of food poisoning cases to ${l.name}. You closed for a week to deep-clean, and it's in the news.`}); }
   const short=l.crewChurn? l.crewChurn.quits/Math.max(8,Object.values(crewOf(l)).reduce((a,c)=>a+c.n,0)) : 0;
   if(Math.random()<(.005+short*.03+((S.tipPolicy==="pool_all"&&(l.wagePremium||0)<0)?.02:0))*(officeOf("hr")?.5:1)){ const c=Math.round(rnd(8000,80000)); S.cash-=c;
     R.events.push({tone:"bad",text:`Former staff filed a wage claim over unpaid overtime and missed breaks. Settling it cost ${money(c)} in back pay and legal fees.`}); }
@@ -6239,10 +6242,10 @@ function kitEffects(loc){
 }
 /* critical kit: what a kitchen can't legally or practically run without */
 const KIT_REQUIRED={
-  suppression:{fire:true,warn:"Cooking under a hood without a UL 300 fire-suppression system is illegal. Your insurer, the hood-cleaning company or one of your own staff will report it, and the fire marshal will shut the cooking line as soon as the month runs: a large fine, a closed kitchen until a new system is installed and inspected, and no insurance cover if anything catches fire in the meantime."},
-  hood:{fire:true,warn:"A commercial cooking line without an exhaust hood breaks fire and building code outright. The fire marshal will close the line as soon as the month runs, with a large fine, and it stays closed until a new hood is installed and inspected."},
-  extinguisher:{fire:true,warn:"Class K and ABC extinguishers are required by code. The fire marshal will fine you when the month runs, and a fryer fire with nothing to hand is how kitchens burn down."},
-  sprinkler:{fire:true,warn:"Taking out the sprinklers violates the fire code for the building. Expect the fire marshal and a fine every month until they're back, and much more damage if a fire gets past the kitchen."},
+  suppression:{fire:true,warn:"Cooking under a hood without a proper fire-suppression system breaks the fire code. Your insurer, the hood-cleaning company or one of your own staff will report it, and the fire inspectors will shut the cooking line as soon as the month runs: a large fine, a closed kitchen until a new system is installed and inspected, and no insurance cover if anything catches fire in the meantime."},
+  hood:{fire:true,warn:"A commercial cooking line without an exhaust hood breaks fire and building code outright. The fire inspectors will close the line as soon as the month runs, with a large fine, and it stays closed until a new hood is installed and inspected."},
+  extinguisher:{fire:true,warn:"Extinguishers rated for fryer fires and for everything else are required by code. The fire inspectors will fine you when the month runs, and a fryer fire with nothing to hand is how kitchens burn down."},
+  sprinkler:{fire:true,warn:"Taking out the sprinklers violates the fire code for the building. Expect the fire inspectors and a fine every month until they're back, and much more damage if a fire gets past the kitchen."},
   range:{warn:"Without a range the line loses most of what it can cook: service slows badly and the menu falls apart until you replace it."},
   refrig:{warn:"Without refrigeration you can't hold food safely. The health score collapses, food is thrown out daily and an inspector will close you if they see it."},
   dish:{warn:"Without a dish machine everything is washed by hand: far more labour, slower turns and a falling health score."},
@@ -6262,18 +6265,18 @@ function kitMissing(loc){ const K=ensureKit(loc); return Object.keys(KIT_REQUIRE
 /* runs before the month's trade: the fire marshal comes the same month, so a shutdown costs this month's covers */
 function fireCompliance(loc,R){
   if(!exp("kitchen")) return; const miss=kitMissing(loc);
-  if(loc.fireOrders&&!miss.some(t=>t==="suppression"||t==="hood")){ loc.fireOrders=0; R.events.push({tone:"good",text:`The fire marshal re-inspected ${loc.name}, signed off the new equipment and lifted the order. The line is open again, and fire cover is back.`}); }
+  if(loc.fireOrders&&!miss.some(t=>t==="suppression"||t==="hood")){ loc.fireOrders=0; R.events.push({tone:"good",text:`${ucf(fireWho())} re-inspected ${loc.name}, signed off the new equipment and lifted the order. The line is open again, and fire cover is back.`}); }
   if(!miss.length) return;
   const vs=kitSize(loc), line=miss.filter(t=>t==="suppression"||t==="hood"), others=miss.filter(t=>!line.includes(t)&&KIT_REQUIRED[t].fire);
   if(line.length){ const n=(loc.fireOrders=(loc.fireOrders||0)+1), fine=Math.round(rnd(8000,25000)*vs*(n>1?1.5:1)/100)*100;
-    S.cash-=fine; loc.closedWeeks=Math.max(loc.closedWeeks||0,n>1?4.35:3.5); loc.closedWhy="on the fire marshal's order"; loc.health=clamp(loc.health-10,10,100); loc.rep=clamp(loc.rep-4,3,99);
+    S.cash-=fine; loc.closedWeeks=Math.max(loc.closedWeeks||0,n>1?4.35:3.5); loc.closedWhy=`on ${fireWho()}'s order`; loc.health=clamp(loc.health-10,10,100); loc.rep=clamp(loc.rep-4,3,99);
     const what=line.map(t=>t==="hood"?"no exhaust hood":"no fire-suppression system").join(" and ");
-    R.events.push({tone:"bad",text:n>1?`The fire marshal came back to ${loc.name}. Still ${what} over the line: fined ${money(fine)} and closed for the month. The order stands until compliant equipment is installed and inspected.`
-      :`The fire marshal arrived at ${loc.name} in the first week of the month on a report: ${what} over a working line. Fined ${money(fine)} and ordered the cooking line shut until compliant equipment is installed and inspected. Your insurer has suspended fire cover.`});
-    chronicle(`The fire marshal shut ${loc.name}'s cooking line: ${what}.`); }
+    R.events.push({tone:"bad",text:n>1?`${ucf(fireWho())} came back to ${loc.name}. Still ${what} over the line: fined ${money(fine)} and closed for the month. The order stands until compliant equipment is installed and inspected.`
+      :`${ucf(fireWho())} arrived at ${loc.name} in the first week of the month on a report: ${what} over a working line. Fined ${money(fine)} and ordered the cooking line shut until compliant equipment is installed and inspected. Your insurer has suspended fire cover.`});
+    chronicle(`${ucf(fireWho())} shut ${loc.name}'s cooking line: ${what}.`); }
   else loc.fireOrders=0;
   if(others.length){ const fine=Math.round(others.reduce((a,t)=>a+(t==="sprinkler"?rnd(3000,12000)*vs:rnd(1000,4000)),0)/100)*100; S.cash-=fine; loc.health=clamp(loc.health-3*others.length,10,100);
-    R.events.push({tone:"bad",text:`The fire marshal wrote up ${loc.name}: ${others.map(t=>t==="sprinkler"?"the sprinkler system has been removed":"no fire extinguishers").join(" and ")}. Fined ${money(fine)}, and they'll be back next month.`}); }
+    R.events.push({tone:"bad",text:`${ucf(fireWho())} wrote up ${loc.name}: ${others.map(t=>t==="sprinkler"?"the sprinkler system has been removed":"no fire extinguishers").join(" and ")}. Fined ${money(fine)}, and they'll be back next month.`}); }
 }
 function kitMonthly(loc){ let pay=0; for(const p of ensureKit(loc)){ if(p.own==="lease"&&p.leaseLeft>0) pay+=p.price*1.2/36; if(p.own==="rent") pay+=p.price*.06; } return Math.round(pay); }
 function kitServiceCost(loc){ return S.kitService? Math.round(ensureKit(loc).reduce((a,p)=>a+p.price,0)*.005) : 0; }
@@ -6318,9 +6321,9 @@ function kitTick(loc,R,realCovers){
   const legacySup=K.some(p=>p.type==="suppression"&&p.tier===0), noK=!K.some(p=>p.type==="extinguisher"&&p.tier>=1);
   if(Math.random()<1/12){
     if(!hoodOver&&!supOver&&(legacySup||noK)){ const fine=Math.round(rnd(500,2500)); cost+=fine; loc.health=clamp(loc.health-2,10,100);
-      R.events.push({tone:"bad",text:`The fire marshal inspected ${loc.name} and wrote up ${legacySup?"the old dry-chemical suppression system, which doesn't meet UL 300":""}${legacySup&&noK?", and ":""}${noK?"the missing Class K extinguisher by the fryers":""}. Fined ${money(fine)}.`}); }
+      R.events.push({tone:"bad",text:`${ucf(fireWho())} inspected ${loc.name} and wrote up ${legacySup?"the old dry-chemical suppression system, which doesn't meet the current standard":""}${legacySup&&noK?", and ":""}${noK?"the missing fryer extinguisher":""}. Fined ${money(fine)}.`}); }
     if(hoodOver>0||supOver>0){ const fine=Math.round(rnd(1000,5000)); cost+=fine; loc.health=clamp(loc.health-4,10,100);
-      R.events.push({tone:"bad",text:`The fire marshal inspected ${loc.name}: ${hoodOver>0?`the hood is ${hoodOver} month${hoodOver>1?"s":""} overdue for cleaning`:""}${hoodOver>0&&supOver>0?" and ":""}${supOver>0?`the suppression system's inspection tag has lapsed`:""}. Fined ${money(fine)}; fix it or they'll close you.`});
+      R.events.push({tone:"bad",text:`${ucf(fireWho())} inspected ${loc.name}: ${hoodOver>0?`the hood is ${hoodOver} month${hoodOver>1?"s":""} overdue for cleaning`:""}${hoodOver>0&&supOver>0?" and ":""}${supOver>0?`the suppression system's inspection tag has lapsed`:""}. Fined ${money(fine)}; fix it or they'll close you.`});
       if(hoodOver>iv.m||supOver>3){ loc.closedWeeks=(loc.closedWeeks||0)+1; R.events.push({tone:"bad",text:`${loc.name} was ordered closed until the exhaust system passes. A week of lost service.`}); F.hoodLast=S.monthIdx; F.supLast=S.monthIdx; cost+=hoodCleanCost(loc)*2+supInspectCost(loc); } }
   }
   const fry=K.find(p=>p.type==="fryer");
@@ -6611,7 +6614,7 @@ function tickHighEnd(R){
     if(m&&e.loyalty){ m.loyalty=clamp(m.loyalty+e.loyalty,0,100); done.push(`loyalty +${e.loyalty}`); }
     if(e.brigade){ S.brigade=clamp(S.brigade+e.brigade,5,99); done.push(`brigade technique +${e.brigade}`); }
     if(e.fohTrain){ S.fohTrain=clamp(S.fohTrain+e.fohTrain,5,99); done.push(`floor training +${e.fohTrain}`); }
-    if(e.health){ for(const l of S.locations) l.health=clamp(l.health+e.health,10,100); done.push(`health score +${e.health}`); }
+    if(e.health){ for(const l of S.locations) l.health=clamp(l.health+e.health,10,100); done.push(`${healthWord()} +${e.health}`); }
     if(e.morale){ for(const l of S.locations) l.morale=clamp(l.morale+e.morale,3,99); done.push(`morale +${e.morale}`); }
     if(e.creativity){ S.menu.creBonus=clamp((S.menu.creBonus||0)+e.creativity,0,25); done.push(`menu creativity +${e.creativity}`); }
     if(e.coherence){ S.menu.coherence=clamp(S.menu.coherence+e.coherence,0,100); done.push(`menu coherence +${e.coherence}`); }
@@ -7212,6 +7215,23 @@ const TRAIN_CATALOG=[
 ];
 worldCat("training",{base:()=>TRAIN_CATALOG,what:"staff training programmes (courses, coaching, apprenticeships, drills, outside instructors)",n:[6,12],
   enums:{role:[null].concat(Object.keys(ROLES))},notes:'- "role" is null for a whole-team programme, or the one role it trains. "away":true only when that person leaves service for it. "monthly" is a running cost while it lasts; leave it out otherwise.\n- Effect keys: health = health score, brigade = brigade technique, fohTrain = floor training, crewKitchen/crewFloor/crewSupport = hourly crews, creativity/coherence = menu, skill/loyalty = the named person, morale = everyone.'});
+
+/* ---- who inspects: the health authority and the fire authority, in this world's own terms ----
+   The engine's health score, fines and fire-code timing are unchanged; this is who turns up, what they're called, what they say
+   and how often the health side comes unannounced. A closed world with no inspectors swaps in whoever plays that part. */
+const INSPECTORS=[
+  {role:"health",who:"the health inspector",body:"the health department",score:"health score",freq:1,visit:"Unannounced health inspection at {place}.",
+   pass:"Clean. They took a photo of the certificate and left.",fail:"You were written up, which is a matter of public record.",looks:"Temperature logs, hand-washing, pests, and how raw and cooked food are stored."},
+  {role:"fire",who:"the fire marshal",body:"the fire department",looks:"The hood and its cleaning record, the suppression system's tag, extinguishers and sprinklers."}
+];
+let _inspLoc=null;
+worldCat("inspectors",{base:()=>INSPECTORS,what:"authorities who inspect a restaurant here: one for hygiene and food safety, one for fire safety",n:[2,2],enums:{role:["health","fire"]},
+  notes:'- Exactly two items: role "health" and role "fire". Who comes, who sends them and what they look for, as this world has it (a district sanitation committee, a corporate compliance unit, a city prefecture\'s inspector). A closed world with no inspectors gets whoever plays that part.\n- "who" is how a sentence refers to them mid-sentence, lowercase, with its article ("the fire marshal"). "body" is who sends them, the same way. "score" is what the kitchen\'s hygiene rating is called here, lowercase. "visit" is one sentence announcing an unannounced visit, with {place} where the restaurant\'s name goes. "pass" and "fail" are one sentence each on how it went. "freq" is how often they come compared with an ordinary modern city (1), from 0.3 to 2.',
+  fix:x=>{ for(const k of ["who","body","score"]) if(x[k]) x[k]=x[k].replace(/^The /,"the ").replace(/[.]+$/,""); if(x.freq!=null) x.freq=clamp(x.freq,.3,2); return x; }});
+function insp(role){ const d=INSPECTORS.find(x=>x.role===role)||{}, w=wcList("inspectors").find(x=>x.role===role)||{}; return Object.assign({},d,w); }
+function fireWho(){ return insp("fire").who||"the fire marshal"; }
+function healthWord(){ return insp("health").score||"health score"; }
+function placeIn(t,name){ t=String(t||""); return t.includes("{place}")? t.split("{place}").join(name) : t; }
 
 /* ============ UNIFORMS AND STAFF POLICIES ============
    Both are measured against what's normal for this kind of place, so a save that never chose either plays exactly as before.
@@ -8263,7 +8283,7 @@ if(!window.__nfWired){ window.__nfWired=true;
 function meter(v,label,invert,hi,lo){
   hi=hi==null?66:hi; lo=lo==null?33:lo;
   const c = invert ? (v>hi?"b":v>lo?"w":"g") : (v>hi?"g":v>lo?"w":"b");
-  const help=METER_HELP[label];
+  const help=METER_HELP[label]||(label===ucf(healthWord())?METER_HELP["Health score"]:null);
   const lab=help?`<details style="display:inline"><summary style="cursor:pointer;display:inline;list-style:none">${label} <span class="note">ⓘ</span></summary><div class="note" style="margin:4px 0 2px;font-weight:400">${help}</div></details>`:label;
   return `<div style="margin-bottom:9px"><div class="kv" style="border:0;padding:0 0 3px;align-items:flex-start"><span>${lab}</span><span class="n">${Math.round(v)}</span></div><div class="meter ${c}"><i style="width:${clamp(v,0,100)}%"></i></div></div>`;
 }
@@ -8306,7 +8326,7 @@ function dashHTML(){
           <div class="bd">
             ${l.stars||l.bib||l.selected||l.green?`<div class="accolade" style="font-size:18px;margin-bottom:8px">${l.stars?`${starGlyphs(l.stars)} <span>${l.stars} Michelin star${l.stars>1?"s":""}</span>`:l.bib?"<span>Bib Gourmand</span>":l.selected?"<span>In the Guide</span>":""}${l.green?' <span class="pill g">Green Star</span>':""}</div>`:""}
             ${meter(l.rep,"Reputation")}${meter(l.awareness,"Awareness")}${meter(ambience(l),"Ambience")}${meter(l.morale,"Staff morale")}
-            ${meter(l.skill,"Kitchen skill")}${meter(l.equip,"Equipment condition")}${meter(l.health,"Health score")}
+            ${meter(l.skill,"Kitchen skill")}${meter(l.equip,"Equipment condition")}${meter(l.health,ucf(healthWord()))}
             <div class="kv"><span>Rent + CAM${modSum("rent",S.locations.indexOf(l))?' <span class="note">(after standing effects)</span>':""}</span><span class="n">${money((l.rent+l.cam)*(1+modSum("rent",S.locations.indexOf(l))))}/mo</span></div>
             <div class="kv"><span>Seats</span><span class="n">${l.seats||"—"}</span></div>
           </div></div>`).join("")}
