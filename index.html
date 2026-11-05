@@ -6785,7 +6785,7 @@ function rememberCall(input,out){
 }
 function wrapSample(s){
   const LIMIT=60000;
-  const prep=input=>usdify(prep0(input));
+  const prep=input=>langPrep(input,()=>usdify(prep0(input)));   // langPrep: the player's interface language (see INTERFACE LANGUAGE)
   const prep0=input=>{
     if(typeof input!=="string") return input;
     const base=input.length>LIMIT? input.slice(0,LIMIT) : input;
@@ -10196,6 +10196,288 @@ function gameOverHTML(){
 function wireGameOver(){
   $("#restart").onclick=resetGame;
 }
+
+/* ------------------------------------------------------------
+   INTERFACE LANGUAGE
+   The interface is built as English template literals. With a language set, this module
+   translates the rendered DOM in place: a MutationObserver on the page picks up new text
+   nodes and the placeholder/title/aria-label attributes, cached translations go in at once,
+   and the rest are sent to Claude in batches (JSON in, JSON out). Numbers are swapped for
+   {0}, {1}… so "Cash $12,400" and "Cash $9,100" share one translation. Each node keeps its
+   English original, so switching language or back to English maps it back.
+   Everything it needs lives here; the only hooks elsewhere are langPrep() in wrapSample.
+   ------------------------------------------------------------ */
+const LANGS=[["en","English","English"],["zh-Hans","简体中文","Simplified Chinese"],["zh-Hant","繁體中文","Traditional Chinese"],
+  ["es","Español","Spanish"],["fr","Français","French"],["de","Deutsch","German"],["ja","日本語","Japanese"],["ko","한국어","Korean"],
+  ["pt","Português","Portuguese"],["ru","Русский","Russian"],["ar","العربية","Arabic"],["it","Italiano","Italian"]];
+/* BCP 47 codes for languages typed into "Other", so <html lang>, direction and fonts follow */
+const LANG_CODES={hebrew:"he",persian:"fa",farsi:"fa",urdu:"ur",hindi:"hi",bengali:"bn",thai:"th",vietnamese:"vi",dutch:"nl",polish:"pl",
+  turkish:"tr",indonesian:"id",malay:"ms",greek:"el",ukrainian:"uk",swedish:"sv",norwegian:"no",danish:"da",finnish:"fi",czech:"cs",
+  hungarian:"hu",romanian:"ro",bulgarian:"bg",serbian:"sr",croatian:"hr",tagalog:"tl",filipino:"fil",swahili:"sw",cantonese:"zh-Hant",
+  amharic:"am",tamil:"ta",marathi:"mr",nepali:"ne",catalan:"ca",georgian:"ka",armenian:"hy",yiddish:"yi",pashto:"ps",kurdish:"ku"};
+const LANG_RTL=new Set(["ar","he","fa","ur","yi","ps"]);
+/* one Noto family per script, added after the game's own fonts so Latin text keeps its look */
+const LANG_FONT={"zh-Hans":"Noto Sans SC","zh-Hant":"Noto Sans TC",ja:"Noto Sans JP",ko:"Noto Sans KR",ar:"Noto Sans Arabic",fa:"Noto Sans Arabic",
+  ur:"Noto Sans Arabic",ps:"Noto Sans Arabic",ku:"Noto Sans Arabic",he:"Noto Sans Hebrew",yi:"Noto Sans Hebrew",hi:"Noto Sans Devanagari",mr:"Noto Sans Devanagari",
+  ne:"Noto Sans Devanagari",bn:"Noto Sans Bengali",th:"Noto Sans Thai",ta:"Noto Sans Tamil",am:"Noto Sans Ethiopic",ka:"Noto Sans Georgian",
+  hy:"Noto Sans Armenian",ru:"Noto Sans",uk:"Noto Sans",bg:"Noto Sans",sr:"Noto Sans",el:"Noto Sans",vi:"Noto Sans"};
+const L10N={cur:"en",info:null,dict:{},pending:new Set(),inflight:new Set(),failed:new Map(),busy:0,blocked:false,
+  tn:new WeakMap(),an:new WeakMap(),obs:null,timer:0,saveTimer:0,names:null,namesAt:0};
+const LANG_TAG="UI TRANSLATION TASK";
+const LANG_SKIP="script,style,noscript,textarea,code,pre,kbd,samp,[data-notr],[contenteditable=\"true\"],#exportBox,#importText";
+const LANG_ATTRS=["placeholder","title","aria-label"];
+const LANG_NUM=/\d+(?:[.,:]\d+)*/g;
+
+function langInfo(v){
+  v=String(v||"en");
+  const k=LANGS.find(l=>l[0]===v);
+  if(k) return {v,code:v,name:k[2],native:k[1]};
+  if(v.startsWith("x:")){ const name=v.slice(2).trim().slice(0,40)||"English"; const code=LANG_CODES[name.toLowerCase()]||"und"; return {v,code,name,native:name}; }
+  return {v:"en",code:"en",name:"English",native:"English"};
+}
+function langViewer(){ try{ return localStorage.getItem("pc_lang"); }catch(e){ return null; } }
+function langWanted(){ return langViewer()||(S&&S.lang)||"en"; }
+/* the prep step every prompt passes through: Claude writes for the player in their language */
+function langPrep(input,full){
+  if(typeof input==="string"&&input.startsWith(LANG_TAG)) return input;
+  const out=full();
+  if(typeof out!=="string"||L10N.cur==="en") return out;
+  const n=L10N.info.name;
+  return out+`\n\nLANGUAGE: the player reads this game in ${n}. Write every piece of player-facing text you return (descriptions, notes, dialogue, headlines, reviews, advice and the names of anything new) in ${n}. Keep JSON keys, enum values, field names, ids and any fixed codes exactly as specified, in English. When you refer back to something that already has a name above, copy that name exactly as written.`;
+}
+
+/* ---- the dictionary, one per language, kept in this browser ---- */
+function langLoadDict(v){ try{ const r=localStorage.getItem("pc_i18n_"+v); const d=r?JSON.parse(r):{}; return d&&typeof d==="object"?d:{}; }catch(e){ return {}; } }
+function langSaveDict(){
+  clearTimeout(L10N.saveTimer);
+  L10N.saveTimer=setTimeout(()=>{ if(L10N.cur==="en") return; const key="pc_i18n_"+L10N.cur;
+    let d=L10N.dict, keys=Object.keys(d);
+    for(let tries=0;tries<4;tries++){
+      try{ localStorage.setItem(key,JSON.stringify(d)); return; }
+      catch(e){ keys=keys.slice(Math.floor(keys.length/3)); const nd={}; keys.forEach(k=>nd[k]=L10N.dict[k]); d=nd; }   // short on room: drop the oldest third
+    }
+  },600);
+}
+
+/* ---- deciding what to translate ---- */
+function langNames(){
+  if(L10N.names&&Date.now()-L10N.namesAt<3000) return L10N.names;
+  const s=new Set();
+  const add=x=>{ if(typeof x==="string"&&x.trim()) s.add(x.trim().replace(/\s+/g," ")); };
+  try{ if(S){ add(S.bizName); add(S.ownerName);
+    (S.locations||[]).forEach(l=>{ add(l.name); ((l.menu&&l.menu.dishes)||[]).forEach(d=>add(d&&d.name)); });
+    ((S.menu&&S.menu.dishes)||[]).forEach(d=>add(d&&d.name)); (S.team||[]).forEach(p=>add(p&&p.name)); (S.office||[]).forEach(p=>add(p&&p.name)); } }catch(e){}
+  try{ add(setupCfg.bizName); add(setupCfg.ownerName); }catch(e){}
+  L10N.names=s; L10N.namesAt=Date.now(); return s;
+}
+/* split a string into its translatable template and the numbers it carries */
+function langSplit(s){
+  const m=s.match(/^(\s*)([\s\S]*?)(\s*)$/); const core=m[2].replace(/\s+/g," ");
+  if(!core) return null;
+  const letters=core.match(/\p{L}/gu); if(!letters||letters.length<2) return null;   // numbers, money and symbols stay as they are
+  if(core.length>4000) return null;
+  if(!/[A-Za-z]/.test(core)) return null;    // no English in it: already in another script
+  if(langNames().has(core)) return null;     // the player's own names
+  const nums=[]; const tpl=core.replace(LANG_NUM,x=>{ nums.push(x); return "{"+(nums.length-1)+"}"; });
+  return {lead:m[1]?" ":"",trail:m[3]?" ":"",tpl,nums};
+}
+function langFill(t,nums){ return t.replace(/\{(\d+)\}/g,(x,i)=>nums[+i]!=null?nums[+i]:x); }
+/* the translation for an English string, or null (and queued) if it isn't known yet */
+function langLookup(orig){
+  const p=langSplit(orig); if(!p) return undefined;
+  const t=L10N.dict[p.tpl];
+  if(t==null){ if(!L10N.inflight.has(p.tpl)&&(L10N.failed.get(p.tpl)||0)<2) L10N.pending.add(p.tpl); return null; }
+  return p.lead+langFill(t,p.nums)+p.trail;
+}
+
+/* ---- applying it to the page ---- */
+function langText(n){
+  const d=n.data; let rec=L10N.tn.get(n);
+  if(!rec||(d!==rec.t&&d!==rec.o)){ rec={o:d,t:null}; L10N.tn.set(n,rec); }
+  if(L10N.cur==="en"){ if(d!==rec.o) n.data=rec.o; rec.t=null; return; }
+  const t=langLookup(rec.o);
+  if(t){ rec.t=t; if(d!==t) n.data=t; }
+  else if(d!==rec.o){ n.data=rec.o; rec.t=null; }   // left in English until its translation arrives
+}
+function langAttrs(el){
+  let m=L10N.an.get(el);
+  for(const a of LANG_ATTRS){
+    if(!el.hasAttribute(a)) continue;
+    const v=el.getAttribute(a); if(!m){ m={}; L10N.an.set(el,m); }
+    let rec=m[a]; if(!rec||(v!==rec.t&&v!==rec.o)) rec=m[a]={o:v,t:null};
+    const t=L10N.cur==="en"?null:langLookup(rec.o);
+    const want=t||rec.o; rec.t=t||null; if(v!==want) el.setAttribute(a,want);
+  }
+}
+function langSkipped(node){ const el=node.nodeType===1?node:node.parentElement; return !el||!!el.closest(LANG_SKIP); }
+function langWalk(root){
+  if(!root) return;
+  if(root.nodeType===3){ if(!langSkipped(root)) langText(root); return; }
+  if(root.nodeType!==1||langSkipped(root)) return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,{acceptNode:n=>n.nodeType===3?NodeFilter.FILTER_ACCEPT:(n.matches(LANG_SKIP)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_SKIP)});
+  let n; while((n=w.nextNode())) langText(n);
+  const els=[root,...root.querySelectorAll("[placeholder],[title],[aria-label]")];
+  for(const el of els){ if(el.hasAttribute&&LANG_ATTRS.some(a=>el.hasAttribute(a))&&!el.closest("[data-notr],code,pre")) langAttrs(el); }
+}
+function langPass(){
+  if(L10N.obs) L10N.obs.takeRecords();
+  langWalk(document.body);
+  if(L10N.obs) L10N.obs.takeRecords();   // our own edits aren't news
+  langSchedule();
+}
+
+/* ---- asking Claude ---- */
+function langSchedule(){
+  langBusy();
+  if(!L10N.pending.size||L10N.cur==="en"||L10N.blocked) return;
+  clearTimeout(L10N.timer); L10N.timer=setTimeout(langFlush,250);
+}
+function langFlush(){
+  if(!sampleFn||L10N.cur==="en"||L10N.blocked) return langBusy();
+  while(L10N.pending.size&&L10N.busy<3){
+    const batch=[]; let chars=0;
+    for(const t of L10N.pending){ if(batch.length>=60||chars+t.length>6000&&batch.length) break; batch.push(t); chars+=t.length; }
+    batch.forEach(t=>{ L10N.pending.delete(t); L10N.inflight.add(t); });
+    langRequest(batch,L10N.cur);
+  }
+  langBusy();
+}
+async function langRequest(batch,lang){
+  L10N.busy++; langBusy();
+  const name=L10N.info.name;
+  const prompt=`${LANG_TAG}
+Translate each string from the English interface of a restaurant-management simulation game into ${name}. These are buttons, labels, headings, notes and messages: keep the meaning and the register, and keep short labels short. Use the restaurant trade's usual terms in ${name}.
+Keep every placeholder such as {0} or {1} exactly as written, each one exactly once, moving it wherever the grammar needs it. Keep symbols, arrows, punctuation marks and currency signs. Leave proper names of people, restaurants, brands and dishes as they are.
+Reply with ONLY JSON: {"t":["…"]} with one translation per input string, in the same order.
+
+STRINGS:
+${JSON.stringify(batch)}`;
+  let ok=false;
+  try{
+    const r=await sampleFn.json(prompt,{modelTier:"quick"});
+    const arr=Array.isArray(r)?r:r&&(r.t||r.translations||r.strings);
+    if(Array.isArray(arr)&&lang===L10N.cur){
+      batch.forEach((src,i)=>{
+        const t=arr[i];
+        const ph=s=>(s.match(/\{\d+\}/g)||[]).sort().join(",");
+        if(typeof t==="string"&&t.trim()&&ph(t)===ph(src)) L10N.dict[src]=t.trim();
+        else L10N.failed.set(src,(L10N.failed.get(src)||0)+1);
+      });
+      ok=true; langSaveDict();
+    }
+  }catch(e){
+    if(e&&(e.code==="not_granted"||e.code==="sampling_disabled")) L10N.blocked=true;
+  }
+  if(!ok) batch.forEach(src=>L10N.failed.set(src,(L10N.failed.get(src)||0)+1));
+  batch.forEach(src=>L10N.inflight.delete(src));
+  L10N.busy--;
+  if(lang===L10N.cur) langPass(); else langBusy();
+  if(L10N.pending.size&&!L10N.blocked) langSchedule();
+}
+function langBusy(){
+  let b=document.getElementById("pcLangBusy");
+  const on=L10N.cur!=="en"&&!!sampleFn&&!L10N.blocked&&(L10N.busy>0||L10N.pending.size>0);
+  if(!b){ if(!on) return; b=document.createElement("div"); b.id="pcLangBusy"; b.setAttribute("role","status"); b.textContent="Translating…"; document.body.appendChild(b); }
+  b.hidden=!on;
+}
+
+/* ---- switching ---- */
+function langApply(v){
+  const info=langInfo(v);
+  if(info.v===L10N.cur&&L10N.info) return;
+  /* everything back to English first, so the new language starts from the originals */
+  if(L10N.cur!=="en"){ L10N.cur="en"; langPass(); }
+  L10N.info=info; L10N.cur=info.v; L10N.pending.clear(); L10N.failed.clear(); L10N.blocked=false;
+  L10N.dict=info.v==="en"?{}:langLoadDict(info.v);
+  const h=document.documentElement;
+  h.lang=info.v==="en"?"en":info.code;
+  if(LANG_RTL.has(info.code)) h.dir="rtl"; else h.removeAttribute("dir");
+  const fam=LANG_FONT[info.code];
+  if(fam){
+    const id="pcFont-"+fam.replace(/\s+/g,"-");
+    if(!document.getElementById(id)){ const l=document.createElement("link"); l.id=id; l.rel="stylesheet"; l.href=`https://fonts.googleapis.com/css2?family=${fam.replace(/\s+/g,"+")}:wght@400;500;600;700&display=swap`; document.head.appendChild(l); }
+    h.style.setProperty("--sans",`"Archivo","${fam}",system-ui,-apple-system,"Segoe UI",sans-serif`);
+    h.style.setProperty("--serif",`"Instrument Serif","${fam}","Iowan Old Style",Georgia,serif`);
+    h.style.setProperty("--mono",`"IBM Plex Mono","${fam}",ui-monospace,Menlo,Consolas,monospace`);
+  }else ["--sans","--serif","--mono"].forEach(p=>h.style.removeProperty(p));
+  langPass();
+}
+function langSet(v){
+  v=langInfo(v).v;
+  try{ localStorage.setItem("pc_lang",v); }catch(e){}
+  if(S&&S.lang!==v){ S.lang=v; try{ save(); }catch(e){} }
+  langApply(v);
+  document.querySelectorAll("[data-pclang]").forEach(langPickerSync);
+}
+
+/* ---- the picker, on the setup screen and in the Office ---- */
+function langPickerEl(){
+  const box=document.createElement("div"); box.className="pclang"; box.setAttribute("data-pclang","");
+  const lab=document.createElement("label"); lab.textContent="Interface language"; lab.htmlFor="pcLangSel";
+  const sel=document.createElement("select"); sel.id="pcLangSel";
+  LANGS.forEach(([v,nat])=>{ const o=document.createElement("option"); o.value=v; o.textContent=nat; o.setAttribute("data-notr",""); o.lang=v; sel.appendChild(o); });
+  const oth=document.createElement("option"); oth.value="x:"; oth.textContent="Another language…"; sel.appendChild(oth);
+  const inp=document.createElement("input"); inp.type="text"; inp.maxLength=40; inp.placeholder="Which language? For example Dutch"; inp.className="pclang-x"; inp.setAttribute("aria-label","Language name");
+  const go=document.createElement("button"); go.type="button"; go.className="btn sm sec pclang-go"; go.textContent="Use it";
+  const note=document.createElement("span"); note.className="note pclang-n";
+  box.append(lab,sel,inp,go,note);
+  sel.onchange=()=>{ if(sel.value==="x:"){ inp.hidden=false; go.hidden=false; inp.focus(); } else langSet(sel.value); };
+  const useOther=()=>{ const t=inp.value.trim(); if(!t) return inp.focus();
+    const known=LANGS.find(l=>l[2].toLowerCase()===t.toLowerCase()||l[1]===t); langSet(known?known[0]:"x:"+t); };
+  go.onclick=useOther; inp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); useOther(); } };
+  langPickerSync(box);
+  return box;
+}
+function langPickerSync(box){
+  const sel=box.querySelector("select"), inp=box.querySelector(".pclang-x"), go=box.querySelector(".pclang-go"), note=box.querySelector(".pclang-n");
+  const v=L10N.cur, other=v.startsWith("x:");
+  sel.value=other?"x:":v; inp.hidden=!other; go.hidden=!other; if(other&&document.activeElement!==inp) inp.value=v.slice(2);
+  note.textContent=v==="en"?"":!sampleFn?"Translation needs Claude, which isn't available in this view, so new text stays in English.":"New text appears in English for a moment while it's translated.";
+}
+function langEnsurePicker(){
+  const app=document.getElementById("app"); if(!app) return;
+  let host=null, before=null;
+  const setup=app.querySelector(":scope > .setup");
+  if(setup){ host=setup; before=setup.querySelector(":scope > h1"); }
+  else if(S&&typeof view!=="undefined"&&view==="office"&&!S.gameOver){ const sec=app.querySelector(":scope > .sec"); if(sec){ host=sec; const l=sec.querySelector(":scope > .lede"); before=l?l.nextSibling:sec.firstChild; } }
+  if(!host||host.querySelector(":scope > [data-pclang]")) return;
+  const el=langPickerEl(); host.insertBefore(el,before||null); if(L10N.cur!=="en") langWalk(el);
+}
+
+/* ---- watching the page ---- */
+function langObserve(recs){
+  const want=langInfo(langWanted()).v;
+  if(S&&!S.lang&&langViewer()) S.lang=langInfo(langViewer()).v;   // a new or imported game takes this viewer's language as its default
+  if(want!==L10N.cur) langApply(want);          // a save with its own default was just loaded
+  if(L10N.cur!=="en") for(const r of recs){
+    if(r.type==="childList") r.addedNodes.forEach(n=>{ if(n.isConnected) langWalk(n); });
+    else if(r.type==="characterData"){ if(r.target.isConnected&&!langSkipped(r.target)) langText(r.target); }
+    else if(r.type==="attributes"){ const el=r.target; if(el.isConnected&&!el.closest("[data-notr],code,pre")) langAttrs(el); }
+  }
+  langEnsurePicker();
+  L10N.obs.takeRecords();
+  langSchedule();
+}
+(function langBoot(){
+  const st=document.createElement("style"); st.id="pcLangCss";
+  st.textContent=`.pclang{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 16px;font-size:13px}
+.pclang label{font-weight:600;color:var(--ink2)}
+.pclang select{width:auto;min-width:150px;max-width:100%}
+.pclang .pclang-x{width:auto;flex:1 1 180px;min-width:0;max-width:260px}
+.pclang .pclang-n{flex-basis:100%}
+.pclang .pclang-n:empty{display:none}
+#pcLangBusy{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));inset-inline-end:14px;z-index:300;background:var(--panel);color:var(--ink2);border:1px solid var(--rule2);border-radius:99px;padding:4px 12px;font-size:12px;box-shadow:var(--shadow);pointer-events:none}
+#pcLangBusy[hidden]{display:none}
+[dir="rtl"] .n,[dir="rtl"] td.n,[dir="rtl"] th.n{text-align:left}
+[dir="rtl"] .n{unicode-bidi:isolate}
+[dir="rtl"] input[type="number"]{direction:ltr;text-align:right}
+[dir="rtl"] .modal .sheet>.ft{justify-content:flex-start}`;
+  document.head.appendChild(st);
+  L10N.info=langInfo("en");
+  L10N.obs=new MutationObserver(langObserve);
+  L10N.obs.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:LANG_ATTRS});
+  const v=langInfo(langWanted()).v; if(v!=="en") langApply(v);
+})();
 
 /* ------------------------------------------------------------
    BOOT
