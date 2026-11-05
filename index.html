@@ -1639,7 +1639,7 @@ SERVICE MATH (last month, use these instead of guessing): ${(()=>{ const h=S.his
   return `${h.covers.toLocaleString()} guests served across ${seatsAll} seats, about ${tpn.toFixed(2)} turns a night (${tasting?"a tasting menu physically tops out around two seatings, 2.0 turns":`this concept tops out around ${C.maxTurns} turns`}); each guest actually spends about ${money(spend)} including drinks${tasting?` (the menu price alone is ${money(S.menu.tastingPrice||0)})`:""}; ${h.lost>0?`the room was fully booked and about ${Math.round(h.lost).toLocaleString()} more requests couldn't get a table. That is a waitlist: for a sold-out restaurant it is normal and a sign of demand, not a failure, a loss or a source of pressure. Don't make it a talking point unless the owner raises it or it's the subject of a deliberate decision about capacity or pricing, and never have any character (staff, press, partners, owners) describe it as strain, pressure, a burden or a reason the kitchen is stretched: a full book is the job going well.`:"the room had seats to spare."}`; })()}
 LEGAL EXPOSURE: ${Object.keys(RISKS).filter(k=>riskOf(k)>0||(S.riskOngoing||{})[k]).map(k=>`${RISKS[k].name} ${Math.round(riskOf(k))}${(S.riskOngoing||{})[k]?" (ongoing)":""}`).join("; ")||"none"}${S.i9Program?"; I-9 compliance programme in place":""}${heatDigest()}${commDigest()}${intlDigest()}${ghostDigest()}
 INSPECTORS: hygiene by ${insp("health").who} (${insp("health").body}), checking ${String(insp("health").looks||"").replace(/\.$/,"").toLowerCase()}; the kitchen's ${healthWord()} is the health meter. Fire safety by ${fireWho()}.
-KITCHEN: ${S.locations.map(l=>{ const k=ensureKit(l), iv=hoodInterval(l), ho=S.monthIdx-l.fire.hoodLast, so=S.monthIdx-l.fire.supLast; return `${l.name}: condition ${Math.round(kitCondition(l))}; `+k.map(p=>`${p.model}${p.broken?" (DOWN)":p.cond<45?" (worn)":""}`).join(", ")+`; hood cleaning ${ho>iv.m?`OVERDUE by ${ho-iv.m} mo`:"current"}, suppression ${so>6?"OVERDUE":"current"}${kitMissing(l).length?`; MISSING (sold or removed): ${kitMissing(l).map(t=>KIT[t].name.toLowerCase()).join(", ")}`:""}`; }).join(" | ")}
+KITCHEN: ${S.locations.map(l=>{ const k=ensureKit(l), iv=hoodInterval(l), ho=S.monthIdx-ensureFire(l).hoodLast, so=S.monthIdx-l.fire.supLast; return `${l.name}: condition ${Math.round(kitCondition(l))}; `+k.map(p=>`${p.model}${p.broken?" (DOWN)":p.cond<45?" (worn)":""}`).join(", ")+`; hood cleaning ${ho>iv.m?`OVERDUE by ${ho-iv.m} mo`:"current"}, suppression ${so>6?"OVERDUE":"current"}${kitMissing(l).length?`; MISSING (sold or removed): ${kitMissing(l).map(t=>KIT[t].name.toLowerCase()).join(", ")}`:""}`; }).join(" | ")}
 DISHES vs EQUIPMENT: ${S.locations.filter(l=>l.status==="open").map(l=>{ const c=enterLoc(l); try{ const D=(S.menu&&S.menu.dishes||[]).filter(d=>!d.off), b=D.filter(d=>dishKit(d,l).blocked.length), so=D.filter(d=>!dishKit(d,l).blocked.length&&dishKit(d,l).soft.length); return b.length||so.length? `${l.name}: `+b.map(d=>`${d.name} CAN'T BE MADE (no ${dishKit(d,l).blocked.map(needLabel).join(", no ")})`).concat(so.map(d=>`${d.name} compromised (no ${dishKit(d,l).soft.map(needLabel).join(", no ")})`)).join("; ") : ""; } finally { exitLoc(c); } }).filter(Boolean).join(" | ")||"every dish on the menu has the equipment it needs"}
 COMPETITIVE SET: ${(S.rivals||[]).filter(r=>!r.closed).map(r=>`${r.name} (chef ${r.chef}, quality ${Math.round(r.q)}, buzz ${Math.round(r.buzz)})`).join("; ")||"none tracked yet"}
 WHO EATS HERE: ${S.locations.map(l=>`${l.name}: `+Object.entries(segmentMix(l)).filter(([k,v])=>v>.01).map(([k,v])=>`${SEGMENTS[k].name.toLowerCase()} ${Math.round(v*100)}%`).join(", ")).join("; ")}
@@ -6275,6 +6275,8 @@ function ensureKit(loc){ if(Array.isArray(loc.kit)&&!loc.kitDedup) kitDedupe(loc
     add("smallwares",1); if(loc.kit.some(p=>KIT_GREASE.includes(p.type))) add("greasetrap",1); if(!C.truck&&loc.seats>0){ add("restroom",1); add("hvac",1); }
     if(S&&S.monthIdx>0){ S.corrections=S.corrections||[]; if(!(S.flags||{}).kitV3Note){ S.flags=S.flags||{}; S.flags.kitV3Note=1; S.corrections.push(`${when()}: the equipment records now list the grease trap, restrooms, dining-room HVAC and smallwares too. They were always there; nothing changed in the world.`); } } }
   if(Array.isArray(loc.kit)){ if(!loc.kitFireSplit){ const _c=enterLoc(loc); try{ kitSplitFire(loc); } finally { exitLoc(_c); } } return loc.kit; } const _c=enterLoc(loc); try{ return ensureKitInner(loc); } finally { exitLoc(_c); } }
+// the hood and suppression records; older or edited saves can have kit without them
+function ensureFire(loc){ return loc.fire||(loc.fire={hoodLast:S.monthIdx-1,supLast:S.monthIdx-2,hoodPlan:true,supPlan:true}); }
 function ensureKitInner(loc){
   if(Array.isArray(loc.kit)) return loc.kit;
   const C=CONCEPTS[S.concept]||{}, t=locTier(loc), perSeat=(C.equip||60000)/Math.max(20,C.seats||60);
@@ -6286,7 +6288,7 @@ function ensureKitInner(loc){
   for(const k of core.concat(opt)){ if(KIT[k].noTruck&&C.truck) continue; if(!kitFits(loc,k)&&!KIT[k].crit) continue; let tr=tier; while(tr>0&&!kitModel(k,tr)) tr--; while(tr<3&&!kitModel(k,tr)) tr++; if(!kitModel(k,tr)) continue;
     loc.kit.push(newPiece(loc,k,tr,"owned",clamp(base+Math.round(rnd(-10,8)),15,100))); }
   loc.kit.forEach(p=>{ p.warranty=0; });
-  loc.fire=loc.fire||{hoodLast:S.monthIdx-1,supLast:S.monthIdx-2,hoodPlan:true,supPlan:true};
+  ensureFire(loc);
   loc.kitFireSplit=true; kitSeedFoh(loc); kitSeedSeats(loc);
   return loc.kit;
 }
@@ -6360,7 +6362,7 @@ function hoodIntervalBase(loc){ const C=CONCEPTS[S.concept]||{};
 function hoodCleanCost(loc){ return Math.round(450*kitSize(loc)/10)*10; }
 function supInspectCost(loc){ return Math.round(350*Math.max(1,kitSize(loc)*.7)/10)*10; }
 function kitTick(loc,R,realCovers){
-  if(!exp("kitchen")){ ensureKit(loc); S.kitAutoRepair=true; loc.fire.hoodPlan=true; loc.fire.supPlan=true; }
+  if(!exp("kitchen")){ ensureKit(loc); S.kitAutoRepair=true; ensureFire(loc).hoodPlan=true; loc.fire.supPlan=true; }
   const K=ensureKit(loc), load=clamp((realCovers||0)/Math.max(300,(loc.seats||60)*30*1.2),.4,1.6); let cost=0;
   for(const p of K){ const T=kitDef(p);
     p.age=(p.age||0)+1; if(p.warranty>0) p.warranty--;
@@ -6382,7 +6384,7 @@ function kitTick(loc,R,realCovers){
   }
   // fire code: hood cleaning and suppression inspections
   // a kitchen with no hood has nothing to clean, and one with no suppression system has nothing to inspect
-  const F=loc.fire, iv=hoodInterval(loc), hasHood=K.some(p=>p.type==="hood"), hasSup=K.some(p=>p.type==="suppression"), greasy=K.some(p=>KIT_GREASE.includes(p.type));
+  const F=ensureFire(loc), iv=hoodInterval(loc), hasHood=K.some(p=>p.type==="hood"), hasSup=K.some(p=>p.type==="suppression"), greasy=K.some(p=>KIT_GREASE.includes(p.type));
   if(!hasHood) F.hoodLast=S.monthIdx; if(!hasSup) F.supLast=S.monthIdx;
   if(hasHood&&F.hoodPlan&&S.monthIdx-F.hoodLast>=iv.m){ F.hoodLast=S.monthIdx; cost+=hoodCleanCost(loc); }
   if(hasSup&&F.supPlan&&S.monthIdx-F.supLast>=6){ F.supLast=S.monthIdx; cost+=supInspectCost(loc); }
@@ -8662,7 +8664,7 @@ function monthChecklist(){
   for(const D of [S.decision].concat(S.deskQueue||[])) if(D&&D.choices) out.push({text:`"${D.title}" goes the default way if you don't choose: ${D.choices[D.choices.length-1].label.toLowerCase()}.`,go:"dash"});
   for(const l of S.locations){
     for(const p of ensureKit(l)) if(p.broken) out.push({text:`${l.name}: the ${p.model} is down and will stay down.`,go:"house"});
-    const iv=hoodInterval(l), ho=S.monthIdx-l.fire.hoodLast, so=S.monthIdx-l.fire.supLast;
+    const iv=hoodInterval(l), ho=S.monthIdx-ensureFire(l).hoodLast, so=S.monthIdx-l.fire.supLast;
     if(!l.fire.hoodPlan&&ho>=iv.m) out.push({text:`${l.name}: the hood is due for cleaning (every ${iv.m} month${iv.m>1?"s":""}). Overdue hoods raise fire risk and fines.`,go:"house"});
     if(!l.fire.supPlan&&so>=6) out.push({text:`${l.name}: the suppression system's inspection is due.`,go:"house"});
   }
@@ -9859,7 +9861,7 @@ function kitOptionsHTML(loc,type,replacing){
 }
 let kitGrpOpen={};
 function kitchenHTML(loc){
-  const K=ensureKit(loc), F=loc.fire, iv=hoodInterval(loc), ho=S.monthIdx-F.hoodLast, so=S.monthIdx-F.supLast;
+  const K=ensureKit(loc), F=ensureFire(loc), iv=hoodInterval(loc), ho=S.monthIdx-F.hoodLast, so=S.monthIdx-F.supLast;
   const issue=p=>p.broken||p.cond<45;
   const row=p=>{ const T=kitDef(p);
     const own=p.own==="lease"?`leased, ${p.leaseLeft} mo left at ${money(Math.round(p.price*1.2/36))}/mo`:p.own==="rent"?`rented, ${money(Math.round(p.price*.06))}/mo`:"owned";
@@ -9978,9 +9980,9 @@ function wireKitchen(){
   document.querySelectorAll("[data-kitdrop]").forEach(b=>b.onclick=()=>{ const [lid,pid]=b.dataset.kitdrop.split("|"), loc=locOf(lid), p=loc&&loc.kit.find(x=>x.id===pid);
     kitDropClick(b,loc,p,()=>keepY()); });
   document.querySelectorAll("[data-kitset]").forEach(c=>c.onchange=()=>{ const [k,lid]=c.dataset.kitset.split("|");
-    if(k==="service") S.kitService=c.checked; else if(k==="auto") S.kitAutoRepair=c.checked; else { const loc=locOf(lid); if(loc) loc.fire[k]=c.checked; } keepY(); });
-  document.querySelectorAll("[data-kitclean]").forEach(b=>b.onclick=()=>{ const loc=locOf(b.dataset.kitclean); if(!loc) return; const c=hoodCleanCost(loc); S.cash-=c; loc.fire.hoodLast=S.monthIdx; logIt("good",`The exhaust hood at ${loc.name} was cleaned to bare metal (${money(c)}). New sticker on the hood.`); keepY(); });
-  document.querySelectorAll("[data-kitinspect]").forEach(b=>b.onclick=()=>{ const loc=locOf(b.dataset.kitinspect); if(!loc) return; const c=supInspectCost(loc); S.cash-=c; loc.fire.supLast=S.monthIdx; logIt("good",`The suppression system at ${loc.name} was inspected and re-tagged (${money(c)}).`); keepY(); });
+    if(k==="service") S.kitService=c.checked; else if(k==="auto") S.kitAutoRepair=c.checked; else { const loc=locOf(lid); if(loc) ensureFire(loc)[k]=c.checked; } keepY(); });
+  document.querySelectorAll("[data-kitclean]").forEach(b=>b.onclick=()=>{ const loc=locOf(b.dataset.kitclean); if(!loc) return; const c=hoodCleanCost(loc); S.cash-=c; ensureFire(loc).hoodLast=S.monthIdx; logIt("good",`The exhaust hood at ${loc.name} was cleaned to bare metal (${money(c)}). New sticker on the hood.`); keepY(); });
+  document.querySelectorAll("[data-kitinspect]").forEach(b=>b.onclick=()=>{ const loc=locOf(b.dataset.kitinspect); if(!loc) return; const c=supInspectCost(loc); S.cash-=c; ensureFire(loc).supLast=S.monthIdx; logIt("good",`The suppression system at ${loc.name} was inspected and re-tagged (${money(c)}).`); keepY(); });
 }
 function wireHouse(){
   wireKitchen();
