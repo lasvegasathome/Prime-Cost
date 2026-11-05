@@ -1035,7 +1035,7 @@ const EVENT_POOL=[
    text:S=>`A food writer ate at ${pick(S.locations).name} unannounced and liked it.`,
    apply:S=>{const l=pick(S.locations); l.awareness=clamp(l.awareness+rnd(9,22),0,99); l.rep+=rnd(2,6); return "awareness";}},
   {id:"pan",w:5,tone:"bad",when:S=>S.locations.some(l=>l.rep<52),
-   text:S=>`A very thorough one-star review of ${pick(S.locations).name} is doing numbers locally.`,
+   text:S=>socialVideo()?`A very thorough one-star review of ${pick(S.locations).name} is doing numbers locally.`:`A long and very thorough bad write-up of ${pick(S.locations).name} is going round town.`,
    apply:S=>{const l=pick(S.locations); l.rep-=rnd(4,10); l.awareness=clamp(l.awareness+rnd(3,9),0,99); return "reputation";}},
   {id:"chefquit",w:5,tone:"bad",when:S=>S.locations.some(l=>l.morale<48),
    text:S=>{ const c=S.team.find(t=>t.role==="chef"); return c?`${c.name}, your chef, gave two weeks' notice. A competitor offered more and a title.`:`Your kitchen lead gave notice. A competitor offered more and a title.`; },
@@ -1054,7 +1054,7 @@ const EVENT_POOL=[
    text:S=>`The grease trap backed up at ${greaseWorst(S).name} on a Saturday. You closed at eight.`,
    apply:S=>{const l=greaseWorst(S); S.cash-=rnd(1800,6500); l.rep-=rnd(1,4); return "a lost service";}},
   {id:"viral",w:3,tone:"good",when:S=>S.locations.some(l=>l.rep>62),
-   text:S=>`A thirty-second video of one of your dishes has four hundred thousand views.`,
+   text:S=>socialVideo()?`A thirty-second video of one of your dishes has four hundred thousand views.`:`Word of one of your dishes has gone round the city, and strangers are coming in asking for it by name.`,
    apply:S=>{const l=pick(S.locations); l.awareness=clamp(l.awareness+rnd(18,34),0,99); return "a wave of strangers";}},
   {id:"theft",w:4,tone:"bad",when:S=>S.locations.some(l=>l.attention<50&&Math.random()<camRisk(l)),
    text:S=>`Your inventory counts at ${pick(S.locations).name} haven't reconciled for three months. Somebody's taking product out the back door.`,
@@ -6717,7 +6717,7 @@ function highEndDigest(){
   const sups=CAT_KEYS.map(k=>{const sp=supFor(k);return sp?`  - ${CATS[k].name}: ${sp.name} (quality ${sp.q}, price index ${sp.price.toFixed(2)}, wholesale market ×${commodityIdx(k).toFixed(2)}${contractFor(k)?`, contract locked at ×${contractFor(k).price.toFixed(2)} for ${contractFor(k).left} more months`:""}${(S.backups||{})[k]?`, backup ${((S.supplierPool.find(p=>p.id===S.backups[k]))||{}).name}`:""}, reliability ${Math.round(sp.reliability*100)}%, ${TERMS[sp.terms].name}, relationship ${Math.round(sp.relation)}${sp.green?", sustainable":""})`:"";}).join("\n");
   const team=S.team.map(m=>`  - ${ROLES[m.role].name}: ${m.name}, skill ${Math.round(m.skill)}, loyalty ${Math.round(m.loyalty)}, ${staffTrait(m)?staffTrait(m).name.toLowerCase()+", ":""}stress ${Math.round(m.stress||0)}, fame ${Math.round(m.fame||0)}, ${m.poach?`being courted by ${m.poach.from} at ${money(m.poach.salary)}, `:""}${Math.round(m.years||0)} yrs experience${certsOf(m).length?`, holds ${certsOf(m).map(k=>certInfo(k).name).join(", ")}`:""}, ${money(m.salary)}/yr${m.away?", AWAY training":""}${m.bio?` — ${m.bio}`:""}`).join("\n")||"  nobody salaried; the owner does it all";
   const rooms=S.locations.map(l=>`  - ${l.name}: ambience ${Math.round(ambience(l))}/100, ${l.seats} seats, front-of-house polish ${Math.round(l.foh)}/100; features: ${l.features.map(f=>f.name).join(", ")||"none beyond the original fit-out"}`).join("\n");
-  const press=S.locations.map(l=>`  - ${l.name}: ${Object.values(l.awards||{}).map(a=>`${a.guide}: ${a.name}`).join("; ")||"no other guide awards"}; ${l.stars?`${l.stars} Michelin star${l.stars>1?"s":""}`:"no stars"}${l.bib?", Bib Gourmand":""}${l.green?", Green Star":""}${l.selected&&!l.stars?", recommended in the Guide":""}; guest rating ${guestRating(l).toFixed(1)}/5; last critic review: ${l.press.reviews[0]?`${l.press.reviews[0].src}, ${CRITIC_WORDS[l.press.reviews[0].stars]} (${l.press.reviews[0].when})`:"none yet"}`).join("\n");
+  const press=S.locations.map(l=>`  - ${l.name}: ${Object.values(l.awards||{}).map(a=>`${a.guide}: ${a.name}`).join("; ")||"no other guide awards"}${l.stars?`; ${l.stars} Michelin star${l.stars>1?"s":""}`:S.world.guide?"; no stars":""}${l.bib?", Bib Gourmand":""}${l.green?", Green Star":""}${l.selected&&!l.stars?", recommended in the Guide":""}; guest rating ${guestRating(l).toFixed(1)}/5; last critic review: ${l.press.reviews[0]?`${l.press.reviews[0].src}, ${CRITIC_WORDS[l.press.reviews[0].stars]} (${l.press.reviews[0].when})`:"none yet"}`).join("\n");
   return `
 MENU (${S.menu.format==="tasting"?`tasting menu at ${money(S.menu.tastingPrice)} per guest${S.menu.pairing?`, wine pairing ${money(S.menu.pairingPrice)}`:""}`:S.menu.format==="buffet"?`all-you-can-eat buffet, ${SVCS.filter(v=>buffetOf()[v]>0).map(v=>`${SVC_NAMES[v].toLowerCase()} ${money(buffetOf()[v])}`).join(", ")}${buffetOf().kids>0?`, kids ${money(buffetOf().kids)}`:""}, about ${buffetOf().plates} plates a guest`:"à la carte"}; food spend per guest ${money1(ms.foodCheck*S.dials.price)}, plate cost ${money1(ms.plate)} = ${pct(ms.foodPct)} food cost; coherence ${Math.round(S.menu.coherence)}/100${S.menu.identity?`; identity: ${S.menu.identity}`:""}):
 ${dishes||"  (no dishes)"}${menuExtrasDigest()}
@@ -6892,7 +6892,7 @@ Reply with ONLY JSON:
  "prestige":0..10 (does this make the place a destination),
  "green":true|false,"equip":true|false (replaces the kitchen equipment)}`;
 
-const HIRE_RULES=`You are a hospitality headhunter inside a realistic restaurant simulation. Find candidates for the role the owner describes, for THIS restaurant, its city and its reputation. Skill is 0-100 (a solid professional is 55-65; someone from a starred kitchen 75-88; a true star 90+). Salary is annual dollars and must be realistic for the skill and the city; stars cost far more and want something beyond money. Loyalty is where they'd start (40-70). Ambition 0-100. Great candidates always have a catch. Give each candidate years of professional experience and the credentials they hold (certs), named exactly as in the list of credentials that exist here, and only ones plausible for their skill and history. Many good cooks hold none. Invent names; no real people.
+const HIRE_RULES=`You are a hospitality headhunter inside a realistic restaurant simulation. Find candidates for the role the owner describes, for THIS restaurant, its city and its reputation. Skill is 0-100 (a solid professional is 55-65; someone from one of the best kitchens here 75-88; a true star 90+). Salary is annual dollars and must be realistic for the skill and the city; stars cost far more and want something beyond money. Loyalty is where they'd start (40-70). Ambition 0-100. Great candidates always have a catch. Give each candidate years of professional experience and the credentials they hold (certs), named exactly as in the list of credentials that exist here, and only ones plausible for their skill and history. Many good cooks hold none. Invent names; no real people.
 
 Reply with ONLY JSON:
 {"candidates":[{"name":"...","role":"chef"|"sous"|"pastry"|"somm"|"maitre","skill":0-100,"salary":dollars,"loyalty":0-100,"ambition":0-100,"years":number,"certs":["credential names"],
@@ -7320,6 +7320,11 @@ worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hol
   fix:x=>{ x.roles=[].concat(x.roles||[]).filter(r=>ROLES[r]); if(!x.roles.length) return null;
     x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.round(clamp(x.years||0,0,20)); x.months=Math.round(clamp(x.months||1,1,36)); x.pass=clamp(x.pass||.5,.05,.98);
     x.skill=Math.round(clamp(x.skill||0,0,8)); x.prestige=Math.round(clamp(x.prestige||0,0,6)); x.health=Math.round(clamp(x.health||0,0,8)); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
+/* short viral video and online reviews: only in an open world from the smartphone years on, and, once the world has named its
+   marketing channels, only where its social channel is plainly an online one (feeds, the Net, apps). No Claude call: it reads the list. */
+function socialVideo(){ if(!S||(S.world&&S.world.outside===false)) return false; const y=storyYear(); if(y&&y<2012) return false;
+  if(!catalogFitted("marketing")) return true;
+  return /video|social|feed|stream|\bnet\b|online|internet|app|clip|post|influenc|creator|channel|web|digital|braindance/i.test(mktName("social")+" "+mktHint("social")); }
 /* ---- who inspects: the health authority and the fire authority, in this world's own terms ----
    The engine's health score, fines and fire-code timing are unchanged; this is who turns up, what they're called, what they say
    and how often the health side comes unannounced. A closed world with no inspectors swaps in whoever plays that part. */
@@ -9237,7 +9242,7 @@ function critBars(c,label){
     ${row("technique","Mastery of technique","Kitchen skill against how hard the menu is. Ambitious food scores highest when it's cooked well and lowest when it isn't.")}
     ${row("harmony","Harmony of flavours","Menu coherence and plating. A critique from Claude can move coherence; so can R&D.")}
     ${row("personality","The chef's personality","Creativity across the menu, signatures, and the chef's own skill.")}
-    ${row("consistency","Consistency","Skill gaps, understaffing, low morale, supplier shortfalls, turnover and failing equipment all show up here. Michelin weighs it heavily.")}
+    ${row("consistency","Consistency",`Skill gaps, understaffing, low morale, supplier shortfalls, turnover and failing equipment all show up here. ${S.world.guide?"Michelin weighs it heavily.":"Serious critics weigh it heavily."}`)}
     <div class="kv" style="margin-top:4px"><b>Overall</b><span class="n"><b>${Math.round(c.overall)}</b> <span class="note">· star territory starts near ${STAR_TH[1]}</span></span></div>`;
 }
 function dishCardHTML(d){
@@ -9383,7 +9388,7 @@ function menuHTMLInner(){
         ${Mn.identity||Mn.notes?`<div class="bd" style="border-top:1px solid var(--rule)">${Mn.identity?`<div class="quote" style="font-size:16px">${esc(Mn.identity)}</div>`:""}${Mn.notes?`<p class="note" style="margin:6px 0 0">${esc(Mn.notes)}</p>`:""}</div>`:""}
       </div>
 
-      <div class="panel"><div class="hd"><h3>The kitchen's read on the food</h3></div><div class="bd">${critBars(l0.lastCrit,"The five things a Michelin inspector judges, as your chef sees last month's cooking.")}</div></div>
+      <div class="panel"><div class="hd"><h3>The kitchen's read on the food</h3></div><div class="bd">${critBars(l0.lastCrit,`The five things ${S.world.guide?"a Michelin inspector":"a serious critic"} judges, as your chef sees last month's cooking.`)}</div></div>
     </div>
 
     <div class="stack">
@@ -9683,7 +9688,7 @@ function houseHTML(){
   const built=new Set(loc.features.map(f=>f.name)), FL=wcList("features");
   return `<div class="sec" style="padding-top:18px">
   <h2>The house</h2>
-  <p class="lede">The room is a large part of what a guest pays for, and it moves reputation, what people will pay and how many you can seat. Michelin judges only the plate, but critics and guests judge the room as well.</p>
+  <p class="lede">The room is a large part of what a guest pays for, and it moves reputation, what people will pay and how many you can seat. ${S.world.guide?"Michelin judges only the plate, but critics and guests judge the room as well.":"Critics and guests judge the room as well as the plate."}</p>
   ${S.locations.length>1?`<div class="seg" id="houseLocSeg" style="max-width:520px;margin-bottom:12px">${S.locations.map((l,i)=>`<button data-hl="${i}" aria-pressed="${i===houseLoc}">${esc(l.name)}</button>`).join("")}</div>`:""}
   <div class="grid g2">
     <div class="stack">
