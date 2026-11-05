@@ -10401,6 +10401,8 @@ function a11yRefocus(k){
 /* ---- long pages get a jump list of their panels, and every tab but the Dashboard gets a small Run button ---- */
 function pageJump(){
   const app=$("#app"); if(!app||!S||S.gameOver) return;
+  // a page with no heading of its own (the Dashboard) gets one for screen readers, so its panel headings sit under it
+  if(!app.querySelector("h2")){ const t=$("#tab-"+view), h=document.createElement("h2"); h.className="vh"; h.textContent=t?t.firstChild.textContent:"This page"; app.prepend(h); }
   const hs=[...app.querySelectorAll(".panel>.hd h3,details.panel>summary h3")].filter(h=>h.offsetParent&&a11yText(h));
   if(hs.length<4||document.documentElement.scrollHeight<window.innerHeight*2.2) return;
   const nav=document.createElement("nav"); nav.className="jump"; nav.setAttribute("aria-label","On this page");
