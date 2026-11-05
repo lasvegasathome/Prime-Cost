@@ -2097,7 +2097,7 @@ function applyEffects(effects,opts){
         const nm=clip(String(e.name||"").trim(),60); if(!nm){ rejected.push("a famous name needs a name"); break; }
         const st=S.team.find(t=>t.name.toLowerCase()===nm.toLowerCase());
         S.namesake=st&&CELEB_ROLES.includes(st.role)?{staffId:st.id,name:st.name,fame:st.fame||0,kind:"handson",since:when()}
-          :{name:nm,fame:Math.round(clamp(Number(e.fame)||50,0,100)),kind:NAMESAKE_KINDS[e.kind]?e.kind:"brand",fee:clamp(Number(e.fee)||0,0,.15),since:when()};
+          :{name:nm,fame:Math.round(clamp(Number(e.fame)||50,0,100)),kind:Object.hasOwn(NAMESAKE_KINDS,String(e.kind))?e.kind:"brand",fee:clamp(Number(e.fee)||0,0,.15),since:when()};
         done.push(`${nm}'s name is on the restaurant (${NAMESAKE_KINDS[S.namesake.kind].name}${celebFeeRate()?`, ${pct(celebFeeRate(),1)} of sales`:""})`); break; }
       case "fame":{
         const m=S.team.find(t=>t.role===e.role&&CELEB_ROLES.includes(t.role)); if(!m){ rejected.push(`there's no ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"such person"} with a public profile`); break; }
@@ -2137,7 +2137,7 @@ function applyEffects(effects,opts){
         done.push(`drinks now sell at ${S.cellar.markup.toFixed(1)}× what they cost (was ${before.toFixed(1)}×)${e.why?`: ${String(e.why).slice(0,60)}`:""}`); break; }
       case "revise":{
         const f=String(e.field||"rev"), n=Math.round(clamp(d(e.months)||1,1,24)), p=clamp(d(e.pct),-.9,5);
-        if(!REVISABLE[f]){ rejected.push(`can't revise "${f}"`); break; }
+        if(!Object.hasOwn(REVISABLE,f)){ rejected.push(`can't revise "${f}"`); break; }
         const H=S.history, from=Math.max(0,H.length-n);
         for(let i=from;i<H.length;i++){ const h=H[i]; h[f]=Math.round((h[f]||0)*(1+p)); if(f==="rev"||f==="prime") h.primePct=h.rev>0? h.prime/h.rev : 0; h.revised=true; }
         if(H.length>from) done.push(`the record for the last ${H.length-from} month${H.length-from>1?"s":""} now shows ${REVISABLE[f]} ${p>=0?"up":"down"} ${pct(Math.abs(p),0)}${e.why?` (${String(e.why).slice(0,60)})`:""}`);
@@ -2154,7 +2154,7 @@ function applyEffects(effects,opts){
         if(e.guarantee&&!S.traits.includes("pg")){ S.traits.push("pg"); done.push("you signed a personal guarantee"); }
         break; }
       case "risk":{
-        const k=String(e.kind||""); if(!RISKS[k]){ rejected.push(`unknown risk "${k}"`); break; }
+        const k=String(e.kind||""); if(!Object.hasOwn(RISKS,k)){ rejected.push(`unknown risk "${k}"`); break; }
         S.risk=S.risk||{}; S.riskOngoing=S.riskOngoing||{};
         if(Number(e.delta)){ const v=Math.round(clamp(Number(e.delta),-100,100)); S.risk[k]=clamp((S.risk[k]||0)+v,0,100); done.push(`${RISKS[k].name.toLowerCase()} exposure ${v>0?"+":""}${v}`); }
         if(e.ongoing!=null){ const v=Math.round(clamp(Number(e.ongoing)||0,0,100)); S.riskOngoing[k]=v; done.push(v?`an ongoing ${RISKS[k].name.toLowerCase()} problem`:`stopped the ${RISKS[k].name.toLowerCase()} problem`); }
@@ -2200,7 +2200,7 @@ function applyEffects(effects,opts){
   return done;
 }
 function addMod(e,opts,done,rejected){
-  const K=MOD_KINDS[e.kind];
+  const K=Object.hasOwn(MOD_KINDS,String(e.kind))?MOD_KINDS[e.kind]:null;
   if(!K){ rejected.push(`unknown standing effect "${String(e.kind).slice(0,20)}"`); return; }
   if(S.mods.length>=MAX_MODS){ rejected.push("too many standing effects already running"); return; }
   const sc=opts.modScale*(K.f==="money"?moneyScale():1);
