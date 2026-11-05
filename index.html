@@ -2041,7 +2041,7 @@ function applyEffects(effects,opts){
     const all = raw===-1;
     const li=clamp(Math.round(raw)||0,0,S.locations.length-1);
     const loc=S.locations[li];
-    const d=v=>{ const n=Number(v); return isFinite(n)?n:0; }, MS=moneyScale();
+    const d=v=>{ const n=Number(v); return isFinite(n)?clamp(n,-1e9,1e9):0; }, MS=moneyScale();
     const meter=(key,lo,hi,label)=>{
       const v=Math.round(d(e.delta));
       for(const l of (all?S.locations:[loc])) l[key]=clamp(l[key]+v,lo,hi);
@@ -2054,7 +2054,7 @@ function applyEffects(effects,opts){
         if(amt<0 && S.cash+amt< -1000){ rejected.push(`can't spend ${money(-amt)}, it isn't in the account`); break; }
         S.cash+=amt; done.push(`${amt<0?"paid":"received"} ${money(Math.abs(amt))}${e.why?` (${String(e.why).slice(0,60)})`:""}`); break; }
       case "rent":{
-        const p=Math.max(-1,d(e.pctChange));
+        const p=clamp(d(e.pctChange),-1,5);
         if(Number(e.months)>0){ addMod({label:e.label||"Rent concession",kind:"rent",value:p,months:e.months,locIndex:raw},opts,done,rejected); break; }
         loc.rent=Math.round(loc.rent*(1+p));
         done.push(`base rent${locLabel(li)} ${p<0?"down":"up"} ${pct(Math.abs(p),0)} to ${money(loc.rent)}/mo`); break; }
@@ -2068,19 +2068,19 @@ function applyEffects(effects,opts){
         const dv=clamp(d(e.delta),-.9,5);
         addMod({label:e.label||(dv<0?"Better purchasing":"Supplier trouble"),kind:"foodcost",value:dv,months:e.months||4,locIndex:raw},opts,done,rejected); break; }
       case "wage":{
-        const dv=d(e.delta);
-        for(const l of (all?S.locations:[loc])) l.wagePremium=Math.max(-.95,l.wagePremium+dv);
+        const dv=clamp(d(e.delta),-.95,3);
+        for(const l of (all?S.locations:[loc])) l.wagePremium=clamp((l.wagePremium||0)+dv,-.95,5);
         done.push(`wages ${dv<0?"down":"up"} ${pct(Math.abs(dv),0)}`); break; }
       case "competition":{
-        const m=Math.max(.001,Number(e.mult)||1);
-        for(const l of (all?S.locations:[loc])) l.compMod*=m;
+        const m=clamp(d(e.mult)||1,.1,10);
+        for(const l of (all?S.locations:[loc])) l.compMod=clamp((l.compMod||1)*m,.01,100);
         done.push(`competitive pressure ${m<1?"eased":"increased"}`); break; }
       case "mod": addMod(e,opts,done,rejected); break;
       case "loan":{
         if(loans++>0){ rejected.push("a second loan in one go"); break; }
         const amount=Math.round(Math.max(0,d(e.amount)));
         if(amount<500){ rejected.push("a loan too small to bother with"); break; }
-        const rate=Math.max(0,Number(e.rate)||.12), term=Math.round(Math.max(1,Number(e.term)||36));
+        const rate=clamp(d(e.rate)||.12,0,1), term=Math.round(clamp(d(e.term)||36,1,360));
         const L={id:uid(),kind:"hard",label:String(e.why||"Loan").slice(0,40),principal:amount,rate,term,remaining:amount,monthsLeft:term,payment:amortPayment(amount,rate,term)};
         S.loans.push(L); S.cash+=amount;
         done.push(`borrowed ${money(amount)} at ${pct(rate,1)} over ${term} months (${money(L.payment)}/mo)`); break; }
@@ -2090,7 +2090,7 @@ function applyEffects(effects,opts){
         done.push(`credit line ${c<0?"cut":"raised"} to ${money(S.creditLine.limit)}`); break; }
       case "followup":{
         if(S.followups.length>=MAX_FOLLOWUPS){ rejected.push("too many loose ends already"); break; }
-        const n=Math.round(Math.max(1,Number(e.inMonths)||2));
+        const n=Math.round(clamp(d(e.inMonths)||2,1,60));
         const hook=String(e.hook||"").trim().slice(0,600); if(!hook) break;
         S.followups.push({id:uid(),hook,due:S.monthIdx+n});
         done.push(`you'll hear back about ${hook} in ${n} month${n>1?"s":""}`); break; }
@@ -2105,7 +2105,7 @@ function applyEffects(effects,opts){
         const nm=clip(String(e.name||"").trim(),60); if(!nm){ rejected.push("a famous name needs a name"); break; }
         const st=S.team.find(t=>t.name.toLowerCase()===nm.toLowerCase());
         S.namesake=st&&CELEB_ROLES.includes(st.role)?{staffId:st.id,name:st.name,fame:st.fame||0,kind:"handson",since:when()}
-          :{name:nm,fame:Math.round(clamp(Number(e.fame)||50,0,100)),kind:NAMESAKE_KINDS[e.kind]?e.kind:"brand",fee:clamp(Number(e.fee)||0,0,.15),since:when()};
+          :{name:nm,fame:Math.round(clamp(Number(e.fame)||50,0,100)),kind:Object.hasOwn(NAMESAKE_KINDS,String(e.kind))?e.kind:"brand",fee:clamp(Number(e.fee)||0,0,.15),since:when()};
         done.push(`${nm}'s name is on the restaurant (${NAMESAKE_KINDS[S.namesake.kind].name}${celebFeeRate()?`, ${pct(celebFeeRate(),1)} of sales`:""})`); break; }
       case "fame":{
         const m=S.team.find(t=>t.role===e.role&&CELEB_ROLES.includes(t.role)); if(!m){ rejected.push(`there's no ${ROLES[e.role]?ROLES[e.role].name.toLowerCase():"such person"} with a public profile`); break; }
@@ -2121,13 +2121,13 @@ function applyEffects(effects,opts){
         const sk=Math.round(d(e.skill)), lo=Math.round(d(e.loyalty));
         m.skill=clamp(m.skill+sk,5,99); m.loyalty=clamp(m.loyalty+lo,0,100);
         if(e.cert){ const k=matchCert(e.cert); if(k&&!certsOf(m).includes(k)){ m.certs=certsOf(m).concat([k]); done.push(`${m.name} now holds ${certInfo(k).name}`); } }
-        if(Number(e.years)) m.years=Math.max(0,(m.years||0)+d(e.years));
+        if(d(e.years)) m.years=clamp((m.years||0)+d(e.years),0,70);
         done.push(`${m.name}: ${sk?`skill ${sk>0?"+":""}${sk}`:""}${sk&&lo?", ":""}${lo?`loyalty ${lo>0?"+":""}${lo}`:""}`); break; }
       case "supplier":{
         const sp=supFor(String(e.cat));
         if(!sp){ rejected.push("no supplier for that"); break; }
         const rl=Math.round(d(e.relation)), rb=d(e.reliability), pr=d(e.price);
-        sp.relation=clamp(sp.relation+rl,0,100); sp.reliability=clamp(sp.reliability+rb,.01,.999); sp.price=Math.max(.05,sp.price+pr);
+        sp.relation=clamp(sp.relation+rl,0,100); sp.reliability=clamp(sp.reliability+rb,.01,.999); sp.price=clamp(sp.price+pr,.05,10);
         done.push(`${sp.name}: ${[rl?`relationship ${rl>0?"+":""}${rl}`:"",rb?`reliability ${rb>0?"+":""}${Math.round(rb*100)}pts`:"",pr?`prices ${pr>0?"up":"down"} ${Math.round(Math.abs(pr)*100)}%`:""].filter(Boolean).join(", ")}`); break; }
       case "standing":{
         const v=Math.round(d(e.delta)); S.cellar.standing=clamp(S.cellar.standing+v,0,100);
@@ -2145,7 +2145,7 @@ function applyEffects(effects,opts){
         done.push(`drinks now sell at ${S.cellar.markup.toFixed(1)}× what they cost (was ${before.toFixed(1)}×)${e.why?`: ${String(e.why).slice(0,60)}`:""}`); break; }
       case "revise":{
         const f=String(e.field||"rev"), n=Math.round(clamp(d(e.months)||1,1,24)), p=clamp(d(e.pct),-.9,5);
-        if(!REVISABLE[f]){ rejected.push(`can't revise "${f}"`); break; }
+        if(!Object.hasOwn(REVISABLE,f)){ rejected.push(`can't revise "${f}"`); break; }
         const H=S.history, from=Math.max(0,H.length-n);
         for(let i=from;i<H.length;i++){ const h=H[i]; h[f]=Math.round((h[f]||0)*(1+p)); if(f==="rev"||f==="prime") h.primePct=h.rev>0? h.prime/h.rev : 0; h.revised=true; }
         if(H.length>from) done.push(`the record for the last ${H.length-from} month${H.length-from>1?"s":""} now shows ${REVISABLE[f]} ${p>=0?"up":"down"} ${pct(Math.abs(p),0)}${e.why?` (${String(e.why).slice(0,60)})`:""}`);
@@ -2156,13 +2156,13 @@ function applyEffects(effects,opts){
         done.push(`${l.qty}× ${l.name} into the cellar`); break; }
       case "lease":{
         for(const l of (all?S.locations:[loc])){
-          if(e.owned){ l.owned=true; l.propertyValue=Math.round(Number(e.propertyValue)||l.rent*12/.065); l.rent=0; l.leaseLeft=999; done.push(`you own the building at ${l.name}`); continue; }
-          const rc=Math.max(-1,d(e.rentChange)); l.rent=Math.round(l.rent*(1+rc)); l.leaseLeft=Math.round(Math.max(1,Number(e.months)||120)); l.leaseAsked=false; l.holdover=Number(e.months)<=12; if(!l.holdover) l.reclaims=0;
+          if(e.owned){ l.owned=true; l.propertyValue=Math.round(Math.max(0,d(e.propertyValue))||l.rent*12/.065); l.rent=0; l.leaseLeft=999; done.push(`you own the building at ${l.name}`); continue; }
+          const rc=clamp(d(e.rentChange),-1,5); l.rent=Math.round(l.rent*(1+rc)); l.leaseLeft=Math.round(clamp(d(e.months)||120,1,999)); l.leaseAsked=false; l.holdover=Number(e.months)<=12; if(!l.holdover) l.reclaims=0;
           done.push(`lease at ${l.name}: ${l.leaseLeft} months, rent ${rc>=0?"up":"down"} ${pct(Math.abs(rc),0)} to ${money(l.rent)}/mo`); }
         if(e.guarantee&&!S.traits.includes("pg")){ S.traits.push("pg"); done.push("you signed a personal guarantee"); }
         break; }
       case "risk":{
-        const k=String(e.kind||""); if(!RISKS[k]){ rejected.push(`unknown risk "${k}"`); break; }
+        const k=String(e.kind||""); if(!Object.hasOwn(RISKS,k)){ rejected.push(`unknown risk "${k}"`); break; }
         S.risk=S.risk||{}; S.riskOngoing=S.riskOngoing||{};
         if(Number(e.delta)){ const v=Math.round(clamp(Number(e.delta),-100,100)); S.risk[k]=clamp((S.risk[k]||0)+v,0,100); done.push(`${RISKS[k].name.toLowerCase()} exposure ${v>0?"+":""}${v}`); }
         if(e.ongoing!=null){ const v=Math.round(clamp(Number(e.ongoing)||0,0,100)); S.riskOngoing[k]=v; done.push(v?`an ongoing ${RISKS[k].name.toLowerCase()} problem`:`stopped the ${RISKS[k].name.toLowerCase()} problem`); }
@@ -2173,10 +2173,10 @@ function applyEffects(effects,opts){
         break; }
       case "seats":{
         const v=Math.round(d(e.delta));
-        for(const l of (all?S.locations:[loc])) l.seats=Math.max(0,(l.seats||0)+v);
+        for(const l of (all?S.locations:[loc])) l.seats=clamp((l.seats||0)+v,0,5000);
         done.push(`${v>=0?"+":""}${v} seats${all?"":locLabel(li)}`); break; }
       case "shutdown":{
-        const w=Math.round(Math.max(1,Number(e.weeks)||1)); for(const l of (all?S.locations:[loc])) l.closedWeeks=(l.closedWeeks||0)+w;
+        const w=Math.round(clamp(d(e.weeks)||1,1,52)); for(const l of (all?S.locations:[loc])) l.closedWeeks=(l.closedWeeks||0)+w;
         done.push(`closed ${w} week${w>1?"s":""}${e.reason?`: ${String(e.reason).slice(0,400)}`:""}`); break; }
       case "restructure":{
         for(const x of S.loans) x.remaining=Math.round((x.remaining||0)*.6);
@@ -2208,7 +2208,7 @@ function applyEffects(effects,opts){
   return done;
 }
 function addMod(e,opts,done,rejected){
-  const K=MOD_KINDS[e.kind];
+  const K=Object.hasOwn(MOD_KINDS,String(e.kind))?MOD_KINDS[e.kind]:null;
   if(!K){ rejected.push(`unknown standing effect "${String(e.kind).slice(0,20)}"`); return; }
   if(S.mods.length>=MAX_MODS){ rejected.push("too many standing effects already running"); return; }
   const sc=opts.modScale*(K.f==="money"?moneyScale():1);
@@ -2216,7 +2216,7 @@ function addMod(e,opts,done,rejected){
   if(K.f==="money") value=Math.round(value);
   if(!value) return;
   let m=Math.round(Number(e.months));
-  let left = (opts.permanent && !(m>0)) ? null : Math.max(1,m||6);
+  let left = (opts.permanent && !(m>0)) ? null : clamp(m||6,1,opts.maxMonths||60);
   const loc = (Number(e.locIndex)===-1||e.locIndex==null||S.locations.length<2) ? -1 : clamp(Math.round(Number(e.locIndex))||0,0,S.locations.length-1);
   const label=String(e.label||opts.label||K.name).trim().slice(0,48);
   S.mods.push({id:uid(),label,kind:e.kind,value,left,loc,src:String(opts.label||"").slice(0,48)});
@@ -2468,6 +2468,7 @@ async function generateEvent(due){
         when:`${dateName(S.calMonth,S.year)}`,followup:due.length>0};
     }
   }catch(e){
+    if(e&&e.code==="cancelled") return;   // another save is loaded now: its desk and follow-ups aren't this event's
     S.decision=null; nextDesk(); if(!S.decision) S.decision={error:sampleError(e,"news")};
     for(const f of due) S.followups.push(Object.assign(f,{due:S.monthIdx+1}));   // try again next month
   }
@@ -2945,7 +2946,7 @@ function starterCellar(ck){
 function parseCats(str){ const o={}; for(const p of String(str).split(",")){ const [k,v]=p.split(":"); if(CATS[k]) o[k]=+v; } return normCats(o); }
 function normCats(o){
   const out={}; let t=0;
-  for(const k of CAT_KEYS){ const v=Math.max(0,Number(o&&o[k])||0); if(v>0){ out[k]=v; t+=v; } }
+  for(const k of CAT_KEYS){ const v=clamp(Number(o&&o[k])||0,0,1e6); if(v>0){ out[k]=v; t+=v; } }
   if(t<=0) return {produce:.5,pantry:.5};
   for(const k in out) out[k]=Math.round(out[k]/t*100)/100;
   return out;
@@ -6642,7 +6643,7 @@ OTHER RECOGNITION: ${Object.values(loc.awards||{}).map(a=>`${a.guide}: ${a.name}
 async function michelinDecide(loc){
   const pend=loc.guidePending; if(!pend) return;
   let dec=null;
-  try{ if(sampleFn){ const r=await sampleFn.json(`${GUIDE_RULES}\n\n${STYLE_NOTE}${houseRules()}${guideDossier(loc,pend)}`,{cache:false}); if(r&&typeof r==="object") dec=guideRails(loc,r,pend); } }catch(e){ dec=null; }
+  try{ if(sampleFn){ const r=await sampleFn.json(`${GUIDE_RULES}\n\n${STYLE_NOTE}${houseRules()}${guideDossier(loc,pend)}`,{cache:false}); if(r&&typeof r==="object") dec=guideRails(loc,r,pend); } }catch(e){ if(e&&e.code==="cancelled") return; dec=null; }   // cancelled: that save is gone; it settles when it's next played
   if(!loc.guidePending) return;   // settled some other way meanwhile
   applyGuideDecision(loc,dec||Object.assign({note:""},pend.algo),pend,null);
   save(); if(typeof render==="function") render();
@@ -6893,8 +6894,10 @@ function wrapSample(s){
     return m? base.slice(0,m.index)+mem+base.slice(m.index) : base+mem;
   };
   const opts=o=>Object.assign({modelTier:"complex"},o||{});
-  const f=async(input,o)=>{ const r=await s(prep(input),opts(o)); rememberCall(input,r&&r.text); return r; };
-  f.json=async(input,o)=>{ const r=await s.json(prep(input),opts(o)); rememberCall(input,r); return r; };
+  /* a reply that lands after the player loaded, imported or rewound to another state belongs to the old one: drop it, so it can't be written into this save (interface translations don't belong to a save) */
+  const same=(s0,input)=>{ if(S!==s0&&!(typeof input==="string"&&input.startsWith(LANG_TAG))){ const e=new Error("the game changed while Claude was answering"); e.code="cancelled"; throw e; } };
+  const f=async(input,o)=>{ const s0=S, r=await s(prep(input),opts(o)); same(s0,input); rememberCall(input,r&&r.text); return r; };
+  f.json=async(input,o)=>{ const s0=S, r=await s.json(prep(input),opts(o)); same(s0,input); rememberCall(input,r); return r; };
   return f;
 }
 function ctxBlock(){ return `\n\nTHE BUSINESS\n${stateDigest(S)}\n\nLocation indices: ${S.locations.map((l,i)=>`${i}=${l.name}`).join(", ")}${houseRules()}`; }
@@ -7152,7 +7155,7 @@ async function secondLook(data,what,outEl){
     const fixed=Object.assign({},data,r.data);
     for(const k in data) if(Array.isArray(data[k])&&!Array.isArray(fixed[k])) fixed[k]=data[k];   // keep the shape the game expects
     fixed._audit=changes; secondLookNote(changes); return fixed;
-  }catch(e){ return data; }   // if the check can't run, the original stands
+  }catch(e){ if(e&&e.code==="cancelled") throw e; return data; }   // if the check can't run, the original stands (unless the game it was for is gone)
 }
 function secondLookNote(changes){
   logIt("warn",`A second look changed things: ${changes.join(" ")}`);
@@ -7232,14 +7235,14 @@ function railItem(it,base,enums){
     if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
     if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
     if(typeof t==="number"){ const n=+v; if(!isFinite(n)){ if(vals.length===base.length) return null; continue; } const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
-    else if(typeof t==="string"){ const s=String(v).trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }
+    else if(typeof t==="string"){ const s=String(v).replace(/[<>]/g,"").trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }   // plain text only: many lists are interpolated into markup
     else if(typeof t==="boolean") out[k]=!!v;
     else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
       const ks=new Set(vals.flatMap(o=>o?Object.keys(o):[])), o={};
       for(const [ek,ev] of Object.entries(v)){ if(!ks.has(ek)||!isFinite(+ev)) continue; const all=vals.map(x=>x&&x[ek]).filter(x=>x!=null&&isFinite(x)); const hi=Math.max(0,...all), lo=Math.min(0,...all);
         o[ek]=Math.round(clamp(+ev,lo<0?lo*1.5:-Math.max(2,hi*.3),Math.max(hi*1.25,1))*10)/10; }
       out[k]=o; }
-    else if(Array.isArray(t)&&Array.isArray(v)) out[k]=v.slice(0,12).filter(x=>typeof x!=="object").map(x=>typeof x==="string"?x.slice(0,120):x);
+    else if(Array.isArray(t)&&Array.isArray(v)) out[k]=v.slice(0,12).filter(x=>typeof x!=="object").map(x=>typeof x==="string"?x.replace(/[<>]/g,"").slice(0,120):x);
   }
   return out.name||!keys.has("name")? out : null;
 }
