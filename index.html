@@ -1550,7 +1550,7 @@ Owner background: ${S.traits.map(t=>TRAITS[t].name).join("; ") || S.circumstance
 Cash on hand: ${money(S.cash)}. Credit line: ${money(S.creditLine.drawn)} drawn of ${money(S.creditLine.limit)}.
 Sales tax held but not yet remitted: ${money(S.salesTaxHeld)}. Debt: ${loans}.
 Outside equity: ${pct(S.equityInvestor,0)}${S.investorName?`, held by ${S.investorName}`:""}.
-Current settings: price adjustment across the menu ${pct(S.dials.price-1,0)}, staffing "${STAFFING.find(s=>s.k===S.dials.staffing).name}", marketing ${money(mktTotal())}/mo (${S.locations.map(l=>`${l.name}: `+Object.entries(mktOf(l)).filter(([k,v])=>+v>0).map(([k,v])=>`${MKT_CH[k].name.toLowerCase()} ${money(v)}`).concat(mktCampaigns(l).map(c=>`the owner's own campaign "${c.name}" ${money(c.monthly)} (${c.pitch})`)).join(", ")).join("; ")||"none"}), owner's draw ${money(S.dials.draw)}/mo.
+Current settings: price adjustment across the menu ${pct(S.dials.price-1,0)}, staffing "${STAFFING.find(s=>s.k===S.dials.staffing).name}", marketing ${money(mktTotal())}/mo (${S.locations.map(l=>`${l.name}: `+Object.entries(mktOf(l)).filter(([k,v])=>+v>0).map(([k,v])=>`${mktName(k).toLowerCase()} ${money(v)}`).concat(mktCampaigns(l).map(c=>`the owner's own campaign "${c.name}" ${money(c.monthly)} (${c.pitch})`)).join(", ")).join("; ")||"none"}), owner's draw ${money(S.dials.draw)}/mo.
 Programmes running: ${Object.keys(S.programs).filter(k=>S.programs[k]).map(k=>PROGRAMS[k].name).join(", ")||"none"}.
 LOCATIONS:
 ${L}
@@ -3160,7 +3160,7 @@ async function judgeDishKit(){
   _kitJudging=true; let changed=false;
   try{
     for(let i=0;i<todo.length;i+=16){ const batch=todo.slice(i,i+16);
-      const r=await sampleFn.json(`${DISHKIT_RULES}\n\nEQUIPMENT KEYS:\n${dishKitKeys()}\n\nRESTAURANT: ${esc((CONCEPTS[S.concept]||{}).name||"")}\n\nDISHES:\n${batch.map(d=>`- id ${d.id}: ${d.name} (${d.course}): ${d.desc||""}`).join("\n")}`);
+      const r=await sampleFn.json(`${DISHKIT_RULES}\n\nEQUIPMENT KEYS:\n${dishKitKeys()}\n\nRESTAURANT: ${esc((CONCEPTS[S.concept]||{}).name||"")}\n\n${worldBrief().slice(0,2500)}\nRead the dishes as this world would cook them: its own ingredients, kit and slang.\n\nDISHES:\n${batch.map(d=>`- id ${d.id}: ${d.name} (${d.course}): ${d.desc||""}`).join("\n")}`);
       const list=(r&&Array.isArray(r.dishes))?r.dishes:null; if(!list) throw new Error("no verdict");
       const got=new Map(list.map(x=>[String(x&&x.id),x]));
       for(const d of batch){ const x=got.get(String(d.id)); d.needs=sanitizeNeeds(x&&x.needs); const w=Number(x&&x.work); d.work=Number.isFinite(w)?Math.round(clamp(w,0,3)*100)/100:offlineWork(d); d.kitJ=dishKitSig(d); changed=true; }
@@ -3208,7 +3208,7 @@ async function priceIngredients(d,outEl){
   const need=d.recipe.ingredients.filter(i=>!i.unitCost);
   if(!need.length) return;
   if(!sampleFn){ for(const i of need) i.unitCost=offlineUnitCost(i,d.grade); return; }
-  const r=await claudeJSON(PRICE_RULES,`\n\nGRADE: ${gradeOf(d.grade).name}\nINGREDIENTS:\n${need.map(i=>`- ${i.name}, per ${i.unit}`).join("\n")}`,outEl,"prices","Checking prices…");
+  const r=await claudeJSON(PRICE_RULES+worldGoodsRule(),`\n\nGRADE: ${gradeOf(d.grade).name}\nINGREDIENTS:\n${need.map(i=>`- ${i.name}, per ${i.unit}`).join("\n")}`,outEl,"prices","Checking prices…");
   const got=(r&&Array.isArray(r.prices))?r.prices:[];
   for(const i of need){ const m=got.find(x=>String(x.name||"").toLowerCase()===i.name.toLowerCase()); if(m) i.unitCost=Math.max(0,+nnum(m.unitCost,0,1e6,0));
     if(!i.unitCost) i.unitCost=offlineUnitCost(i,d.grade); }
@@ -4140,22 +4140,22 @@ function pressVisits(loc,crit,R){
     // an outlet reviews a chain, not each of its stores: once one of them has been written up, the others wait their year
     chainFresh=c=>S.locations.every(o=>o===loc||!o.press||!o.press.criticLast||o.press.criticLast[c]==null||S.monthIdx-o.press.criticLast[c]>=12);
   const cheap=locTier(loc)==="low";
-  const pool=CRITICS.filter(c=>{const pr=CRITIC_PROFILES[c]||{}; return fresh(c)&&chainFresh(c)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc);});
+  const CL=criticList(), pool=CL.filter(pr=>fresh(pr.name)&&chainFresh(pr.name)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc)).map(pr=>pr.name);
   if(pool.length && since>=2 && loc.monthsOpen>=2 && Math.random()<(.08+loc.awareness/600)*(1+mktEffects(loc).press*1.5)*(locTier(loc)==="high"?1.3:cheap?.5:1)){
-    const P2=loc.perf||{}, critic=pick(pool), pr=CRITIC_PROFILES[critic]||{food:1}; P.criticLast[critic]=S.monthIdx;
+    const P2=loc.perf||{}, critic=pick(pool), pr=CL.find(x=>x.name===critic)||CRITIC_PROFILES[critic]||{food:1}; P.criticLast[critic]=S.monthIdx;
     const asp={food:crit.overall,pers:crit.personality,service:P2.service||loc.foh,room:ambience(loc),value:P2.value==null?60:P2.value,wine:P2.wine==null?40:P2.wine};
     let blend=0,wt=0; for(const k of ["food","pers","service","room","value","wine"]) if(pr[k]){ blend+=pr[k]*asp[k]; wt+=pr[k]; }
     const sc=clamp(blend/Math.max(wt,.01)+rnd(-7,7),0,100);
     const stars=sc>=90?4:sc>=80?3:sc>=68?2:sc>=55?1:0;
     P.lastCritic=S.monthIdx;
-    const rv={id:uid(),src:critic,aspects:{service:Math.round(asp.service),room:Math.round(asp.room),value:Math.round(asp.value),wine:Math.round(asp.wine)},stars,when:`${dateName(S.calMonth,S.year)}`,text:"",locId:loc.id,score:Math.round(sc),crit:roundCrit(crit)};
+    const rv={id:uid(),src:critic,aspects:{service:Math.round(asp.service),room:Math.round(asp.room),value:Math.round(asp.value),wine:Math.round(asp.wine)},stars,when:`${dateName(S.calMonth,S.year)}`,text:"",locId:loc.id,score:Math.round(sc),crit:roundCrit(crit),verdict:String((Array.isArray(pr.verdicts)&&pr.verdicts[stars])||CRITIC_WORDS[stars])};
     P.reviews.unshift(rv); P.reviews=P.reviews.slice(0,12);
     R.reviews.push(rv);
     loc.awareness=clamp(loc.awareness+4*stars-2,2,99);
     for(const m of staffAt(loc)) if(m.role==="chef") m.fame=clamp((m.fame||0)+(stars>=2?stars*1.5:stars?0:-1),0,100);
     const li=S.locations.indexOf(loc);
     if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:`${rv.src.replace(/^The |^An? /,"")} review`,kind:"demand",value:Math.round((stars-1.5)*.05*(cheap?.4:1)*100)/100,left:8,loc:S.locations.length<2?-1:li,src:"press"});
-    R.events.push({tone:stars>=2?"good":"bad",text:`${rv.src} reviewed ${loc.name}: ${CRITIC_WORDS[stars]}${stars?` (${"★".repeat(stars)})`:""}.`});
+    R.events.push({tone:stars>=2?"good":"bad",text:`${rv.src} reviewed ${loc.name}: ${rv.verdict}${stars?` (${"★".repeat(stars)})`:""}.`});
   }
 }
 function roundCrit(c){ const o={}; for(const k of ["ingredients","technique","harmony","personality","consistency","overall"]) o[k]=Math.round(c[k]); return o; }
@@ -4405,8 +4405,8 @@ const MICHELIN_PLACES=[
   [/rome|milan|florence|venice|naples|italy/,1956],[/madrid|barcelona|san sebasti[aá]n|spain|lisbon|porto|portugal/,1974],[/berlin|munich|hamburg|germany/,1964],[/zurich|geneva|switzerland/,1994],
   [/vienna|salzburg|austria/,2019],[/copenhagen|stockholm|oslo|helsinki|denmark|sweden|norway|finland|reykjavik|iceland/,2015]];
 function michelinPlace(){ const L=S.locations||[]; return [S.intl&&S.intl.home, MARKETS[S.market]&&MARKETS[S.market].name, S.customMarket&&S.customMarket.name].concat(L.map(l=>(l.setting&&l.setting.name)||"")).filter(Boolean).join(" ").toLowerCase(); }
-function michelinHere(){ const t=michelinPlace(), y=storyYear()||2026; return MICHELIN_PLACES.some(([re,from,to])=>re.test(t)&&y>=from&&(!to||y<=to)); }
-function michelinKnown(){ const t=michelinPlace(); return MICHELIN_PLACES.some(([re])=>re.test(t)); }
+function michelinHere(){ if(michelinAbsent()) return false; const t=michelinPlace(), y=storyYear()||2026; return MICHELIN_PLACES.some(([re,from,to])=>re.test(t)&&y>=from&&(!to||y<=to)); }
+function michelinKnown(){ if(michelinAbsent()) return false; const t=michelinPlace(); return MICHELIN_PLACES.some(([re])=>re.test(t)); }
 // the Bib Gourmand's price limit: about $52 today for a meal there, in that year's money
 function bibCap(loc){ return 52*((MARKETS[loc.market]||{}).checkMult||1)*eraPriceFactor(); }
 function placeText(){ return [MARKETS[S.market]&&MARKETS[S.market].name, S.customMarket&&S.customMarket.name, S.world&&S.world.notes, S.circumstances, S.origin].filter(Boolean).join(" ").toLowerCase(); }
@@ -4433,6 +4433,7 @@ function genreTags(){ const t=conceptText(), g=new Set(), C=CONCEPTS[S.concept]|
 /* ============ RIVALS: a competitive set that behaves like the real one for your tier ============ */
 const RV_WORDS=["Gilded","Ember","Juniper","Obsidian","Saffron","Meridian","Laurel","Ashwood","Tidewater","Vault","Copper","Marlowe","Cinder","Orchard","Lantern"];
 function rivalName(){
+  const wn=worldRivalName(); if(wn) return wn;
   const t=locTier(S.locations[0]), g=genreTags(), L=pick(LAST), F=pick(FIRST), W=pick(RV_WORDS);
   if(g.has("bbq")) return pick([`${L} Barbecue`,`${W} Smokehouse`,`${F}'s BBQ`,`${L} & Sons Bar-B-Q`]);
   if(g.has("pizza")) return pick([`${L} Pizzeria`,`${W} Pizza Co.`,`Pizzeria ${F}`]);
@@ -6444,6 +6445,7 @@ function guideTags(){ const g=new Set(regionTags()), t=((S.intl&&S.intl.home)||"
 function allGuides(){ return GUIDES.concat(((S&&S.localGuides)||[]).map(localGuideObj)); }
 function guideApplies(g,loc){
   if(S.world&&S.world.outside===false&&!g.local) return false;   // a closed world: no outside guide covers it
+  if(!g.local&&worldGuideOff(g.key)) return false;   // a world with its own history may never have had this guide
   const rg=guideTags(), gn=genreTags(), y=storyYear();
   if(y&&g.since&&y<g.since) return false; if(y&&g.until&&y>g.until) return false;
   if(g.regions&&!g.regions.some(r=>rg.has(r))) return false;
@@ -6726,7 +6728,7 @@ TRAINING UNDERWAY: ${S.training.map(t=>`${t.name} (${t.left} mo left)`).join("; 
 THE ROOM:
 ${rooms}
 CELLAR: ${money(S.cellar.value)} of wine at cost (target ${money(S.cellar.target)}), capacity ${cellarCapacity().toLocaleString()} bottles, list score ${Math.round(listScore())}/100, markup ${S.cellar.markup.toFixed(1)}× cost, standing with wine distributors ${Math.round(S.cellar.standing)}/100; rare bottles: ${S.cellar.rare.map(b=>`${b.qty}× ${b.name}`).join("; ")||"none"}
-PRESS & GUIDE (${S.world.guide?`the Michelin Guide covers this city; it is released every ${MONTHS[S.world.guideMonth]}`:"no Michelin Guide in this market"}):
+PRESS & GUIDE (${S.world.guide?`the Michelin Guide covers this city; it is released every ${MONTHS[S.world.guideMonth]}`:michelinAbsent()?"no Michelin Guide exists in this world":"no Michelin Guide in this market"}):
 ${press}`;
 }
 function guestRating(l){ return l&&l.gr&&l.gr.n>0? clamp(l.gr.sum/l.gr.n,1,5) : clamp(1.6+l.rep/30,1,5); }
@@ -6751,7 +6753,7 @@ const GR_LINES={
   cons:{good:["Third visit and it's been just as good every time.","Reliable, which is rarer than it should be."],bad:["Great last time, disappointing this time.","Hit and miss; depends who's cooking."]}
 };
 function grLines(){ if(!GR_LINES.__merged){ for(const k in GR_MORE) for(const g of ["good","bad"]) GR_LINES[k][g]=GR_LINES[k][g].concat(GR_MORE[k][g]); GR_LINES.__merged=true; } return GR_LINES; }
-const GUEST_RULES=`You write the short reviews real guests post online about a restaurant inside a realistic simulation. For each review below, the guest, their star rating and what they're mostly writing about are already decided; write what they posted. One to three sentences each, in that person's own voice (a tourist writes differently from a regular or a high roller), specific to this place: name dishes, the room, the staff, the setting. Vary length, tone and phrasing; no two should sound alike, and none should repeat the earlier reviews listed. A full reservation book is never a flaw of the restaurant. Plain text, no hashtags or emoji. Reply with ONLY JSON: {"reviews":[{"id":"","text":""}]}`;
+const GUEST_RULES=`You write the short reviews real guests leave about a restaurant inside a realistic simulation: posted online, written in a guest book, sent as a letter or passed on by word of mouth, whichever this world and its year actually have. For each review below, the guest, their star rating and what they're mostly writing about are already decided; write what they posted. One to three sentences each, in that person's own voice (a tourist writes differently from a regular or a high roller), specific to this place: name dishes, the room, the staff, the setting. Vary length, tone and phrasing; no two should sound alike, and none should repeat the earlier reviews listed. A full reservation book is never a flaw of the restaurant. Plain text, no hashtags or emoji. Reply with ONLY JSON: {"reviews":[{"id":"","text":""}]}`;
 async function writeGuestReviews(loc){
   const drafts=(loc.grRecent||[]).filter(g=>g.draft); if(!sampleFn||!drafts.length) return;
   try{
@@ -6915,7 +6917,7 @@ Reply with ONLY JSON:
 {"lots":[{"name":"producer, wine, vintage","channel":"allocation"|"auction"|"private","qty":1-12,"cost":dollars per bottle,"price":list price per bottle,"prestige":1-10,"rarity":1-5,"req":0-100,"saleInMonths":1-4 for auctions,"note":"one sentence: provenance, drinking window or the catch"}]}
 If nothing real fits, reply {"lots":[],"note":"why"}.`;
 
-const REVIEW_RULES=`You are the restaurant critic named below, writing your published review of this restaurant inside a realistic simulation. Your star rating is already decided and the kitchen's criteria scores tell you what you tasted; write the review that explains them. Name specific dishes from the menu, describe the room and the service, and mention price. 130-180 words, one or two paragraphs, a critic's voice: precise, sensory, fair, no puns, no sign-off line. Plain text only: no headline, no title, no markdown.`;
+const REVIEW_RULES=`You are the restaurant critic named below, writing your published review of this restaurant inside a realistic simulation. Your star rating is already decided and the kitchen's criteria scores tell you what you tasted; write the review that explains them. Name specific dishes from the menu, describe the room and the service, and mention price. 130-180 words, one or two paragraphs, a critic's voice: precise, sensory, fair, no puns, no sign-off line. Plain text only: no headline, no title, no markdown. The outlet named below exists in this restaurant's world: write as it would, in the setting's own idiom, and never reach for references from outside that world.`;
 
 const INJECT_RULES=`You are the game master of a restaurant simulation. The owner, writing as the author of this world, declares that the event below happens. It happens; don't refuse or water it down. Your job is to work out what it realistically does to THIS business, now and over time, and to write it up. Big events deserve big, lasting effects; small ones deserve small ones. Include downsides where they'd really exist.
 
@@ -7142,7 +7144,9 @@ const FEATURES=[
    gets its own version of each list, written for its world (Night City, Airstrip One, 1940 Paris, today's Lima),
    cached in the save and kept inside the engine's rails: same fields, effect keys the engine knows, costs and
    effects clamped to the range the defaults span. Read a list with wcList(kind); never index the constant directly.
-   A kind registers with worldCat(kind,{base,what,n,enums,fix,notes}). Offline, wcList() returns the defaults. */
+   A kind registers with worldCat(kind,{base,what,n,enums,fix,notes}). Offline, wcList() returns the defaults.
+   Optional: notes can be a function; sample() gives the defaults shown in the prompt when base() isn't JSON-friendly or is too long;
+   when() skips a kind that doesn't apply to this save; after(items) runs once a fresh list is saved. */
 const WORLD_CATS={};
 function worldCat(kind,spec){ WORLD_CATS[kind]=Object.assign({n:[4,12],enums:{},notes:""},spec); }
 function worldBrief(){
@@ -7178,15 +7182,15 @@ function railItem(it,base,enums){
 const _wcBusy={}, _wcTries={}; let _wcTimer=null;
 function queueWorldFit(){ if(!sampleFn||!S||S.gameOver) return; clearTimeout(_wcTimer); _wcTimer=setTimeout(fitWorldCatalogs,700); }
 async function fitWorldCatalogs(only){
-  if(!sampleFn||!S) return; const key=worldKey(), want=Object.keys(WORLD_CATS).filter(k=>(only?only===k:!catalogFitted(k))&&!_wcBusy[k]&&(only||(_wcTries[k+key]||0)<2));
+  if(!sampleFn||!S) return; const key=worldKey(), want=Object.keys(WORLD_CATS).filter(k=>(only?only===k:!catalogFitted(k))&&!_wcBusy[k]&&(only||(_wcTries[k+key]||0)<2)&&(!WORLD_CATS[k].when||WORLD_CATS[k].when()));
   if(!want.length) return; const brief=worldBrief(), slot=S.slotId; let running=0; const q=want.slice();
   const one=async kind=>{ const K=WORLD_CATS[kind], base=K.base(); _wcBusy[kind]=true; _wcTries[kind+key]=(_wcTries[kind+key]||0)+1; refreshWorldNotes();
     try{
-      const r=await sampleFn.json(`You're writing one of the option lists for a restaurant management game, so that it belongs to the world below. The game's default list describes a restaurant in today's real world; replace it with the ${K.what} that would actually exist for this restaurant, in this place and time. In a fictional setting use that setting's own institutions, brands, people, slang and technology, and never real-world ones it doesn't have. In a real place and era use what was really there then. If the defaults already fit, keep the ones that fit and localise the rest.\n\nRULES\n- Return JSON: {"items":[...]} with ${K.n[0]} to ${K.n[1]} items.\n- Every item has exactly the fields the defaults use, with the same meaning. Numbers stay in the same units and on the same scale as the defaults: costs are what the game charges before its own price and era scaling, so a cheaper or dearer option is fine but don't convert currencies. Effects use only the effect keys the defaults use.\n- Spread the items across the same range of price and purpose as the defaults, cheap to expensive.\n${Object.entries(K.enums).map(([k,v])=>`- "${k}" must be one of: ${v.map(x=>JSON.stringify(x)).join(", ")}.`).join("\n")}${K.notes?`\n${K.notes}`:""}\n\nTHE DEFAULTS (format and scale only)\n${JSON.stringify(base.slice(0,14))}\n\n${brief}\n\n${STYLE_NOTE}`,{cache:false});
+      const r=await sampleFn.json(`You're writing one of the option lists for a restaurant management game, so that it belongs to the world below. The game's default list describes a restaurant in today's real world; replace it with the ${K.what} that would actually exist for this restaurant, in this place and time. In a fictional setting use that setting's own institutions, brands, people, slang and technology, and never real-world ones it doesn't have. In a real place and era use what was really there then. If the defaults already fit, keep the ones that fit and localise the rest.\n\nRULES\n- Return JSON: {"items":[...]} with ${K.n[0]} to ${K.n[1]} items.\n- Every item has exactly the fields the defaults use, with the same meaning. Numbers stay in the same units and on the same scale as the defaults: costs are what the game charges before its own price and era scaling, so a cheaper or dearer option is fine but don't convert currencies. Effects use only the effect keys the defaults use.\n- Spread the items across the same range of price and purpose as the defaults, cheap to expensive.\n${Object.entries(K.enums).map(([k,v])=>`- "${k}" must be one of: ${v.map(x=>JSON.stringify(x)).join(", ")}.`).join("\n")}${K.notes?`\n${typeof K.notes==="function"?K.notes():K.notes}`:""}\n\nTHE DEFAULTS (format and scale only)\n${JSON.stringify(K.sample?K.sample():base.slice(0,14))}\n\n${brief}\n\n${STYLE_NOTE}`,{cache:false});
       if(!S||S.slotId!==slot||worldKey()!==key) return;
       const items=(r&&Array.isArray(r.items)?r.items:[]).map(it=>{ const x=railItem(it,base,K.enums); return x&&K.fix? K.fix(x,it) : x; }).filter(Boolean)
         .filter((x,i,a)=>!x.name||a.findIndex(y=>y.name===x.name)===i).slice(0,K.n[1]);
-      if(items.length>=Math.min(K.n[0],base.length)){ S.worldCat=S.worldCat||{}; S.worldCat[kind]={key,items,at:S.monthIdx}; save(); }
+      if(items.length>=Math.min(K.n[0],base.length)){ S.worldCat=S.worldCat||{}; S.worldCat[kind]={key,items,at:S.monthIdx}; if(K.after) try{ K.after(items); }catch(e){} save(); }
     }catch(e){ if(e&&(e.code==="not_granted"||e.code==="sampling_disabled")) sampleFn=null; }
     finally{ delete _wcBusy[kind]; }
   };
@@ -7215,6 +7219,84 @@ const TRAIN_CATALOG=[
 ];
 worldCat("training",{base:()=>TRAIN_CATALOG,what:"staff training programmes (courses, coaching, apprenticeships, drills, outside instructors)",n:[6,12],
   enums:{role:[null].concat(Object.keys(ROLES))},notes:'- "role" is null for a whole-team programme, or the one role it trains. "away":true only when that person leaves service for it. "monthly" is a running cost while it lasts; leave it out otherwise.\n- Effect keys: health = health score, brigade = brigade technique, fohTrain = floor training, crewKitchen/crewFloor/crewSupport = hourly crews, creativity/coherence = menu, skill/loyalty = the named person, morale = everyone.'});
+/* ---- the world's goods: what the cellar, the suppliers, the press, the upgrades and the marketing look like in this world ---- */
+const worldGoodsRule=()=>`\n\nTHIS WORLD'S GOODS: everything you offer has to exist in this restaurant's world as the house rules and the original description set it out, in its place and its year. In a fictional setting use its own producers, brands, institutions and slang; in a historical one, what was really sold there then. Where these rules say "real" prices or scarcity, that means real for this world, in the game's dollars.${S.world&&S.world.outside===false?" This is a closed world: nothing from outside it exists, so no real-world brands, producers, regions, guides or countries unless the house rules name them.":""}`;
+worldCat("wine",{base:()=>WINE_MARKET,what:"prized bottles and spirits on offer for the restaurant's list (distributor allocations, auction lots, private cellars, back-room sellers)",n:[6,12],
+  enums:{channel:["allocation","auction","private"]},when:()=>((CONCEPTS[S.concept]||{}).alcohol||0)>0||!!(S.cellar&&S.cellar.value>0),
+  notes:'- These are what this world drinks at the top end, from its own vineyards, distilleries, breweries or vats, priced the way this world prices them. Where wine is scarce, rationed or banned, offer whatever stands in for it there.\n- "channel": allocation (through a distributor; "req" 0-100 is the standing needed, 35-75 for prized bottles), auction (req 0), private (a collector or a back-room seller; req 0). "cost" is per bottle; "price" is the list price per bottle, about 2 to 3 times cost. "prestige" 1-10. "qty" 1-6. "note" is one sentence: provenance, drinking window or the catch.',
+  fix:x=>{ x.req=x.channel==="allocation"?clamp(Math.round(x.req||0),0,100):0; x.qty=clamp(Math.round(x.qty||1),1,12); x.cost=Math.max(10,x.cost||0); if(!(x.price>x.cost)) x.price=Math.round(x.cost*2.2); x.prestige=clamp(Math.round(x.prestige||1),1,10); return x; }});
+worldCat("suppliers",{base:()=>SUPPLIER_MARKET,what:"specialist suppliers a restaurant could open an account with (growers, fishers, butchers, importers, distributors, and whoever else supplies kitchens here)",n:[6,12],
+  enums:{terms:Object.keys(TERMS)},
+  notes:'- Use the businesses, institutions, depots and black markets that would really supply a kitchen in this world.\n- "cats" lists the ingredient categories they supply, from: produce, meat, seafood, dairy, pantry, luxury (luxury is whatever counts as a delicacy here). "q" is quality 0-100 (broadline 45, the best small producers 88-97). "price" is an index against broadline (1.0): specialists 1.1-1.4, the rarest 1.5-2. "reliability" is the chance an order arrives complete, 0.7-0.97. "green" means direct, traceable and sustainable. Better quality always costs something: price, reliability or terms.',
+  fix:x=>{ x.cats=[...new Set((x.cats||[]).filter(c=>CATS[c]))]; if(!x.cats.length) return null; x.q=clamp(Math.round(x.q||60),20,99); x.price=clamp(x.price||1.1,.6,2.2); x.reliability=clamp(x.reliability||.9,.5,.995); return x; }});
+/* the accounts a new restaurant opens with: same mechanics everywhere, named for this world */
+const HOUSE_SUPPLIERS=()=>starterSuppliers("fine").pool.map(p=>({id:p.id,name:p.name,blurb:p.blurb}));
+function applyHouseSuppliers(){ if(!S||!catalogFitted("house_suppliers")) return; const it=wcList("house_suppliers"), def=HOUSE_SUPPLIERS();
+  for(const p of S.supplierPool||[]){ const d=def.find(z=>z.id===p.id), w=it.find(z=>z.id===p.id); if(d&&w&&w.name&&p.name===d.name){ p.name=w.name; if(w.blurb) p.blurb=w.blurb; } } }
+worldCat("house_suppliers",{base:HOUSE_SUPPLIERS,what:"suppliers a new restaurant here starts with: one broadline distributor that carries everything, a specialist produce house, a fishmonger and a meat purveyor",n:[4,4],
+  enums:{id:["sp_broad","sp_green","sp_harbor","sp_ridge"]},notes:'- Exactly four items, one per "id", in the same order and the same role as the defaults. Only "name" and "blurb" change.',after:applyHouseSuppliers});
+/* critics and outlets: who reviews restaurants here, what each cares about, and the words their verdicts use */
+const CRITIC_BASE=()=>CRITICS.map(c=>Object.assign({name:c},CRITIC_PROFILES[c],{verdicts:CRITIC_WORDS}));
+function criticList(){ return wcList("critics"); }
+worldCat("critics",{base:CRITIC_BASE,what:"critics, publications and outlets whose reviews move trade",n:[5,10],
+  notes:'- Each item is an outlet or reviewer that exists in this world: a paper, a broadcaster, a feed, a guidebook, an official inspectorate or Party organ, a gossip sheet. "name" is how a sentence names it, the way the defaults do ("The city paper\'s critic").\n- The weights food, pers (the chef\'s personality), service, room, value and wine say what they care about; leave out the ones they ignore. "minAware" (0-80) is how well known a restaurant must be before they bother; "minAlc" only for a drinks-led outlet.\n- "verdicts" is five words or short phrases their scale runs through, worst to best, in this world\'s idiom.',
+  fix:(x,it)=>{ x.minAware=x.minAware?clamp(Math.round(x.minAware),0,85):undefined; if(x.minAware===undefined) delete x.minAware;
+    if(!["food","pers","service","room","value","wine"].some(k=>x[k]>0)) x.food=1;
+    const v=Array.isArray(it&&it.verdicts)?it.verdicts.map(s=>String(s).trim().slice(0,40)).filter(Boolean):[]; x.verdicts=v.length===5?v:CRITIC_WORDS.slice(); return x; }});
+/* which of our world's guides and awards exist in this one */
+const GUIDE_BASE=()=>[{key:"michelin",name:"The Michelin Guide",exists:true}].concat(GUIDES.map(g=>({key:g.key,name:g.name,exists:true})));
+function worldGuideOff(key){ if(!S||!catalogFitted("guides")) return false; const it=wcList("guides").find(x=>x.key===key); return !it||it.exists===false; }
+function michelinAbsent(){ return !!(S&&S.world&&S.world.outside===false)||worldGuideOff("michelin"); }
+worldCat("guides",{base:GUIDE_BASE,sample:GUIDE_BASE,what:"restaurant guides and awards from our world, each marked by whether it exists in this one",n:[1,60],
+  enums:{key:GUIDE_BASE().map(g=>g.key)},when:()=>!!(S.world&&S.world.outside!==false&&(String(S.world.notes||"").trim()||String(S.origin||"").trim()||(storyYear()||0)>2027)),
+  notes:'- Return every key from the defaults exactly once, with "name" as written. "exists" is true only if that guide or award exists in this world and could one day cover a restaurant here, and false otherwise. A guide from our world has no place in a fictional or far-future setting unless the setting has it. Founding years and regions are checked elsewhere, so judge only whether it belongs to this world.',
+  after:()=>{ if(worldGuideOff("michelin")&&S.world.guide&&S.world.guideAuto!==false&&!S.locations.some(l=>l.stars||l.bib||l.selected)) S.world.guide=false; }});
+/* rival restaurants, named the way this world names its places */
+worldCat("rivals",{base:()=>[{name:"Maison Okafor",tier:"high"},{name:"The Laurel Room",tier:"high"},{name:"Copper & Vine",tier:"mid"},{name:"Bistro Camille",tier:"mid"},{name:"The Lantern",tier:"mid"},{name:"Marco's Diner",tier:"low"},{name:"Ember Burger Co.",tier:"low"},{name:"The Orchard Café",tier:"low"}],
+  what:"names of competing restaurants, cafés, canteens and stalls nearby",n:[9,18],enums:{tier:["low","mid","high"]},
+  notes:'- "tier" is where it sits in the market: low (cheap and quick), mid, high (expensive). Give at least three of each. Names only, as the sign over the door would read here.',after:()=>applyWorldRivals()});
+function applyWorldRivals(){ if(!S||(S.monthIdx||0)>1||!catalogFitted("rivals")||!Array.isArray(S.rivals)) return; const W=wcList("rivals"), names=new Set(W.map(r=>r.name));
+  for(const r of S.rivals){ if(names.has(r.name)) continue; const nm=worldRivalName(); if(nm) r.name=nm; } }
+function worldRivalName(){ if(!catalogFitted("rivals")) return null; const t=locTier(S.locations[0]), taken=new Set((S.rivals||[]).map(r=>r.name).concat(S.locations.map(x=>x.name),[S.bizName]));
+  const all=wcList("rivals").filter(r=>!taken.has(r.name)), same=all.filter(r=>r.tier===t); const p=same.length?same:all; return p.length?pick(p).name:null; }
+/* the starting menu: same slots and maths, dishes this world would cook. Applied once, before the first month's trading */
+function starterTplKey(ck){ const C=CONCEPTS[ck]||{}; return ck==="fine"||(ck==="custom"&&C.check>=85)?"fine":(MENU_TPL[ck]?ck:"bistro"); }
+function starterMenuBase(){ const ck=S.concept, E=MENU_EXTRAS[ck]||(ck==="custom"?null:MENU_EXTRAS.bistro)||{}, out=[];
+  for(const t of MENU_TPL[starterTplKey(ck)]) out.push({slot:out.length,name:t[0],course:t[1],desc:t[2],kind:"food"});
+  for(const d of E.drinks||[]) out.push({slot:out.length,name:d[0],course:"side",desc:"",kind:"drink"});
+  for(const d of E.kids||[]) out.push({slot:out.length,name:d[0],course:"main",desc:d[1],kind:"kids"});
+  return out; }
+function starterMenuUntouched(){ if(!S||!S.menu||(S.monthIdx||0)>1) return false; const names=new Set(starterMenuBase().map(b=>b.name)); return (S.menu.dishes||[]).some(d=>d.src==="starter"&&names.has(d.name)); }
+function applyStarterMenu(items){ if(!starterMenuUntouched()) return; const base=starterMenuBase(), ren={};
+  for(const d of S.menu.dishes){ if(d.src!=="starter"||itemSec(d)==="bundle") continue; const b=base.find(z=>z.name===d.name), w=b&&items.find(z=>z.slot===b.slot);
+    if(!w||!w.name) continue; ren[d.name]=w.name; d.name=String(w.name).slice(0,60); if(w.desc!=null&&(b.kind!=="drink"||w.desc)) d.desc=clip(String(w.desc),600); }
+  for(const d of S.menu.dishes) if(itemSec(d)==="bundle"&&d.src==="starter") for(const [a,b] of Object.entries(ren)){ d.name=d.name.split(a).join(b); d.desc=String(d.desc||"").split(a).join(b).split(a.toLowerCase()).join(b.toLowerCase()); } }
+worldCat("starter_menu",{base:starterMenuBase,sample:starterMenuBase,what:"dishes and drinks on a new restaurant's first menu",n:[1,40],when:starterMenuUntouched,
+  enums:{kind:["food","drink","kids"]},
+  notes:()=>`- One item for every default, same "slot", same "course" and "kind", the same main ingredient (meat stays meat, seafood stays seafood, a dairy dish stays dairy) and about the same work and price point. Replace each with what a ${((CONCEPTS[S.concept]||{}).name||"restaurant").toLowerCase()} in this world would actually serve in that slot, named as its menu would name it. "desc" is a short lowercase menu line, commas between components; leave it empty for a drink with no description.`,
+  after:applyStarterMenu});
+/* standard upgrades: the house's catalogue, fitted to this world's buildings and trades */
+function featClashRe(c){ if(c instanceof RegExp) return c; const s=String(c||"").toLowerCase().split("|").map(w=>w.replace(/[^a-z0-9 '\-]/g,"").trim()).filter(Boolean).slice(0,6); if(!s.length) return null; try{ return new RegExp(s.join("|")); }catch(e){ return null; } }
+const FEAT_FX={demand:[0,.08],check:[-.03,.06],foodcost:[-.03,0],awareness:[0,4]};
+worldCat("features",{base:()=>FEATURES,what:"standard building and equipment upgrades a place like this could buy (fit-out, kitchen kit, seating, signage, outdoor space, ordering and delivery)",n:[8,16],
+  sample:()=>FEATURES.filter(f=>!f.fit||!f.fit.formats||f.fit.formats.includes(locFormat())).slice(0,14).map(f=>Object.assign({},f,{clash:f.clash?f.clash.source:""})),
+  notes:()=>`- This restaurant's format is "${locFormat()}" and it sits at the ${locTier(S.locations[0])} end of its market, so most items should suit that. Use the materials, trades, machines and permits this world has.\n- "fit": {"formats":[from "seated","counter","truck"],"tiers":[from "low","mid","high"],"minAlc":share of sales from drink, only when it needs a bar}. "clash" is a few lowercase keywords separated by | that would name the same upgrade if it's already built. Number fields are the effects on the room (ambience, seats, capacity, check, bev, labor, sideline, cellar bottles, fixed monthly cost, pres, prestige); leave out the ones that don't apply. "effects" is optional: [{"op":"mod","kind":"demand"|"check"|"foodcost"|"awareness","label":"short","value":number,"months":0 for permanent}].`,
+  fix:(x,it)=>{ const f=it&&it.fit&&typeof it.fit==="object"?it.fit:{}, fit={};
+    const fm=(Array.isArray(f.formats)?f.formats:[]).filter(v=>["seated","counter","truck"].includes(v)); fit.formats=fm.length?fm:[locFormat()];
+    const tr=(Array.isArray(f.tiers)?f.tiers:[]).filter(v=>["low","mid","high"].includes(v)); if(tr.length) fit.tiers=tr;
+    if(+f.minAlc>0) fit.minAlc=clamp(+f.minAlc,0,.3); x.fit=fit;
+    x.clash=featClashRe(it&&it.clash)?String(it.clash).toLowerCase().split("|").map(w=>w.replace(/[^a-z0-9 '\-]/g,"").trim()).filter(Boolean).slice(0,6).join("|"):String(x.name).toLowerCase().replace(/[^a-z0-9 ]/g,"");
+    const ef=(Array.isArray(it&&it.effects)?it.effects:[]).filter(e=>e&&FEAT_FX[e.kind]&&isFinite(+e.value)).slice(0,3)
+      .map(e=>({op:"mod",kind:e.kind,label:String(e.label||x.name).slice(0,40),value:Math.round(clamp(+e.value,FEAT_FX[e.kind][0],FEAT_FX[e.kind][1])*1000)/1000,months:clamp(Math.round(+e.months||0),0,24)}));
+    if(ef.length) x.effects=ef; else delete x.effects;
+    x.cost=Math.max(500,x.cost||0); x.weeks=clamp(x.weeks||0,0,12); if(x.ambience) x.ambience=clamp(x.ambience,-10,25); return x; }});
+/* marketing channels keep their keys and maths; what they're called follows the world */
+const MKT_BASE=()=>Object.entries(MKT_CH).map(([key,C])=>({key,name:C.name,hint:C.hint}));
+worldCat("marketing",{base:MKT_BASE,sample:MKT_BASE,what:"names and one-line descriptions for the restaurant's eight marketing channels, as they'd exist here",n:[8,8],enums:{key:Object.keys(MKT_CH)},
+  notes:'- Exactly one item per "key", in the same order, each doing the same job as its default: social = fast word of mouth among younger locals that fades when you stop; search = being found by people already looking, visitors most of all; print = print or broadcast ads for older, wealthier readers; pr = press and critics\' attention; outdoor = posters, signs and transit ads where visitors pass; influencer = well-known people talking you up, hit and miss; events = community events and sponsorships; email = keeping in touch with guests you already have. Rename each to what that job is here. "hint" is one sentence on who it reaches and how it behaves.'});
+function mktName(k){ const w=catalogFitted("marketing")&&wcList("marketing").find(x=>x.key===k); return (w&&w.name)||MKT_CH[k].name; }
+function mktHint(k){ const w=catalogFitted("marketing")&&wcList("marketing").find(x=>x.key===k); return (w&&w.hint)||MKT_CH[k].hint; }
+
 
 // the credentials catalogue (see the CREDENTIALS section above for how its items become certs)
 worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hold or sit here: the food-safety or hygiene card and its higher level, cooks' and pastry cooks' qualifications, sommelier and service qualifications, licences the local cuisine needs, and the top honours of the trade",n:[6,16],
@@ -7408,7 +7490,7 @@ function featureFits(f,loc){
   if(fit.formats&&!fit.formats.includes(locFormat())) return false;
   if(fit.tiers&&!fit.tiers.includes(locTier(loc))) return false;
   if(fit.minAlc&&(C.alcohol||0)<fit.minAlc&&!S.programs?.bar) return false;
-  if(f.clash&&f.clash.test(haveNames(loc))) return false;
+  if(f.clash){ const re=featClashRe(f.clash); if(re&&re.test(haveNames(loc))) return false; }
   return true;
 }
 function buildFeature(f,li){
@@ -8522,11 +8604,11 @@ function operateHTML(){
         <div class="dial">
           <div class="lab"><b>Marketing</b><span class="val">${money(mktTotal())}/mo in total</span></div>
           ${S.locations.filter(l=>l.status!=="closed").map(l=>{ const m=mktOf(l), E=mktEffects(l); return `<details style="margin-top:6px"${S.locations.length<2?" open":""}><summary style="cursor:pointer"><b style="font-weight:600">${esc(l.name)}</b> <span class="note">· ${money(mktLocTotal(l))}/mo · adds about ${Math.round(E.aware)} awareness${E.retention?`, ${pct(E.retention,1)} more repeat visits`:""}</span></summary>
-            ${Object.entries(MKT_CH).map(([k,C])=>`<div style="margin-top:8px"><div class="kv" style="border:0;padding:0"><span>${esc(C.name)}</span><span class="n note">${E.byCh[k]?`${Math.round(E.byCh[k]*100)}% saturated`:""}</span></div>
+            ${Object.entries(MKT_CH).map(([k,C])=>`<div style="margin-top:8px"><div class="kv" style="border:0;padding:0"><span>${esc(mktName(k))}</span><span class="n note">${E.byCh[k]?`${Math.round(E.byCh[k]*100)}% saturated`:""}</span></div>
               <div class="numf"><button type="button" class="nfb" data-nf="-1" aria-label="less">−</button><input type="number" inputmode="numeric" class="mktIn" data-cur data-loc="${l.id}" data-ch="${k}" min="0" max="${lc(10000000,0)}" step="${lc(250,0)||1}" value="${lc(+m[k]||0,0)}"><button type="button" class="nfb" data-nf="1" aria-label="more">+</button></div>
-              <div class="hint">${esc(C.hint)}</div></div>`).join("")}
+              <div class="hint">${esc(mktHint(k))}</div></div>`).join("")}
             ${campaignsHTML(l)}</details>`; }).join("")}
-          <div class="hint" style="margin-top:8px">Each channel has diminishing returns: the first dollars do the most, and past saturation extra spend barely moves anything.</div>
+          ${worldNote("marketing")}<div class="hint" style="margin-top:8px">Each channel has diminishing returns: the first dollars do the most, and past saturation extra spend barely moves anything.</div>
         </div>
         <div class="dial" style="display:none">
           <div class="lab"><b>Marketing spend</b><span class="val">${money(d.marketing)}/mo</span></div>
@@ -9354,7 +9436,7 @@ function wireMenu(){ wireMenuSections();
   const rai=$("#rAddI"); if(rai) rai.onclick=()=>{ recipeDraft.ingredients.push({name:"",qty:0,unit:"g",unitCost:0,cat:"produce"}); keepY(); };
   const ras=$("#rAddS"); if(ras) ras.onclick=()=>{ recipeDraft.steps.push({task:"",station:"sauté",minutes:3,when:"to order"}); keepY(); };
   const rw=$("#rWrite"); if(rw) rw.onclick=async()=>{ const d=byId(editDish); if(!d) return; rw.disabled=true;
-    const r=await claudeJSON(DISH_RULES,`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":S.menu.format==="buffet"?"buffet (price 0: guests pay at the door; batch-cooked in hotel pans, buffet portions)":"à la carte"}\n\nWRITE OUT THE FULL RECIPE FOR THIS EXISTING DISH, keeping it the same dish: ${d.name} (${d.course}). Menu line: ${d.desc}. Ingredient grade: ${gradeOf(d.grade).name}.`,$("#de_out"),"recipe","Writing it out…");
+    const r=await claudeJSON(DISH_RULES+worldGoodsRule(),`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":S.menu.format==="buffet"?"buffet (price 0: guests pay at the door; batch-cooked in hotel pans, buffet portions)":"à la carte"}\n\nWRITE OUT THE FULL RECIPE FOR THIS EXISTING DISH, keeping it the same dish: ${d.name} (${d.course}). Menu line: ${d.desc}. Ingredient grade: ${gradeOf(d.grade).name}.`,$("#de_out"),"recipe","Writing it out…");
     rw.disabled=false; if(!r||!r.recipe) return; recipeDraft=sanitizeRecipe(r.recipe); d.taste=sanitizeTaste(r.taste); keepY(); };
   const ds=$("#de_save"); if(ds) ds.onclick=async()=>{
     const isNew=editDish==="new"; const d=isNew? sanitizeDish({}) : byId(editDish); if(!d) return;
@@ -9376,7 +9458,7 @@ function wireMenu(){ wireMenuSections();
   const dg=$("#dishGo"); if(dg) dg.onclick=async()=>{
     const t=$("#dishIdea").value.trim(); if(!t){ $("#dishOut").textContent="Describe the dish first."; return; }
     dg.disabled=true;
-    const r=await claudeJSON(DISH_RULES,`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":S.menu.format==="buffet"?"buffet (price 0: guests pay at the door; batch-cooked in hotel pans, buffet portions)":"à la carte"}\n\nTHE OWNER'S IDEA:\n${t}`,$("#dishOut"),"dish","In the development kitchen…");
+    const r=await claudeJSON(DISH_RULES+worldGoodsRule(),`\n\nMENU FORMAT: ${S.menu.format==="tasting"?"tasting menu (price 0, small portions)":S.menu.format==="buffet"?"buffet (price 0: guests pay at the door; batch-cooked in hotel pans, buffet portions)":"à la carte"}\n\nTHE OWNER'S IDEA:\n${t}`,$("#dishOut"),"dish","In the development kitchen…");
     dg.disabled=false; if(!r) return;
     S.pendingDish=sanitizeDish(r, S.menu.format==="tasting"?"starter":"main"); if(S.menu.format==="tasting"||S.menu.format==="buffet") S.pendingDish.price=0;
     keepY(); };
@@ -9385,7 +9467,7 @@ function wireMenu(){ wireMenuSections();
   const mg=$("#menuGo"); if(mg) mg.onclick=async()=>{
     const t=$("#menuBrief").value.trim(); if(!t){ $("#menuOut").textContent="Write a brief first: theme, season, format, price."; return; }
     mg.disabled=true;
-    const r=await claudeJSON(MENU_RULES,`\n\nTHE OWNER'S BRIEF:\n${t}`,$("#menuOut"),"menu","Writing the menu…");
+    const r=await claudeJSON(MENU_RULES+worldGoodsRule(),`\n\nTHE OWNER'S BRIEF:\n${t}`,$("#menuOut"),"menu","Writing the menu…");
     mg.disabled=false; if(!r) return;
     const fmt=r.format==="carte"?"carte":r.format==="buffet"?"buffet":"tasting";
     const dishes=(Array.isArray(r.dishes)?r.dishes:[]).slice(0,fmt==="buffet"?60:48).map(x=>{const d=sanitizeDish(x); if(fmt!=="carte"&&itemSec(d)==="food") d.price=0; return d;});
@@ -9459,7 +9541,7 @@ function sourcingHTML(){
       <div class="panel"><div class="hd"><h3>Find a supplier</h3></div><div class="bd">
         <p class="note" style="margin:0 0 9px">Say what you're after: a person, a product, a region, a standard. New accounts start with a thin relationship; it grows each month you pay on time.</p>
         <textarea id="supIdea" placeholder="A woman in Maine who dives for sea urchin and scallops herself and ships overnight." ${off?"disabled":""}></textarea>
-        <div class="row" style="margin-top:9px"><button class="btn" id="supGo" ${off?"disabled":""}>Find them</button><button class="btn sec" id="supMarket">Browse the usual market</button></div>
+        <div class="row" style="margin-top:9px"><button class="btn" id="supGo" ${off?"disabled":""}>Find them</button><button class="btn sec" id="supMarket">Browse the usual market</button></div>${worldNote("suppliers")}
         <div id="supOut" style="margin-top:10px"></div>
         ${S.supplierOffers.map(supplierOfferHTML).join("")}
       </div></div>
@@ -9489,7 +9571,7 @@ function sourcingHTML(){
 
     ${exp("cellar")?`<div class="panel"><div class="hd"><h3>Allocations &amp; auctions</h3></div><div class="bd">
       <textarea id="wineIdea" placeholder="Grand cru Burgundy for our tenth anniversary dinners, and something Japanese for the bar." ${off?"disabled":""}></textarea>
-      <div class="row" style="margin-top:9px"><button class="btn" id="wineGo" ${off?"disabled":""}>Hunt for bottles</button><button class="btn sec" id="wineMarket">See this month's offers</button></div>
+      <div class="row" style="margin-top:9px"><button class="btn" id="wineGo" ${off?"disabled":""}>Hunt for bottles</button><button class="btn sec" id="wineMarket">See this month's offers</button></div>${worldNote("wine")}
       <div id="wineOut" style="margin-top:10px"></div>
       ${S.lots.map(lotHTML).join("")||`<p class="note" style="margin:8px 0 0">Nothing on offer. Hunting asks your distributor reps, auction houses and a couple of collectors.</p>`}
     </div></div>`:""}
@@ -9516,11 +9598,11 @@ function wireSourcing(){
   document.querySelectorAll("[data-supdrop]").forEach(b=>b.onclick=()=>{ S.supplierOffers=S.supplierOffers.filter(x=>x.id!==b.dataset.supdrop); keepY(); });
   const sm=$("#supMarket"); if(sm) sm.onclick=()=>{
     const have=new Set(S.supplierPool.map(p=>p.name));
-    S.supplierOffers=SUPPLIER_MARKET.filter(t=>!have.has(t.name)).map(t=>Object.assign({},t,{id:"sp"+uid(),relation:25,monthsWith:0}));
+    S.supplierOffers=wcList("suppliers").filter(t=>!have.has(t.name)).map(t=>Object.assign({},t,{id:"sp"+uid(),relation:25,monthsWith:0}));
     keepY(); };
   const run=async(extra,btn,busy)=>{
     btn.disabled=true;
-    const r=await claudeJSON(SUPPLIER_RULES,extra,$("#supOut"),"supplier search",busy);
+    const r=await claudeJSON(SUPPLIER_RULES+worldGoodsRule(),extra,$("#supOut"),"supplier search",busy);
     btn.disabled=false; if(!r) return;
     const list=(Array.isArray(r.suppliers)?r.suppliers:[]).slice(0,4).map(sanitizeSupplier);
     if(!list.length){ $("#supOut").textContent="Nobody turned up. Try describing it differently."; return; }
@@ -9532,13 +9614,13 @@ function wireSourcing(){
   const cm=$("#cMarkup"); if(cm) cm.onchange=()=>{ S.cellar.markup=numVal(cm); keepY(); };
   const wm=$("#wineMarket"); if(wm) wm.onclick=()=>{
     const have=new Set(S.lots.map(l=>l.name).concat(S.cellar.rare.map(b=>b.name)));
-    const pool=WINE_MARKET.filter(l=>!have.has(l.name)); const out=[];
+    const pool=wcList("wine").filter(l=>!have.has(l.name)); const out=[];
     while(out.length<3&&pool.length){ out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); }
     S.lots=out.map(l=>sanitizeLot(Object.assign({},l,{cost:Math.round(l.cost*rnd(.9,1.15))}))).concat(S.lots).slice(0,6); keepY(); };
   const wg=$("#wineGo"); if(wg) wg.onclick=async()=>{
     const t=$("#wineIdea").value.trim()||"Whatever would lift this list the most for the money.";
     wg.disabled=true;
-    const r=await claudeJSON(WINE_RULES,`\n\nTHE OWNER WANTS:\n${t}\nCurrent standing with distributors: ${Math.round(S.cellar.standing)}/100.`,$("#wineOut"),"wine search","Calling reps and reading catalogues…");
+    const r=await claudeJSON(WINE_RULES+worldGoodsRule(),`\n\nTHE OWNER WANTS:\n${t}\nCurrent standing with distributors: ${Math.round(S.cellar.standing)}/100.`,$("#wineOut"),"wine search","Calling reps and reading catalogues…");
     wg.disabled=false; if(!r) return;
     const lots=(Array.isArray(r.lots)?r.lots:[]).slice(0,4).map(sanitizeLot);
     if(!lots.length){ $("#wineOut").textContent=String(r.note||"Nothing real turned up this time. The rarest bottles surface only a few times a year."); return; }
@@ -9582,7 +9664,7 @@ function featureOfferHTML(f,kind){
 function houseHTML(){
   if(houseLoc>=S.locations.length) houseLoc=0;
   const loc=S.locations[houseLoc], off=!sampleFn, amb=ambience(loc);
-  const built=new Set(loc.features.map(f=>f.name));
+  const built=new Set(loc.features.map(f=>f.name)), FL=wcList("features");
   return `<div class="sec" style="padding-top:18px">
   <h2>The house</h2>
   <p class="lede">The room is a large part of what a guest pays for, and it moves reputation, what people will pay and how many you can seat. Michelin judges only the plate, but critics and guests judge the room as well.</p>
@@ -9610,8 +9692,8 @@ function houseHTML(){
     </div>
     <div class="panel"><div class="hd"><h3>Quick quotes</h3><span class="spacer"></span>${off?"":`<button class="btn sm sec" id="walkRoom">Have a contractor walk the room</button>`}</div><div class="bd">
       <p class="note" style="margin:0 0 8px">A contractor who walks this room pitches whatever would do the most for it, priced for your city. The standard list below is only for when you want a quick number.</p>
-      <details><summary class="note" style="cursor:pointer;font-weight:700">Standard upgrades (${FEATURES.filter(f=>!built.has(f.name)&&featureFits(f,loc)).length})</summary>
-      ${FEATURES.filter(f=>!built.has(f.name)&&featureFits(f,loc)).map((f,i)=>featureOfferHTML(Object.assign({id:"cat_"+FEATURES.indexOf(f)},f),"cat")).join("")||`<p class="note" style="margin:0">Nothing on the usual list suits this place right now. Commission something of your own.</p>`}
+      <details><summary class="note" style="cursor:pointer;font-weight:700">Standard upgrades (${FL.filter(f=>!built.has(f.name)&&featureFits(f,loc)).length})</summary>${worldNote("features")}
+      ${FL.filter(f=>!built.has(f.name)&&featureFits(f,loc)).map((f,i)=>featureOfferHTML(Object.assign({id:"cat_"+FL.indexOf(f)},f),"cat")).join("")||`<p class="note" style="margin:0">Nothing on the usual list suits this place right now. Commission something of your own.</p>`}
     </details></div></div>
   </div></div>
   <div class="panel" style="margin-top:14px"><div class="hd"><h3>Setting</h3><span class="spacer"></span><span class="note">you can't change this</span></div><div class="bd">
@@ -9791,7 +9873,7 @@ function wireHouse(){
   document.querySelectorAll("[data-hl]").forEach(b=>b.onclick=()=>{ houseLoc=+b.dataset.hl; keepY(); });
   document.querySelectorAll("[data-fbuild]").forEach(b=>b.onclick=()=>{
     let f;
-    if(b.dataset.fkind==="cat") f=Object.assign({},FEATURES[+b.dataset.fbuild.split("_")[1]]);
+    if(b.dataset.fkind==="cat") f=Object.assign({},wcList("features")[+b.dataset.fbuild.split("_")[1]]);
     else { f=S.archOffers.find(x=>x.id===b.dataset.fbuild); if(f) S.archOffers=S.archOffers.filter(x=>x.id!==f.id); }
     if(!f||S.cash<f.cost) return;
     if(!ownerApproves(f.cost,f.name)){ keepY(); return; }
@@ -9803,7 +9885,7 @@ function wireHouse(){
     const t=$("#archIdea").value.trim(); if(!t){ $("#archOut").textContent="Describe what you want built first."; return; }
     const loc=S.locations[houseLoc];
     ag.disabled=true;
-    const r=await claudeJSON(ARCH_RULES,`\n\nTHE SPACE: ${loc.name}, ${loc.sqft||"unknown"} sq ft, ${loc.seats} seats, ambience ${Math.round(ambience(loc))}/100, in a ${MARKETS[loc.market].name.toLowerCase()}.\n\nTHE OWNER WANTS:\n${t}`,$("#archOut"),"quote","Drawing it up…");
+    const r=await claudeJSON(ARCH_RULES+worldGoodsRule(),`\n\nTHE SPACE: ${loc.name}, ${loc.sqft||"unknown"} sq ft, ${loc.seats} seats, ambience ${Math.round(ambience(loc))}/100, in a ${MARKETS[loc.market].name.toLowerCase()}.\n\nTHE OWNER WANTS:\n${t}`,$("#archOut"),"quote","Drawing it up…");
     ag.disabled=false; if(!r) return;
     if(r.feasible===false){ $("#archOut").innerHTML=`<div class="choice" style="cursor:default"><b>Not possible</b><span>${esc(String(r.reason||"It can't be done here."))}</span></div>`; return; }
     S.archOffers=[sanitizeFeature(r)].concat(S.archOffers).slice(0,4); keepY(); };
@@ -10062,7 +10144,7 @@ function rivalsHTML(){
   const rv=ensureRivals(); if(!rv.length) return "";
   return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Your competitive set</h3></div><div class="bd">`+
     rv.map(r=>`<div class="kv"><span>${esc(r.name)}<span class="note"> · chef ${esc(r.chef)}${r.price&&!r.closed?` · prices ${r.price<S.dials.price*.97?"below":r.price>S.dials.price*1.03?"above":"about the same as"} yours`:""}${r.closed?" · closed":r.opened!=null&&S.monthIdx-r.opened<14?` · opened ${Math.max(1,S.monthIdx-r.opened)} mo ago, still finding its feet`:""}</span></span><span class="n">${r.closed?"—":`quality ${Math.round(r.q)} · buzz ${Math.round(r.buzz)}`}</span></div>`).join("")+
-    `<p class="note" style="margin:8px 0 0">Rivals who cook better than you make guide recognition harder to win. ${locTier(S.locations[0])==="high"?"At this level they compete for talent, press, hosts and the same guides, rarely on price.":"At this level they compete on price, location and whatever's going viral this week."}</p></div></div>`;
+    `<p class="note" style="margin:8px 0 0">Rivals who cook better than you make guide recognition harder to win. ${locTier(S.locations[0])==="high"?"At this level they compete for talent, press, hosts and the same guides, rarely on price.":"At this level they compete on price, location and whatever people are talking about this week."}</p>${worldNote("rivals")}</div></div>`;
 }
 
 /* ---- the awards that matter wherever the restaurant is, looked up by Claude ---- */
@@ -10091,14 +10173,14 @@ function pressHTML(){
   const monthsTo=(S.world.guideMonth-S.calMonth+12)%12;
   return `<div class="sec" style="padding-top:18px">
   <h2>Press &amp; the Guide</h2>
-  <p class="lede">Michelin inspectors book under ordinary names, pay for every meal and come back several times before anything changes. They judge five things on the plate: ingredients, technique, harmony, the chef's personality and consistency. ${S.world.guide?`The Guide is released every ${MONTHS[S.world.guideMonth]}${monthsTo?`; the next one is ${monthsTo} month${monthsTo>1?"s":""} away`:"; it comes out at the end of this month"}.`:"There's no Michelin Guide in this market. You can change that in the Office."}</p>
+  <p class="lede">${michelinAbsent()&&!S.world.guide?`Critics, inspectors and guests judge what's on the plate, how the room feels and how they're treated. Their verdicts move trade, and the ones that matter here are below.`:`Michelin inspectors book under ordinary names, pay for every meal and come back several times before anything changes. They judge five things on the plate: ingredients, technique, harmony, the chef's personality and consistency. ${S.world.guide?`The Guide is released every ${MONTHS[S.world.guideMonth]}${monthsTo?`; the next one is ${monthsTo} month${monthsTo>1?"s":""} away`:"; it comes out at the end of this month"}.`:"There's no Michelin Guide in this market. You can change that in the Office."}`}</p>
   ${exp("rivals")?rivalsHTML():""}
   ${localGuidesHTML()}
   ${S.locations.map(l=>{const P=l.press; const cyc=P.inspections.filter(i=>i.m>S.monthIdx-12).length;
     return `<div class="grid g2" style="margin-bottom:14px">
     <div class="stack">
       <div class="panel"><div class="hd"><h3>${esc(l.name)}</h3></div><div class="bd">
-        <div class="accolade">${l.stars?`${starGlyphs(l.stars)} <span>${l.stars} Michelin star${l.stars>1?"s":""}</span>`:l.bib?`<span>Bib Gourmand</span>`:l.selected?`<span>Recommended in the Guide</span>`:`<span class="note" style="font-size:15px">${S.world.guide?"Not in the Guide":"No Michelin Guide covers this city"}</span>`}${l.green?' <span class="pill g">Green Star</span>':""}</div>
+        <div class="accolade">${l.stars?`${starGlyphs(l.stars)} <span>${l.stars} Michelin star${l.stars>1?"s":""}</span>`:l.bib?`<span>Bib Gourmand</span>`:l.selected?`<span>Recommended in the Guide</span>`:`<span class="note" style="font-size:15px">${S.world.guide?"Not in the Guide":michelinAbsent()?"No guide awards stars here":"No Michelin Guide covers this city"}</span>`}${l.green?' <span class="pill g">Green Star</span>':""}</div>
         <div style="margin-bottom:8px"><div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:4px">Who eats here</div>${Object.entries(segmentMix(l)).filter(([k,v])=>v>.01).map(([k,v])=>`<div class="kv"><span>${SEGMENTS[k].name}</span><span class="n">${Math.round(v*100)}%</span></div>`).join("")}</div>
         <div class="kv"><span>Guest rating</span><span class="n">${guestRating(l).toFixed(1)} / 5${l.gr?` <span class="note">from ${Math.round(l.gr.n)} recent reviews</span>`:""}</span></div>
         ${(l.grRecent||[]).length?`<div style="margin-top:8px">`+(l.grRecent||[]).slice(0,6).map(g=>`<div class="hint" style="margin-top:6px">${"★".repeat(g.stars)}${"☆".repeat(5-g.stars)} ${esc(g.when)}${g.who&&SEGMENTS[g.who]?` · <span class="note">${esc(SEGMENTS[g.who].name.toLowerCase())}</span>`:""} · “${esc(g.text)}”${g.stars<=2&&!g.replied?` <button class="btn sm sec" data-grreply="${l.id}|${g.id}|0">Reply publicly</button> <button class="btn sm sec" data-grreply="${l.id}|${g.id}|1">Reply and invite them back</button>`:g.replied?` <span class="note">· you replied</span>`:""}</div>`).join("")+`</div>`:""}
@@ -10113,9 +10195,9 @@ function pressHTML(){
       </div></div>
       <div class="panel"><div class="hd"><h3>What an inspector would taste</h3></div><div class="bd">${critBars(l.lastCrit,"Your chef's honest read of last month. Inspectors see roughly this, give or take a bad night, averaged over their visits. Uneven cooking is marked down.")}</div></div>
     </div>
-    <div class="panel"><div class="hd"><h3>Reviews</h3></div><div class="bd tight">
+    <div class="panel"><div class="hd"><h3>Reviews</h3></div><div class="bd tight">${worldNote("critics")}
       ${P.reviews.length?P.reviews.map(r=>`<div class="entry ${r.stars>=2?"ev-good":r.stars===1?"ev-warn":"ev-bad"}"><div class="when">${esc(r.when)} · ${esc(r.src)}</div>
-        <p><b>${CRITIC_WORDS[r.stars]}</b>${r.stars?` <span class="stars small">${"★".repeat(r.stars)}</span>`:""}</p>
+        <p><b>${esc(r.verdict||CRITIC_WORDS[r.stars])}</b>${r.stars?` <span class="stars small">${"★".repeat(r.stars)}</span>`:""}</p>
         ${r.text?`<p class="rv">${esc(String(r.text).replace(/^#+[^\n]*\n+/,"").replace(/[*_#]{1,3}/g,""))}</p>`:sampleFn?`<p class="note">The review is still being written… <button class="btn sm sec" data-rvwrite="${r.id}" data-rvloc="${l.id}">Read it now</button></p>`:`<p class="note">${esc(offlineReview(r,l))}</p>`}</div>`).join("")
         :`<div class="entry"><p class="note">No critic has reviewed ${esc(l.name)} yet. They come when enough people are talking about you.</p></div>`}
     </div></div>
@@ -10133,7 +10215,7 @@ async function writeReview(rv,loc,btn){
   if(!sampleFn||rv.text) return;
   if(btn) btn.disabled=true;
   try{
-    const {text}=await sampleFn(`${REVIEW_RULES}\n\n${STYLE_NOTE}\n\nCRITIC: ${rv.src}\nSTAR RATING: ${rv.stars} of 4 (${CRITIC_WORDS[rv.stars]})\nWHAT THEY TASTED (0-100): ingredients ${rv.crit.ingredients}, technique ${rv.crit.technique}, harmony ${rv.crit.harmony}, personality ${rv.crit.personality}, consistency ${rv.crit.consistency}${rv.aspects?`\nWHAT ELSE THEY WEIGHED (0-100): service ${rv.aspects.service}, the room ${rv.aspects.room}, value for money ${rv.aspects.value}, the wine list ${rv.aspects.wine}`:""}\nRESTAURANT: ${loc.name}, ambience ${Math.round(ambience(loc))}/100, front of house ${Math.round(loc.foh)}/100\n${highEndDigest()}${houseRules()}`,{cache:false,modelTier:"quick"});
+    const {text}=await sampleFn(`${REVIEW_RULES}\n\n${STYLE_NOTE}\n\nCRITIC: ${rv.src}\nSTAR RATING: ${rv.stars} of 4 (${rv.verdict||CRITIC_WORDS[rv.stars]})\nWHAT THEY TASTED (0-100): ingredients ${rv.crit.ingredients}, technique ${rv.crit.technique}, harmony ${rv.crit.harmony}, personality ${rv.crit.personality}, consistency ${rv.crit.consistency}${rv.aspects?`\nWHAT ELSE THEY WEIGHED (0-100): service ${rv.aspects.service}, the room ${rv.aspects.room}, value for money ${rv.aspects.value}, the wine list ${rv.aspects.wine}`:""}\nRESTAURANT: ${loc.name}, ambience ${Math.round(ambience(loc))}/100, front of house ${Math.round(loc.foh)}/100\n${highEndDigest()}${houseRules()}`,{cache:false,modelTier:"quick"});
     rv.text=clip(String(text||"").trim().replace(/^#+[^\n]*\n+/,"").replace(/[*_#]{1,3}/g,""),4800); save();
     if(view==="press"){ const y=window.scrollY; render(); window.scrollTo(0,y); }
   }catch(e){ if(btn){ btn.disabled=false; btn.textContent=sampleError(e,"review")||"Try again"; } }
