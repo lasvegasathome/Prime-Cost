@@ -340,6 +340,16 @@ input:not([type]):focus{border-color:var(--accent);outline:0;box-shadow:0 0 0 3p
 .skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--ink);color:var(--paper);padding:9px 14px;border-radius:var(--r);font-weight:600;text-decoration:none}
 .skip:focus{top:10px}
 #app:focus{outline:0}
+/* body was fixed at the window's height, so the sticky header and tabs let go after the first screen */
+body{height:auto;min-height:100%}
+@media (max-width:600px){
+  /* on a phone the header's stat tiles are tall, so only the tabs and the jump list stay pinned */
+  html header.top{position:static}
+  html nav.tabs{top:env(safe-area-inset-top,0px)}
+  html nav.jump{top:calc(env(safe-area-inset-top,0px) + 44px)}
+  html section.lgm>header{top:calc(env(safe-area-inset-top,0px) + 44px)}
+  html #app .panel[id^="sec-"]{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 104px)}
+}
 .seg button:focus-visible,.tab:focus-visible{outline-offset:-3px}
 .panel>.hd h3[tabindex]:focus{outline:0}
 .why{display:inline-block;font-size:11.5px;color:var(--bad);margin:0 8px 0 6px;vertical-align:middle}
@@ -7682,7 +7692,7 @@ function wireBrand(){ const e=$("#brandEdit"); if(!e) return;
   const bs=$("#brandBase"); if(bs) bs.onchange=()=>{ const b=brandOf()||{}; S.brand=Object.assign({},b,{base:bs.value,accent:b.accent||bs.value}); save(); applyBrand(); keepY(); };
   const rs=$("#brandReset"); if(rs) rs.onclick=()=>{ const b=Object.assign({},brandOf()||{}); delete b.accent; delete b.base; S.brand=b; save(); applyBrand(); keepY(); }; }
 function render(){
-  const app=$("#app");
+  const app=$("#app"), fk=a11yFocusKey(document.activeElement);
   applyBrand();
   if(!S){ $("#tabbar").hidden=true; if(typeof runFab==="function") runFab(); app.removeAttribute("role"); app.removeAttribute("aria-labelledby"); $("#vitals").innerHTML=""; app.innerHTML=setupHTML(); wireSetup(); return; }
   { const b=brandOf(), solo=!!(b&&b.logo&&b.hideName&&S.bizName); $("#brandName").innerHTML= (b&&b.logo?`<img class="blogo${b.plate?" plate":""}${solo?" solo":""}" src="${b.logo}" alt="${solo?esc(S.bizName):""}" title="${esc(S.bizName||"")}">`:"")+(solo?"":S.bizName? `<span>${esc(S.bizName)}</span>` : 'Prime <em>Cost</em>'); }
@@ -7698,7 +7708,7 @@ function render(){
     growth:[growthHTML,()=>{ wireGrowth(); wireGrowthExtra(); }],heat:[heatHTML,wireHeat],office:[officeHTML,()=>{ wireOffice(); wireRewind(); wireExpansions(); wireIntl(); }],log:[logHTML,()=>{}]}[view]||[dashHTML,wireDash];
   app.innerHTML=P[0]();
   P[1]();
-  try{ pageJump(); runFab(); }catch(e){}
+  try{ pageJump(); runFab(); a11yRefocus(fk); }catch(e){}
   queueWorldFit();
   app.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>{ view=b.dataset.goto; render(); window.scrollTo(0,0); });
 }
@@ -10362,6 +10372,19 @@ function a11yRunMonth(){
   if(view!=="dash"){ view="dash"; render(); }
   const b=document.getElementById("advance"); if(!b) return;
   b.scrollIntoView({block:"center"}); b.focus({preventScroll:true}); if(!b.disabled) b.click();
+}
+/* ---- the page is rebuilt after most presses, so the focused control is found again afterwards and keyboard players keep their place ---- */
+function a11yFocusKey(el){
+  if(!el||el===document.body||!el.closest||!el.closest("#app,#tabin")) return null;
+  if(el.id) return "#"+CSS.escape(el.id);
+  const a=[...el.attributes].find(x=>x.name.startsWith("data-")&&x.name!=="data-armed"&&x.name!=="data-why");
+  return a? `${el.tagName.toLowerCase()}[${a.name}=${JSON.stringify(a.value)}]` : null;
+}
+function a11yRefocus(k){
+  if(!k||a11yDialogs.length) return; const ae=document.activeElement; if(ae&&ae!==document.body&&ae.isConnected) return;
+  let t=null; try{ t=document.querySelector(k); }catch(e){}
+  if(!t||t.disabled||t.offsetParent===null) t=document.getElementById("app");
+  try{ t.focus({preventScroll:true}); }catch(e){}
 }
 /* ---- long pages get a jump list of their panels, and every tab but the Dashboard gets a small Run button ---- */
 function pageJump(){
