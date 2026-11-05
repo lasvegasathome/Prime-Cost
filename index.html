@@ -6885,8 +6885,10 @@ function wrapSample(s){
     return m? base.slice(0,m.index)+mem+base.slice(m.index) : base+mem;
   };
   const opts=o=>Object.assign({modelTier:"complex"},o||{});
-  const f=async(input,o)=>{ const r=await s(prep(input),opts(o)); rememberCall(input,r&&r.text); return r; };
-  f.json=async(input,o)=>{ const r=await s.json(prep(input),opts(o)); rememberCall(input,r); return r; };
+  /* a reply that lands after the player loaded, imported or rewound to another state belongs to the old one: drop it, so it can't be written into this save */
+  const same=s0=>{ if(S!==s0){ const e=new Error("the game changed while Claude was answering"); e.code="cancelled"; throw e; } };
+  const f=async(input,o)=>{ const s0=S, r=await s(prep(input),opts(o)); same(s0); rememberCall(input,r&&r.text); return r; };
+  f.json=async(input,o)=>{ const s0=S, r=await s.json(prep(input),opts(o)); same(s0); rememberCall(input,r); return r; };
   return f;
 }
 function ctxBlock(){ return `\n\nTHE BUSINESS\n${stateDigest(S)}\n\nLocation indices: ${S.locations.map((l,i)=>`${i}=${l.name}`).join(", ")}${houseRules()}`; }
