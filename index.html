@@ -6635,7 +6635,7 @@ OTHER RECOGNITION: ${Object.values(loc.awards||{}).map(a=>`${a.guide}: ${a.name}
 async function michelinDecide(loc){
   const pend=loc.guidePending; if(!pend) return;
   let dec=null;
-  try{ if(sampleFn){ const r=await sampleFn.json(`${GUIDE_RULES}\n\n${STYLE_NOTE}${houseRules()}${guideDossier(loc,pend)}`,{cache:false}); if(r&&typeof r==="object") dec=guideRails(loc,r,pend); } }catch(e){ dec=null; }
+  try{ if(sampleFn){ const r=await sampleFn.json(`${GUIDE_RULES}\n\n${STYLE_NOTE}${houseRules()}${guideDossier(loc,pend)}`,{cache:false}); if(r&&typeof r==="object") dec=guideRails(loc,r,pend); } }catch(e){ if(e&&e.code==="cancelled") return; dec=null; }   // cancelled: that save is gone; it settles when it's next played
   if(!loc.guidePending) return;   // settled some other way meanwhile
   applyGuideDecision(loc,dec||Object.assign({note:""},pend.algo),pend,null);
   save(); if(typeof render==="function") render();
