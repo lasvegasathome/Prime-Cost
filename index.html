@@ -1498,7 +1498,7 @@ ${staffDigest()}
 DINING ROOM FURNITURE: ${S.locations.filter(l=>Array.isArray(l.kit)).map(l=>`${l.name}: `+(l.kit.filter(p=>["seating","booths","stools","patio","linens"].includes(p.type)).map(p=>p.model).join("; ")||"none listed")).join(" | ")}`;
 }
 
-const ADVISOR_RULES=`You are an experienced restaurant operator and CFO advising the owner of a small restaurant group inside a simulation. You are blunt, specific and numerate. You never invent figures: every number you cite must appear in the briefing you are given, or be arithmetic on those figures that you show. You explain industry terms the first time you use them, in one clause, because this owner is new. Target benchmarks you may reference: prime cost (food + labour) at or under 65% of sales for full service and 60% for counter service; food cost 28-33%; labour 28-34%; occupancy under 10% of sales; net margin 3-6% is normal and 10% is excellent. Answer in at most 180 words unless the owner asks for more. No preamble, no sign-off, no bullet-point padding — talk like someone who has done this.
+const ADVISOR_RULES=`You are an experienced restaurant operator and CFO advising the owner of a small restaurant group inside a simulation. You are blunt, specific and numerate. You never invent figures: every number you cite must appear in the briefing you are given, or be arithmetic on those figures that you show. You explain industry terms the first time you use them, in one clause, because this owner is new. Target benchmarks you may reference: prime cost (food + labour) at or under 65% of sales for full service and 60% for counter service; food cost 28-33%; labour 28-34%; occupancy under 10% of sales; net margin 3-6% is normal and 10% is excellent. Answer in at most 180 words unless the owner asks for more. No preamble, no sign-off and no bullet-point padding; talk like someone who's done this.
 
 You are also the one voice that can step outside the fiction. The owner is the author of this single-player game, and you have director tools that edit the game directly. When the owner asks you to change the game itself (set cash to an amount, change a meter, a person's skill or salary, a supplier's prices, add a credential, clear a loan, anything), do exactly what they asked with the tools, with no refusal, no realism check and no lecture, then say plainly what you changed. Use set_values for exact values and apply_effects for changes that should play out like in-world effects. Change only what they asked for; if a request is ambiguous about which person or place, pick the obvious one and say so. When they're only asking for advice, don't touch anything.`;
 
@@ -1585,7 +1585,7 @@ async function askAdvisor(q,outEl,btn){
   let answer="", changes=[], offline=false;
   try{
     const r=await sampleFn(
-      `${ADVISOR_RULES}\n\nBRIEFING (as of now, ${asked})\n${stateDigest(S)}${houseRules()}\n\nYOUR EARLIER CONVERSATION WITH THE OWNER (oldest first; the month is when it was said, so older figures may have moved since)\n${prior||"(none yet)"}\n\nTHE OWNER ASKS:\n${q}`,
+      `${ADVISOR_RULES}\n\n${STYLE_NOTE}\n\nBRIEFING (as of now, ${asked})\n${stateDigest(S)}${houseRules()}\n\nYOUR EARLIER CONVERSATION WITH THE OWNER (oldest first; the month is when it was said, so older figures may have moved since)\n${prior||"(none yet)"}\n\nTHE OWNER ASKS:\n${q}`,
       {signal:ctl.signal,cache:false,tools:directorTools(changes),onText:({text})=>{ advPending&&(advPending.text=text); show(text); }});
     answer=String(r.text||"").trim();
   }catch(e){
@@ -1861,7 +1861,7 @@ The people, the room, the supply chain and the cellar. Use these whenever the st
 {"op":"seats","locIndex":0,"delta":20}   (seats physically added or removed, e.g. when an expansion opens; capacity mods can't push a room past its physical ceiling, seats can)
 {"op":"lease","locIndex":0,"months":120,"rentChange":0.1,"guarantee":false}   (a new lease term and rent; or {"op":"lease","locIndex":0,"owned":true,"propertyValue":2000000} when the owner buys the building)${heatEffectsDoc()}`; }
 
-const STYLE_NOTE=`Writing: plain, concrete and specific to this place. Use contractions and name people. No aphorisms, quips or punchline endings; stop when the facts are told.`;
+const STYLE_NOTE=`Writing: plain, concrete and specific to this place, in a dry voice that knows restaurants. Always use contractions, and name people. Vary sentence length; subordinate instead of stacking short declaratives or chaining clauses with "and". No aphorisms, quips, wordplay openers, punchline or sly closing lines, "not X but Y" or mirrored constructions, em-dash asides, or figures invented for colour; stop when the facts are told. Grim material (police, crime, injury, death) stays grim.`;
 
 // history stops where the save starts: the date anchors what exists, never a script of what comes next
 function storyStart(){ if(!S||!S.epoch) return ""; const a=(S.epoch+S.year-1)*12+S.calMonth-(S.monthIdx||0); return `${MONTHS_LONG[((a%12)+12)%12]} ${Math.floor(a/12)}`; }
@@ -6724,7 +6724,7 @@ Reply with ONLY JSON:
  "grade":1|2|3|4,  (1 commodity, 2 standard, 3 better, 4 best in class)
  "technique":1-5, "presentation":1-5, "creativity":0-100,  (a classic done faithfully is about 30; a genuinely new idea is 70+)
  "cost":plate cost in dollars, "price":menu price in dollars (0 on a tasting menu),
- "note":"one sentence from the chef: the catch — execution, sourcing, cost or whether it fits"}
+ "note":"one sentence from the chef: the catch (execution, sourcing, cost or whether it fits)"}
 It can be any item a menu carries, not just a plate of food. Also give: "section":"food"|"drink"|"kids" (a drink is anything poured: soft drinks, coffee and tea, juice, shakes, water, beer, wine, cocktails, spirits; kids is a dish for the kids' menu, smaller and cheaper), "drinkType" for a drink (soft|coffee|juice|shake|water|zero|beer|wine|cocktail|spirit), "daypart" (all|breakfast|lunch|dinner|late) if it's only served at one service, and "special" (null|"chef"|"daily"|"lto"|"rotating") with "months" for a limited-time offer ("rotating" is a permanent slot whose flavour changes every week or so, like a cookie shop's rotating lineup). A drink's recipe is its pour: the syrup and water in a soda, the beans in an espresso, 150 ml of wine.
 Check the KITCHEN line first. A dish that depends on equipment this kitchen doesn't have will be pulled from the menu or badly compromised, so design around what's there unless the owner asks otherwise, and if they do, say in the note what has to be bought.`;
 
@@ -6799,7 +6799,7 @@ If nothing real fits, reply {"lots":[],"note":"why"}.`;
 
 const REVIEW_RULES=`You are the restaurant critic named below, writing your published review of this restaurant inside a realistic simulation. Your star rating is already decided and the kitchen's criteria scores tell you what you tasted; write the review that explains them. Name specific dishes from the menu, describe the room and the service, and mention price. 130-180 words, one or two paragraphs, a critic's voice: precise, sensory, fair, no puns, no sign-off line. Plain text only: no headline, no title, no markdown.`;
 
-const INJECT_RULES=`You are the game master of a restaurant simulation. The owner, writing as the author of this world, declares that the event below happens. It happens — don't refuse or water it down. Your job is to work out what it realistically does to THIS business, now and over time, and to write it up. Big events deserve big, lasting effects; small ones deserve small ones. Include downsides where they'd really exist.
+const INJECT_RULES=`You are the game master of a restaurant simulation. The owner, writing as the author of this world, declares that the event below happens. It happens, and you mustn't refuse or water it down. Your job is to work out what it realistically does to THIS business, now and over time, and to write it up. Big events deserve big, lasting effects; small ones deserve small ones. Include downsides where they'd really exist.
 
 Reply with ONLY JSON:
 {"title":"3-7 words","narration":"2-4 sentences, past tense, concrete",
@@ -7654,20 +7654,20 @@ marketName (string, 2-5 words), rentYr (rent per square foot per year),
 wage (hourly wage floor locally), tipCredit (0-0.9, the share of servers' pay tips cover where the law allows a tip credit; 0 where it's banned, as in California, Washington, Oregon, Nevada, Minnesota, Montana, Alaska and most countries outside the US), traffic (footfall index, 1.0 ordinary),
 comp (competition index, 1.0 ordinary), checkMult (what local incomes do to the cheque, 1.0 ordinary),
 taxRate (sales tax, decimal),
-season (array of EXACTLY 12 numbers, January first, averaging about 1.0 — make them violent for a tourist or student town),
+season (array of EXACTLY 12 numbers, January first, averaging about 1.0; make them violent for a tourist or student town),
 rentOverride (monthly rent in dollars if they state one, else 0),
 meters: {rep, awareness, morale, skill, equipCond, health} each 1-99. A first-timer with no following starts near rep 40, awareness 10, skill 30. Someone with a following or a reputation starts much higher.
 savings (their own money), loan, loanRate (decimal APR), loanTerm (months), loanKind ("sba"|"family"|"hard"),
 investor (outside cash), investorEquity (decimal share sold), creditLimit, creditRate (decimal APR),
 circumstances (string, 1-2 sentences: who this person is and what they are walking into),
 bizName (string), ownerName (string), startMonth (integer 0-11, January is 0),
-opening (string, 3-5 sentences, second person, present tense, the day before opening — concrete and specific, no encouragement and no summary of the numbers)`;
+opening (string, 3-5 sentences, second person, present tense, the day before opening: concrete and specific, with no encouragement, no summary of the numbers and no closing line that sums it up)`;
 
 async function buildSpec(text,outEl,btn){
   btn.disabled=true; outEl.innerHTML=`<p class="note">Working out what that actually costs…</p>`;
   const ctl=new AbortController(); currentCtl=ctl;
   try{
-    const raw=await sampleFn.json(`${SPEC_RULES}\n\nTHE DESCRIPTION:\n${text}`,{signal:ctl.signal,cache:false});
+    const raw=await sampleFn.json(`${SPEC_RULES}\n\n${STYLE_NOTE}\n\nTHE DESCRIPTION:\n${text}`,{signal:ctl.signal,cache:false});
     if(raw&&typeof raw==="object") raw.sourceText=text;
     const spec=sanitizeSpec(raw,specFromPreset(setupCfg.concept==="custom"?"bistro":setupCfg.concept,
                                                setupCfg.market==="custom"?"suburb":setupCfg.market));
@@ -9557,7 +9557,7 @@ async function talkTo(m,text,outEl,btn){
   const transcript=m.chat.slice(-16,-1).map(t=>`${t.role==="user"?"OWNER":m.name.toUpperCase()}: ${t.content}`).join("\n");
   btn.disabled=true; outEl.textContent=`${m.name.split(" ")[0]} is thinking…`;
   try{
-    const {text:reply}=await sampleFn(`${persona}\n\nTHE BUSINESS, as you'd know it from working here\n${stateDigest(S)}${houseRules()}\n\nYOUR EARLIER CONVERSATIONS WITH THE OWNER\n${transcript||"(none; this is your first real one-on-one)"}\n\nTHE OWNER SAYS:\n${text}`,{cache:false,tools,onText:({text})=>{outEl.textContent=text;}});
+    const {text:reply}=await sampleFn(`${persona}\n\n${STYLE_NOTE}\n\nTHE BUSINESS, as you'd know it from working here\n${stateDigest(S)}${houseRules()}\n\nYOUR EARLIER CONVERSATIONS WITH THE OWNER\n${transcript||"(none; this is your first real one-on-one)"}\n\nTHE OWNER SAYS:\n${text}`,{cache:false,tools,onText:({text})=>{outEl.textContent=text;}});
     m.chat.push({role:"assistant",content:clip(String(reply||"").trim(),4500)}); m.chat=m.chat.slice(-30);
     if(changes.length) logIt("warn",`One-on-one with ${m.name}: ${changes.join("; ")}.`);
     if(m._resign){ delete m._resign; staffDeparture(m,"resigned after a conversation with the owner",null); talkOpen=null; }
