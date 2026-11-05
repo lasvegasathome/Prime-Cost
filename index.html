@@ -2659,11 +2659,6 @@ function placeName(){ return (S.intl&&S.intl.home&&S.intl.home!=="United States"
 const CRED_BASE_KEYS=["servsafe","uk_l3","acf_cc","acf_csc","acf_cec","acf_cmc","mof_cuisine","acf_cpc","acf_cepc","cms_intro","cms_cert","cms_ms","wset3","mw","ahlei_chs","jp_fugu"];
 function credBase(){ return CRED_BASE_KEYS.map(k=>{ const c=CERTS[k], o={name:c.name,roles:c.roles.slice(),food:!!c.health,level:c.rs,years:c.ry,cost:c.cost,months:c.months,pass:c.pass,skill:c.skill,prestige:c.prestige||0,health:c.health||0};
   if(c.pre) o.requires=CERTS[c.pre].name; return o; }); }
-worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hold or sit here: the food-safety or hygiene card and its higher level, cooks' and pastry cooks' qualifications, sommelier and service qualifications, licences the local cuisine needs, and the top honours of the trade",n:[6,16],
-  notes:'- Who certifies cooks, sommeliers and food handlers here, in this era or fiction, and what they call it. If almost nothing formal exists, list the few things that do (an apprenticeship, a guild mark, a permit, a Party card for canteen work).\n- "roles" uses only: chef, sous, pastry, somm, maitre. "food" is true for a food-safety or hygiene credential; give at least one, with no "requires". "requires" is the exact name of another item in your list that must come first; leave it out otherwise.\n- level is the skill (0-100) it\'s pitched at, years the experience needed, pass the chance (0-1) someone at that level passes, skill (0-8) what it adds to their craft, prestige (0-6) how much it impresses guests and critics, health (0-8) only for food safety.',
-  fix:x=>{ x.roles=[].concat(x.roles||[]).filter(r=>ROLES[r]); if(!x.roles.length) return null;
-    x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.round(clamp(x.years||0,0,20)); x.months=Math.round(clamp(x.months||1,1,36)); x.pass=clamp(x.pass||.5,.05,.98);
-    x.skill=Math.round(clamp(x.skill||0,0,8)); x.prestige=Math.round(clamp(x.prestige||0,0,6)); x.health=Math.round(clamp(x.health||0,0,8)); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
 let _wcred=null;
 function worldCreds(){
   if(!S||!catalogFitted("credentials")) return null; const c=S.worldCat.credentials, tag=`${S.slotId}|${c.key}|${c.at}|${c.items.map(x=>x.name).join("|")}`;
@@ -2679,12 +2674,15 @@ function worldCreds(){
   _wcred={tag,keys,set:new Set(keys)}; translateHeldCerts(_wcred); return _wcred;
 }
 /* people already on the team keep what they earned, under the name it has in this world: the closest credential for their role,
-   of the same kind and as near as possible in what it adds to their craft. Anything with no counterpart here stays as it was. */
+   of the same kind and near it in level and in what it adds to their craft. A second rung that maps onto one they already got
+   folds into it; anything with no counterpart here at all stays as it was. */
 function translateHeldCerts(W){
   for(const m of (S.team||[])){ if(!Array.isArray(m.certs)) continue; const out=[];
     for(const k of m.certs){ if(W.set.has(k)){ if(!out.includes(k)) out.push(k); continue; }
       const c=certInfo(k), food=!!(c.food||c.health>0);
-      const cand=W.keys.filter(x=>{ const d=certInfo(x); return (d.roles||[]).includes(m.role)&&!!(d.food||d.health>0)===food&&!out.includes(x)&&!m.certs.includes(x); })
+      const near=W.keys.filter(x=>{ const d=certInfo(x); return (d.roles||[]).includes(m.role)&&!!(d.food||d.health>0)===food&&Math.abs((d.skill||0)-(c.skill||0))<=2&&Math.abs((d.rs||0)-(c.rs||0))<=30; });
+      if(near.some(x=>out.includes(x))&&!near.some(x=>!out.includes(x)&&!m.certs.includes(x))) continue;
+      const cand=near.filter(x=>!out.includes(x)&&!m.certs.includes(x))
         .sort((a,b)=>Math.abs((certInfo(a).skill||0)-(c.skill||0))-Math.abs((certInfo(b).skill||0)-(c.skill||0))||Math.abs((certInfo(a).rs||0)-(c.rs||0))-Math.abs((certInfo(b).rs||0)-(c.rs||0)));
       out.push(cand[0]||k); }
     m.certs=out; }
@@ -7165,7 +7163,7 @@ function railItem(it,base,enums){
   for(const k of keys){ const vals=base.map(b=>b[k]).filter(v=>v!==undefined), v=it[k], t=vals.find(x=>x!==null);
     if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
     if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
-    if(typeof t==="number"){ const n=+v; if(!isFinite(n)) continue; const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
+    if(typeof t==="number"){ const n=+v; if(!isFinite(n)){ if(vals.length===base.length) return null; continue; } const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
     else if(typeof t==="string"){ const s=String(v).trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }
     else if(typeof t==="boolean") out[k]=!!v;
     else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
@@ -7218,6 +7216,12 @@ const TRAIN_CATALOG=[
 worldCat("training",{base:()=>TRAIN_CATALOG,what:"staff training programmes (courses, coaching, apprenticeships, drills, outside instructors)",n:[6,12],
   enums:{role:[null].concat(Object.keys(ROLES))},notes:'- "role" is null for a whole-team programme, or the one role it trains. "away":true only when that person leaves service for it. "monthly" is a running cost while it lasts; leave it out otherwise.\n- Effect keys: health = health score, brigade = brigade technique, fohTrain = floor training, crewKitchen/crewFloor/crewSupport = hourly crews, creativity/coherence = menu, skill/loyalty = the named person, morale = everyone.'});
 
+// the credentials catalogue (see the CREDENTIALS section above for how its items become certs)
+worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hold or sit here: the food-safety or hygiene card and its higher level, cooks' and pastry cooks' qualifications, sommelier and service qualifications, licences the local cuisine needs, and the top honours of the trade",n:[6,16],
+  notes:'- Who certifies cooks, sommeliers and food handlers here, in this era or fiction, and what they call it. If almost nothing formal exists, list the few things that do (an apprenticeship, a guild mark, a permit, a Party card for canteen work).\n- "roles" uses only: chef, sous, pastry, somm, maitre. "food" is true for a food-safety or hygiene credential; give at least one, with no "requires". "requires" is the exact name of another item in your list that must come first; leave it out otherwise.\n- level is the skill (0-100) it\'s pitched at, years the experience needed, pass the chance (0-1) someone at that level passes, skill (0-8) what it adds to their craft, prestige (0-6) how much it impresses guests and critics, health (0-8) only for food safety.',
+  fix:x=>{ x.roles=[].concat(x.roles||[]).filter(r=>ROLES[r]); if(!x.roles.length) return null;
+    x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.round(clamp(x.years||0,0,20)); x.months=Math.round(clamp(x.months||1,1,36)); x.pass=clamp(x.pass||.5,.05,.98);
+    x.skill=Math.round(clamp(x.skill||0,0,8)); x.prestige=Math.round(clamp(x.prestige||0,0,6)); x.health=Math.round(clamp(x.health||0,0,8)); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
 /* ---- who inspects: the health authority and the fire authority, in this world's own terms ----
    The engine's health score, fines and fire-code timing are unchanged; this is who turns up, what they're called, what they say
    and how often the health side comes unannounced. A closed world with no inspectors swaps in whoever plays that part. */
@@ -7229,7 +7233,7 @@ const INSPECTORS=[
 let _inspLoc=null;
 worldCat("inspectors",{base:()=>INSPECTORS,what:"authorities who inspect a restaurant here: one for hygiene and food safety, one for fire safety",n:[2,2],enums:{role:["health","fire"]},
   notes:'- Exactly two items: role "health" and role "fire". Who comes, who sends them and what they look for, as this world has it (a district sanitation committee, a corporate compliance unit, a city prefecture\'s inspector). A closed world with no inspectors gets whoever plays that part.\n- "who" is how a sentence refers to them mid-sentence, lowercase, with its article ("the fire marshal"). "body" is who sends them, the same way. "score" is what the kitchen\'s hygiene rating is called here, lowercase. "visit" is one sentence announcing an unannounced visit, with {place} where the restaurant\'s name goes. "pass" and "fail" are one sentence each on how it went. "freq" is how often they come compared with an ordinary modern city (1), from 0.3 to 2.',
-  fix:x=>{ for(const k of ["who","body","score"]) if(x[k]) x[k]=x[k].replace(/^The /,"the ").replace(/[.]+$/,""); if(x.freq!=null) x.freq=clamp(x.freq,.3,2); return x; }});
+  fix:(x,it)=>{ for(const k of ["who","body","score"]) if(x[k]) x[k]=x[k].replace(/^The /,"the ").replace(/[.]+$/,""); if(x.score) x.score=x.score.charAt(0).toLowerCase()+x.score.slice(1); if(x.role==="health") x.freq=clamp(+it.freq||1,.3,2); return x; }});
 function insp(role){ const d=INSPECTORS.find(x=>x.role===role)||{}, w=wcList("inspectors").find(x=>x.role===role)||{}; return Object.assign({},d,w); }
 function fireWho(){ return insp("fire").who||"the fire marshal"; }
 function healthWord(){ return insp("health").score||"health score"; }
