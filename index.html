@@ -1054,7 +1054,7 @@ const EVENT_POOL=[
    text:S=>`The grease trap backed up at ${greaseWorst(S).name} on a Saturday. You closed at eight.`,
    apply:S=>{const l=greaseWorst(S); S.cash-=rnd(1800,6500); l.rep-=rnd(1,4); return "a lost service";}},
   {id:"viral",w:3,tone:"good",when:S=>S.locations.some(l=>l.rep>62),
-   text:S=>socialVideo()?`A thirty-second video of one of your dishes has four hundred thousand views.`:`Word of one of your dishes has gone round the city, and strangers are coming in asking for it by name.`,
+   text:S=>socialVideo()?`A thirty-second video of one of your dishes has four hundred thousand views.`:`Word of one of your dishes has gone round the city, so strangers keep coming in to ask for it by name.`,
    apply:S=>{const l=pick(S.locations); l.awareness=clamp(l.awareness+rnd(18,34),0,99); return "a wave of strangers";}},
   {id:"theft",w:4,tone:"bad",when:S=>S.locations.some(l=>l.attention<50&&Math.random()<camRisk(l)),
    text:S=>`Your inventory counts at ${pick(S.locations).name} haven't reconciled for three months. Somebody's taking product out the back door.`,
