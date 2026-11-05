@@ -10,6 +10,22 @@ Want to jack up prices and lose your entire customer base? Blackmail your head c
 
 Open `index.html` as a Claude artifact. It's possible to play this offline, but I strongly advise against it since many of the base features of the game will be disabled or, at best, severely impaired.
 
+Shift+R runs the month from any tab, and there's a floating **Run** button on every tab except the Dashboard.
+
+## Worlds
+
+Every save belongs to its own world, whether that's a real place in a real year or somebody's fiction. The first time a save opens with Claude, the game rewrites its option lists to fit that world: training, uniforms, perks, credentials, health and fire inspectors, staff names and job titles, suppliers, wine, critics, which guides exist, rivals, the starting menu, house upgrades and the names of marketing channels. A Night City kitchen certifies its cooks through Night City's own bodies, and the Chestnut Tree pours Victory Gin. Michelin only turns up where it plausibly exists.
+
+The lists are saved with the game and rewritten if you change the world notes. Each one has a **Rewrite** link under it if you want a fresh version. Building them takes one Claude call per list on that first load.
+
+## Language
+
+Pick a language on the setup screen or in the Office tab. Claude translates the interface as you play and writes everything it generates in that language, while your own names for the restaurant, staff and dishes stay as you typed them. Translations are cached in your browser, so each string is only translated once. Right-to-left languages such as Arabic and Hebrew get a right-to-left layout, and Chinese, Japanese and Korean get matching fonts.
+
+## Accessibility
+
+Arrow keys move between tabs, dialogs keep focus inside them and close with Escape where that's safe, and controls are labelled for screen readers. The game follows your system's dark mode, high-contrast mode and reduced-motion settings.
+
 ## Preset saves
 
 The `presets/` folder holds ready-made restaurants to start from. Download one, then open the game and use **Import a save** to load it.
