@@ -1805,7 +1805,7 @@ const EXPANSIONS={
   rivals:{title:"Comp Set",name:"Rivals",desc:"A named competitive set that opens, hires, raids your staff and competes for guides.",def:()=>{ const y=storyYear(); return !(y&&y<1960)&&!(S.world&&S.world.priceLevel!=null); }},
   kitchen:{title:"Mise en Place",name:"Detailed kitchen equipment",desc:"Station-by-station kit, brands, leasing, breakdowns and fire-code compliance. Off: the kit looks after itself on contracts."},
   crews:{title:"Back of House",name:"Hourly crews & tips",desc:"Kitchen, floor and support crews with their own churn, and your tip policy."},
-  credentials:{title:"Pedigree",name:"Credentials & exams",desc:"ACF, CMS, WSET and other certifications, and sitting exams."},
+  credentials:{title:"Pedigree",name:"Credentials & exams",desc:"The certifications, licences and exams your people can sit, as they exist in this restaurant's world."},
   sourcing:{title:"First In First Out",name:"Wholesale markets & contracts",desc:"Commodity prices that move, seasonal quality, supplier contracts and backup suppliers."},
   guideai:{title:"The Committee",name:"Claude decides the Michelin Guide",desc:"Each year the Guide's committee reads the inspectors' reports and decides, within the engine's limits. Off, a formula decides.",def:()=>true},
   legal:{title:"Most Wanted",name:"Legal exposure",desc:"Audits, inspections of your paperwork, and raids when corners are cut."},
@@ -2637,41 +2637,69 @@ function certRegion(){ const h=S&&S.intl&&S.intl.home;
   const H={"Singapore":"sg","Hong Kong":"hk","Macau":"mo","Japan":"jp","United Kingdom":"uk","United States":"us","France":"eu","Italy":"eu","Spain":"eu","Germany":"eu","Canada":"ca","Australia":"au","Mexico":"mx"};
   if(h&&H[h]) return H[h]; const g=regionTags(); return g.has("japan")?"jp":g.has("uk")?"uk":g.has("europe")?"eu":g.has("australia")?"au":g.has("canada")?"ca":g.has("mexico")?"mx":g.has("us")?"us":"other"; }
 function storyYear(){ return S&&S.epoch? S.epoch+S.year-1 : null; }
-function localCerts(){ return Object.keys((S&&S.customCerts)||{}).filter(k=>S.customCerts[k].local); }
-function certAvailable(k){ if(!CERTS[k]) return localCerts().includes(k); if(S&&S.world&&S.world.outside===false) return false; const c=CERTS[k]; const y=storyYear();
+function localCerts(){ const W=worldCreds(); if(W) return W.keys.filter(k=>!CERTS[k]); return Object.keys((S&&S.customCerts)||{}).filter(k=>S.customCerts[k].local&&!S.customCerts[k].world); }
+function certAvailable(k){ const W=worldCreds();
+  if(W){ if(!W.set.has(k)) return false; const c=CERTS[k]; return !(c&&c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)); }
+  if(!CERTS[k]) return localCerts().includes(k); if(S&&S.world&&S.world.outside===false) return false; const c=CERTS[k]; const y=storyYear();
   if(c.regions&&!c.regions.includes(certRegion())) return false; if(c.since&&y&&y<c.since) return false;
   if(c.fit){ try{ if(!c.fit.test(conceptText())) return false; }catch(e){} }
   if(c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)) return false;
   if(c.upscale&&S.locations[0]&&locTier(S.locations[0])==="low") return false; return true; }
-function localFoodSafety(){ const k={us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]; if(k) return k;
+function localFoodSafety(){ const W=worldCreds(); if(W) return W.keys.find(x=>{ const c=certInfo(x); return (c.food||c.health>0)&&!c.pre; })||null;
+  const k={us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]; if(k) return k;
   const loc=localCerts().filter(x=>S.customCerts[x].food&&!S.customCerts[x].pre); return loc[0]||"haccp3"; }
 function certOptions(m){ return Object.keys(CERTS).concat(localCerts()).filter(k=>certAvailable(k)&&certEligible(m,k)).sort((a,b)=>(certInfo(a).rs||0)-(certInfo(b).rs||0)).slice(0,4); }
 /* ---- the credentials of any country the game doesn't know, looked up by Claude ---- */
 function placeName(){ return (S.intl&&S.intl.home&&S.intl.home!=="United States"?S.intl.home:"")||((S.customMarket&&S.customMarket.name)||((MARKETS[S.market]||{}).name||"")); }
-const LOCALCRED_RULES=()=>`You know the restaurant trade's credentials country by country. List the ones that really matter for restaurant staff where this restaurant is, as they stood${storyYear()?` in ${storyYear()}`:" now"}: the legally required food-safety or hygiene card and its supervisor or manager level, national trade qualifications for cooks, pastry cooks and front of house, and any licences the local cuisine requires. Only real credentials that existed then; if the country has little formal certification, list fewer. Don't list international ones the game already has: ${Object.values(CERTS).filter(c=>!c.regions).map(c=>c.name).join("; ")}.
-For each: name (its real name, with the local-language name in brackets if useful), roles (from chef, sous, pastry, somm, maitre), food (true for a food-safety or hygiene credential), requires (the exact name of another one in your list that must come first, or ""), level (the skill, 0-100, it's pitched at), years (experience needed), cost (US dollars${storyYear()?`, at ${storyYear()} prices`:""}, fees and prep), months, pass (0-1 chance for someone at that level), skill (0-8 it adds), prestige (0-6), health (0-8 for food safety).
-Reply with ONLY JSON: {"place":"the country","credentials":[{"name":"","roles":["chef"],"food":false,"requires":"","level":30,"years":0,"cost":0,"months":1,"pass":0.8,"skill":1,"prestige":0,"health":0}]}`;
-function applyLocalCreds(r){
-  const list=(Array.isArray(r&&r.credentials)?r.credentials:[]).slice(0,10), made=[]; S.customCerts=S.customCerts||{};
-  for(const c of list){ const name=clip(String(c.name||"").trim(),80); if(!name) continue; const built=matchCert(name); if(CERTS[built]) continue;
-    const roles=(Array.isArray(c.roles)?c.roles:[]).filter(x=>ROLES[x]); if(!roles.length) continue;
-    const key="x:"+name; S.customCerts[key]={name,local:true,kind:"certification",roles,food:!!c.food,rs:Math.round(clamp(Number(c.level)||30,0,100)),ry:Math.round(clamp(Number(c.years)||0,0,20)),
-      cost:Math.round(clamp(Number(c.cost)||200,0,100000)),months:Math.round(clamp(Number(c.months)||1,1,36)),pass:clamp(Number(c.pass)||.8,.05,.98),skill:Math.round(clamp(Number(c.skill)||0,0,8)),
-      prestige:Math.round(clamp(Number(c.prestige)||0,0,6)),health:Math.round(clamp(Number(c.health)||0,0,8)),reqName:clip(String(c.requires||""),80)};
-    made.push(key); }
-  for(const k of made){ const c=S.customCerts[k]; if(c.reqName){ const p=made.find(x=>S.customCerts[x].name.toLowerCase()===c.reqName.toLowerCase()); if(p&&p!==k) c.pre=p; } delete c.reqName; }
-  S.localCredPlace=clip(String((r&&r.place)||placeName()),60); return made;
+/* ---- the credentials of this save's world: who certifies cooks, sommeliers and food handlers here, in this era or fiction ----
+   Written by Claude for the world and kept to the engine's scales. A name that matches a built-in credential exactly becomes that one,
+   so its ladder and values still apply; everything else is stored in S.customCerts under a "w:" key. Offline, the built-ins by region. */
+const CRED_BASE_KEYS=["servsafe","uk_l3","acf_cc","acf_csc","acf_cec","acf_cmc","mof_cuisine","acf_cpc","acf_cepc","cms_intro","cms_cert","cms_ms","wset3","mw","ahlei_chs","jp_fugu"];
+function credBase(){ return CRED_BASE_KEYS.map(k=>{ const c=CERTS[k], o={name:c.name,roles:c.roles.slice(),food:!!c.health,level:c.rs,years:c.ry,cost:c.cost,months:c.months,pass:c.pass,skill:c.skill,prestige:c.prestige||0,health:c.health||0};
+  if(c.pre) o.requires=CERTS[c.pre].name; return o; }); }
+worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hold or sit here: the food-safety or hygiene card and its higher level, cooks' and pastry cooks' qualifications, sommelier and service qualifications, licences the local cuisine needs, and the top honours of the trade",n:[6,16],
+  notes:'- Who certifies cooks, sommeliers and food handlers here, in this era or fiction, and what they call it. If almost nothing formal exists, list the few things that do (an apprenticeship, a guild mark, a permit, a Party card for canteen work).\n- "roles" uses only: chef, sous, pastry, somm, maitre. "food" is true for a food-safety or hygiene credential; give at least one, with no "requires". "requires" is the exact name of another item in your list that must come first; leave it out otherwise.\n- level is the skill (0-100) it\'s pitched at, years the experience needed, pass the chance (0-1) someone at that level passes, skill (0-8) what it adds to their craft, prestige (0-6) how much it impresses guests and critics, health (0-8) only for food safety.',
+  fix:x=>{ x.roles=[].concat(x.roles||[]).filter(r=>ROLES[r]); if(!x.roles.length) return null;
+    x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.round(clamp(x.years||0,0,20)); x.months=Math.round(clamp(x.months||1,1,36)); x.pass=clamp(x.pass||.5,.05,.98);
+    x.skill=Math.round(clamp(x.skill||0,0,8)); x.prestige=Math.round(clamp(x.prestige||0,0,6)); x.health=Math.round(clamp(x.health||0,0,8)); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
+let _wcred=null;
+function worldCreds(){
+  if(!S||!catalogFitted("credentials")) return null; const c=S.worldCat.credentials, tag=`${S.slotId}|${c.key}|${c.at}|${c.items.map(x=>x.name).join("|")}`;
+  if(_wcred&&_wcred.tag===tag) return _wcred;
+  S.customCerts=S.customCerts||{}; const keys=[], byName={};
+  for(const it of c.items){ const nm=String(it.name||"").trim(); if(!nm) continue;
+    const b=Object.keys(CERTS).find(k=>CERTS[k].name.toLowerCase()===nm.toLowerCase()), k=b||"w:"+nm.slice(0,70);
+    if(!b) S.customCerts[k]={name:nm,local:true,world:c.key,kind:"certification",roles:(it.roles||[]).filter(r=>ROLES[r]),food:!!it.food,rs:it.level||0,ry:it.years||0,cost:it.cost||0,
+      months:it.months||1,pass:it.pass==null?.7:it.pass,skill:it.skill||0,prestige:it.prestige||0,health:it.health||(it.food?4:0)};
+    if(!keys.includes(k)){ keys.push(k); byName[nm.toLowerCase()]=k; } }
+  for(const it of c.items){ const k=byName[String(it.name||"").trim().toLowerCase()], p=it.requires&&byName[String(it.requires).trim().toLowerCase()];
+    if(k&&!CERTS[k]){ if(p&&p!==k) S.customCerts[k].pre=p; else delete S.customCerts[k].pre; } }
+  _wcred={tag,keys,set:new Set(keys)}; translateHeldCerts(_wcred); return _wcred;
 }
+/* people already on the team keep what they earned, under the name it has in this world: the closest credential for their role,
+   of the same kind and as near as possible in what it adds to their craft. Anything with no counterpart here stays as it was. */
+function translateHeldCerts(W){
+  for(const m of (S.team||[])){ if(!Array.isArray(m.certs)) continue; const out=[];
+    for(const k of m.certs){ if(W.set.has(k)){ if(!out.includes(k)) out.push(k); continue; }
+      const c=certInfo(k), food=!!(c.food||c.health>0);
+      const cand=W.keys.filter(x=>{ const d=certInfo(x); return (d.roles||[]).includes(m.role)&&!!(d.food||d.health>0)===food&&!out.includes(x)&&!m.certs.includes(x); })
+        .sort((a,b)=>Math.abs((certInfo(a).skill||0)-(c.skill||0))-Math.abs((certInfo(b).skill||0)-(c.skill||0))||Math.abs((certInfo(a).rs||0)-(c.rs||0))-Math.abs((certInfo(b).rs||0)-(c.rs||0)));
+      out.push(cand[0]||k); }
+    m.certs=out; }
+}
+function certAncestors(k){ const out=[]; let p=certInfo(k).pre; while(p&&!out.includes(p)&&out.length<10){ out.push(p); p=certInfo(p).pre; } return out; }
 function localCredHTML(){
-  if(!exp("credentials")) return ""; const lc=localCerts(), known=["us","sg","hk","uk","jp"].includes(certRegion());
-  return `<div class="panel"><div class="hd"><h3>Credentials here</h3></div><div class="bd">
-    <p class="note" style="margin:0 0 8px">${known?`The game already knows the standard credentials for ${esc(placeName()||"this country")}. Claude can look up others that matter locally.`:`The game doesn't have ${esc(placeName()||"this country")}'s own credentials built in. Claude can look up what's standard here${storyYear()?` in ${storyYear()}`:""}: the food-safety card, trade qualifications and any licences the cuisine needs.`}</p>
-    ${lc.length?lc.map(k=>{ const c=S.customCerts[k]; return `<div class="kv"><span>${esc(c.name)}<span class="note"> · ${c.roles.map(r=>ROLES[r].name.toLowerCase()).join(", ")}${c.pre?` · after ${esc(certInfo(c.pre).name)}`:""}</span></span><span class="n">${money(c.cost)} · ${c.months} mo</span></div>`; }).join(""):""}
-    <button class="btn sm${lc.length?" sec":""}" id="localCredGo" style="margin-top:8px" ${sampleFn?"":"disabled"}>${lc.length?"Look again":"Look up the local credentials"}</button><div class="note" id="localCredOut" style="margin-top:6px">${sampleFn?"":"Needs Claude, which this view can't reach."}</div></div></div>`;
+  if(!exp("credentials")) return ""; const here=Object.keys(CERTS).filter(certAvailable).concat(localCerts()).sort((a,b)=>(certInfo(a).rs||0)-(certInfo(b).rs||0));
+  return `<div class="panel"><div class="hd"><h3>Credentials here</h3><span class="spacer"></span><span class="note">${here.length}</span></div><div class="bd">
+    <p class="note" style="margin:0 0 8px">What your people can earn or sit${placeName()?` in ${esc(placeName())}`:""}${storyYear()?` in ${storyYear()}`:""}, and who they'd need it for.</p>
+    ${here.length?here.map(k=>{ const c=certInfo(k); return `<div class="kv"><span>${esc(c.name)}<span class="note"> · ${(c.roles||[]).filter(r=>ROLES[r]).map(r=>ROLES[r].name.toLowerCase()).join(", ")}${c.pre?` · after ${esc(certInfo(c.pre).name)}`:""}</span></span><span class="n">${money(c.cost||0)} · ${c.months||1} mo</span></div>`; }).join("")
+      :`<p class="note" style="margin:0">Nothing formal exists here. People are judged on what they can do.</p>`}
+    ${worldNote("credentials")}</div></div>`;
 }
 function matchCert(str){
   const t=String(str||"").toLowerCase().trim(); if(!t) return null;
   if(CERTS[t]) return t;
+  const W=worldCreds(); if(W){ const hit=W.keys.find(k=>certInfo(k).name.toLowerCase()===t); if(hit) return hit; }
   const tests=[["wset_sake3",/wset.*sake/],["ssi_kikisake",/kikisake|sake sommelier/],["swe_css",/specialist of spirits|\bcss\b/],["barsmarts",/barsmarts/],["fws",/french wine scholar/],
     ["acs_ccp",/certified cheese professional|\bccp\b/],["sca_barista",/\bsca\b.*barista|barista skills/],["jp_fugu",/fugu/],["jp_chori",/ch[oō]rishi|licensed cook/],["jp_eisei",/food sanitation supervisor|shokuhin eisei/],
     ["sg_fh2",/wsq.*level 2|food safety course level 2/],["sg_fh1",/wsq|food safety course level 1/],["hk_hm",/hygiene manager/],["hk_hs",/hygiene supervisor/],
@@ -2729,20 +2757,22 @@ function certEligible(m,k){
   if(c.pre&&!certsOf(m).includes(c.pre)) return false;
   const tr=CERT_TRACKS.find(t=>t.includes(k));   // nobody sits a lower rung than one they already hold
   if(tr&&certsOf(m).some(h=>tr.indexOf(h)>tr.indexOf(k))) return false;
+  if(certsOf(m).some(h=>certAncestors(h).includes(k))) return false;
   return (m.years||0)>=(c.ry||0) && m.skill>=(c.rs||0)-6;
 }
 function examChance(m,k,c){ c=c||certInfo(k); if(c.pass==null) return 1; return clamp(c.pass*(1+(effSkill(m)-(c.rs==null?effSkill(m):c.rs))/30),.02,.97); }
 /* ---- anything else the owner wants someone to earn or do: Claude checks it's real, the engine prices the odds ---- */
 const CRED_KINDS={certification:"certification",licence:"licence",course:"course",competition:"competition",degree:"degree",stage:"stage"};
 function credRules(m){ const y=storyYear();
-  return `You advise a restaurant owner, inside a realistic simulation, on a credential, licence, course, competition, degree or stage they want one of their people to pursue. Check it against the real world${y?` as it was in ${y}`:""}${certRegion()!=="other"?`, for someone working in ${S.intl&&S.intl.home||[...regionTags()].join(", ")}`:""}. If it doesn't exist, didn't exist yet, can't be taken from here, or this person can't realistically attempt it (wrong role, far too junior, missing a prerequisite), set "real" to false and say why in one sentence. The owner's house rules outrank the real world. If it is one of these built-in credentials, put its exact name in "sameAs" so the game uses that one instead of a duplicate: ${Object.values(CERTS).map(c=>c.name).join("; ")}.
-Otherwise price it honestly: fees, travel, prep, and the cover you'd pay while they're away, in US dollars; how many months it takes; whether they're away from work for it; "pass" is the chance someone of the required level passes, wins or places (null for a course with no assessment); "level" is the skill (0-100) it's pitched at; skill (0-8) is what it adds to their craft once earned; prestige (0-6) how much it impresses guests, critics and recruiters (a Master Sommelier is 4, MOF 6, a food-safety card 0); fame (0-20) how far it raises their public profile (winning a televised or international competition is 10-20); health (0-8) for food-safety qualifications; blurb is 1-2 sentences on what it involves.
+  return `You advise a restaurant owner, inside a realistic simulation, on a credential, licence, course, competition, degree or stage they want one of their people to pursue. Check it against the world this restaurant is in: its place${placeName()?` (${placeName()})`:""}, its era${y?` (${y})`:""} and the world notes, if there are any. A fictional setting has its own institutions and nothing real it doesn't have. If it doesn't exist, didn't exist yet, can't be taken from here, or this person can't realistically attempt it (wrong role, far too junior, missing a prerequisite), set "real" to false and say why in one sentence. The owner's house rules outrank everything else. If it is one of the credentials that exist here, put its exact name in "sameAs" so the game uses that one instead of a duplicate: ${Object.keys(CERTS).filter(certAvailable).concat(localCerts()).map(k=>certInfo(k).name).join("; ")||"none"}.
+Otherwise price it honestly: fees, travel, prep, and the cover you'd pay while they're away, in the game's dollars at today's scale; how many months it takes; whether they're away from work for it; "pass" is the chance someone of the required level passes, wins or places (null for a course with no assessment); "level" is the skill (0-100) it's pitched at; skill (0-8) is what it adds to their craft once earned; prestige (0-6) how much it impresses guests, critics and recruiters (a Master Sommelier is 4, MOF 6, a food-safety card 0); fame (0-20) how far it raises their public profile (winning a televised or international competition is 10-20); health (0-8) for food-safety qualifications; blurb is 1-2 sentences on what it involves.
 Reply with ONLY JSON: {"real":true,"reason":"","name":"","kind":"certification"|"licence"|"course"|"competition"|"degree"|"stage","sameAs":"","cost":0,"months":1,"away":false,"pass":0.6,"level":50,"skill":2,"prestige":0,"fame":0,"health":0,"blurb":""}
 
 THE PERSON: ${m.name}\n${personFacts(m)}`; }
 function sanitizeCred(r,m){
   if(!r||r.real===false) return {none:clip(String((r&&r.reason)||"That isn't something they can do."),400)};
-  const built=matchCert(String(r.sameAs||"").trim()||String(r.name||"")); if(built&&CERTS[built]) return {key:built};
+  const said=String(r.sameAs||"").trim()||String(r.name||""), mine=localCerts().find(k=>certInfo(k).name.toLowerCase()===said.toLowerCase()); if(mine) return {key:mine};
+  const built=matchCert(said); if(built&&CERTS[built]&&certAvailable(built)) return {key:built};
   const name=clip(String(r.name||"").trim(),70); if(!name) return {none:"Couldn't pin down what that is."};
   const pass=r.pass==null||r.pass===""?null:clamp(Number(r.pass)||.5,.02,.97);
   return {key:"x:"+name,custom:{name,kind:CRED_KINDS[r.kind]?r.kind:"course",roles:[m.role],rs:Math.round(clamp(Number(r.level)||m.skill,0,100)),ry:0,pass,
@@ -6855,7 +6885,7 @@ Reply with ONLY JSON:
  "prestige":0..10 (does this make the place a destination),
  "green":true|false,"equip":true|false (replaces the kitchen equipment)}`;
 
-const HIRE_RULES=`You are a hospitality headhunter inside a realistic restaurant simulation. Find candidates for the role the owner describes, for THIS restaurant, its city and its reputation. Skill is 0-100 (a solid professional is 55-65; someone from a starred kitchen 75-88; a true star 90+). Salary is annual dollars and must be realistic for the skill and the city; stars cost far more and want something beyond money. Loyalty is where they'd start (40-70). Ambition 0-100. Great candidates always have a catch. Give each candidate years of professional experience and the real credentials they hold (certs), only ones plausible for their skill and history, for example ServSafe Food Protection Manager, ACF Certified Executive Chef (CEC), ACF Certified Master Chef (CMC), ACF Certified Master Pastry Chef (CMPC), Meilleur Ouvrier de France, CMS Advanced Sommelier, Master Sommelier (MS), WSET Level 4 Diploma in Wines, Master of Wine (MW), AHLEI Certified Food and Beverage Executive (CFBE). Many good cooks hold none. Invent names; no real people.
+const HIRE_RULES=`You are a hospitality headhunter inside a realistic restaurant simulation. Find candidates for the role the owner describes, for THIS restaurant, its city and its reputation. Skill is 0-100 (a solid professional is 55-65; someone from a starred kitchen 75-88; a true star 90+). Salary is annual dollars and must be realistic for the skill and the city; stars cost far more and want something beyond money. Loyalty is where they'd start (40-70). Ambition 0-100. Great candidates always have a catch. Give each candidate years of professional experience and the credentials they hold (certs), named exactly as in the list of credentials that exist here, and only ones plausible for their skill and history. Many good cooks hold none. Invent names; no real people.
 
 Reply with ONLY JSON:
 {"candidates":[{"name":"...","role":"chef"|"sous"|"pastry"|"somm"|"maitre","skill":0-100,"salary":dollars,"loyalty":0-100,"ambition":0-100,"years":number,"certs":["credential names"],
@@ -9816,7 +9846,7 @@ function staffCardHTML(m){
     <div class="tags">${Math.round(m.years||0)} years in kitchens and dining rooms${certsOf(m).length?` · ${certsOf(m).map(k=>esc(certInfo(k).name)).join(", ")}`:" · no formal credentials"}</div>
     <div class="tags">${money(m.salary)}/yr · the market pays about ${money(mkt)} for this person${tr?` · in ${esc(tr.name)}, ${tr.left} mo left`:""}</div>
     ${exp("credentials")&&!tr&&next.length?`<div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px">${next.map(k=>{const c=certInfo(k); return `<button class="btn sm sec" data-cert="${m.id}|${k}" ${S.cash<c.cost?"disabled":""}>Sit ${esc(c.name)} · ${money(c.cost)} · ${c.months} mo · ~${Math.round(examChance(m,k)*100)}% pass</button>`;}).join("")}</div>`:""}
-    ${m.credOffer?(()=>{ const o=m.credOffer, c=o.custom||CERTS[o.key]||{}, cost=o.custom?c.cost:c.cost, mo=o.custom?c.months:c.months, ch=examChance(m,o.key,o.custom||null);
+    ${m.credOffer?(()=>{ const o=m.credOffer, c=o.custom||certInfo(o.key), cost=o.custom?c.cost:c.cost, mo=o.custom?c.months:c.months, ch=examChance(m,o.key,o.custom||null);
       return `<div class="choice" style="cursor:default;margin-top:8px"><b>${esc(c.name)}</b><span>${esc(o.custom?c.blurb:"A recognised credential already in the game.")}</span>
         <span class="note" style="margin-top:4px">${money(cost)} · ${mo} month${mo>1?"s":""}${c.away?" away from work":""}${c.pass===null?"":` · about ${Math.round(ch*100)}% chance${c.kind==="competition"?" of placing":" of passing"}`}${c.prestige?` · prestige ${c.prestige}`:""}${c.fame?` · fame +${c.fame} if it goes well`:""}</span>
         <div class="row" style="margin-top:6px;gap:6px"><button class="btn sm" data-credgo="${m.id}" ${S.cash<cost||tr?"disabled":""}>Go ahead</button><button class="btn sm sec" data-creddrop="${m.id}">Never mind</button></div></div>`; })():""}
@@ -9955,21 +9985,18 @@ function wireTeam(){
     const r=await claudeJSON(TRAIN_RULES,`\n\nTHE OWNER'S IDEA:\n${t}`,$("#trainOut"),"programme","Putting a programme together…");
     tg.disabled=false; if(!r) return;
     S.trainOffers=[sanitizeTraining(r)].concat(S.trainOffers).slice(0,6); keepY(); };
-  const lcg=$("#localCredGo"); if(lcg) lcg.onclick=async()=>{ lcg.disabled=true;
-    const r=await claudeJSON(LOCALCRED_RULES(),`\n\nWHERE: ${placeName()}${S.intl&&S.intl.home?`, ${S.intl.home}`:""}`,$("#localCredOut"),"credentials","Looking up what's standard here…"); lcg.disabled=false; if(!r) return;
-    const made=applyLocalCreds(r); logIt("warn",made.length?`Looked up ${made.length} local credential${made.length>1?"s":""} for ${S.localCredPlace}.`:`Nothing to add for ${placeName()}.`); keepY(); };
   document.querySelectorAll("[data-credask]").forEach(b=>b.onclick=async()=>{ const m=S.team.find(x=>x.id===b.dataset.credask); if(!m) return;
     const ta=document.querySelector(`[data-credidea="${m.id}"]`), out=document.querySelector(`[data-credout="${m.id}"]`), t=(ta.value||"").trim();
     if(!t){ out.textContent="Name what you have in mind first."; return; }
     b.disabled=true; const r=await claudeJSON(credRules(m),`\n\nTHE OWNER WANTS THEM TO DO:\n${t}`,out,"credential",`Looking into it for ${m.name.split(" ")[0]}…`); b.disabled=false; if(!r) return;
     const o=sanitizeCred(r,m); if(o.none){ out.textContent=o.none; return; }
-    if(!o.custom){ if(certsOf(m).includes(o.key)){ out.textContent=`${m.name} already holds ${CERTS[o.key].name}.`; return; }
-      if(!certEligible(m,o.key)){ const c=CERTS[o.key]; out.textContent=`That's ${c.name}, which ${m.name} can't sit yet${c.pre&&!certsOf(m).includes(c.pre)?`: it needs ${CERTS[c.pre].name} first`:c.roles.includes(m.role)?": they need more experience":`: it isn't for a ${ROLES[m.role].name.toLowerCase()}`}.`; return; } }
+    if(!o.custom){ if(certsOf(m).includes(o.key)){ out.textContent=`${m.name} already holds ${certInfo(o.key).name}.`; return; }
+      if(!certEligible(m,o.key)){ const c=certInfo(o.key); out.textContent=`That's ${c.name}, which ${m.name} can't sit yet${c.pre&&!certsOf(m).includes(c.pre)?`: it needs ${certInfo(c.pre).name} first`:c.roles.includes(m.role)?": they need more experience":`: it isn't for a ${ROLES[m.role].name.toLowerCase()}`}.`; return; } }
     else if(certsOf(m).includes(o.key)&&o.custom.kind!=="competition"){ out.textContent=`${m.name} already has ${o.custom.name}.`; return; }
     m.credOffer=o; keepY(); });
   document.querySelectorAll("[data-creddrop]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.creddrop); if(m) delete m.credOffer; keepY(); });
   document.querySelectorAll("[data-credgo]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.credgo); if(!m||!m.credOffer||S.training.some(t=>t.memberId===m.id)) return;
-    const o=m.credOffer, c=o.custom||CERTS[o.key]; if(!c||S.cash<c.cost) return;
+    const o=m.credOffer, c=o.custom||(CERTS[o.key]||(S.customCerts||{})[o.key]); if(!c||S.cash<c.cost) return;
     if(o.custom){ S.customCerts=Object.assign(S.customCerts||{},{[o.key]:o.custom}); }
     S.cash-=c.cost; S.training.push({id:uid(),name:c.kind==="competition"?c.name:`${c.name}${o.custom&&c.pass==null?"":" exam"}`,memberId:m.id,left:c.months,months:c.months,monthly:0,eff:{},away:!!c.away,cert:o.key});
     if(c.away) m.away=true; delete m.credOffer;
