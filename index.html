@@ -2460,6 +2460,7 @@ async function generateEvent(due){
         when:`${dateName(S.calMonth,S.year)}`,followup:due.length>0};
     }
   }catch(e){
+    if(e&&e.code==="cancelled") return;   // another save is loaded now: its desk and follow-ups aren't this event's
     S.decision=null; nextDesk(); if(!S.decision) S.decision={error:sampleError(e,"news")};
     for(const f of due) S.followups.push(Object.assign(f,{due:S.monthIdx+1}));   // try again next month
   }
@@ -7146,7 +7147,7 @@ async function secondLook(data,what,outEl){
     const fixed=Object.assign({},data,r.data);
     for(const k in data) if(Array.isArray(data[k])&&!Array.isArray(fixed[k])) fixed[k]=data[k];   // keep the shape the game expects
     fixed._audit=changes; secondLookNote(changes); return fixed;
-  }catch(e){ return data; }   // if the check can't run, the original stands
+  }catch(e){ if(e&&e.code==="cancelled") throw e; return data; }   // if the check can't run, the original stands (unless the game it was for is gone)
 }
 function secondLookNote(changes){
   logIt("warn",`A second look changed things: ${changes.join(" ")}`);
