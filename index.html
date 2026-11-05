@@ -415,7 +415,7 @@ const TRAITS={
   silent:{name:"A silent partner who isn't",blurb:"Sixty thousand dollars and a phone that rings every quarter asking about distributions.",tag:"+$60,000  −25% equity  pressure"},
   usedkit:{name:"The kitchen came with the space",blurb:"Every piece of it works, though on any given day something's waiting on a repair.",tag:"−$48,000 capex  poor equipment"},
   pg:{name:"You signed personally for everything",blurb:"The bank's comfortable with the loan because your house is behind it.",tag:"−2pp loan rate  failure is personal"},
-  health:{name:"The space failed its last two inspections",blurb:"The county still has the address flagged for repeat inspections.",tag:"low health score  frequent inspections"},
+  health:{name:"The space failed its last two inspections",blurb:"The inspectors still have the address flagged for repeat visits.",tag:"low health score  frequent inspections"},
   neighbour:{name:"The chef next door hates you",blurb:"He was here first, he's got regulars, and he's decided you're a problem.",tag:"+competition  rival events"}
 };
 const PROGRAMS={
@@ -1022,11 +1022,12 @@ const EVENT_POOL=[
   {id:"walkin",w:6,tone:"bad",when:S=>S.locations.some(l=>l.equip<55),
    text:S=>`The walk-in cooler at ${pick(S.locations).name} failed overnight. You threw out everything in it and paid a refrigeration tech to come at 6am.`,
    apply:S=>{const l=pick(S.locations); S.cash-=rnd(4200,11000); const w=ensureKit(l).find(p=>p.type==="refrig"); if(w){ w.broken=false; w.cond=clamp(w.cond+30,0,92); } l.equip=kitCondition(l); return "equipment";}},
-  {id:"inspect",w:7,tone:"warn",
-   text:S=>`Unannounced health inspection at ${pick(S.locations).name}.`,
-   apply:S=>{const l=pick(S.locations);
-     if(l.health<62){ l.rep-=rnd(5,12); S.cash-=rnd(900,3400); return "You were written up, which is a matter of public record."; }
-     l.rep+=rnd(1,3); return "Clean. They took a photo of the certificate and left.";}},
+  // who comes, what they're called and how often is the world's own (see the "inspectors" catalogue); the scoring is the engine's
+  {id:"inspect",get w(){ return 7*clamp(+insp("health").freq||1,.3,2); },tone:"warn",
+   text:S=>{ _inspLoc=pick(S.locations); return placeIn(insp("health").visit,_inspLoc.name); },
+   apply:S=>{const l=_inspLoc||pick(S.locations), I=insp("health"); _inspLoc=null;
+     if(l.health<62){ l.rep-=rnd(5,12); S.cash-=rnd(900,3400); return I.fail; }
+     l.rep+=rnd(1,3); return I.pass;}},
   {id:"beefspike",w:6,tone:"bad",
    text:()=>`Protein prices spiked. Your distributor's price sheet went up across the board and it isn't coming back down this quarter.`,
    apply:S=>{for(const l of S.locations){l.tempFood=rnd(.018,.042); l.tempFoodLeft=Math.round(rnd(3,7));} return "food cost";}},
@@ -1575,6 +1576,7 @@ SERVICE MATH (last month, use these instead of guessing): ${(()=>{ const h=S.his
   const l0=S.locations[0], seatsAll=S.locations.reduce((a,l)=>a+(l.seats||0),0), days=30, tpn=seatsAll?h.covers/(seatsAll*days):0, spend=h.rev/h.covers, tasting=S.menu&&S.menu.format==="tasting";
   return `${h.covers.toLocaleString()} guests served across ${seatsAll} seats, about ${tpn.toFixed(2)} turns a night (${tasting?"a tasting menu physically tops out around two seatings, 2.0 turns":`this concept tops out around ${C.maxTurns} turns`}); each guest actually spends about ${money(spend)} including drinks${tasting?` (the menu price alone is ${money(S.menu.tastingPrice||0)})`:""}; ${h.lost>0?`the room was fully booked and about ${Math.round(h.lost).toLocaleString()} more requests couldn't get a table. That is a waitlist: for a sold-out restaurant it is normal and a sign of demand, not a failure, a loss or a source of pressure. Don't make it a talking point unless the owner raises it or it's the subject of a deliberate decision about capacity or pricing, and never have any character (staff, press, partners, owners) describe it as strain, pressure, a burden or a reason the kitchen is stretched: a full book is the job going well.`:"the room had seats to spare."}`; })()}
 LEGAL EXPOSURE: ${Object.keys(RISKS).filter(k=>riskOf(k)>0||(S.riskOngoing||{})[k]).map(k=>`${RISKS[k].name} ${Math.round(riskOf(k))}${(S.riskOngoing||{})[k]?" (ongoing)":""}`).join("; ")||"none"}${S.i9Program?"; I-9 compliance programme in place":""}${heatDigest()}${commDigest()}${intlDigest()}${ghostDigest()}
+INSPECTORS: hygiene by ${insp("health").who} (${insp("health").body}), checking ${String(insp("health").looks||"").replace(/\.$/,"").toLowerCase()}; the kitchen's ${healthWord()} is the health meter. Fire safety by ${fireWho()}.
 KITCHEN: ${S.locations.map(l=>{ const k=ensureKit(l), iv=hoodInterval(l), ho=S.monthIdx-l.fire.hoodLast, so=S.monthIdx-l.fire.supLast; return `${l.name}: condition ${Math.round(kitCondition(l))}; `+k.map(p=>`${p.model}${p.broken?" (DOWN)":p.cond<45?" (worn)":""}`).join(", ")+`; hood cleaning ${ho>iv.m?`OVERDUE by ${ho-iv.m} mo`:"current"}, suppression ${so>6?"OVERDUE":"current"}${kitMissing(l).length?`; MISSING (sold or removed): ${kitMissing(l).map(t=>KIT[t].name.toLowerCase()).join(", ")}`:""}`; }).join(" | ")}
 DISHES vs EQUIPMENT: ${S.locations.filter(l=>l.status==="open").map(l=>{ const c=enterLoc(l); try{ const D=(S.menu&&S.menu.dishes||[]).filter(d=>!d.off), b=D.filter(d=>dishKit(d,l).blocked.length), so=D.filter(d=>!dishKit(d,l).blocked.length&&dishKit(d,l).soft.length); return b.length||so.length? `${l.name}: `+b.map(d=>`${d.name} CAN'T BE MADE (no ${dishKit(d,l).blocked.map(needLabel).join(", no ")})`).concat(so.map(d=>`${d.name} compromised (no ${dishKit(d,l).soft.map(needLabel).join(", no ")})`)).join("; ") : ""; } finally { exitLoc(c); } }).filter(Boolean).join(" | ")||"every dish on the menu has the equipment it needs"}
 COMPETITIVE SET: ${(S.rivals||[]).filter(r=>!r.closed).map(r=>`${r.name} (chef ${r.chef}, quality ${Math.round(r.q)}, buzz ${Math.round(r.buzz)})`).join("; ")||"none tracked yet"}
@@ -1805,7 +1807,7 @@ const EXPANSIONS={
   rivals:{title:"Comp Set",name:"Rivals",desc:"A named competitive set that opens, hires, raids your staff and competes for guides.",def:()=>{ const y=storyYear(); return !(y&&y<1960)&&!(S.world&&S.world.priceLevel!=null); }},
   kitchen:{title:"Mise en Place",name:"Detailed kitchen equipment",desc:"Station-by-station kit, brands, leasing, breakdowns and fire-code compliance. Off: the kit looks after itself on contracts."},
   crews:{title:"Back of House",name:"Hourly crews & tips",desc:"Kitchen, floor and support crews with their own churn, and your tip policy."},
-  credentials:{title:"Pedigree",name:"Credentials & exams",desc:"ACF, CMS, WSET and other certifications, and sitting exams."},
+  credentials:{title:"Pedigree",name:"Credentials & exams",desc:"The certifications, licences and exams your people can sit, as they exist in this restaurant's world."},
   sourcing:{title:"First In First Out",name:"Wholesale markets & contracts",desc:"Commodity prices that move, seasonal quality, supplier contracts and backup suppliers."},
   guideai:{title:"The Committee",name:"Claude decides the Michelin Guide",desc:"Each year the Guide's committee reads the inspectors' reports and decides, within the engine's limits. Off, a formula decides.",def:()=>true},
   legal:{title:"Most Wanted",name:"Legal exposure",desc:"Audits, inspections of your paperwork, and raids when corners are cut."},
@@ -2218,7 +2220,7 @@ function previewEffect(e){
       const ks=K.f==="money"?moneyScale():1, v=clamp(Number(e.value)||0,K.lo*ks,K.hi*ks);
       return `${K.name.toLowerCase()} ${fmtModValue(e.kind,K.f==="money"?Math.round(v):v)}${Number(e.months)>0?` for ${Math.round(e.months)} mo`:", permanent"}`; }
     case "rep":case "awareness":case "morale":case "skill":case "equip":case "health":{
-      const n={rep:"reputation",awareness:"awareness",morale:"morale",skill:"kitchen skill",equip:"equipment",health:"health score"}[e.op];
+      const n={rep:"reputation",awareness:"awareness",morale:"morale",skill:"kitchen skill",equip:"equipment",health:healthWord()}[e.op];
       const v=Math.round(Number(e.delta)||0); return `${n} ${v>0?"+":""}${v} (fades)`; }
     case "wage": return `wages ${Number(e.delta)<0?"down":"up"} ${pct(Math.abs(Number(e.delta)||0),0)}`;
     case "competition": return Number(e.mult)<1?"eases competition":"more competition";
@@ -2575,7 +2577,7 @@ const ROLES={
   sous:{name:"Sous chef",base:58000},
   pastry:{name:"Pastry chef",base:56000},
   somm:{name:"Sommelier",base:62000},
-  maitre:{name:"Maître d' / GM",base:64000}
+  maitre:{name:"Maître d'",base:64000}
 };
 const ROLE_KEYS=Object.keys(ROLES);
 /* ---- credentials: real certifications, with game values for difficulty, cost and what they do ---- */
@@ -2637,41 +2639,67 @@ function certRegion(){ const h=S&&S.intl&&S.intl.home;
   const H={"Singapore":"sg","Hong Kong":"hk","Macau":"mo","Japan":"jp","United Kingdom":"uk","United States":"us","France":"eu","Italy":"eu","Spain":"eu","Germany":"eu","Canada":"ca","Australia":"au","Mexico":"mx"};
   if(h&&H[h]) return H[h]; const g=regionTags(); return g.has("japan")?"jp":g.has("uk")?"uk":g.has("europe")?"eu":g.has("australia")?"au":g.has("canada")?"ca":g.has("mexico")?"mx":g.has("us")?"us":"other"; }
 function storyYear(){ return S&&S.epoch? S.epoch+S.year-1 : null; }
-function localCerts(){ return Object.keys((S&&S.customCerts)||{}).filter(k=>S.customCerts[k].local); }
-function certAvailable(k){ if(!CERTS[k]) return localCerts().includes(k); if(S&&S.world&&S.world.outside===false) return false; const c=CERTS[k]; const y=storyYear();
+function localCerts(){ const W=worldCreds(); if(W) return W.keys.filter(k=>!CERTS[k]); return Object.keys((S&&S.customCerts)||{}).filter(k=>S.customCerts[k].local&&!S.customCerts[k].world); }
+function certAvailable(k){ const W=worldCreds();
+  if(W){ if(!W.set.has(k)) return false; const c=CERTS[k]; return !(c&&c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)); }
+  if(!CERTS[k]) return localCerts().includes(k); if(S&&S.world&&S.world.outside===false) return false; const c=CERTS[k]; const y=storyYear();
   if(c.regions&&!c.regions.includes(certRegion())) return false; if(c.since&&y&&y<c.since) return false;
   if(c.fit){ try{ if(!c.fit.test(conceptText())) return false; }catch(e){} }
   if(c.alc&&!((CONCEPTS[S.concept]||{}).alcohol>0)) return false;
   if(c.upscale&&S.locations[0]&&locTier(S.locations[0])==="low") return false; return true; }
-function localFoodSafety(){ const k={us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]; if(k) return k;
+function localFoodSafety(){ const W=worldCreds(); if(W) return W.keys.find(x=>{ const c=certInfo(x); return (c.food||c.health>0)&&!c.pre; })||null;
+  const k={us:"servsafe",sg:"sg_fh1",hk:"hk_hs",uk:"uk_l2",jp:"jp_eisei"}[certRegion()]; if(k) return k;
   const loc=localCerts().filter(x=>S.customCerts[x].food&&!S.customCerts[x].pre); return loc[0]||"haccp3"; }
 function certOptions(m){ return Object.keys(CERTS).concat(localCerts()).filter(k=>certAvailable(k)&&certEligible(m,k)).sort((a,b)=>(certInfo(a).rs||0)-(certInfo(b).rs||0)).slice(0,4); }
 /* ---- the credentials of any country the game doesn't know, looked up by Claude ---- */
 function placeName(){ return (S.intl&&S.intl.home&&S.intl.home!=="United States"?S.intl.home:"")||((S.customMarket&&S.customMarket.name)||((MARKETS[S.market]||{}).name||"")); }
-const LOCALCRED_RULES=()=>`You know the restaurant trade's credentials country by country. List the ones that really matter for restaurant staff where this restaurant is, as they stood${storyYear()?` in ${storyYear()}`:" now"}: the legally required food-safety or hygiene card and its supervisor or manager level, national trade qualifications for cooks, pastry cooks and front of house, and any licences the local cuisine requires. Only real credentials that existed then; if the country has little formal certification, list fewer. Don't list international ones the game already has: ${Object.values(CERTS).filter(c=>!c.regions).map(c=>c.name).join("; ")}.
-For each: name (its real name, with the local-language name in brackets if useful), roles (from chef, sous, pastry, somm, maitre), food (true for a food-safety or hygiene credential), requires (the exact name of another one in your list that must come first, or ""), level (the skill, 0-100, it's pitched at), years (experience needed), cost (US dollars${storyYear()?`, at ${storyYear()} prices`:""}, fees and prep), months, pass (0-1 chance for someone at that level), skill (0-8 it adds), prestige (0-6), health (0-8 for food safety).
-Reply with ONLY JSON: {"place":"the country","credentials":[{"name":"","roles":["chef"],"food":false,"requires":"","level":30,"years":0,"cost":0,"months":1,"pass":0.8,"skill":1,"prestige":0,"health":0}]}`;
-function applyLocalCreds(r){
-  const list=(Array.isArray(r&&r.credentials)?r.credentials:[]).slice(0,10), made=[]; S.customCerts=S.customCerts||{};
-  for(const c of list){ const name=clip(String(c.name||"").trim(),80); if(!name) continue; const built=matchCert(name); if(CERTS[built]) continue;
-    const roles=(Array.isArray(c.roles)?c.roles:[]).filter(x=>ROLES[x]); if(!roles.length) continue;
-    const key="x:"+name; S.customCerts[key]={name,local:true,kind:"certification",roles,food:!!c.food,rs:Math.round(clamp(Number(c.level)||30,0,100)),ry:Math.round(clamp(Number(c.years)||0,0,20)),
-      cost:Math.round(clamp(Number(c.cost)||200,0,100000)),months:Math.round(clamp(Number(c.months)||1,1,36)),pass:clamp(Number(c.pass)||.8,.05,.98),skill:Math.round(clamp(Number(c.skill)||0,0,8)),
-      prestige:Math.round(clamp(Number(c.prestige)||0,0,6)),health:Math.round(clamp(Number(c.health)||0,0,8)),reqName:clip(String(c.requires||""),80)};
-    made.push(key); }
-  for(const k of made){ const c=S.customCerts[k]; if(c.reqName){ const p=made.find(x=>S.customCerts[x].name.toLowerCase()===c.reqName.toLowerCase()); if(p&&p!==k) c.pre=p; } delete c.reqName; }
-  S.localCredPlace=clip(String((r&&r.place)||placeName()),60); return made;
+/* ---- the credentials of this save's world: who certifies cooks, sommeliers and food handlers here, in this era or fiction ----
+   Written by Claude for the world and kept to the engine's scales. A name that matches a built-in credential exactly becomes that one,
+   so its ladder and values still apply; everything else is stored in S.customCerts under a "w:" key. Offline, the built-ins by region. */
+const CRED_BASE_KEYS=["servsafe","uk_l3","acf_cc","acf_csc","acf_cec","acf_cmc","mof_cuisine","acf_cpc","acf_cepc","cms_intro","cms_cert","cms_ms","wset3","mw","ahlei_chs","jp_fugu"];
+function credBase(){ return CRED_BASE_KEYS.map(k=>{ const c=CERTS[k], o={name:c.name,roles:c.roles.slice(),food:!!c.health,level:c.rs,years:c.ry,cost:c.cost,months:c.months,pass:c.pass,skill:c.skill,prestige:c.prestige||0,health:c.health||0};
+  if(c.pre) o.requires=CERTS[c.pre].name; return o; }); }
+let _wcred=null;
+function worldCreds(){
+  if(!S||!catalogFitted("credentials")) return null; const c=S.worldCat.credentials, tag=`${S.slotId}|${c.key}|${c.at}|${c.items.map(x=>x.name).join("|")}`;
+  if(_wcred&&_wcred.tag===tag) return _wcred;
+  S.customCerts=S.customCerts||{}; const keys=[], byName={};
+  for(const it of c.items){ const nm=String(it.name||"").trim(); if(!nm) continue;
+    const b=Object.keys(CERTS).find(k=>CERTS[k].name.toLowerCase()===nm.toLowerCase()), k=b||"w:"+nm.slice(0,70);
+    if(!b) S.customCerts[k]={name:nm,local:true,world:c.key,kind:"certification",roles:(it.roles||[]).filter(r=>ROLES[r]),food:!!it.food,rs:it.level||0,ry:it.years||0,cost:it.cost||0,
+      months:it.months||1,pass:it.pass==null?.7:it.pass,skill:it.skill||0,prestige:it.prestige||0,health:it.health||(it.food?4:0)};
+    if(!keys.includes(k)){ keys.push(k); byName[nm.toLowerCase()]=k; } }
+  for(const it of c.items){ const k=byName[String(it.name||"").trim().toLowerCase()], p=it.requires&&byName[String(it.requires).trim().toLowerCase()];
+    if(k&&!CERTS[k]){ if(p&&p!==k) S.customCerts[k].pre=p; else delete S.customCerts[k].pre; } }
+  _wcred={tag,keys,set:new Set(keys)}; translateHeldCerts(_wcred); return _wcred;
 }
+/* people already on the team keep what they earned, under the name it has in this world: the closest credential for their role,
+   of the same kind and near it in level and in what it adds to their craft. A second rung that maps onto one they already got
+   folds into it; anything with no counterpart here at all stays as it was. */
+function translateHeldCerts(W){
+  for(const m of (S.team||[])){ if(!Array.isArray(m.certs)) continue; const out=[];
+    for(const k of m.certs){ if(W.set.has(k)){ if(!out.includes(k)) out.push(k); continue; }
+      const c=certInfo(k), food=!!(c.food||c.health>0);
+      const near=W.keys.filter(x=>{ const d=certInfo(x); return (d.roles||[]).includes(m.role)&&!!(d.food||d.health>0)===food&&Math.abs((d.skill||0)-(c.skill||0))<=2&&Math.abs((d.rs||0)-(c.rs||0))<=30; });
+      if(near.some(x=>out.includes(x))&&!near.some(x=>!out.includes(x)&&!m.certs.includes(x))) continue;
+      const cand=near.filter(x=>!out.includes(x)&&!m.certs.includes(x))
+        .sort((a,b)=>Math.abs((certInfo(a).skill||0)-(c.skill||0))-Math.abs((certInfo(b).skill||0)-(c.skill||0))||Math.abs((certInfo(a).rs||0)-(c.rs||0))-Math.abs((certInfo(b).rs||0)-(c.rs||0)));
+      out.push(cand[0]||k); }
+    m.certs=out; }
+}
+function certAncestors(k){ const out=[]; let p=certInfo(k).pre; while(p&&!out.includes(p)&&out.length<10){ out.push(p); p=certInfo(p).pre; } return out; }
 function localCredHTML(){
-  if(!exp("credentials")) return ""; const lc=localCerts(), known=["us","sg","hk","uk","jp"].includes(certRegion());
-  return `<div class="panel"><div class="hd"><h3>Credentials here</h3></div><div class="bd">
-    <p class="note" style="margin:0 0 8px">${known?`The game already knows the standard credentials for ${esc(placeName()||"this country")}. Claude can look up others that matter locally.`:`The game doesn't have ${esc(placeName()||"this country")}'s own credentials built in. Claude can look up what's standard here${storyYear()?` in ${storyYear()}`:""}: the food-safety card, trade qualifications and any licences the cuisine needs.`}</p>
-    ${lc.length?lc.map(k=>{ const c=S.customCerts[k]; return `<div class="kv"><span>${esc(c.name)}<span class="note"> · ${c.roles.map(r=>ROLES[r].name.toLowerCase()).join(", ")}${c.pre?` · after ${esc(certInfo(c.pre).name)}`:""}</span></span><span class="n">${money(c.cost)} · ${c.months} mo</span></div>`; }).join(""):""}
-    <button class="btn sm${lc.length?" sec":""}" id="localCredGo" style="margin-top:8px" ${sampleFn?"":"disabled"}>${lc.length?"Look again":"Look up the local credentials"}</button><div class="note" id="localCredOut" style="margin-top:6px">${sampleFn?"":"Needs Claude, which this view can't reach."}</div></div></div>`;
+  if(!exp("credentials")) return ""; const here=Object.keys(CERTS).filter(certAvailable).concat(localCerts()).sort((a,b)=>(certInfo(a).rs||0)-(certInfo(b).rs||0));
+  return `<div class="panel"><div class="hd"><h3>Credentials here</h3><span class="spacer"></span><span class="note">${here.length}</span></div><div class="bd">
+    <p class="note" style="margin:0 0 8px">What your people can earn or sit${placeName()?` in ${esc(placeName())}`:""}${storyYear()?` in ${storyYear()}`:""}, and who they'd need it for.</p>
+    ${here.length?here.map(k=>{ const c=certInfo(k); return `<div class="kv"><span>${esc(c.name)}<span class="note"> · ${(c.roles||[]).filter(r=>ROLES[r]).map(r=>ROLES[r].name.toLowerCase()).join(", ")}${c.pre?` · after ${esc(certInfo(c.pre).name)}`:""}</span></span><span class="n">${money(c.cost||0)} · ${c.months||1} mo</span></div>`; }).join("")
+      :`<p class="note" style="margin:0">Nothing formal exists here. People are judged on what they can do.</p>`}
+    ${worldNote("credentials")}</div></div>`;
 }
 function matchCert(str){
   const t=String(str||"").toLowerCase().trim(); if(!t) return null;
   if(CERTS[t]) return t;
+  const W=worldCreds(); if(W){ const hit=W.keys.find(k=>certInfo(k).name.toLowerCase()===t); if(hit) return hit; }
   const tests=[["wset_sake3",/wset.*sake/],["ssi_kikisake",/kikisake|sake sommelier/],["swe_css",/specialist of spirits|\bcss\b/],["barsmarts",/barsmarts/],["fws",/french wine scholar/],
     ["acs_ccp",/certified cheese professional|\bccp\b/],["sca_barista",/\bsca\b.*barista|barista skills/],["jp_fugu",/fugu/],["jp_chori",/ch[oō]rishi|licensed cook/],["jp_eisei",/food sanitation supervisor|shokuhin eisei/],
     ["sg_fh2",/wsq.*level 2|food safety course level 2/],["sg_fh1",/wsq|food safety course level 1/],["hk_hm",/hygiene manager/],["hk_hs",/hygiene supervisor/],
@@ -2729,20 +2757,22 @@ function certEligible(m,k){
   if(c.pre&&!certsOf(m).includes(c.pre)) return false;
   const tr=CERT_TRACKS.find(t=>t.includes(k));   // nobody sits a lower rung than one they already hold
   if(tr&&certsOf(m).some(h=>tr.indexOf(h)>tr.indexOf(k))) return false;
+  if(certsOf(m).some(h=>certAncestors(h).includes(k))) return false;
   return (m.years||0)>=(c.ry||0) && m.skill>=(c.rs||0)-6;
 }
 function examChance(m,k,c){ c=c||certInfo(k); if(c.pass==null) return 1; return clamp(c.pass*(1+(effSkill(m)-(c.rs==null?effSkill(m):c.rs))/30),.02,.97); }
 /* ---- anything else the owner wants someone to earn or do: Claude checks it's real, the engine prices the odds ---- */
 const CRED_KINDS={certification:"certification",licence:"licence",course:"course",competition:"competition",degree:"degree",stage:"stage"};
 function credRules(m){ const y=storyYear();
-  return `You advise a restaurant owner, inside a realistic simulation, on a credential, licence, course, competition, degree or stage they want one of their people to pursue. Check it against the real world${y?` as it was in ${y}`:""}${certRegion()!=="other"?`, for someone working in ${S.intl&&S.intl.home||[...regionTags()].join(", ")}`:""}. If it doesn't exist, didn't exist yet, can't be taken from here, or this person can't realistically attempt it (wrong role, far too junior, missing a prerequisite), set "real" to false and say why in one sentence. The owner's house rules outrank the real world. If it is one of these built-in credentials, put its exact name in "sameAs" so the game uses that one instead of a duplicate: ${Object.values(CERTS).map(c=>c.name).join("; ")}.
-Otherwise price it honestly: fees, travel, prep, and the cover you'd pay while they're away, in US dollars; how many months it takes; whether they're away from work for it; "pass" is the chance someone of the required level passes, wins or places (null for a course with no assessment); "level" is the skill (0-100) it's pitched at; skill (0-8) is what it adds to their craft once earned; prestige (0-6) how much it impresses guests, critics and recruiters (a Master Sommelier is 4, MOF 6, a food-safety card 0); fame (0-20) how far it raises their public profile (winning a televised or international competition is 10-20); health (0-8) for food-safety qualifications; blurb is 1-2 sentences on what it involves.
+  return `You advise a restaurant owner, inside a realistic simulation, on a credential, licence, course, competition, degree or stage they want one of their people to pursue. Check it against the world this restaurant is in: its place${placeName()?` (${placeName()})`:""}, its era${y?` (${y})`:""} and the world notes, if there are any. A fictional setting has its own institutions and nothing real it doesn't have. If it doesn't exist, didn't exist yet, can't be taken from here, or this person can't realistically attempt it (wrong role, far too junior, missing a prerequisite), set "real" to false and say why in one sentence. The owner's house rules outrank everything else. If it is one of the credentials that exist here, put its exact name in "sameAs" so the game uses that one instead of a duplicate: ${Object.keys(CERTS).filter(certAvailable).concat(localCerts()).map(k=>certInfo(k).name).join("; ")||"none"}.
+Otherwise price it honestly: fees, travel, prep, and the cover you'd pay while they're away, in the game's dollars at today's scale; how many months it takes; whether they're away from work for it; "pass" is the chance someone of the required level passes, wins or places (null for a course with no assessment); "level" is the skill (0-100) it's pitched at; skill (0-8) is what it adds to their craft once earned; prestige (0-6) how much it impresses guests, critics and recruiters (a Master Sommelier is 4, MOF 6, a food-safety card 0); fame (0-20) how far it raises their public profile (winning a televised or international competition is 10-20); health (0-8) for food-safety qualifications; blurb is 1-2 sentences on what it involves.
 Reply with ONLY JSON: {"real":true,"reason":"","name":"","kind":"certification"|"licence"|"course"|"competition"|"degree"|"stage","sameAs":"","cost":0,"months":1,"away":false,"pass":0.6,"level":50,"skill":2,"prestige":0,"fame":0,"health":0,"blurb":""}
 
 THE PERSON: ${m.name}\n${personFacts(m)}`; }
 function sanitizeCred(r,m){
   if(!r||r.real===false) return {none:clip(String((r&&r.reason)||"That isn't something they can do."),400)};
-  const built=matchCert(String(r.sameAs||"").trim()||String(r.name||"")); if(built&&CERTS[built]) return {key:built};
+  const said=String(r.sameAs||"").trim()||String(r.name||""), mine=localCerts().find(k=>certInfo(k).name.toLowerCase()===said.toLowerCase()); if(mine) return {key:mine};
+  const built=matchCert(said); if(built&&CERTS[built]&&certAvailable(built)) return {key:built};
   const name=clip(String(r.name||"").trim(),70); if(!name) return {none:"Couldn't pin down what that is."};
   const pass=r.pass==null||r.pass===""?null:clamp(Number(r.pass)||.5,.02,.97);
   return {key:"x:"+name,custom:{name,kind:CRED_KINDS[r.kind]?r.kind:"course",roles:[m.role],rs:Math.round(clamp(Number(r.level)||m.skill,0,100)),ry:0,pass,
@@ -2778,7 +2808,8 @@ const NAME_POOLS={
   "Hong Kong":[["Ka-wai","Chun-kit","Wing-yan","Ho-yin","Siu-ming","Man-kit","Kai-yan","Tsz-ho","Mei-ling","Joanne","Kenneth","Maricel"],["Chan","Wong","Lee","Cheung","Lau","Ho","Leung","Tsang","Yip","Ng","Kwok","Reyes"]],
   "Japan":[["Haruto","Yui","Sota","Hina","Ren","Aoi","Kaito","Mio","Riku","Sakura"],["Sato","Suzuki","Takahashi","Tanaka","Watanabe","Ito","Yamamoto","Nakamura","Kobayashi","Kato"]]
 };
-const personName=()=>{ const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h]; return P?`${pick(P[0])} ${pick(P[1])}`:`${pick(FIRST)} ${pick(LAST)}`; };
+const personName=()=>{ if(catalogFitted("names")){ const g=pick(wcList("names")); return g.order==="family"?`${pick(g.last)} ${pick(g.first)}`:`${pick(g.first)} ${pick(g.last)}`; }
+  const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h]; return P?`${pick(P[0])} ${pick(P[1])}`:`${pick(FIRST)} ${pick(LAST)}`; };
 
 /* ---- starter menus: realistic enough to play, plain enough to rewrite ---- */
 const MENU_TPL={
@@ -4537,7 +4568,9 @@ function licenceQuote(type){
   }
   return {cost:Math.round(rnd(5000,20000)),months:Math.round(rnd(2,4)),note:"No quota here: fees, a lawyer, a background check and a public notice period."};
 }
-function gradeSystem(){ const t=placeText(); if(regionTags().has("nyc")) return "nyc"; if(/los angeles|hollywood|santa monica|pasadena|long beach/.test(t)) return "la"; return null; }
+// letter grades in the window: New York's since 2010, Los Angeles County's since 1998, and nowhere in a closed world
+function gradeSystem(){ if(S.world&&S.world.outside===false) return null; const t=placeText(), y=storyYear();
+  if(regionTags().has("nyc")) return y&&y<2010?null:"nyc"; if(/los angeles|hollywood|santa monica|pasadena|long beach/.test(t)) return y&&y<1998?null:"la"; return null; }
 function inspectionGrade(loc){
   const g=gradeSystem(); if(!g) return null;
   if(g==="nyc"){ const pts=Math.round((100-loc.health)*.55); return {sys:"NYC letter grade",grade:pts<=13?"A":pts<=27?"B":"C",detail:`${pts} violation points`}; }
@@ -5098,7 +5131,7 @@ function legalTick(R){
     R.events.push({tone:"bad",text:`A guest had an allergic reaction to something the server said was safe. Your insurer settled for ${money(c)} beyond the deductible, and the story got around.`}); }
   if(l.health<45&&Math.random()<.03){ const c=Math.round(rnd(10000,40000)); S.cash-=c; l.rep=clamp(l.rep-12,3,99); l.closedWeeks=(l.closedWeeks||0)+1;
     if(S.mods.length<MAX_MODS) S.mods.push({id:uid(),label:"Outbreak traced to you",kind:"demand",value:-.15,left:4,loc:-1,src:"health"});
-    R.events.push({tone:"bad",text:`The health department traced a cluster of food poisoning cases to ${l.name}. You closed for a week to deep-clean, and it's in the news.`}); }
+    R.events.push({tone:"bad",text:`${ucf(insp("health").body)} traced a cluster of food poisoning cases to ${l.name}. You closed for a week to deep-clean, and it's in the news.`}); }
   const short=l.crewChurn? l.crewChurn.quits/Math.max(8,Object.values(crewOf(l)).reduce((a,c)=>a+c.n,0)) : 0;
   if(Math.random()<(.005+short*.03+((S.tipPolicy==="pool_all"&&(l.wagePremium||0)<0)?.02:0))*(officeOf("hr")?.5:1)){ const c=Math.round(rnd(8000,80000)); S.cash-=c;
     R.events.push({tone:"bad",text:`Former staff filed a wage claim over unpaid overtime and missed breaks. Settling it cost ${money(c)} in back pay and legal fees.`}); }
@@ -6209,10 +6242,10 @@ function kitEffects(loc){
 }
 /* critical kit: what a kitchen can't legally or practically run without */
 const KIT_REQUIRED={
-  suppression:{fire:true,warn:"Cooking under a hood without a UL 300 fire-suppression system is illegal. Your insurer, the hood-cleaning company or one of your own staff will report it, and the fire marshal will shut the cooking line as soon as the month runs: a large fine, a closed kitchen until a new system is installed and inspected, and no insurance cover if anything catches fire in the meantime."},
-  hood:{fire:true,warn:"A commercial cooking line without an exhaust hood breaks fire and building code outright. The fire marshal will close the line as soon as the month runs, with a large fine, and it stays closed until a new hood is installed and inspected."},
-  extinguisher:{fire:true,warn:"Class K and ABC extinguishers are required by code. The fire marshal will fine you when the month runs, and a fryer fire with nothing to hand is how kitchens burn down."},
-  sprinkler:{fire:true,warn:"Taking out the sprinklers violates the fire code for the building. Expect the fire marshal and a fine every month until they're back, and much more damage if a fire gets past the kitchen."},
+  suppression:{fire:true,warn:"Cooking under a hood without a proper fire-suppression system breaks the fire code. Your insurer, the hood-cleaning company or one of your own staff will report it, and the fire inspectors will shut the cooking line as soon as the month runs: a large fine, a closed kitchen until a new system is installed and inspected, and no insurance cover if anything catches fire in the meantime."},
+  hood:{fire:true,warn:"A commercial cooking line without an exhaust hood breaks fire and building code outright. The fire inspectors will close the line as soon as the month runs, with a large fine, and it stays closed until a new hood is installed and inspected."},
+  extinguisher:{fire:true,warn:"Extinguishers rated for fryer fires and for everything else are required by code. The fire inspectors will fine you when the month runs, and a fryer fire with nothing to hand is how kitchens burn down."},
+  sprinkler:{fire:true,warn:"Taking out the sprinklers violates the fire code for the building. Expect the fire inspectors and a fine every month until they're back, and much more damage if a fire gets past the kitchen."},
   range:{warn:"Without a range the line loses most of what it can cook: service slows badly and the menu falls apart until you replace it."},
   refrig:{warn:"Without refrigeration you can't hold food safely. The health score collapses, food is thrown out daily and an inspector will close you if they see it."},
   dish:{warn:"Without a dish machine everything is washed by hand: far more labour, slower turns and a falling health score."},
@@ -6232,18 +6265,18 @@ function kitMissing(loc){ const K=ensureKit(loc); return Object.keys(KIT_REQUIRE
 /* runs before the month's trade: the fire marshal comes the same month, so a shutdown costs this month's covers */
 function fireCompliance(loc,R){
   if(!exp("kitchen")) return; const miss=kitMissing(loc);
-  if(loc.fireOrders&&!miss.some(t=>t==="suppression"||t==="hood")){ loc.fireOrders=0; R.events.push({tone:"good",text:`The fire marshal re-inspected ${loc.name}, signed off the new equipment and lifted the order. The line is open again, and fire cover is back.`}); }
+  if(loc.fireOrders&&!miss.some(t=>t==="suppression"||t==="hood")){ loc.fireOrders=0; R.events.push({tone:"good",text:`${ucf(fireWho())} re-inspected ${loc.name}, signed off the new equipment and lifted the order. The line is open again, and fire cover is back.`}); }
   if(!miss.length) return;
   const vs=kitSize(loc), line=miss.filter(t=>t==="suppression"||t==="hood"), others=miss.filter(t=>!line.includes(t)&&KIT_REQUIRED[t].fire);
   if(line.length){ const n=(loc.fireOrders=(loc.fireOrders||0)+1), fine=Math.round(rnd(8000,25000)*vs*(n>1?1.5:1)/100)*100;
-    S.cash-=fine; loc.closedWeeks=Math.max(loc.closedWeeks||0,n>1?4.35:3.5); loc.closedWhy="on the fire marshal's order"; loc.health=clamp(loc.health-10,10,100); loc.rep=clamp(loc.rep-4,3,99);
+    S.cash-=fine; loc.closedWeeks=Math.max(loc.closedWeeks||0,n>1?4.35:3.5); loc.closedWhy=`on ${fireWho()}'s order`; loc.health=clamp(loc.health-10,10,100); loc.rep=clamp(loc.rep-4,3,99);
     const what=line.map(t=>t==="hood"?"no exhaust hood":"no fire-suppression system").join(" and ");
-    R.events.push({tone:"bad",text:n>1?`The fire marshal came back to ${loc.name}. Still ${what} over the line: fined ${money(fine)} and closed for the month. The order stands until compliant equipment is installed and inspected.`
-      :`The fire marshal arrived at ${loc.name} in the first week of the month on a report: ${what} over a working line. Fined ${money(fine)} and ordered the cooking line shut until compliant equipment is installed and inspected. Your insurer has suspended fire cover.`});
-    chronicle(`The fire marshal shut ${loc.name}'s cooking line: ${what}.`); }
+    R.events.push({tone:"bad",text:n>1?`${ucf(fireWho())} came back to ${loc.name}. Still ${what} over the line: fined ${money(fine)} and closed for the month. The order stands until compliant equipment is installed and inspected.`
+      :`${ucf(fireWho())} arrived at ${loc.name} in the first week of the month on a report: ${what} over a working line. Fined ${money(fine)} and ordered the cooking line shut until compliant equipment is installed and inspected. Your insurer has suspended fire cover.`});
+    chronicle(`${ucf(fireWho())} shut ${loc.name}'s cooking line: ${what}.`); }
   else loc.fireOrders=0;
   if(others.length){ const fine=Math.round(others.reduce((a,t)=>a+(t==="sprinkler"?rnd(3000,12000)*vs:rnd(1000,4000)),0)/100)*100; S.cash-=fine; loc.health=clamp(loc.health-3*others.length,10,100);
-    R.events.push({tone:"bad",text:`The fire marshal wrote up ${loc.name}: ${others.map(t=>t==="sprinkler"?"the sprinkler system has been removed":"no fire extinguishers").join(" and ")}. Fined ${money(fine)}, and they'll be back next month.`}); }
+    R.events.push({tone:"bad",text:`${ucf(fireWho())} wrote up ${loc.name}: ${others.map(t=>t==="sprinkler"?"the sprinkler system has been removed":"no fire extinguishers").join(" and ")}. Fined ${money(fine)}, and they'll be back next month.`}); }
 }
 function kitMonthly(loc){ let pay=0; for(const p of ensureKit(loc)){ if(p.own==="lease"&&p.leaseLeft>0) pay+=p.price*1.2/36; if(p.own==="rent") pay+=p.price*.06; } return Math.round(pay); }
 function kitServiceCost(loc){ return S.kitService? Math.round(ensureKit(loc).reduce((a,p)=>a+p.price,0)*.005) : 0; }
@@ -6288,9 +6321,9 @@ function kitTick(loc,R,realCovers){
   const legacySup=K.some(p=>p.type==="suppression"&&p.tier===0), noK=!K.some(p=>p.type==="extinguisher"&&p.tier>=1);
   if(Math.random()<1/12){
     if(!hoodOver&&!supOver&&(legacySup||noK)){ const fine=Math.round(rnd(500,2500)); cost+=fine; loc.health=clamp(loc.health-2,10,100);
-      R.events.push({tone:"bad",text:`The fire marshal inspected ${loc.name} and wrote up ${legacySup?"the old dry-chemical suppression system, which doesn't meet UL 300":""}${legacySup&&noK?", and ":""}${noK?"the missing Class K extinguisher by the fryers":""}. Fined ${money(fine)}.`}); }
+      R.events.push({tone:"bad",text:`${ucf(fireWho())} inspected ${loc.name} and wrote up ${legacySup?"the old dry-chemical suppression system, which doesn't meet the current standard":""}${legacySup&&noK?", and ":""}${noK?"the missing fryer extinguisher":""}. Fined ${money(fine)}.`}); }
     if(hoodOver>0||supOver>0){ const fine=Math.round(rnd(1000,5000)); cost+=fine; loc.health=clamp(loc.health-4,10,100);
-      R.events.push({tone:"bad",text:`The fire marshal inspected ${loc.name}: ${hoodOver>0?`the hood is ${hoodOver} month${hoodOver>1?"s":""} overdue for cleaning`:""}${hoodOver>0&&supOver>0?" and ":""}${supOver>0?`the suppression system's inspection tag has lapsed`:""}. Fined ${money(fine)}; fix it or they'll close you.`});
+      R.events.push({tone:"bad",text:`${ucf(fireWho())} inspected ${loc.name}: ${hoodOver>0?`the hood is ${hoodOver} month${hoodOver>1?"s":""} overdue for cleaning`:""}${hoodOver>0&&supOver>0?" and ":""}${supOver>0?`the suppression system's inspection tag has lapsed`:""}. Fined ${money(fine)}; fix it or they'll close you.`});
       if(hoodOver>iv.m||supOver>3){ loc.closedWeeks=(loc.closedWeeks||0)+1; R.events.push({tone:"bad",text:`${loc.name} was ordered closed until the exhaust system passes. A week of lost service.`}); F.hoodLast=S.monthIdx; F.supLast=S.monthIdx; cost+=hoodCleanCost(loc)*2+supInspectCost(loc); } }
   }
   const fry=K.find(p=>p.type==="fryer");
@@ -6581,7 +6614,7 @@ function tickHighEnd(R){
     if(m&&e.loyalty){ m.loyalty=clamp(m.loyalty+e.loyalty,0,100); done.push(`loyalty +${e.loyalty}`); }
     if(e.brigade){ S.brigade=clamp(S.brigade+e.brigade,5,99); done.push(`brigade technique +${e.brigade}`); }
     if(e.fohTrain){ S.fohTrain=clamp(S.fohTrain+e.fohTrain,5,99); done.push(`floor training +${e.fohTrain}`); }
-    if(e.health){ for(const l of S.locations) l.health=clamp(l.health+e.health,10,100); done.push(`health score +${e.health}`); }
+    if(e.health){ for(const l of S.locations) l.health=clamp(l.health+e.health,10,100); done.push(`${healthWord()} +${e.health}`); }
     if(e.morale){ for(const l of S.locations) l.morale=clamp(l.morale+e.morale,3,99); done.push(`morale +${e.morale}`); }
     if(e.creativity){ S.menu.creBonus=clamp((S.menu.creBonus||0)+e.creativity,0,25); done.push(`menu creativity +${e.creativity}`); }
     if(e.coherence){ S.menu.coherence=clamp(S.menu.coherence+e.coherence,0,100); done.push(`menu coherence +${e.coherence}`); }
@@ -6855,7 +6888,7 @@ Reply with ONLY JSON:
  "prestige":0..10 (does this make the place a destination),
  "green":true|false,"equip":true|false (replaces the kitchen equipment)}`;
 
-const HIRE_RULES=`You are a hospitality headhunter inside a realistic restaurant simulation. Find candidates for the role the owner describes, for THIS restaurant, its city and its reputation. Skill is 0-100 (a solid professional is 55-65; someone from a starred kitchen 75-88; a true star 90+). Salary is annual dollars and must be realistic for the skill and the city; stars cost far more and want something beyond money. Loyalty is where they'd start (40-70). Ambition 0-100. Great candidates always have a catch. Give each candidate years of professional experience and the real credentials they hold (certs), only ones plausible for their skill and history, for example ServSafe Food Protection Manager, ACF Certified Executive Chef (CEC), ACF Certified Master Chef (CMC), ACF Certified Master Pastry Chef (CMPC), Meilleur Ouvrier de France, CMS Advanced Sommelier, Master Sommelier (MS), WSET Level 4 Diploma in Wines, Master of Wine (MW), AHLEI Certified Food and Beverage Executive (CFBE). Many good cooks hold none. Invent names; no real people.
+const HIRE_RULES=`You are a hospitality headhunter inside a realistic restaurant simulation. Find candidates for the role the owner describes, for THIS restaurant, its city and its reputation. Skill is 0-100 (a solid professional is 55-65; someone from a starred kitchen 75-88; a true star 90+). Salary is annual dollars and must be realistic for the skill and the city; stars cost far more and want something beyond money. Loyalty is where they'd start (40-70). Ambition 0-100. Great candidates always have a catch. Give each candidate years of professional experience and the credentials they hold (certs), named exactly as in the list of credentials that exist here, and only ones plausible for their skill and history. Many good cooks hold none. Invent names; no real people.
 
 Reply with ONLY JSON:
 {"candidates":[{"name":"...","role":"chef"|"sous"|"pastry"|"somm"|"maitre","skill":0-100,"salary":dollars,"loyalty":0-100,"ambition":0-100,"years":number,"certs":["credential names"],
@@ -7130,7 +7163,7 @@ function railItem(it,base,enums){
   for(const k of keys){ const vals=base.map(b=>b[k]).filter(v=>v!==undefined), v=it[k], t=vals.find(x=>x!==null);
     if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
     if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
-    if(typeof t==="number"){ const n=+v; if(!isFinite(n)) continue; const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi*2); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
+    if(typeof t==="number"){ const n=+v; if(!isFinite(n)){ if(vals.length===base.length) return null; continue; } const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
     else if(typeof t==="string"){ const s=String(v).trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }
     else if(typeof t==="boolean") out[k]=!!v;
     else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
@@ -7183,17 +7216,62 @@ const TRAIN_CATALOG=[
 worldCat("training",{base:()=>TRAIN_CATALOG,what:"staff training programmes (courses, coaching, apprenticeships, drills, outside instructors)",n:[6,12],
   enums:{role:[null].concat(Object.keys(ROLES))},notes:'- "role" is null for a whole-team programme, or the one role it trains. "away":true only when that person leaves service for it. "monthly" is a running cost while it lasts; leave it out otherwise.\n- Effect keys: health = health score, brigade = brigade technique, fohTrain = floor training, crewKitchen/crewFloor/crewSupport = hourly crews, creativity/coherence = menu, skill/loyalty = the named person, morale = everyone.'});
 
+// the credentials catalogue (see the CREDENTIALS section above for how its items become certs)
+worldCat("credentials",{base:credBase,what:"credentials restaurant staff can hold or sit here: the food-safety or hygiene card and its higher level, cooks' and pastry cooks' qualifications, sommelier and service qualifications, licences the local cuisine needs, and the top honours of the trade",n:[6,16],
+  notes:'- Who certifies cooks, sommeliers and food handlers here, in this era or fiction, and what they call it. If almost nothing formal exists, list the few things that do (an apprenticeship, a guild mark, a permit, a Party card for canteen work).\n- "roles" uses only: chef, sous, pastry, somm, maitre. "food" is true for a food-safety or hygiene credential; give at least one, with no "requires". "requires" is the exact name of another item in your list that must come first; leave it out otherwise.\n- level is the skill (0-100) it\'s pitched at, years the experience needed, pass the chance (0-1) someone at that level passes, skill (0-8) what it adds to their craft, prestige (0-6) how much it impresses guests and critics, health (0-8) only for food safety.',
+  fix:x=>{ x.roles=[].concat(x.roles||[]).filter(r=>ROLES[r]); if(!x.roles.length) return null;
+    x.level=Math.round(clamp(x.level||0,0,100)); x.years=Math.round(clamp(x.years||0,0,20)); x.months=Math.round(clamp(x.months||1,1,36)); x.pass=clamp(x.pass||.5,.05,.98);
+    x.skill=Math.round(clamp(x.skill||0,0,8)); x.prestige=Math.round(clamp(x.prestige||0,0,6)); x.health=Math.round(clamp(x.health||0,0,8)); x.cost=Math.max(0,Math.round(x.cost||0)); return x; }});
+/* ---- who inspects: the health authority and the fire authority, in this world's own terms ----
+   The engine's health score, fines and fire-code timing are unchanged; this is who turns up, what they're called, what they say
+   and how often the health side comes unannounced. A closed world with no inspectors swaps in whoever plays that part. */
+const INSPECTORS=[
+  {role:"health",who:"the health inspector",body:"the health department",score:"health score",freq:1,visit:"Unannounced health inspection at {place}.",
+   pass:"Clean. They took a photo of the certificate and left.",fail:"You were written up, which is a matter of public record.",looks:"Temperature logs, hand-washing, pests, and how raw and cooked food are stored."},
+  {role:"fire",who:"the fire marshal",body:"the fire department",looks:"The hood and its cleaning record, the suppression system's tag, extinguishers and sprinklers."}
+];
+let _inspLoc=null;
+worldCat("inspectors",{base:()=>INSPECTORS,what:"authorities who inspect a restaurant here: one for hygiene and food safety, one for fire safety",n:[2,2],enums:{role:["health","fire"]},
+  notes:'- Exactly two items: role "health" and role "fire". Who comes, who sends them and what they look for, as this world has it (a district sanitation committee, a corporate compliance unit, a city prefecture\'s inspector). A closed world with no inspectors gets whoever plays that part.\n- "who" is how a sentence refers to them mid-sentence, lowercase, with its article ("the fire marshal"). "body" is who sends them, the same way. "score" is what the kitchen\'s hygiene rating is called here, lowercase. "visit" is one sentence announcing an unannounced visit, with {place} where the restaurant\'s name goes. "pass" and "fail" are one sentence each on how it went. "freq" is how often they come compared with an ordinary modern city (1), from 0.3 to 2.',
+  fix:(x,it)=>{ for(const k of ["who","body","score"]) if(x[k]) x[k]=x[k].replace(/^The /,"the ").replace(/[.]+$/,""); if(x.score) x.score=x.score.charAt(0).toLowerCase()+x.score.slice(1); if(x.role==="health") x.freq=clamp(+it.freq||1,.3,2); return x; }});
+function insp(role){ const d=INSPECTORS.find(x=>x.role===role)||{}, w=wcList("inspectors").find(x=>x.role===role)||{}; return Object.assign({},d,w); }
+function fireWho(){ return insp("fire").who||"the fire marshal"; }
+function healthWord(){ return insp("health").score||"health score"; }
+function placeIn(t,name){ t=String(t||""); return t.includes("{place}")? t.split("{place}").join(name) : t; }
+
+/* ---- people: their names, and what the five salaried jobs are called here ---- */
+function nameBase(){ const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h];
+  if(P) return [{name:h,order:"given",first:P[0].slice(0,12),last:P[1].slice(0,12)}];
+  return [{name:"A mixed city crew",order:"given",first:FIRST.slice(0,12),last:LAST.slice(0,12)},{name:"More of the same city",order:"given",first:FIRST.slice(12,24),last:LAST.slice(12,24)}]; }
+worldCat("names",{base:nameBase,what:"the names of people who'd work in a restaurant kitchen and dining room here, grouped by community",n:[2,6],enums:{order:["given","family"]},
+  notes:'- One item per community that really makes up this place\'s restaurant workforce, weighted toward who actually works in kitchens here. "name" labels the community; "first" is 12 given names and "last" is 12 family names, written the way people here write them. "order" is "family" where the family name comes first.\n- Ordinary names for ordinary people. No famous people, and nobody from the world notes.',
+  fix:x=>{ const ok=a=>[].concat(a||[]).map(n=>String(n).trim().slice(0,30)).filter(Boolean); x.first=ok(x.first); x.last=ok(x.last); return x.first.length>=4&&x.last.length>=4?x:null; }});
+const ROLE_TITLES=Object.fromEntries(ROLE_KEYS.map(k=>[k,ROLES[k].name]));
+worldCat("roles",{base:()=>ROLE_KEYS.map(k=>({key:k,name:ROLE_TITLES[k]})),what:"job titles for the five senior people in this restaurant, as this place and era would say them",n:[5,5],enums:{key:ROLE_KEYS},
+  notes:'- Exactly five items, one per "key": chef runs the kitchen, sous is second in the kitchen, pastry makes desserts and bread, somm runs drinks, maitre runs the dining room and the business day to day. "name" is the title, 1-4 words, capitalised as a title.'});
+// every ROLES[k].name in the game reads the world's title once there is one
+for(const k of ROLE_KEYS) Object.defineProperty(ROLES[k],"name",{configurable:true,enumerable:true,
+  get(){ if(!S||!catalogFitted("roles")) return ROLE_TITLES[k]; const w=wcList("roles").find(x=>x.key===k); return (w&&w.name)||ROLE_TITLES[k]; }});
+
 /* ============ UNIFORMS AND STAFF POLICIES ============
    Both are measured against what's normal for this kind of place, so a save that never chose either plays exactly as before.
    Costs are per person on payroll: salaried team, office and every hourly crew member. */
 function headcount(){ return (S.team||[]).length+(S.office||[]).length+S.locations.filter(l=>l.status==="open").reduce((a,l)=>a+Object.values(crewOf(l)).reduce((b,c)=>b+c.n,0),0); }
 const UNIFORMS=[
-  {name:"Whatever they turn up in",blurb:"No uniform at all, which costs nothing and looks careless.",perHead:0,monthly:0,foh:-4,morale:-1,amb:-2},
-  {name:"Aprons and branded T-shirts",blurb:"Canvas aprons, a logo tee and a cap for the kitchen. The fast-casual and diner standard.",perHead:60,monthly:6,foh:0,morale:0,amb:0},
-  {name:"Chef whites and pressed server uniforms",blurb:"Double-breasted whites for the kitchen, shirts, trousers and long aprons on the floor, laundered every week.",perHead:220,monthly:22,foh:3,morale:1,amb:1},
-  {name:"Tailored uniforms from a designer",blurb:"Cut to fit each person by a workwear designer, with a spare set and a tailor on call.",perHead:900,monthly:45,foh:6,morale:2,amb:3}
+  {tier:"none",name:"Whatever they turn up in",blurb:"No uniform at all, which costs nothing and looks careless.",perHead:0,monthly:0,foh:-4,morale:-1,amb:-2},
+  {tier:"basic",name:"Aprons and branded T-shirts",blurb:"Canvas aprons, a logo tee and a cap for the kitchen. The fast-casual and diner standard.",perHead:60,monthly:6,foh:0,morale:0,amb:0},
+  {tier:"standard",name:"Chef whites and pressed server uniforms",blurb:"Double-breasted whites for the kitchen, shirts, trousers and long aprons on the floor, laundered every week.",perHead:220,monthly:22,foh:3,morale:1,amb:1},
+  {tier:"luxe",name:"Tailored uniforms from a designer",blurb:"Cut to fit each person by a workwear designer, with a spare set and a tailor on call.",perHead:900,monthly:45,foh:6,morale:2,amb:3}
 ];
-function uniformBase(){ const l=S.locations[0], C=CONCEPTS[S.concept]||{}; return C.counter||C.truck||(l&&locTier(l)==="low")?UNIFORMS[1]:UNIFORMS[2]; }
+const UNI_TIERS=["none","basic","standard","luxe"];
+worldCat("uniforms",{base:()=>UNIFORMS,what:"uniforms and workwear for the kitchen and floor, from nothing at all to the best money buys here",n:[4,7],enums:{tier:UNI_TIERS},
+  notes:'- "tier": "none" is no uniform at all (exactly one item, costing nothing), "basic" is cheap and practical, "standard" is what a proper sit-down place here would wear, "luxe" is the best on offer. Have at least one of each.\n- foh is how polished the floor looks, morale how the staff feel wearing it, amb what it adds to the room; perHead is up front per person, monthly per person for laundering and replacements.',
+  fix:x=>{ if(x.tier==="none"){ x.perHead=0; x.monthly=0; } return x; }});
+// the four rungs of the world's own list; a rung it skipped falls back to the nearest one it has
+function uniformTier(t){ const L=wcList("uniforms"); let u=L.find(x=>x.tier===t); if(u) return u;
+  const i=UNI_TIERS.indexOf(t); for(let d=1;d<4;d++) for(const j of [i-d,i+d]){ u=L.find(x=>x.tier===UNI_TIERS[j]); if(u) return u; }
+  return UNIFORMS[Math.max(0,i)]; }
+function uniformBase(){ const l=S.locations[0], C=CONCEPTS[S.concept]||{}; return uniformTier(C.counter||C.truck||(l&&locTier(l)==="low")?"basic":"standard"); }
 function uniformEffects(){
   if(!S||!S.uniform) return {foh:0,morale:0,amb:0,monthly:0};
   const u=S.uniform, b=uniformBase();
@@ -7205,6 +7283,9 @@ const POLICY_PRESETS=[
   {key:"pto",name:"Paid time off and sick days",blurb:"A week a year to start and sick days nobody has to argue for, so people stop coming in ill.",monthly:70,morale:1.5,quit:-.08,stress:-3,loyalty:.3},
   {key:"sched",name:"Schedules posted two weeks ahead",blurb:"Managers plan further out and stop texting people at noon to come in at five.",monthly:8,morale:1.5,quit:-.05,stress:-2,loyalty:.2}
 ];
+worldCat("policies",{base:()=>POLICY_PRESETS,what:"staff perks, benefits and workplace policies an owner here could offer (meals, cover for illness, time off, pay arrangements, housing, rations, whatever this world's workers would actually value)",n:[4,8],
+  notes:'- "key" is a short lowercase id, unique in the list. "monthly" is the cost per person on payroll a month.\n- morale is points on the morale the team settles at, quit the change in how often hourly staff quit (negative keeps people), stress points a month on salaried staff (negative is calmer), loyalty points a month.',
+  fix:(x,it)=>{ x.key=String(x.key||x.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,24)||"p"+uid(); x.quit=clamp(x.quit||0,-.4,.3); return x; }});
 function policiesOn(){ return (S.policies||[]).filter(x=>x.on); }
 function policyEffects(){ const o={morale:0,quit:0,stress:0,loyalty:0,monthly:0}; if(!S) return o; const n=headcount();
   for(const x of policiesOn()){ o.morale+=x.morale; o.quit+=x.quit; o.stress+=x.stress; o.loyalty+=x.loyalty; o.monthly+=Math.round(x.monthly*n)+(x.fixed||0); }
@@ -7212,14 +7293,14 @@ function policyEffects(){ const o={morale:0,quit:0,stress:0,loyalty:0,monthly:0}
 function staffDigest(){
   const u=S.uniform?`${S.uniform.name}${S.uniform.custom?` (the owner's own: ${S.uniform.desc})`:""}`:`${uniformBase().name.toLowerCase()} (the usual for this kind of place)`;
   return `UNIFORMS: ${u}. STAFF POLICIES: ${policiesOn().map(x=>`${x.name}${x.custom?` (${x.blurb})`:""}`).join("; ")||"none beyond the legal minimum"}.`; }
-const UNIFORM_RULES=`You are a hospitality workwear consultant inside a realistic restaurant simulation. The owner describes the uniforms they want for their staff. Honour every detail, price it honestly for this city and this many people, and say what it would really do. Use these as anchors for the scales: ${UNIFORMS.map(u=>`"${u.name}": ${u.perHead} dollars a head up front, ${u.monthly} a head a month, polish ${u.foh}, morale ${u.morale}, ambience ${u.amb}`).join("; ")}.
+const UNIFORM_RULES=()=>`You are a workwear consultant for restaurants inside a restaurant simulation. The owner describes the uniforms they want for their staff. Honour every detail, price it honestly for this place, its era and this many people, and say what it would really do. Use these as anchors for the scales: ${wcList("uniforms").map(u=>`"${u.name}": ${u.perHead} dollars a head up front, ${u.monthly} a head a month, polish ${u.foh}, morale ${u.morale}, ambience ${u.amb}`).join("; ")}.
 Fields: name (2-6 words); desc (1-2 sentences, what they wear, kitchen and floor); risk (one sentence, the catch: comfort, heat, laundering, staff who hate it); perHead (dollars per person up front); monthly (dollars per person a month for laundering and replacements); foh (-6 to 10, how much more polished the floor looks and feels); morale (-3 to 4, how the staff feel wearing it; uncomfortable or silly uniforms go negative); amb (-4 to 6, what it adds to the room). These ranges are scale guides for ordinary uniforms, not limits: go past them when what the owner describes really warrants it.
 Reply with ONLY JSON: {"name":"","desc":"","risk":"","perHead":0,"monthly":0,"foh":0,"morale":0,"amb":0}`;
-const POLICY_RULES=`You are an HR consultant for restaurants inside a realistic business simulation. The owner describes a staff benefit, perk or workplace policy (a four-day week, profit sharing, a tip-share change, childcare stipends, a mental-health line, free English classes, a no-yelling rule, anything). Honour every detail, price it honestly for this city and this many people, and say what it would really do. Use these as anchors: ${POLICY_PRESETS.map(x=>`"${x.name}": ${x.monthly} dollars a head a month, morale ${x.morale}, quit ${x.quit}, stress ${x.stress}, loyalty ${x.loyalty}`).join("; ")}.
+const POLICY_RULES=()=>`You advise restaurant owners on staff and workplace matters inside a business simulation. The owner describes a staff benefit, perk or workplace policy (a four-day week, profit sharing, a tip-share change, help with childcare, a no-yelling rule, anything). Honour every detail, price it honestly for this place, its era and this many people, and say what it would really do. Use these as anchors: ${wcList("policies").map(x=>`"${x.name}": ${x.monthly} dollars a head a month, morale ${x.morale}, quit ${x.quit}, stress ${x.stress}, loyalty ${x.loyalty}`).join("; ")}.
 Fields: name (2-6 words); blurb (1-2 sentences, what it is in practice); risk (one sentence, the catch); upfront (one-off dollars to set it up); monthly (dollars per person on payroll a month); fixed (flat dollars a month on top, 0 if none); morale (-3 to 5, points on the morale the team settles at); quit (-0.4 to 0.3, change in how often hourly staff quit; negative keeps people); stress (-6 to 4, points a month on salaried staff's stress); loyalty (-1 to 1.5, points a month on salaried staff's loyalty). These ranges are scale guides for ordinary policies, not limits: go past them when what the owner describes really warrants it.
 Reply with ONLY JSON: {"name":"","blurb":"","risk":"","upfront":0,"monthly":0,"fixed":0,"morale":0,"quit":0,"stress":0,"loyalty":0}`;
 function uniformsHTML(){
-  const cur=S.uniform, n=headcount(), off=!sampleFn, base=uniformBase();
+  const cur=S.uniform, n=headcount(), off=!sampleFn, base=uniformBase(), L=wcList("uniforms"), bare=uniformTier("none");
   const opt=(u,i)=>{ const on=cur?(!cur.custom&&cur.name===u.name):u===base, cost=Math.round(u.perHead*n);
     return `<button class="choice" data-uni="${i}" aria-pressed="${on}"><b>${esc(u.name)}${u===base?' <span class="note" style="font-weight:500">(usual for this kind of place)</span>':""}</b><span>${esc(u.blurb)}</span>
       <span class="tags">${cost?`${money(cost)} to kit out ${n} people`:"nothing up front"} · ${money(u.monthly)}/person/mo to launder and replace</span></button>`; };
@@ -7227,12 +7308,12 @@ function uniformsHTML(){
   return `<div class="panel"><div class="hd"><h3>Uniforms</h3><span class="spacer"></span><span class="note">${n} people on payroll</span></div><div class="bd">
     <p class="note" style="margin:0 0 8px">What your people wear sets how polished the floor looks, how the room feels and how the staff feel about coming in. Switching means buying a new set for everyone.</p>
     ${cur&&cur.custom?`<div class="choice" style="cursor:default" aria-pressed="true"><b>${esc(cur.name)} <span class="pill g">wearing now</span></b><span>${esc(cur.desc)}</span></div>`:""}
-    ${UNIFORMS.map(opt).join("")}
+    ${L.map(opt).join("")}
     ${pend?`<div class="choice" style="cursor:default;border-color:var(--accent)"><b>${esc(pend.name)} <span class="pill w">proposed</span></b><span>${esc(pend.desc)}</span>${pend.risk?`<span style="margin-top:4px"><b style="display:inline;font-size:12.3px">The catch:</b> ${esc(pend.risk)}</span>`:""}
-      <div class="tags">${money(Math.round(pend.perHead*n))} to kit out ${n} people · ${money(pend.monthly)}/person/mo · polish ${pend.foh>=0?"+":""}${pend.foh} · morale ${pend.morale>=0?"+":""}${pend.morale} · ambience ${pend.amb>=0?"+":""}${pend.amb} (against no uniform at all: polish ${UNIFORMS[0].foh}, morale ${UNIFORMS[0].morale}, ambience ${UNIFORMS[0].amb})</div>
+      <div class="tags">${money(Math.round(pend.perHead*n))} to kit out ${n} people · ${money(pend.monthly)}/person/mo · polish ${pend.foh>=0?"+":""}${pend.foh} · morale ${pend.morale>=0?"+":""}${pend.morale} · ambience ${pend.amb>=0?"+":""}${pend.amb} (against no uniform at all: polish ${bare.foh}, morale ${bare.morale}, ambience ${bare.amb})</div>
       <div class="row" style="margin-top:8px;gap:6px"><button class="btn sm" id="uniAdopt" ${S.cash<pend.perHead*n?"disabled":""}>Order them · ${money(Math.round(pend.perHead*n))}</button><button class="btn sm sec" id="uniToss">Pass</button></div></div>`:""}
     <textarea id="uniIdea" style="margin-top:6px" placeholder="Indigo linen chore coats for the floor, black chef jackets with the restaurant's crest in red thread for the kitchen." ${off?"disabled":""}></textarea>
-    <button class="btn sm" id="uniGo" style="margin-top:6px" ${off?"disabled":""}>Design these uniforms</button><div class="note" id="uniOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>
+    <button class="btn sm" id="uniGo" style="margin-top:6px" ${off?"disabled":""}>Design these uniforms</button><div class="note" id="uniOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>${worldNote("uniforms")}
   </div></div>`;
 }
 function policiesHTML(){
@@ -7243,36 +7324,36 @@ function policiesHTML(){
   const customs=list.filter(x=>x.custom);
   return `<div class="panel"><div class="hd"><h3>Perks & policies</h3><span class="spacer"></span><span class="note">${policiesOn().length?money(policyEffects().monthly)+"/mo":"none"}</span></div><div class="bd">
     <p class="note" style="margin:0 0 8px">What it's like to work here beyond the paycheque. Tap one to start or stop it. Costs scale with everyone on payroll, and the effects show up in morale, stress and how many hourly staff you lose each month.</p>
-    ${POLICY_PRESETS.map(presetRow).join("")}
+    ${wcList("policies").map(presetRow).join("")}
     ${customs.map(x=>`<div class="choice" style="cursor:default"${x.on?' aria-pressed="true"':""}><b>${esc(x.name)} ${x.on?'<span class="pill g">in place</span>':'<span class="pill">stopped</span>'}</b><span>${esc(x.blurb)}</span><span class="tags">${cost(x)} · ${esc(fx(x))}</span>
       <div class="row" style="margin-top:6px;gap:6px"><button class="btn sm sec" data-polc="${x.id}">${x.on?"Stop it":"Bring it back"}</button><button class="btn sm sec" data-poldel="${x.id}">Delete</button></div></div>`).join("")}
     ${pend?`<div class="choice" style="cursor:default;border-color:var(--accent)"><b>${esc(pend.name)} <span class="pill w">proposed</span></b><span>${esc(pend.blurb)}</span>${pend.risk?`<span style="margin-top:4px"><b style="display:inline;font-size:12.3px">The catch:</b> ${esc(pend.risk)}</span>`:""}
       <div class="tags">${pend.upfront?`${money(pend.upfront)} to set up · `:""}${cost(pend)} · ${esc(fx(pend))}</div>
       <div class="row" style="margin-top:8px;gap:6px"><button class="btn sm" id="polAdopt" ${S.cash<pend.upfront?"disabled":""}>Put it in place${pend.upfront?` · ${money(pend.upfront)}`:""}</button><button class="btn sm sec" id="polToss">Pass</button></div></div>`:""}
     <textarea id="polIdea" style="margin-top:6px" placeholder="Everyone gets their birthday off, paid, and 5% of each quarter's profit is split across the whole staff by hours worked." ${off?"disabled":""}></textarea>
-    <button class="btn sm" id="polGo" style="margin-top:6px" ${off?"disabled":""}>Work out what this costs</button><div class="note" id="polOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>
+    <button class="btn sm" id="polGo" style="margin-top:6px" ${off?"disabled":""}>Work out what this costs</button><div class="note" id="polOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>${worldNote("policies")}
   </div></div>`;
 }
 function wireStaffPolicies(){
-  document.querySelectorAll("[data-uni]").forEach(b=>b.onclick=()=>{ const u=UNIFORMS[+b.dataset.uni], cur=S.uniform||uniformBase(); if(!cur.custom&&cur.name===u.name) return;
+  document.querySelectorAll("[data-uni]").forEach(b=>b.onclick=()=>{ const u=wcList("uniforms")[+b.dataset.uni], cur=S.uniform||uniformBase(); if(!cur.custom&&cur.name===u.name) return;
     const cost=Math.round(u.perHead*headcount()); if(S.cash<cost){ $("#uniOut").textContent=`Kitting everyone out costs ${money(cost)}.`; return; }
     if(!b.dataset.armed){ b.dataset.armed="1"; b.querySelector("b").textContent=`Tap again to order${cost?` for ${money(cost)}`:""}`; return; }
     S.cash-=cost; S.uniform=Object.assign({},u,{custom:false}); logIt("good",`New uniforms: ${u.name.toLowerCase()}${cost?` (${money(cost)})`:""}.`); keepY(); });
   const ug=$("#uniGo"); if(ug) ug.onclick=async()=>{ const t=($("#uniIdea").value||"").trim(); if(!t){ $("#uniOut").textContent="Describe the uniforms first."; return; } ug.disabled=true;
-    const r=await claudeJSON(UNIFORM_RULES,`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER WANTS:\n${t}`,$("#uniOut"),"uniforms","Talking to a workwear designer…"); ug.disabled=false; if(!r) return;
+    const r=await claudeJSON(UNIFORM_RULES(),`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER WANTS:\n${t}`,$("#uniOut"),"uniforms","Talking to a workwear designer…"); ug.disabled=false; if(!r) return;
     const n=nnum; S.uniformOffer={name:String(r.name||"Custom uniforms").slice(0,60),desc:clip(String(r.desc||t),900),risk:clip(String(r.risk||""),600),perHead:Math.round(n(r.perHead,0,1e9,200)),monthly:Math.round(n(r.monthly,0,1e8,20)),
       foh:Math.round(n(r.foh,-100,100,0)*10)/10,morale:Math.round(n(r.morale,-100,100,0)*10)/10,amb:Math.round(n(r.amb,-100,100,0)*10)/10,custom:true}; keepY(); };
   const ua=$("#uniAdopt"); if(ua) ua.onclick=()=>{ const u=S.uniformOffer; if(!u) return; const cost=Math.round(u.perHead*headcount()); if(S.cash<cost) return;
     S.cash-=cost; S.uniform=u; S.uniformOffer=null; logIt("good",`New uniforms: ${u.name} (${money(cost)}).`); chronicle(`The staff got new uniforms: ${u.desc}`); keepY(); };
   const ut=$("#uniToss"); if(ut) ut.onclick=()=>{ S.uniformOffer=null; keepY(); };
-  document.querySelectorAll("[data-pol]").forEach(b=>b.onclick=()=>{ const x=POLICY_PRESETS.find(y=>y.key===b.dataset.pol); S.policies=S.policies||[];
+  document.querySelectorAll("[data-pol]").forEach(b=>b.onclick=()=>{ const x=wcList("policies").find(y=>y.key===b.dataset.pol); if(!x) return; S.policies=S.policies||[];
     const cur=S.policies.find(y=>y.key===x.key);
     if(cur&&cur.on){ cur.on=false; logIt("warn",`Stopped: ${x.name.toLowerCase()}. The staff noticed.`); for(const l of S.locations) l.morale=clamp(l.morale-Math.max(1,x.morale),3,99); }
     else if(cur){ cur.on=true; logIt("good",`Brought back: ${x.name.toLowerCase()}.`); }
     else { S.policies.push(Object.assign({},x,{id:"pol"+uid(),on:true})); logIt("good",`New for the staff: ${x.name.toLowerCase()}.`); }
     keepY(); });
   const pg=$("#polGo"); if(pg) pg.onclick=async()=>{ const t=($("#polIdea").value||"").trim(); if(!t){ $("#polOut").textContent="Describe the policy first."; return; } pg.disabled=true;
-    const r=await claudeJSON(POLICY_RULES,`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER PROPOSES:\n${t}`,$("#polOut"),"policy","Running the numbers with HR…"); pg.disabled=false; if(!r) return;
+    const r=await claudeJSON(POLICY_RULES(),`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER PROPOSES:\n${t}`,$("#polOut"),"policy","Running the numbers with HR…"); pg.disabled=false; if(!r) return;
     const n=nnum, MS=moneyScale(); S.policyOffer={name:String(r.name||"A staff policy").slice(0,60),blurb:clip(String(r.blurb||t),900),risk:clip(String(r.risk||""),600),upfront:Math.round(n(r.upfront,0,1e13,0)),
       monthly:Math.round(n(r.monthly,0,1e9,0)),fixed:Math.round(n(r.fixed,-1e12,1e12,0)),morale:Math.round(n(r.morale,-100,100,0)*10)/10,quit:Math.round(n(r.quit,-.99,10,0)*100)/100,
       stress:Math.round(n(r.stress,-100,100,0)*10)/10,loyalty:Math.round(n(r.loyalty,-100,100,0)*10)/10,custom:true}; keepY(); };
@@ -7294,16 +7375,20 @@ const WINE_MARKET=[
   {name:"Old Rip Van Winkle bourbon, 10 year",channel:"allocation",qty:2,cost:120,price:600,prestige:4,req:35,note:"Pours at the bar for $60 an ounce, and people will pay it."},
   {name:"Karuizawa, 1981 single cask",channel:"auction",qty:1,cost:14000,price:32000,prestige:9,req:0,note:"A closed Japanese distillery. Three ounces of it pays a cook for a month."}
 ];
-function genCandidate(role){
-  const skill=Math.round(clamp(rnd(38,72)+(S.locations[0].stars||0)*6+(S.locations[0].rep-50)*.2,20,92));
-  const sal=payRound(marketSalary(role,skill)*rnd(.92,1.12));
-  const bios={chef:["Eight years as sous in a serious hotel kitchen; wants their name on the menu.","Ran a well-reviewed neighbourhood place that closed in the pandemic.","Cooked in two starred kitchens in Europe and has the scars and the ego to show it."],
+const CAND_BIOS_BY_ROLE={chef:["Eight years as sous in a serious hotel kitchen; wants their name on the menu.","Ran a well-reviewed neighbourhood place that closed in the pandemic.","Cooked in two starred kitchens in Europe and has the scars and the ego to show it."],
     sous:["Organised, fast, and the one who actually writes the prep lists.","Came up through pastry and switched sides; a perfectionist.","Worked a decade of Saturday nights at the busiest brasserie in the city."],
     pastry:["Laminated dough obsessive with a following for their croissants.","Trained in Paris, plates like a jeweller.","Self-taught, bold, and a little inconsistent."],
     somm:["Certified, curious, and very good at selling the second bottle.","Advanced-level candidate who reads auction catalogues for fun.","Former winemaker's assistant with a nose people trust."],
     maitre:["Twelve years on the floor of a grand hotel dining room.","Knows every regular's name, dog and ex-wife.","Opened three restaurants for a group and is tired of groups."]};
+const CAND_BIOS=Object.entries(CAND_BIOS_BY_ROLE).flatMap(([role,l])=>l.map(bio=>({role,bio})));
+worldCat("bios",{base:()=>CAND_BIOS,what:"one-line backgrounds for people applying to work here: where they trained, worked and came up, and what they're like",n:[10,20],enums:{role:ROLE_KEYS},
+  notes:'- "role" is the job they\'re applying for: chef (runs the kitchen), sous (second in the kitchen), pastry, somm (drinks), maitre (runs the floor). Two to four for each role.\n- "bio" is one sentence: real places, schools, kitchens and events from this world, never ones it doesn\'t have.'});
+function genCandidate(role){
+  const skill=Math.round(clamp(rnd(38,72)+(S.locations[0].stars||0)*6+(S.locations[0].rep-50)*.2,20,92));
+  const sal=payRound(marketSalary(role,skill)*rnd(.92,1.12));
+  const bl=wcList("bios").filter(x=>x.role===role), bio=bl.length?pick(bl).bio:pick(CAND_BIOS.filter(x=>x.role===role)).bio;
   const years=estYears(skill);
-  return {id:uid(),role,name:personName(),skill,salary:Math.round(sal*(1+certPremium({certs:[]}))),loyalty:Math.round(rnd(45,65)),ambition:Math.round(rnd(20,85)),bio:pick(bios[role]),catch:"",years,certs:plausibleCerts(role,skill,years)};
+  return {id:uid(),role,name:personName(),skill,salary:Math.round(sal*(1+certPremium({certs:[]}))),loyalty:Math.round(rnd(45,65)),ambition:Math.round(rnd(20,85)),bio,catch:"",years,certs:plausibleCerts(role,skill,years)};
 }
 
 /* ---- the actions behind the buttons ---- */
@@ -8222,7 +8307,7 @@ if(!window.__nfWired){ window.__nfWired=true;
 function meter(v,label,invert,hi,lo){
   hi=hi==null?66:hi; lo=lo==null?33:lo;
   const c = invert ? (v>hi?"b":v>lo?"w":"g") : (v>hi?"g":v>lo?"w":"b");
-  const help=METER_HELP[label];
+  const help=METER_HELP[label]||(label===ucf(healthWord())?METER_HELP["Health score"]:null);
   const lab=help?`<details style="display:inline"><summary style="cursor:pointer;display:inline;list-style:none">${label} <span class="note">ⓘ</span></summary><div class="note" style="margin:4px 0 2px;font-weight:400">${help}</div></details>`:label;
   return `<div style="margin-bottom:9px"><div class="kv" style="border:0;padding:0 0 3px;align-items:flex-start"><span>${lab}</span><span class="n">${Math.round(v)}</span></div><div class="meter ${c}"><i style="width:${clamp(v,0,100)}%"></i></div></div>`;
 }
@@ -8265,7 +8350,7 @@ function dashHTML(){
           <div class="bd">
             ${l.stars||l.bib||l.selected||l.green?`<div class="accolade" style="font-size:18px;margin-bottom:8px">${l.stars?`${starGlyphs(l.stars)} <span>${l.stars} Michelin star${l.stars>1?"s":""}</span>`:l.bib?"<span>Bib Gourmand</span>":l.selected?"<span>In the Guide</span>":""}${l.green?' <span class="pill g">Green Star</span>':""}</div>`:""}
             ${meter(l.rep,"Reputation")}${meter(l.awareness,"Awareness")}${meter(ambience(l),"Ambience")}${meter(l.morale,"Staff morale")}
-            ${meter(l.skill,"Kitchen skill")}${meter(l.equip,"Equipment condition")}${meter(l.health,"Health score")}
+            ${meter(l.skill,"Kitchen skill")}${meter(l.equip,"Equipment condition")}${meter(l.health,ucf(healthWord()))}
             <div class="kv"><span>Rent + CAM${modSum("rent",S.locations.indexOf(l))?' <span class="note">(after standing effects)</span>':""}</span><span class="n">${money((l.rent+l.cam)*(1+modSum("rent",S.locations.indexOf(l))))}/mo</span></div>
             <div class="kv"><span>Seats</span><span class="n">${l.seats||"—"}</span></div>
           </div></div>`).join("")}
@@ -9602,6 +9687,7 @@ function kitchenHTML(loc){
       <label class="hint" style="display:block"><input type="checkbox" data-kitset="supPlan|${loc.id}" ${F.supPlan?"checked":""}> Suppression service contract (${money(supInspectCost(loc))} a visit)</label>
       <label class="hint" style="display:block"><input type="checkbox" data-kitset="service" ${S.kitService?"checked":""}> Equipment service contract (${money(Math.round(K.reduce((a,p)=>a+p.price,0)*.005))}/mo: slower wear, half the breakdowns, cheaper repairs)</label>
       <label class="hint" style="display:block"><input type="checkbox" data-kitset="auto" ${S.kitAutoRepair!==false?"checked":""}> Call for emergency repairs automatically</label>
+      <p class="note" style="margin:6px 0 0">Fire safety here is checked by ${esc(fireWho())}, hygiene by ${esc(insp("health").who)}.</p>${worldNote("inspectors")}
       <div class="row" style="gap:6px;margin-top:6px">${!F.hoodPlan&&ho>=iv.m?`<button class="btn sm" data-kitclean="${loc.id}">Book a hood cleaning · ${money(hoodCleanCost(loc))}</button>`:""}${!F.supPlan&&so>=6?`<button class="btn sm" data-kitinspect="${loc.id}">Book a suppression inspection · ${money(supInspectCost(loc))}</button>`:""}</div>
     </details>
     ${groups.map(grp).join("")}
@@ -9805,7 +9891,7 @@ function staffCardHTML(m){
     <div class="tags">${Math.round(m.years||0)} years in kitchens and dining rooms${certsOf(m).length?` · ${certsOf(m).map(k=>esc(certInfo(k).name)).join(", ")}`:" · no formal credentials"}</div>
     <div class="tags">${money(m.salary)}/yr · the market pays about ${money(mkt)} for this person${tr?` · in ${esc(tr.name)}, ${tr.left} mo left`:""}</div>
     ${exp("credentials")&&!tr&&next.length?`<div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px">${next.map(k=>{const c=certInfo(k); return `<button class="btn sm sec" data-cert="${m.id}|${k}" ${S.cash<c.cost?"disabled":""}>Sit ${esc(c.name)} · ${money(c.cost)} · ${c.months} mo · ~${Math.round(examChance(m,k)*100)}% pass</button>`;}).join("")}</div>`:""}
-    ${m.credOffer?(()=>{ const o=m.credOffer, c=o.custom||CERTS[o.key]||{}, cost=o.custom?c.cost:c.cost, mo=o.custom?c.months:c.months, ch=examChance(m,o.key,o.custom||null);
+    ${m.credOffer?(()=>{ const o=m.credOffer, c=o.custom||certInfo(o.key), cost=o.custom?c.cost:c.cost, mo=o.custom?c.months:c.months, ch=examChance(m,o.key,o.custom||null);
       return `<div class="choice" style="cursor:default;margin-top:8px"><b>${esc(c.name)}</b><span>${esc(o.custom?c.blurb:"A recognised credential already in the game.")}</span>
         <span class="note" style="margin-top:4px">${money(cost)} · ${mo} month${mo>1?"s":""}${c.away?" away from work":""}${c.pass===null?"":` · about ${Math.round(ch*100)}% chance${c.kind==="competition"?" of placing":" of passing"}`}${c.prestige?` · prestige ${c.prestige}`:""}${c.fame?` · fame +${c.fame} if it goes well`:""}</span>
         <div class="row" style="margin-top:6px;gap:6px"><button class="btn sm" data-credgo="${m.id}" ${S.cash<cost||tr?"disabled":""}>Go ahead</button><button class="btn sm sec" data-creddrop="${m.id}">Never mind</button></div></div>`; })():""}
@@ -9863,7 +9949,7 @@ function teamHTML(){
         <p class="note" style="margin:0 0 8px">Credential exams are on each person's card above, matched to what they already hold.</p>${worldNote("training")}
         ${wcList("training").concat(S.trainOffers).map((p,i)=>{const isAI=i>=wcList("training").length; if(!p.memberId&&trainingContradicts(p)) return "";
           const who=p.memberId&&S.team.find(t=>t.id===p.memberId), m=p.memberId?(who&&!who.away?who:null):p.role&&S.team.find(t=>t.role===p.role&&!t.away), needs=(p.memberId||p.role)&&!m;
-          const fx=Object.entries(p.eff||{}).filter(([k,v])=>v).map(([k,v])=>`${({skill:"skill",loyalty:"loyalty",brigade:"brigade technique",fohTrain:"floor training",health:"health score",morale:"morale",creativity:"menu creativity",coherence:"menu coherence",crewKitchen:"kitchen crew skill",crewFloor:"floor crew skill",crewSupport:"dish & porter crew skill"})[k]||k} ${v>0?"+":""}${v}`).join(" · ");
+          const fx=Object.entries(p.eff||{}).filter(([k,v])=>v).map(([k,v])=>`${({skill:"skill",loyalty:"loyalty",brigade:"brigade technique",fohTrain:"floor training",health:healthWord(),morale:"morale",creativity:"menu creativity",coherence:"menu coherence",crewKitchen:"kitchen crew skill",crewFloor:"floor crew skill",crewSupport:"dish & porter crew skill"})[k]||k} ${v>0?"+":""}${v}`).join(" · ");
           return `<div class="dial" style="padding:9px 0"><div class="lab"><b>${esc(p.name)}</b><span class="val">${money(p.cost)}${p.monthly?` + ${money(p.monthly)}/mo`:""}</span></div>
           <div class="hint">${esc(p.blurb||"")} ${p.months} month${p.months>1?"s":""}${p.memberId?` · for ${esc(who?who.name:"someone who has left")}`:p.role?` · for your ${ROLES[p.role].name.toLowerCase()}`:""}${p.away?" · away from service":""}.</div>
           ${fx?`<div class="hint num">${esc(fx)}</div>`:""}
@@ -9944,21 +10030,18 @@ function wireTeam(){
     const r=await claudeJSON(TRAIN_RULES,`\n\nTHE OWNER'S IDEA:\n${t}`,$("#trainOut"),"programme","Putting a programme together…");
     tg.disabled=false; if(!r) return;
     S.trainOffers=[sanitizeTraining(r)].concat(S.trainOffers).slice(0,6); keepY(); };
-  const lcg=$("#localCredGo"); if(lcg) lcg.onclick=async()=>{ lcg.disabled=true;
-    const r=await claudeJSON(LOCALCRED_RULES(),`\n\nWHERE: ${placeName()}${S.intl&&S.intl.home?`, ${S.intl.home}`:""}`,$("#localCredOut"),"credentials","Looking up what's standard here…"); lcg.disabled=false; if(!r) return;
-    const made=applyLocalCreds(r); logIt("warn",made.length?`Looked up ${made.length} local credential${made.length>1?"s":""} for ${S.localCredPlace}.`:`Nothing to add for ${placeName()}.`); keepY(); };
   document.querySelectorAll("[data-credask]").forEach(b=>b.onclick=async()=>{ const m=S.team.find(x=>x.id===b.dataset.credask); if(!m) return;
     const ta=document.querySelector(`[data-credidea="${m.id}"]`), out=document.querySelector(`[data-credout="${m.id}"]`), t=(ta.value||"").trim();
     if(!t){ out.textContent="Name what you have in mind first."; return; }
     b.disabled=true; const r=await claudeJSON(credRules(m),`\n\nTHE OWNER WANTS THEM TO DO:\n${t}`,out,"credential",`Looking into it for ${m.name.split(" ")[0]}…`); b.disabled=false; if(!r) return;
     const o=sanitizeCred(r,m); if(o.none){ out.textContent=o.none; return; }
-    if(!o.custom){ if(certsOf(m).includes(o.key)){ out.textContent=`${m.name} already holds ${CERTS[o.key].name}.`; return; }
-      if(!certEligible(m,o.key)){ const c=CERTS[o.key]; out.textContent=`That's ${c.name}, which ${m.name} can't sit yet${c.pre&&!certsOf(m).includes(c.pre)?`: it needs ${CERTS[c.pre].name} first`:c.roles.includes(m.role)?": they need more experience":`: it isn't for a ${ROLES[m.role].name.toLowerCase()}`}.`; return; } }
+    if(!o.custom){ if(certsOf(m).includes(o.key)){ out.textContent=`${m.name} already holds ${certInfo(o.key).name}.`; return; }
+      if(!certEligible(m,o.key)){ const c=certInfo(o.key); out.textContent=`That's ${c.name}, which ${m.name} can't sit yet${c.pre&&!certsOf(m).includes(c.pre)?`: it needs ${certInfo(c.pre).name} first`:c.roles.includes(m.role)?": they need more experience":`: it isn't for a ${ROLES[m.role].name.toLowerCase()}`}.`; return; } }
     else if(certsOf(m).includes(o.key)&&o.custom.kind!=="competition"){ out.textContent=`${m.name} already has ${o.custom.name}.`; return; }
     m.credOffer=o; keepY(); });
   document.querySelectorAll("[data-creddrop]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.creddrop); if(m) delete m.credOffer; keepY(); });
   document.querySelectorAll("[data-credgo]").forEach(b=>b.onclick=()=>{ const m=S.team.find(x=>x.id===b.dataset.credgo); if(!m||!m.credOffer||S.training.some(t=>t.memberId===m.id)) return;
-    const o=m.credOffer, c=o.custom||CERTS[o.key]; if(!c||S.cash<c.cost) return;
+    const o=m.credOffer, c=o.custom||(CERTS[o.key]||(S.customCerts||{})[o.key]); if(!c||S.cash<c.cost) return;
     if(o.custom){ S.customCerts=Object.assign(S.customCerts||{},{[o.key]:o.custom}); }
     S.cash-=c.cost; S.training.push({id:uid(),name:c.kind==="competition"?c.name:`${c.name}${o.custom&&c.pass==null?"":" exam"}`,memberId:m.id,left:c.months,months:c.months,monthly:0,eff:{},away:!!c.away,cert:o.key});
     if(c.away) m.away=true; delete m.credOffer;
