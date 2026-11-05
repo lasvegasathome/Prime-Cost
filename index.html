@@ -298,7 +298,7 @@ table.occ{border-collapse:separate;border-spacing:2px;font-size:12px;width:100%}
 table.occ td.c{text-align:center;padding:5px 4px;border-radius:2px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px}
 table.occ td.c.full{font-weight:600;box-shadow:inset 0 0 0 1.5px var(--ink)}
 .occkey{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:4px}
-.occkey i{display:inline-block;width:72px;height:7px;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 5%,var(--panel)),color-mix(in srgb,var(--accent) 55%,var(--panel)))}
+.occkey i{display:inline-block;width:72px;height:7px;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 5%,var(--panel)),color-mix(in srgb,var(--accent) 42%,var(--panel)))}
 /* charts */
 .chartgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px 22px}
 .chartcell .ck{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -364,7 +364,9 @@ nav.jump a:hover{color:var(--ink);border-color:var(--ink2)}
 #runFab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;box-shadow:0 6px 20px -6px rgba(0,0,0,.45);border-radius:99px;padding:10px 18px}
 @media (max-width:600px){
   #runFab{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
-  .btn.sm,.seg button,select,input[type=text],input[type=number],.choice,nav.jump a{min-height:40px}
+  .btn,.seg button,select,input[type=text],input[type=number],input:not([type]),.choice,nav.jump a{min-height:40px}
+  input[type=checkbox],input[type=radio]{width:20px;height:20px}
+  details[style*="inline"]>summary{padding:12px 0;margin:-12px 0}
   .tab{min-height:44px}
   details>summary{min-height:40px;display:flex;align-items:center}
   details[style*="inline"]>summary{min-height:0;display:inline}
@@ -702,7 +704,7 @@ function hoursHTML(){
   return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Opening hours</h3></div><div class="bd">`+
     S.locations.filter(l=>l.status!=="closed").map(l=>{ const _c=enterLoc(l); try{ const H=hoursOf(l), P=weekProfile(), D=demandCore(S,l,S.calMonth), svcs=SVCS.filter((sv,k)=>P.part[k]>0||H.svc[sv]);
       const cell=(d,sv)=>{ const x=(D.slots||[]).find(q=>q.d===d&&q.sv===sv); if(!x) return `<td class="note" style="text-align:center;padding:4px">·</td>`;
-        const f=clamp(x.cap>0?x.cov/x.cap:0,0,1), full=x.dem>x.cap*1.02, mix=Math.round(5+f*50); return `<td class="c${full?" full":""}" style="background:color-mix(in srgb,var(--accent) ${mix}%,var(--panel))" title="${esc(SVC_NAMES[sv])}, ${DAYS[d]}: ${full?"full, with a waitlist":Math.round(f*100)+"% of seats"}">${full?"full":Math.round(f*100)+"%"}</td>`; };
+        const f=clamp(x.cap>0?x.cov/x.cap:0,0,1), full=x.dem>x.cap*1.02, mix=Math.round(5+f*37); return `<td class="c${full?" full":""}" style="background:color-mix(in srgb,var(--accent) ${mix}%,var(--panel))" title="${esc(SVC_NAMES[sv])}, ${DAYS[d]}: ${full?"full, with a waitlist":Math.round(f*100)+"% of seats"}">${full?"full":Math.round(f*100)+"%"}</td>`; };
       return `<div style="margin-bottom:12px"><b style="font-weight:600">${esc(l.name)}</b>
         <div class="seg" style="margin-top:6px;flex-wrap:wrap">${DAYS.map((d,i)=>`<button data-hday="${l.id}|${i}" aria-pressed="${H.days[i]}">${d}</button>`).join("")}</div>
         <div class="seg" style="margin-top:6px;flex-wrap:wrap">${SVCS.map(sv=>`<button data-hsvc="${l.id}|${sv}" aria-pressed="${!!H.svc[sv]}">${SVC_NAMES[sv]}${H.svc[sv]&&H.svcDays&&H.svcDays[sv]?` <span style="font-weight:400">(${svcDaysLabel(H.svcDays[sv])})</span>`:""}</button>`).join("")}</div>
