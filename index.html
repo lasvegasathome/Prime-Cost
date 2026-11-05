@@ -7130,7 +7130,7 @@ function railItem(it,base,enums){
   for(const k of keys){ const vals=base.map(b=>b[k]).filter(v=>v!==undefined), v=it[k], t=vals.find(x=>x!==null);
     if(enums[k]){ if(enums[k].includes(v)) out[k]=v; else if(vals.length===base.length) out[k]=enums[k].includes(vals[0])?vals[0]:enums[k][0]; continue; }
     if(v===undefined||v===null){ if(vals.length===base.length&&t!==undefined&&typeof t!=="object") return null; continue; }
-    if(typeof t==="number"){ const n=+v; if(!isFinite(n)) continue; const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi*2); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
+    if(typeof t==="number"){ const n=+v; if(!isFinite(n)) continue; const lo=Math.min(0,...vals), hi=Math.max(...vals); out[k]=hi===0&&lo===0?0:clamp(Math.round(n*100)/100,lo<0?lo*1.5:lo,hi>0?hi*2:0); if(Number.isInteger(t)&&Math.abs(hi)>=1) out[k]=Math.round(out[k]); }
     else if(typeof t==="string"){ const s=String(v).trim(); if(s) out[k]=s.slice(0,k==="name"?90:400); }
     else if(typeof t==="boolean") out[k]=!!v;
     else if(t&&typeof t==="object"&&!Array.isArray(t)&&v&&typeof v==="object"){   // effect maps: only keys the engine knows, inside the defaults' range
@@ -7188,12 +7188,20 @@ worldCat("training",{base:()=>TRAIN_CATALOG,what:"staff training programmes (cou
    Costs are per person on payroll: salaried team, office and every hourly crew member. */
 function headcount(){ return (S.team||[]).length+(S.office||[]).length+S.locations.filter(l=>l.status==="open").reduce((a,l)=>a+Object.values(crewOf(l)).reduce((b,c)=>b+c.n,0),0); }
 const UNIFORMS=[
-  {name:"Whatever they turn up in",blurb:"No uniform at all, which costs nothing and looks careless.",perHead:0,monthly:0,foh:-4,morale:-1,amb:-2},
-  {name:"Aprons and branded T-shirts",blurb:"Canvas aprons, a logo tee and a cap for the kitchen. The fast-casual and diner standard.",perHead:60,monthly:6,foh:0,morale:0,amb:0},
-  {name:"Chef whites and pressed server uniforms",blurb:"Double-breasted whites for the kitchen, shirts, trousers and long aprons on the floor, laundered every week.",perHead:220,monthly:22,foh:3,morale:1,amb:1},
-  {name:"Tailored uniforms from a designer",blurb:"Cut to fit each person by a workwear designer, with a spare set and a tailor on call.",perHead:900,monthly:45,foh:6,morale:2,amb:3}
+  {tier:"none",name:"Whatever they turn up in",blurb:"No uniform at all, which costs nothing and looks careless.",perHead:0,monthly:0,foh:-4,morale:-1,amb:-2},
+  {tier:"basic",name:"Aprons and branded T-shirts",blurb:"Canvas aprons, a logo tee and a cap for the kitchen. The fast-casual and diner standard.",perHead:60,monthly:6,foh:0,morale:0,amb:0},
+  {tier:"standard",name:"Chef whites and pressed server uniforms",blurb:"Double-breasted whites for the kitchen, shirts, trousers and long aprons on the floor, laundered every week.",perHead:220,monthly:22,foh:3,morale:1,amb:1},
+  {tier:"luxe",name:"Tailored uniforms from a designer",blurb:"Cut to fit each person by a workwear designer, with a spare set and a tailor on call.",perHead:900,monthly:45,foh:6,morale:2,amb:3}
 ];
-function uniformBase(){ const l=S.locations[0], C=CONCEPTS[S.concept]||{}; return C.counter||C.truck||(l&&locTier(l)==="low")?UNIFORMS[1]:UNIFORMS[2]; }
+const UNI_TIERS=["none","basic","standard","luxe"];
+worldCat("uniforms",{base:()=>UNIFORMS,what:"uniforms and workwear for the kitchen and floor, from nothing at all to the best money buys here",n:[4,7],enums:{tier:UNI_TIERS},
+  notes:'- "tier": "none" is no uniform at all (exactly one item, costing nothing), "basic" is cheap and practical, "standard" is what a proper sit-down place here would wear, "luxe" is the best on offer. Have at least one of each.\n- foh is how polished the floor looks, morale how the staff feel wearing it, amb what it adds to the room; perHead is up front per person, monthly per person for laundering and replacements.',
+  fix:x=>{ if(x.tier==="none"){ x.perHead=0; x.monthly=0; } return x; }});
+// the four rungs of the world's own list; a rung it skipped falls back to the nearest one it has
+function uniformTier(t){ const L=wcList("uniforms"); let u=L.find(x=>x.tier===t); if(u) return u;
+  const i=UNI_TIERS.indexOf(t); for(let d=1;d<4;d++) for(const j of [i-d,i+d]){ u=L.find(x=>x.tier===UNI_TIERS[j]); if(u) return u; }
+  return UNIFORMS[Math.max(0,i)]; }
+function uniformBase(){ const l=S.locations[0], C=CONCEPTS[S.concept]||{}; return uniformTier(C.counter||C.truck||(l&&locTier(l)==="low")?"basic":"standard"); }
 function uniformEffects(){
   if(!S||!S.uniform) return {foh:0,morale:0,amb:0,monthly:0};
   const u=S.uniform, b=uniformBase();
@@ -7205,6 +7213,9 @@ const POLICY_PRESETS=[
   {key:"pto",name:"Paid time off and sick days",blurb:"A week a year to start and sick days nobody has to argue for, so people stop coming in ill.",monthly:70,morale:1.5,quit:-.08,stress:-3,loyalty:.3},
   {key:"sched",name:"Schedules posted two weeks ahead",blurb:"Managers plan further out and stop texting people at noon to come in at five.",monthly:8,morale:1.5,quit:-.05,stress:-2,loyalty:.2}
 ];
+worldCat("policies",{base:()=>POLICY_PRESETS,what:"staff perks, benefits and workplace policies an owner here could offer (meals, cover for illness, time off, pay arrangements, housing, rations, whatever this world's workers would actually value)",n:[4,8],
+  notes:'- "key" is a short lowercase id, unique in the list. "monthly" is the cost per person on payroll a month.\n- morale is points on the morale the team settles at, quit the change in how often hourly staff quit (negative keeps people), stress points a month on salaried staff (negative is calmer), loyalty points a month.',
+  fix:(x,it)=>{ x.key=String(x.key||x.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,24)||"p"+uid(); x.quit=clamp(x.quit||0,-.4,.3); return x; }});
 function policiesOn(){ return (S.policies||[]).filter(x=>x.on); }
 function policyEffects(){ const o={morale:0,quit:0,stress:0,loyalty:0,monthly:0}; if(!S) return o; const n=headcount();
   for(const x of policiesOn()){ o.morale+=x.morale; o.quit+=x.quit; o.stress+=x.stress; o.loyalty+=x.loyalty; o.monthly+=Math.round(x.monthly*n)+(x.fixed||0); }
@@ -7212,14 +7223,14 @@ function policyEffects(){ const o={morale:0,quit:0,stress:0,loyalty:0,monthly:0}
 function staffDigest(){
   const u=S.uniform?`${S.uniform.name}${S.uniform.custom?` (the owner's own: ${S.uniform.desc})`:""}`:`${uniformBase().name.toLowerCase()} (the usual for this kind of place)`;
   return `UNIFORMS: ${u}. STAFF POLICIES: ${policiesOn().map(x=>`${x.name}${x.custom?` (${x.blurb})`:""}`).join("; ")||"none beyond the legal minimum"}.`; }
-const UNIFORM_RULES=`You are a hospitality workwear consultant inside a realistic restaurant simulation. The owner describes the uniforms they want for their staff. Honour every detail, price it honestly for this city and this many people, and say what it would really do. Use these as anchors for the scales: ${UNIFORMS.map(u=>`"${u.name}": ${u.perHead} dollars a head up front, ${u.monthly} a head a month, polish ${u.foh}, morale ${u.morale}, ambience ${u.amb}`).join("; ")}.
+const UNIFORM_RULES=()=>`You are a workwear consultant for restaurants inside a restaurant simulation. The owner describes the uniforms they want for their staff. Honour every detail, price it honestly for this place, its era and this many people, and say what it would really do. Use these as anchors for the scales: ${wcList("uniforms").map(u=>`"${u.name}": ${u.perHead} dollars a head up front, ${u.monthly} a head a month, polish ${u.foh}, morale ${u.morale}, ambience ${u.amb}`).join("; ")}.
 Fields: name (2-6 words); desc (1-2 sentences, what they wear, kitchen and floor); risk (one sentence, the catch: comfort, heat, laundering, staff who hate it); perHead (dollars per person up front); monthly (dollars per person a month for laundering and replacements); foh (-6 to 10, how much more polished the floor looks and feels); morale (-3 to 4, how the staff feel wearing it; uncomfortable or silly uniforms go negative); amb (-4 to 6, what it adds to the room). These ranges are scale guides for ordinary uniforms, not limits: go past them when what the owner describes really warrants it.
 Reply with ONLY JSON: {"name":"","desc":"","risk":"","perHead":0,"monthly":0,"foh":0,"morale":0,"amb":0}`;
-const POLICY_RULES=`You are an HR consultant for restaurants inside a realistic business simulation. The owner describes a staff benefit, perk or workplace policy (a four-day week, profit sharing, a tip-share change, childcare stipends, a mental-health line, free English classes, a no-yelling rule, anything). Honour every detail, price it honestly for this city and this many people, and say what it would really do. Use these as anchors: ${POLICY_PRESETS.map(x=>`"${x.name}": ${x.monthly} dollars a head a month, morale ${x.morale}, quit ${x.quit}, stress ${x.stress}, loyalty ${x.loyalty}`).join("; ")}.
+const POLICY_RULES=()=>`You advise restaurant owners on staff and workplace matters inside a business simulation. The owner describes a staff benefit, perk or workplace policy (a four-day week, profit sharing, a tip-share change, help with childcare, a no-yelling rule, anything). Honour every detail, price it honestly for this place, its era and this many people, and say what it would really do. Use these as anchors: ${wcList("policies").map(x=>`"${x.name}": ${x.monthly} dollars a head a month, morale ${x.morale}, quit ${x.quit}, stress ${x.stress}, loyalty ${x.loyalty}`).join("; ")}.
 Fields: name (2-6 words); blurb (1-2 sentences, what it is in practice); risk (one sentence, the catch); upfront (one-off dollars to set it up); monthly (dollars per person on payroll a month); fixed (flat dollars a month on top, 0 if none); morale (-3 to 5, points on the morale the team settles at); quit (-0.4 to 0.3, change in how often hourly staff quit; negative keeps people); stress (-6 to 4, points a month on salaried staff's stress); loyalty (-1 to 1.5, points a month on salaried staff's loyalty). These ranges are scale guides for ordinary policies, not limits: go past them when what the owner describes really warrants it.
 Reply with ONLY JSON: {"name":"","blurb":"","risk":"","upfront":0,"monthly":0,"fixed":0,"morale":0,"quit":0,"stress":0,"loyalty":0}`;
 function uniformsHTML(){
-  const cur=S.uniform, n=headcount(), off=!sampleFn, base=uniformBase();
+  const cur=S.uniform, n=headcount(), off=!sampleFn, base=uniformBase(), L=wcList("uniforms"), bare=uniformTier("none");
   const opt=(u,i)=>{ const on=cur?(!cur.custom&&cur.name===u.name):u===base, cost=Math.round(u.perHead*n);
     return `<button class="choice" data-uni="${i}" aria-pressed="${on}"><b>${esc(u.name)}${u===base?' <span class="note" style="font-weight:500">(usual for this kind of place)</span>':""}</b><span>${esc(u.blurb)}</span>
       <span class="tags">${cost?`${money(cost)} to kit out ${n} people`:"nothing up front"} · ${money(u.monthly)}/person/mo to launder and replace</span></button>`; };
@@ -7227,12 +7238,12 @@ function uniformsHTML(){
   return `<div class="panel"><div class="hd"><h3>Uniforms</h3><span class="spacer"></span><span class="note">${n} people on payroll</span></div><div class="bd">
     <p class="note" style="margin:0 0 8px">What your people wear sets how polished the floor looks, how the room feels and how the staff feel about coming in. Switching means buying a new set for everyone.</p>
     ${cur&&cur.custom?`<div class="choice" style="cursor:default" aria-pressed="true"><b>${esc(cur.name)} <span class="pill g">wearing now</span></b><span>${esc(cur.desc)}</span></div>`:""}
-    ${UNIFORMS.map(opt).join("")}
+    ${L.map(opt).join("")}
     ${pend?`<div class="choice" style="cursor:default;border-color:var(--accent)"><b>${esc(pend.name)} <span class="pill w">proposed</span></b><span>${esc(pend.desc)}</span>${pend.risk?`<span style="margin-top:4px"><b style="display:inline;font-size:12.3px">The catch:</b> ${esc(pend.risk)}</span>`:""}
-      <div class="tags">${money(Math.round(pend.perHead*n))} to kit out ${n} people · ${money(pend.monthly)}/person/mo · polish ${pend.foh>=0?"+":""}${pend.foh} · morale ${pend.morale>=0?"+":""}${pend.morale} · ambience ${pend.amb>=0?"+":""}${pend.amb} (against no uniform at all: polish ${UNIFORMS[0].foh}, morale ${UNIFORMS[0].morale}, ambience ${UNIFORMS[0].amb})</div>
+      <div class="tags">${money(Math.round(pend.perHead*n))} to kit out ${n} people · ${money(pend.monthly)}/person/mo · polish ${pend.foh>=0?"+":""}${pend.foh} · morale ${pend.morale>=0?"+":""}${pend.morale} · ambience ${pend.amb>=0?"+":""}${pend.amb} (against no uniform at all: polish ${bare.foh}, morale ${bare.morale}, ambience ${bare.amb})</div>
       <div class="row" style="margin-top:8px;gap:6px"><button class="btn sm" id="uniAdopt" ${S.cash<pend.perHead*n?"disabled":""}>Order them · ${money(Math.round(pend.perHead*n))}</button><button class="btn sm sec" id="uniToss">Pass</button></div></div>`:""}
     <textarea id="uniIdea" style="margin-top:6px" placeholder="Indigo linen chore coats for the floor, black chef jackets with the restaurant's crest in red thread for the kitchen." ${off?"disabled":""}></textarea>
-    <button class="btn sm" id="uniGo" style="margin-top:6px" ${off?"disabled":""}>Design these uniforms</button><div class="note" id="uniOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>
+    <button class="btn sm" id="uniGo" style="margin-top:6px" ${off?"disabled":""}>Design these uniforms</button><div class="note" id="uniOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>${worldNote("uniforms")}
   </div></div>`;
 }
 function policiesHTML(){
@@ -7243,36 +7254,36 @@ function policiesHTML(){
   const customs=list.filter(x=>x.custom);
   return `<div class="panel"><div class="hd"><h3>Perks & policies</h3><span class="spacer"></span><span class="note">${policiesOn().length?money(policyEffects().monthly)+"/mo":"none"}</span></div><div class="bd">
     <p class="note" style="margin:0 0 8px">What it's like to work here beyond the paycheque. Tap one to start or stop it. Costs scale with everyone on payroll, and the effects show up in morale, stress and how many hourly staff you lose each month.</p>
-    ${POLICY_PRESETS.map(presetRow).join("")}
+    ${wcList("policies").map(presetRow).join("")}
     ${customs.map(x=>`<div class="choice" style="cursor:default"${x.on?' aria-pressed="true"':""}><b>${esc(x.name)} ${x.on?'<span class="pill g">in place</span>':'<span class="pill">stopped</span>'}</b><span>${esc(x.blurb)}</span><span class="tags">${cost(x)} · ${esc(fx(x))}</span>
       <div class="row" style="margin-top:6px;gap:6px"><button class="btn sm sec" data-polc="${x.id}">${x.on?"Stop it":"Bring it back"}</button><button class="btn sm sec" data-poldel="${x.id}">Delete</button></div></div>`).join("")}
     ${pend?`<div class="choice" style="cursor:default;border-color:var(--accent)"><b>${esc(pend.name)} <span class="pill w">proposed</span></b><span>${esc(pend.blurb)}</span>${pend.risk?`<span style="margin-top:4px"><b style="display:inline;font-size:12.3px">The catch:</b> ${esc(pend.risk)}</span>`:""}
       <div class="tags">${pend.upfront?`${money(pend.upfront)} to set up · `:""}${cost(pend)} · ${esc(fx(pend))}</div>
       <div class="row" style="margin-top:8px;gap:6px"><button class="btn sm" id="polAdopt" ${S.cash<pend.upfront?"disabled":""}>Put it in place${pend.upfront?` · ${money(pend.upfront)}`:""}</button><button class="btn sm sec" id="polToss">Pass</button></div></div>`:""}
     <textarea id="polIdea" style="margin-top:6px" placeholder="Everyone gets their birthday off, paid, and 5% of each quarter's profit is split across the whole staff by hours worked." ${off?"disabled":""}></textarea>
-    <button class="btn sm" id="polGo" style="margin-top:6px" ${off?"disabled":""}>Work out what this costs</button><div class="note" id="polOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>
+    <button class="btn sm" id="polGo" style="margin-top:6px" ${off?"disabled":""}>Work out what this costs</button><div class="note" id="polOut" style="margin-top:6px">${off?"Designing your own needs Claude, which this view can't reach.":""}</div>${worldNote("policies")}
   </div></div>`;
 }
 function wireStaffPolicies(){
-  document.querySelectorAll("[data-uni]").forEach(b=>b.onclick=()=>{ const u=UNIFORMS[+b.dataset.uni], cur=S.uniform||uniformBase(); if(!cur.custom&&cur.name===u.name) return;
+  document.querySelectorAll("[data-uni]").forEach(b=>b.onclick=()=>{ const u=wcList("uniforms")[+b.dataset.uni], cur=S.uniform||uniformBase(); if(!cur.custom&&cur.name===u.name) return;
     const cost=Math.round(u.perHead*headcount()); if(S.cash<cost){ $("#uniOut").textContent=`Kitting everyone out costs ${money(cost)}.`; return; }
     if(!b.dataset.armed){ b.dataset.armed="1"; b.querySelector("b").textContent=`Tap again to order${cost?` for ${money(cost)}`:""}`; return; }
     S.cash-=cost; S.uniform=Object.assign({},u,{custom:false}); logIt("good",`New uniforms: ${u.name.toLowerCase()}${cost?` (${money(cost)})`:""}.`); keepY(); });
   const ug=$("#uniGo"); if(ug) ug.onclick=async()=>{ const t=($("#uniIdea").value||"").trim(); if(!t){ $("#uniOut").textContent="Describe the uniforms first."; return; } ug.disabled=true;
-    const r=await claudeJSON(UNIFORM_RULES,`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER WANTS:\n${t}`,$("#uniOut"),"uniforms","Talking to a workwear designer…"); ug.disabled=false; if(!r) return;
+    const r=await claudeJSON(UNIFORM_RULES(),`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER WANTS:\n${t}`,$("#uniOut"),"uniforms","Talking to a workwear designer…"); ug.disabled=false; if(!r) return;
     const n=nnum; S.uniformOffer={name:String(r.name||"Custom uniforms").slice(0,60),desc:clip(String(r.desc||t),900),risk:clip(String(r.risk||""),600),perHead:Math.round(n(r.perHead,0,1e9,200)),monthly:Math.round(n(r.monthly,0,1e8,20)),
       foh:Math.round(n(r.foh,-100,100,0)*10)/10,morale:Math.round(n(r.morale,-100,100,0)*10)/10,amb:Math.round(n(r.amb,-100,100,0)*10)/10,custom:true}; keepY(); };
   const ua=$("#uniAdopt"); if(ua) ua.onclick=()=>{ const u=S.uniformOffer; if(!u) return; const cost=Math.round(u.perHead*headcount()); if(S.cash<cost) return;
     S.cash-=cost; S.uniform=u; S.uniformOffer=null; logIt("good",`New uniforms: ${u.name} (${money(cost)}).`); chronicle(`The staff got new uniforms: ${u.desc}`); keepY(); };
   const ut=$("#uniToss"); if(ut) ut.onclick=()=>{ S.uniformOffer=null; keepY(); };
-  document.querySelectorAll("[data-pol]").forEach(b=>b.onclick=()=>{ const x=POLICY_PRESETS.find(y=>y.key===b.dataset.pol); S.policies=S.policies||[];
+  document.querySelectorAll("[data-pol]").forEach(b=>b.onclick=()=>{ const x=wcList("policies").find(y=>y.key===b.dataset.pol); if(!x) return; S.policies=S.policies||[];
     const cur=S.policies.find(y=>y.key===x.key);
     if(cur&&cur.on){ cur.on=false; logIt("warn",`Stopped: ${x.name.toLowerCase()}. The staff noticed.`); for(const l of S.locations) l.morale=clamp(l.morale-Math.max(1,x.morale),3,99); }
     else if(cur){ cur.on=true; logIt("good",`Brought back: ${x.name.toLowerCase()}.`); }
     else { S.policies.push(Object.assign({},x,{id:"pol"+uid(),on:true})); logIt("good",`New for the staff: ${x.name.toLowerCase()}.`); }
     keepY(); });
   const pg=$("#polGo"); if(pg) pg.onclick=async()=>{ const t=($("#polIdea").value||"").trim(); if(!t){ $("#polOut").textContent="Describe the policy first."; return; } pg.disabled=true;
-    const r=await claudeJSON(POLICY_RULES,`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER PROPOSES:\n${t}`,$("#polOut"),"policy","Running the numbers with HR…"); pg.disabled=false; if(!r) return;
+    const r=await claudeJSON(POLICY_RULES(),`\n\nPEOPLE ON PAYROLL: ${headcount()}\n\nTHE OWNER PROPOSES:\n${t}`,$("#polOut"),"policy","Running the numbers with HR…"); pg.disabled=false; if(!r) return;
     const n=nnum, MS=moneyScale(); S.policyOffer={name:String(r.name||"A staff policy").slice(0,60),blurb:clip(String(r.blurb||t),900),risk:clip(String(r.risk||""),600),upfront:Math.round(n(r.upfront,0,1e13,0)),
       monthly:Math.round(n(r.monthly,0,1e9,0)),fixed:Math.round(n(r.fixed,-1e12,1e12,0)),morale:Math.round(n(r.morale,-100,100,0)*10)/10,quit:Math.round(n(r.quit,-.99,10,0)*100)/100,
       stress:Math.round(n(r.stress,-100,100,0)*10)/10,loyalty:Math.round(n(r.loyalty,-100,100,0)*10)/10,custom:true}; keepY(); };
