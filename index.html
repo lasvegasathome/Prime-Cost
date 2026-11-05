@@ -316,6 +316,20 @@ svg.vchart.on .hov{opacity:1}
 #chartTip .tr{display:flex;align-items:center;gap:7px;justify-content:space-between}
 #chartTip .tr i{display:inline-block;width:10px;height:2px;border-radius:1px;margin-right:5px;vertical-align:3px}
 #chartTip .tr b{font-family:var(--mono);font-weight:600}
+/* log timeline */
+.logbar{margin-bottom:10px}
+section.lgm{border-bottom:1px solid var(--rule)}
+section.lgm:last-child{border-bottom:0}
+section.lgm>header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:9px 13px;background:color-mix(in srgb,var(--panel2) 45%,var(--panel));position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--hdr,56px) + 42px);z-index:2}
+section.lgm>header .when{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink);letter-spacing:.04em;min-width:64px}
+section.lgm .lgsum{font-size:12.5px;color:var(--ink2)}
+section.lgm ul{list-style:none;margin:0;padding:4px 13px 8px}
+li.lg{display:flex;gap:10px;align-items:baseline;padding:4px 0;font-size:13.5px;line-height:1.5}
+li.lg>i{flex:none;width:7px;height:7px;border-radius:50%;transform:translateY(-1px);background:var(--bad)}
+li.lg.ev-good>i{background:var(--good)}
+li.lg.ev-warn>i{background:transparent;box-shadow:inset 0 0 0 2px var(--warn)}
+li.lg.ev-bad>i{border-radius:1px;transform:translateY(-1px) rotate(45deg)}
+.lgtag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule2);border-radius:99px;padding:0 7px;margin-left:4px;vertical-align:1px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:.01s!important}}
 </style>
 
@@ -10011,11 +10025,30 @@ async function injectEvent(text,btn,outEl){
 function logHTML(){
   return `<div class="sec" style="padding-top:18px"><h2>Log</h2>
   <p class="lede">Everything that has happened, most recent first.</p>
-  <div class="panel"><div class="bd tight">
-    ${S.log.length? S.log.map(e=>`<div class="entry ev-${e.tone==="good"?"good":e.tone==="warn"?"warn":"bad"}"><div class="when">${esc(e.when)}</div><p>${esc(e.text)}</p></div>`).join("")
+  ${S.log.length?`<div class="row logbar"><input type="text" id="logQ" placeholder="Search the log" aria-label="Search the log" style="flex:1 1 220px;width:auto">
+    <div class="seg" style="width:auto;flex:0 0 auto" role="group" aria-label="Show">${[["all","All"],["good","Good"],["warn","Watch"],["bad","Bad"]].map(([k,n])=>`<button data-logtone="${k}" aria-pressed="${k==="all"}">${n}</button>`).join("")}</div></div>`:""}
+  <div class="panel"><div class="bd tight" id="logList">
+    ${S.log.length? logGroups(S.log)
       :`<div class="entry"><p class="note">Nothing yet.</p></div>`}
   </div></div></div>`;
 }
+/* the log as a timeline: one block per month, the month's trading summary leading it */
+function logGroups(log){
+  const groups=[]; for(const e of log){ const g=groups[groups.length-1]; if(g&&g.when===e.when) g.items.push(e); else groups.push({when:e.when,items:[e]}); }
+  const isSum=e=>/ revenue on [\d,]+ covers\./.test(e.text);
+  const tone=e=>e.tone==="good"?"good":e.tone==="warn"?"warn":"bad";
+  const line=e=>{ const m=String(e.text).match(/^([\s\S]*?) — ([a-z][a-z &'-]{1,28})$/); /* an event's trailing " — reputation" names what it moved */
+    return `<li class="lg ev-${tone(e)}" data-tone="${tone(e)}"><i aria-hidden="true"></i><span>${esc(m?m[1]:e.text)}${m?` <span class="lgtag">${esc(m[2])}</span>`:""}</span></li>`; };
+  return groups.map(g=>{ const sum=g.items.find(isSum), rest=g.items.filter(e=>e!==sum);
+    return `<section class="lgm"><header><span class="when">${esc(g.when)}</span>${sum?`<span class="lgsum">${esc(sum.text)}</span>`:""}</header>${rest.length?`<ul>${rest.map(line).join("")}</ul>`:""}</section>`; }).join("");
+}
+(()=>{ const apply=()=>{ const L=document.getElementById("logList"); if(!L) return; const q=(document.getElementById("logQ")||{}).value||"", t=(document.querySelector('[data-logtone][aria-pressed="true"]')||{dataset:{logtone:"all"}}).dataset.logtone, ql=q.trim().toLowerCase();
+    L.querySelectorAll("section.lgm").forEach(s=>{ let any=false; s.querySelectorAll("li.lg").forEach(li=>{ const ok=(t==="all"||li.dataset.tone===t)&&(!ql||li.textContent.toLowerCase().includes(ql)); li.hidden=!ok; any=any||ok; });
+      const sumHit=!ql||(s.querySelector(".lgsum")||{textContent:""}).textContent.toLowerCase().includes(ql)||s.querySelector(".when").textContent.toLowerCase().includes(ql);
+      s.hidden=!(any||(t==="all"&&sumHit&&(!ql||sumHit))); }); };
+  document.addEventListener("input",e=>{ if(e.target.id==="logQ") apply(); });
+  document.addEventListener("click",e=>{ const b=e.target.closest&&e.target.closest("[data-logtone]"); if(!b) return; document.querySelectorAll("[data-logtone]").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); apply(); });
+})();
 
 /* ---------- RESULT MODAL ---------- */
 /* the month in order of importance, with the small repetitive stuff rolled up */
