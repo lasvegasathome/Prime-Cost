@@ -2938,7 +2938,7 @@ function starterCellar(ck){
 function parseCats(str){ const o={}; for(const p of String(str).split(",")){ const [k,v]=p.split(":"); if(CATS[k]) o[k]=+v; } return normCats(o); }
 function normCats(o){
   const out={}; let t=0;
-  for(const k of CAT_KEYS){ const v=Math.max(0,Number(o&&o[k])||0); if(v>0){ out[k]=v; t+=v; } }
+  for(const k of CAT_KEYS){ const v=clamp(Number(o&&o[k])||0,0,1e6); if(v>0){ out[k]=v; t+=v; } }
   if(t<=0) return {produce:.5,pantry:.5};
   for(const k in out) out[k]=Math.round(out[k]/t*100)/100;
   return out;
