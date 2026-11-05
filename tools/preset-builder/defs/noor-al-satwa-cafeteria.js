@@ -24,7 +24,7 @@ module.exports={
   mods:[{label:"Staff accommodation and visas",kind:"fixed",value:2600}],
   features:[{name:"The spit and the saj",pitch:"Shawarma turning in the window and man'oushe baked to order.",prestige:1}],
   team:[{role:"chef",name:"Shafeeq Kunhi",skill:62,years:14,trait:"steady",loyalty:78,ambition:35,salary:7000,bio:"From Kozhikode. Runs the spit, the saj and the night shift, and makes the parotta the drivers come for."},
-        {role:"maitre",name:"Rashid Pathan",skill:55,years:6,trait:"connected",salary:6000,bio:"Runs the counter and the tablets for three delivery apps, and knows every driver in Satwa by name."}],
+        {role:"maitre",name:"Rashid Pathan",skill:55,years:6,trait:"connected",salary:6000,bio:"Runs the counter and the tablets for three delivery apps, and has the drivers' bags packed before they reach the door."}],
   dials:{price:1,quality:"standard",staffing:"full",marketing:250,draw:2000},
   deliveryPlan:"plus",
   menu:{format:"carte",coherence:80,identity:"A Dubai cafeteria: Levantine shawarma and saj, Kerala parotta, fresh juice and karak chai.",dishes:[

@@ -3,7 +3,7 @@ module.exports={
   bizName:"Kjolle", seed:"kjolle-2025", epoch:2025, startMonth:4,
   baseConcept:"fine", baseMarket:"core",
   country:C.peru,
-  circumstances:"May 2025, Barranco, Lima. Kjolle shares a colonial house with Central and the research team that maps Peru's ingredients by altitude. Pia León's menu travels from the coast to the Andes to the Amazon, and the world's lists have noticed. Peru has no Michelin Guide; here the judges are the 50 Best voters and the guests who fly in. You run the restaurant around her kitchen.",
+  circumstances:"May 2025, Barranco, Lima. Kjolle shares a colonial house with Central and the research team that maps Peru's ingredients by altitude. Pia León's menu travels from the coast to the Andes to the Amazon. With no Michelin Guide in Peru, the judges who matter are the 50 Best voters and the guests who fly in. You run the restaurant around her kitchen.",
   notes:"Kjolle is the real restaurant of chef Pia León in Casa Tupac, a house in Barranco, Lima, Peru, which it shares with Central (run by León and Virgilio Martínez) and Mater Iniciativa, their research project on Peruvian ingredients and ecosystems. It opened in August 2018; León was named Latin America's Best Female Chef in 2018 and the World's Best Female Chef in 2021. Its tasting menu follows Peru's ecosystems and altitudes with native tubers, grains, fruits and fish; reported prices range from about US$125 to well over US$250. The dishes in this game are the nine courses of its Mater Surroundings menu as printed in 2024 (published by the Hong Kong food blogger supertaster Mel, August 2024); the bread and butter served first isn't listed. Peru has no Michelin Guide, so recognition comes from the World's 50 Best and Latin America's 50 Best lists. The player is a general manager; Pia León is written from her public record. The seat count, prices at the start date, staff other than León, rent and events are estimated or invented.",
   world:{guide:false,guideAuto:false},
   spec:{conceptName:"Kjolle",blurb:"Pia León's tasting menu across Peru's altitudes, in the house it shares with Central.",
@@ -22,7 +22,7 @@ module.exports={
   team:[{role:"chef",name:"Pia León",skill:94,years:22,trait:"mentor",fame:82,loyalty:100,ambition:70,salary:60000,bio:"Cooked at Central for a decade, became its head chef, and opened Kjolle in 2018. Named the World's Best Female Chef in 2021."},
         {role:"sous",name:"Renzo Quispe",skill:80,years:10,trait:"steady",loyalty:80,ambition:60,salary:24000,bio:"Runs the pass and the relationships with growers from Cusco to the Amazon."},
         {role:"somm",name:"Valeria Montes",skill:76,years:9,trait:"connected",salary:20000,bio:"Pairs Peruvian wines, piscos and her own fermented drinks."},
-        {role:"maitre",name:"Gonzalo Arce",skill:78,years:12,trait:"showman",salary:22000,bio:"Explains every ingredient's altitude to guests from twenty countries a night."}],
+        {role:"maitre",name:"Gonzalo Arce",skill:78,years:12,trait:"showman",salary:22000,bio:"Explains the altitude of every ingredient, in whichever language the table speaks."}],
   dials:{price:1,quality:"good",staffing:"deep",marketing:1500,draw:0},
   tipPolicy:"service",
   menu:{format:"tasting",tastingPrice:190,pairing:true,pairingPrice:100,coherence:92,identity:"Peru's ecosystems on one menu: tubers, grains, fruits, fish and plants from sea level to the Andes and the Amazon.",dishes:[

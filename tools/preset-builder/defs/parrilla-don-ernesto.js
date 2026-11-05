@@ -21,8 +21,8 @@ module.exports={
         {p:.12,tone:"good",text:"San Lorenzo won the derby and half of Boedo came to celebrate.",fx:[{op:"mod",kind:"demand",label:"Derby night",value:.06,months:1}]},
         {p:.06,tone:"good",text:"A porteño food blog called your vacío the best in the south of the city.",fx:[{op:"awareness",delta:5},{op:"rep",delta:2}]}]},
   features:[{name:"The parrilla in the window",pitch:"The grill and its quebracho embers, in view of the street.",prestige:3}],
-  team:[{role:"chef",name:"Ernesto Gallo",skill:76,years:30,trait:"perfectionist",loyalty:95,ambition:15,salary:9000,bio:"Ernesto's son, your brother: the parrillero. Manages the fire by hand and will not cook a bife past medium."},
-        {role:"maitre",name:"Silvina Paz",skill:64,years:15,trait:"steady",salary:7000,bio:"Runs the floor and the cash, and keeps a notebook of the week's prices because the menu can't."}],
+  team:[{role:"chef",name:"Ernesto Gallo",skill:76,years:30,trait:"perfectionist",loyalty:95,ambition:15,salary:9000,bio:"Ernesto's son, your brother: the parrillero. Manages the fire by hand and won't cook a bife past medium."},
+        {role:"maitre",name:"Silvina Paz",skill:64,years:15,trait:"steady",salary:7000,bio:"Runs the floor and the cash, and keeps a notebook of the week's prices between menu reprints."}],
   dials:{price:1,quality:"standard",staffing:"full",marketing:150,draw:1200},
   menu:{format:"carte",coherence:92,identity:"A porteño parrilla: beef, offal and sausages over quebracho embers, provoleta and Malbec.",dishes:[
     {name:"Bife de chorizo",course:"main",desc:"Thick sirloin over the embers, salt only.",cats:{meat:.9,pantry:.1},grade:3,technique:3,presentation:2.5,creativity:25,cost:5.4,price:14,signature:true},
