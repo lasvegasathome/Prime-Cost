@@ -2577,7 +2577,7 @@ const ROLES={
   sous:{name:"Sous chef",base:58000},
   pastry:{name:"Pastry chef",base:56000},
   somm:{name:"Sommelier",base:62000},
-  maitre:{name:"Maître d' / GM",base:64000}
+  maitre:{name:"Maître d'",base:64000}
 };
 const ROLE_KEYS=Object.keys(ROLES);
 /* ---- credentials: real certifications, with game values for difficulty, cost and what they do ---- */
@@ -2810,7 +2810,8 @@ const NAME_POOLS={
   "Hong Kong":[["Ka-wai","Chun-kit","Wing-yan","Ho-yin","Siu-ming","Man-kit","Kai-yan","Tsz-ho","Mei-ling","Joanne","Kenneth","Maricel"],["Chan","Wong","Lee","Cheung","Lau","Ho","Leung","Tsang","Yip","Ng","Kwok","Reyes"]],
   "Japan":[["Haruto","Yui","Sota","Hina","Ren","Aoi","Kaito","Mio","Riku","Sakura"],["Sato","Suzuki","Takahashi","Tanaka","Watanabe","Ito","Yamamoto","Nakamura","Kobayashi","Kato"]]
 };
-const personName=()=>{ const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h]; return P?`${pick(P[0])} ${pick(P[1])}`:`${pick(FIRST)} ${pick(LAST)}`; };
+const personName=()=>{ if(catalogFitted("names")){ const g=pick(wcList("names")); return g.order==="family"?`${pick(g.last)} ${pick(g.first)}`:`${pick(g.first)} ${pick(g.last)}`; }
+  const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h]; return P?`${pick(P[0])} ${pick(P[1])}`:`${pick(FIRST)} ${pick(LAST)}`; };
 
 /* ---- starter menus: realistic enough to play, plain enough to rewrite ---- */
 const MENU_TPL={
@@ -7234,6 +7235,20 @@ function fireWho(){ return insp("fire").who||"the fire marshal"; }
 function healthWord(){ return insp("health").score||"health score"; }
 function placeIn(t,name){ t=String(t||""); return t.includes("{place}")? t.split("{place}").join(name) : t; }
 
+/* ---- people: their names, and what the five salaried jobs are called here ---- */
+function nameBase(){ const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h];
+  if(P) return [{name:h,order:"given",first:P[0].slice(0,12),last:P[1].slice(0,12)}];
+  return [{name:"A mixed city crew",order:"given",first:FIRST.slice(0,12),last:LAST.slice(0,12)},{name:"More of the same city",order:"given",first:FIRST.slice(12,24),last:LAST.slice(12,24)}]; }
+worldCat("names",{base:nameBase,what:"the names of people who'd work in a restaurant kitchen and dining room here, grouped by community",n:[2,6],enums:{order:["given","family"]},
+  notes:'- One item per community that really makes up this place\'s restaurant workforce, weighted toward who actually works in kitchens here. "name" labels the community; "first" is 12 given names and "last" is 12 family names, written the way people here write them. "order" is "family" where the family name comes first.\n- Ordinary names for ordinary people. No famous people, and nobody from the world notes.',
+  fix:x=>{ const ok=a=>[].concat(a||[]).map(n=>String(n).trim().slice(0,30)).filter(Boolean); x.first=ok(x.first); x.last=ok(x.last); return x.first.length>=4&&x.last.length>=4?x:null; }});
+const ROLE_TITLES=Object.fromEntries(ROLE_KEYS.map(k=>[k,ROLES[k].name]));
+worldCat("roles",{base:()=>ROLE_KEYS.map(k=>({key:k,name:ROLE_TITLES[k]})),what:"job titles for the five senior people in this restaurant, as this place and era would say them",n:[5,5],enums:{key:ROLE_KEYS},
+  notes:'- Exactly five items, one per "key": chef runs the kitchen, sous is second in the kitchen, pastry makes desserts and bread, somm runs drinks, maitre runs the dining room and the business day to day. "name" is the title, 1-4 words, capitalised as a title.'});
+// every ROLES[k].name in the game reads the world's title once there is one
+for(const k of ROLE_KEYS) Object.defineProperty(ROLES[k],"name",{configurable:true,enumerable:true,
+  get(){ if(!S||!catalogFitted("roles")) return ROLE_TITLES[k]; const w=wcList("roles").find(x=>x.key===k); return (w&&w.name)||ROLE_TITLES[k]; }});
+
 /* ============ UNIFORMS AND STAFF POLICIES ============
    Both are measured against what's normal for this kind of place, so a save that never chose either plays exactly as before.
    Costs are per person on payroll: salaried team, office and every hourly crew member. */
@@ -7356,16 +7371,20 @@ const WINE_MARKET=[
   {name:"Old Rip Van Winkle bourbon, 10 year",channel:"allocation",qty:2,cost:120,price:600,prestige:4,req:35,note:"Pours at the bar for $60 an ounce, and people will pay it."},
   {name:"Karuizawa, 1981 single cask",channel:"auction",qty:1,cost:14000,price:32000,prestige:9,req:0,note:"A closed Japanese distillery. Three ounces of it pays a cook for a month."}
 ];
-function genCandidate(role){
-  const skill=Math.round(clamp(rnd(38,72)+(S.locations[0].stars||0)*6+(S.locations[0].rep-50)*.2,20,92));
-  const sal=payRound(marketSalary(role,skill)*rnd(.92,1.12));
-  const bios={chef:["Eight years as sous in a serious hotel kitchen; wants their name on the menu.","Ran a well-reviewed neighbourhood place that closed in the pandemic.","Cooked in two starred kitchens in Europe and has the scars and the ego to show it."],
+const CAND_BIOS_BY_ROLE={chef:["Eight years as sous in a serious hotel kitchen; wants their name on the menu.","Ran a well-reviewed neighbourhood place that closed in the pandemic.","Cooked in two starred kitchens in Europe and has the scars and the ego to show it."],
     sous:["Organised, fast, and the one who actually writes the prep lists.","Came up through pastry and switched sides; a perfectionist.","Worked a decade of Saturday nights at the busiest brasserie in the city."],
     pastry:["Laminated dough obsessive with a following for their croissants.","Trained in Paris, plates like a jeweller.","Self-taught, bold, and a little inconsistent."],
     somm:["Certified, curious, and very good at selling the second bottle.","Advanced-level candidate who reads auction catalogues for fun.","Former winemaker's assistant with a nose people trust."],
     maitre:["Twelve years on the floor of a grand hotel dining room.","Knows every regular's name, dog and ex-wife.","Opened three restaurants for a group and is tired of groups."]};
+const CAND_BIOS=Object.entries(CAND_BIOS_BY_ROLE).flatMap(([role,l])=>l.map(bio=>({role,bio})));
+worldCat("bios",{base:()=>CAND_BIOS,what:"one-line backgrounds for people applying to work here: where they trained, worked and came up, and what they're like",n:[10,20],enums:{role:ROLE_KEYS},
+  notes:'- "role" is the job they\'re applying for: chef (runs the kitchen), sous (second in the kitchen), pastry, somm (drinks), maitre (runs the floor). Two to four for each role.\n- "bio" is one sentence: real places, schools, kitchens and events from this world, never ones it doesn\'t have.'});
+function genCandidate(role){
+  const skill=Math.round(clamp(rnd(38,72)+(S.locations[0].stars||0)*6+(S.locations[0].rep-50)*.2,20,92));
+  const sal=payRound(marketSalary(role,skill)*rnd(.92,1.12));
+  const bl=wcList("bios").filter(x=>x.role===role), bio=bl.length?pick(bl).bio:pick(CAND_BIOS.filter(x=>x.role===role)).bio;
   const years=estYears(skill);
-  return {id:uid(),role,name:personName(),skill,salary:Math.round(sal*(1+certPremium({certs:[]}))),loyalty:Math.round(rnd(45,65)),ambition:Math.round(rnd(20,85)),bio:pick(bios[role]),catch:"",years,certs:plausibleCerts(role,skill,years)};
+  return {id:uid(),role,name:personName(),skill,salary:Math.round(sal*(1+certPremium({certs:[]}))),loyalty:Math.round(rnd(45,65)),ambition:Math.round(rnd(20,85)),bio,catch:"",years,certs:plausibleCerts(role,skill,years)};
 }
 
 /* ---- the actions behind the buttons ---- */
