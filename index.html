@@ -1168,7 +1168,7 @@ function rollEvents(S,R){
 function snapshotMonth(){
   if(!S||!S.slotId) return;
   const k=S.monthIdx%3, snap={at:Date.now(),label:`${dateName(S.calMonth,S.year)}`,monthIdx:S.monthIdx,state:JSON.parse(JSON.stringify(S))};
-  try{ const key=RW_PREFIX+S.slotId+"."+k, v=JSON.stringify(snap); if(!lsSet(key,v)){ pruneOrphanRewinds(); lsSet(key,v); } }catch(e){}
+  try{ const key=RW_PREFIX+S.slotId+"."+k, v=JSON.stringify(snap); lsSetWithRoom(key,v,S.slotId); }catch(e){}
   const col=userCol(); if(col){ try{ col.doc("rw_"+S.slotId+"_"+k).set(snap).catch(()=>{}); }catch(e){} }
 }
 let rewindList=null;
