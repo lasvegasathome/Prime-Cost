@@ -9982,9 +9982,10 @@ function wireHouse(){
   document.querySelectorAll("[data-fbuild]").forEach(b=>b.onclick=()=>{
     let f;
     if(b.dataset.fkind==="cat") f=Object.assign({},wcList("features")[+b.dataset.fbuild.split("_")[1]]);
-    else { f=S.archOffers.find(x=>x.id===b.dataset.fbuild); if(f) S.archOffers=S.archOffers.filter(x=>x.id!==f.id); }
+    else f=S.archOffers.find(x=>x.id===b.dataset.fbuild);
     if(!f||S.cash<f.cost) return;
     if(!ownerApproves(f.cost,f.name)){ keepY(); return; }
+    if(b.dataset.fkind!=="cat") S.archOffers=S.archOffers.filter(x=>x.id!==f.id);
     buildFeature(f,houseLoc); keepY(); });
   document.querySelectorAll("[data-fdrop]").forEach(b=>b.onclick=()=>{ S.archOffers=S.archOffers.filter(x=>x.id!==b.dataset.fdrop); keepY(); });
   const wr=$("#walkRoom"); if(wr) wr.onclick=()=>{ const ta=$("#archIdea"), go=$("#archGo"); if(!ta||!go) return;
