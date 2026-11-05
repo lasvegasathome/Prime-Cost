@@ -8486,7 +8486,7 @@ function booksHTML(){
   const rows=(label,val,cls,sub)=>`<tr class="${sub?"sub":""}"><td>${label}</td><td class="pct">${p(val)}</td><td class="n ${cls||""}">${money(val)}</td></tr>`;
   return `<div class="sec" style="padding-top:18px">
   <h2>Books — ${MONTHS[h.cal]}, year ${playYear(h.cal,h.y)}</h2>
-  <p class="lede">The profit and loss shows whether the business makes money, while the cash flow shows whether the account can cover what's due this month.</p>
+  <p class="lede">Profit and loss on the left, and on the right the cash that actually moved through the account, which can fall short in a month the business made money.</p>
   ${ownershipHTML()}
   <div class="grid g2">
     <div class="panel"><div class="hd"><h3>Profit &amp; loss</h3></div>
