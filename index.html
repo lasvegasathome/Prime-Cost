@@ -2808,7 +2808,8 @@ const NAME_POOLS={
   "Hong Kong":[["Ka-wai","Chun-kit","Wing-yan","Ho-yin","Siu-ming","Man-kit","Kai-yan","Tsz-ho","Mei-ling","Joanne","Kenneth","Maricel"],["Chan","Wong","Lee","Cheung","Lau","Ho","Leung","Tsang","Yip","Ng","Kwok","Reyes"]],
   "Japan":[["Haruto","Yui","Sota","Hina","Ren","Aoi","Kaito","Mio","Riku","Sakura"],["Sato","Suzuki","Takahashi","Tanaka","Watanabe","Ito","Yamamoto","Nakamura","Kobayashi","Kato"]]
 };
-const personName=()=>{ if(catalogFitted("names")){ const g=pick(wcList("names")); return g.order==="family"?`${pick(g.last)} ${pick(g.first)}`:`${pick(g.first)} ${pick(g.last)}`; }
+function worldPerson(){ const g=pick(wcList("names")), f=pick(g.first), l=pick(g.last); return {full:g.order==="family"?`${l} ${f}`:`${f} ${l}`,given:f}; }
+const personName=()=>{ if(catalogFitted("names")) return worldPerson().full;
   const h=S&&S.intl&&S.intl.home, P=h&&NAME_POOLS[h]; return P?`${pick(P[0])} ${pick(P[1])}`:`${pick(FIRST)} ${pick(LAST)}`; };
 
 /* ---- starter menus: realistic enough to play, plain enough to rewrite ---- */
@@ -2916,8 +2917,9 @@ const SUPPLIER_MARKET=[
 
 function starterTeam(C,skill){
   const t=[];
-  if(C.chef>0) t.push({id:uid(),role:"chef",name:personName(),skill:clamp(skill+6,20,95),salary:C.chef,loyalty:60,ambition:rnd(30,75)|0,bio:"Came with the lease negotiations and hasn't left the kitchen since."});
-  if(C.gm>0) t.push({id:uid(),role:"maitre",name:personName(),skill:55,salary:C.gm,loyalty:60,ambition:rnd(20,60)|0,bio:"Runs the floor, the book and the schedule."});
+  // gen0: named by the generator before this world's names were written; renamed once they are (see renameStarters)
+  if(C.chef>0) t.push({id:uid(),gen0:true,role:"chef",name:personName(),skill:clamp(skill+6,20,95),salary:C.chef,loyalty:60,ambition:rnd(30,75)|0,bio:"Came with the lease negotiations and hasn't left the kitchen since."});
+  if(C.gm>0) t.push({id:uid(),gen0:true,role:"maitre",name:personName(),skill:55,salary:C.gm,loyalty:60,ambition:rnd(20,60)|0,bio:"Runs the floor, the book and the schedule."});
   return t;
 }
 
@@ -7196,7 +7198,21 @@ async function fitWorldCatalogs(only){
   };
   /* three at a time; re-render once at the end so a page isn't redrawn under someone's cursor more than needed */
   await new Promise(done=>{ const next=()=>{ if(!q.length&&!running) return done(); while(running<3&&q.length){ running++; one(q.shift()).finally(()=>{ running--; next(); }); } }; next(); });
+  if(S&&S.slotId===slot) renameStarters();
   if(S&&S.slotId===slot){ const y=window.scrollY, a=document.activeElement; if(!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))){ render(); window.scrollTo(0,y); } else refreshWorldNotes(); }
+}
+/* a new game's generated starting team was named before the world's names existed: give them this world's names, once,
+   before the first month runs, and fix the log lines that mention them. Preset and imported teams never carry gen0. */
+function renameStarters(){
+  const who=(S.team||[]).filter(m=>m.gen0); if(!who.length) return;
+  if(S.monthIdx!==0){ for(const m of who) delete m.gen0; return; }
+  if(!catalogFitted("names")) return;
+  const taken=new Set(S.team.map(m=>m.name)), swap=[];
+  for(const m of who){ let p=worldPerson(); for(let i=0;i<8&&taken.has(p.full);i++) p=worldPerson(); taken.add(p.full); swap.push([m.name,p.full,p.given]); m.name=p.full; delete m.gen0; }
+  const fix=t=>{ if(typeof t!=="string") return t; for(const [a,b,g] of swap){ t=t.split(a).join(b); const fa=a.split(" ")[0], fb=g; if(fa&&fa!==a) t=t.replace(new RegExp(`\\b${fa.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"g"),fb); } return t; };
+  for(const x of S.log||[]) if(x) x.text=fix(x.text);
+  if(Array.isArray(S.chronicle)) S.chronicle=S.chronicle.map(x=>typeof x==="string"?fix(x):(x&&x.text!=null?Object.assign(x,{text:fix(x.text)}):x));
+  save();
 }
 /* a small line under each world-written list: what's happening, and a way to rewrite it */
 function worldNote(kind){ if(!sampleFn) return ""; const busy=_wcBusy[kind], ok=catalogFitted(kind);
