@@ -16,6 +16,7 @@ The `presets/` folder holds ready-made restaurants to start from. Download one, 
 
 | Preset | File | Setting |
 |---|---|---|
+| Ambrose Restaurants (fictional, from the SCP Wiki) | `prime-cost-ambrose-restaurants.json` | London, Backdoor SoHo and Three Portlands, May 2015 |
 | The Cheesecake Factory | `prime-cost-cheesecake-factory.json` | NorthPark, Dallas |
 | Chick-fil-A (operator) | `prime-cost-chick-fil-a.json` | Suburban Atlanta |
 | Crumbl (franchise) | `prime-cost-crumbl.json` | Lehi, Utah |
@@ -40,9 +41,13 @@ Each preset's world notes say which parts come from published sources (menus, pr
 
 The Windows on the World preset begins in January 1999 and is written to stay in its own time.
 
+The Ambrose Restaurants preset is set in the universe of the [SCP Wiki](https://scp-wiki.wikidot.com/), behind the Veil. Its back room isn't a crime: the restaurants are legal enough, and the people after them are the SCP Foundation's Mobile Task Force Lambda-14 ("One Star Reviewers"), who exist to stop the public finding out that any of it is possible. The three menus and their prices are the ones on the wiki.
+
 ## License
 
-The game and the preset saves are released under the MIT License (see `LICENSE`).
+The game and the preset saves are released under the MIT License (see `LICENSE`), with one exception.
+
+`prime-cost-ambrose-restaurants.json` is adapted from the SCP Wiki, whose content is licensed [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), so that file is released under CC BY-SA 3.0 as well. It draws on [Ambrose Restaurants Hub](https://scp-wiki.wikidot.com/ambrose-restaurant-hub) by Proasek and Uncle Nicolini; [Dining Out](https://scp-wiki.wikidot.com/dining-out), [Ambrose Temecula](https://scp-wiki.wikidot.com/ambrose-temecula) and [The Bill, Please](https://scp-wiki.wikidot.com/the-bill-please) by Proasek; [Ambrose London Prix Fixe](https://scp-wiki.wikidot.com/ambrose-london-prix-fixe) by stormbreath; [Ambrose Backdoor Soho](https://scp-wiki.wikidot.com/ambrose-backdoor-soho) by UraniumEmpire; [Ambrose Three Portlands: Soda Bar Edition](https://scp-wiki.wikidot.com/ambrose-3ports-soda) by xexnoncores; [Chef's Table](https://scp-wiki.wikidot.com/chef-s-table) by Dysadron; [Do you like Huey Lewis and the News?](https://scp-wiki.wikidot.com/do-you-like-huey-lewis-and-the-news) by Rounderhouse and stormbreath; [If You Can't Take The Heat...](https://scp-wiki.wikidot.com/if-you-can-t-take-the-heat) by Smooothcriminal; [AmbroseInternational.pdf](https://scp-wiki.wikidot.com/ambroseinternational-pdf) by Trotskyeet; and the wiki's [Groups of Interest](https://scp-wiki.wikidot.com/groups-of-interest) and [Three Portlands](https://scp-wiki.wikidot.com/three-portlands-hub) pages. The preset's world notes say which parts are from those pages and which were invented for the save.
 
 ## Disclaimer
 

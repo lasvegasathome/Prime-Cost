@@ -4033,7 +4033,9 @@ function pressVisits(loc,crit,R){
     // an outlet reviews a chain, not each of its stores: once one of them has been written up, the others wait their year
     chainFresh=c=>S.locations.every(o=>o===loc||!o.press||!o.press.criticLast||o.press.criticLast[c]==null||S.monthIdx-o.press.criticLast[c]>=12);
   const cheap=locTier(loc)==="low";
-  const pool=CRITICS.filter(c=>{const pr=CRITIC_PROFILES[c]||{}; return fresh(c)&&chainFresh(c)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc);});
+  // a save can name its own outlets (S.world.critics): a restaurant the ordinary press can't find is reviewed by the people who can
+  const outlets=S.world&&Array.isArray(S.world.critics)&&S.world.critics.length? S.world.critics.map(String) : CRITICS;
+  const pool=outlets.filter(c=>{const pr=CRITIC_PROFILES[c]||{}; return fresh(c)&&chainFresh(c)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc);});
   if(pool.length && since>=2 && loc.monthsOpen>=2 && Math.random()<(.08+loc.awareness/600)*(1+mktEffects(loc).press*1.5)*(locTier(loc)==="high"?1.3:cheap?.5:1)){
     const P2=loc.perf||{}, critic=pick(pool), pr=CRITIC_PROFILES[critic]||{food:1}; P.criticLast[critic]=S.monthIdx;
     const asp={food:crit.overall,pers:crit.personality,service:P2.service||loc.foh,room:ambience(loc),value:P2.value==null?60:P2.value,wine:P2.wine==null?40:P2.wine};
