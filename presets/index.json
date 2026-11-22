@@ -1,0 +1,209 @@
+{
+ "presets": [
+  {
+   "name": "42",
+   "file": "prime-cost-42-esztergom.json",
+   "setting": "Esztergom, Hungary, November 2022"
+  },
+  {
+   "name": "Al-Noor Balti House (fictional, a rescue)",
+   "file": "prime-cost-al-noor-balti-house.json",
+   "setting": "Ladypool Road, Birmingham"
+  },
+  {
+   "name": "Ambrose Three Portlands (fictional, from the SCP Wiki)",
+   "file": "prime-cost-ambrose-three-portlands.json",
+   "setting": "One Ambrose restaurant off Prometheus Plaza, run for the chain's owners, May 2015"
+  },
+  {
+   "name": "Casa Carmela",
+   "file": "prime-cost-casa-carmela.json",
+   "setting": "Malvarrosa, Valencia"
+  },
+  {
+   "name": "The Cheesecake Factory",
+   "file": "prime-cost-cheesecake-factory.json",
+   "setting": "NorthPark, Dallas"
+  },
+  {
+   "name": "Chef's Table at Brooklyn Fare",
+   "file": "prime-cost-chefs-table-brooklyn-fare.json",
+   "setting": "West 37th Street, Manhattan, December 2023"
+  },
+  {
+   "name": "Chestnut Tree Café (Nineteen Eighty-Four)",
+   "file": "prime-cost-chestnut-tree-cafe-1984.json",
+   "setting": "Airstrip One"
+  },
+  {
+   "name": "Chez Josette (fictional bouchon, new Bib Gourmand)",
+   "file": "prime-cost-chez-josette-lyon.json",
+   "setting": "Croix-Rousse, Lyon"
+  },
+  {
+   "name": "Chick-fil-A (operator)",
+   "file": "prime-cost-chick-fil-a.json",
+   "setting": "Suburban Atlanta"
+  },
+  {
+   "name": "Crumbl (franchise)",
+   "file": "prime-cost-crumbl.json",
+   "setting": "Lehi, Utah"
+  },
+  {
+   "name": "Di Fara Pizza",
+   "file": "prime-cost-di-fara-pizza.json",
+   "setting": "Midwood, Brooklyn, May 2011"
+  },
+  {
+   "name": "Eastside Burger Co. (virtual brand kitchen - MrBeast Burger)",
+   "file": "prime-cost-mrbeast-burger.json",
+   "setting": "East Orlando"
+  },
+  {
+   "name": "Embers (Cyberpunk 2077)",
+   "file": "prime-cost-embers-night-city.json",
+   "setting": "The Glen, Night City, 2077"
+  },
+  {
+   "name": "Fallow",
+   "file": "prime-cost-fallow-london.json",
+   "setting": "St James's Market, London"
+  },
+  {
+   "name": "The French Laundry",
+   "file": "prime-cost-the-french-laundry.json",
+   "setting": "Yountville, Napa Valley"
+  },
+  {
+   "name": "Gojo Bet (fictional cultural restaurant)",
+   "file": "prime-cost-gojo-bet-addis-ababa.json",
+   "setting": "Bole, Addis Ababa, January 2019"
+  },
+  {
+   "name": "Golden Corral (franchise, buffet)",
+   "file": "prime-cost-golden-corral.json",
+   "setting": "Raleigh suburbs"
+  },
+  {
+   "name": "Gordon Ramsay Hell's Kitchen",
+   "file": "prime-cost-hells-kitchen.json",
+   "setting": "Las Vegas Strip"
+  },
+  {
+   "name": "Heart Attack Grill",
+   "file": "prime-cost-heart-attack-grill.json",
+   "setting": "Downtown Las Vegas"
+  },
+  {
+   "name": "Hill Street Tai Hwa Pork Noodle (hawker stall)",
+   "file": "prime-cost-hill-street-tai-hwa.json",
+   "setting": "Crawford Lane, Singapore, July 2016"
+  },
+  {
+   "name": "Jumbo Kingdom",
+   "file": "prime-cost-jumbo-kingdom.json",
+   "setting": "Aberdeen, Hong Kong"
+  },
+  {
+   "name": "Katz's Delicatessen",
+   "file": "prime-cost-katzs-delicatessen.json",
+   "setting": "Lower East Side, Manhattan"
+  },
+  {
+   "name": "Kjolle",
+   "file": "prime-cost-kjolle-lima.json",
+   "setting": "Barranco, Lima"
+  },
+  {
+   "name": "Kogi BBQ (taco truck)",
+   "file": "prime-cost-kogi-bbq.json",
+   "setting": "Los Angeles, December 2008"
+  },
+  {
+   "name": "KOMA",
+   "file": "prime-cost-koma-singapore.json",
+   "setting": "Marina Bay Sands, Singapore"
+  },
+  {
+   "name": "The Lamb & Lantern (fictional tied pub)",
+   "file": "prime-cost-the-lamb-and-lantern.json",
+   "setting": "Bermondsey, London"
+  },
+  {
+   "name": "Los Pollos Hermanos",
+   "file": "prime-cost-los-pollos-hermanos.json",
+   "setting": "Albuquerque and 13 more across the Southwest"
+  },
+  {
+   "name": "McDonald's franchise",
+   "file": "prime-cost-mcdonalds-franchise.json",
+   "setting": "Suburban highway exit"
+  },
+  {
+   "name": "Moranbong District Restaurant (fictional)",
+   "file": "prime-cost-moranbong-pyongyang.json",
+   "setting": "Pyongyang, January 2020"
+  },
+  {
+   "name": "Noor Al Satwa Cafeteria (fictional)",
+   "file": "prime-cost-noor-al-satwa-cafeteria.json",
+   "setting": "Al Satwa, Dubai"
+  },
+  {
+   "name": "Olive Garden",
+   "file": "prime-cost-olive-garden.json",
+   "setting": "Suburban retail corridor"
+  },
+  {
+   "name": "Parrilla Don Ernesto (fictional)",
+   "file": "prime-cost-parrilla-don-ernesto.json",
+   "setting": "Boedo, Buenos Aires, September 2023"
+  },
+  {
+   "name": "Pichka (fictional)",
+   "file": "prime-cost-pichka-kyiv.json",
+   "setting": "Podil, Kyiv, October 2022"
+  },
+  {
+   "name": "Pizza Fortuna (homage to Pizza Connection)",
+   "file": "prime-cost-pizza-fortuna-hamburg.json",
+   "setting": "St. Pauli, Hamburg, April 1994"
+  },
+  {
+   "name": "POPS 66",
+   "file": "prime-cost-pops-66.json",
+   "setting": "Route 66, Arcadia, Oklahoma"
+  },
+  {
+   "name": "Robuchon au Dôme",
+   "file": "prime-cost-robuchon-au-dome.json",
+   "setting": "Grand Lisboa, Macau"
+  },
+  {
+   "name": "Second Shift (Cyberpunk 2077, fictional diner)",
+   "file": "prime-cost-second-shift-night-city.json",
+   "setting": "Santo Domingo, Night City, 2077"
+  },
+  {
+   "name": "Starbucks (company-operated)",
+   "file": "prime-cost-starbucks.json",
+   "setting": "Phoenix metro"
+  },
+  {
+   "name": "La Tour d'Argent",
+   "file": "prime-cost-tour-d-argent-1940.json",
+   "setting": "Occupied Paris, June 1940"
+  },
+  {
+   "name": "Waffle House",
+   "file": "prime-cost-waffle-house.json",
+   "setting": "Metro Atlanta"
+  },
+  {
+   "name": "Windows on the World",
+   "file": "prime-cost-windows-on-the-world.json",
+   "setting": "World Trade Center, January 1999"
+  }
+ ]
+}

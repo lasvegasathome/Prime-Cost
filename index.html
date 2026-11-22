@@ -7971,11 +7971,15 @@ async function exportSave(msgEl){
   const box=$("#exportBox"); if(box){ box.hidden=false; box.value=data; box.select(); }
   if(msgEl) msgEl.textContent="File saving isn't available here. Copy the text in the box and keep it somewhere safe; paste it into Import to restore.";
 }
-function importSave(text,msgEl){
-  let o; try{ o=JSON.parse(text); }catch(e){ msgEl.textContent="That isn't a save file. It should be the JSON that Export produced."; return; }
+function importSave(text,msgEl,fromPreset){
+  text=String(text||"").trim();
+  let o; try{ o=JSON.parse(text); }catch(e){
+    const cut=text.startsWith("{")&&!text.endsWith("}");
+    msgEl.textContent=cut? `That paste stops partway through (${text.length.toLocaleString("en-US")} characters arrived), so it can't be read. Phones often cut long copies short: try the file instead, or a preset from the list above.`
+      : "That isn't a save file. It should be the JSON that Export produced."; return; }
   const st=o&&o.state?o.state:o;
   if(!st||st.v!==2||!st.bizName||!Array.isArray(st.locations)){ msgEl.textContent="That file doesn't contain a Prime Cost game."; return; }
-  st.slotId=newSlotId(); st.slotName=`${st.bizName} (imported)`;
+  st.slotId=newSlotId(); st.slotName=fromPreset? `${st.bizName} (new game)` : `${st.bizName} (imported)`;
   S=hydrate(st); save(); lsSet(CUR_KEY,S.slotId); view="dash"; render(); window.scrollTo(0,0);
 }
 function savesPanelHTML(inGame){
@@ -7994,8 +7998,14 @@ function savesPanelHTML(inGame){
       <div class="row" style="margin-top:9px"><button class="btn sm sec" id="exportBtn">Export to a file</button><button class="btn sm sec" id="newGameBtn">Start a new game</button></div>
     </div>`:""}
     <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--rule)">
+      <div id="presetBlock" ${presetIdx&&presetIdx.failed?"hidden":""}>
+        <div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:6px">Start from a preset</div>
+        <div class="row"><select id="presetPick" aria-label="Choose a preset restaurant" style="flex:1;width:auto;min-width:0">${presetIdx&&presetIdx.list?`<option value="">Choose a restaurant…</option>`+presetIdx.list.map(p=>`<option value="${esc(p.file)}">${esc(p.name)} · ${esc(p.setting)}</option>`).join(""):`<option value="">Loading the presets…</option>`}</select>
+          <button class="btn sm" id="presetGo">Load</button></div>
+        <p class="note" style="margin:6px 0 12px">Ready-made restaurants that ship with the game. Loading one starts a new saved game; your other saves stay where they are.</p>
+      </div>
       <div class="note" style="font-weight:700;color:var(--ink2);margin-bottom:6px">Import a save</div>
-      <div class="row"><input type="file" id="importFile" aria-label="Import a save file" accept=".json,application/json" style="width:auto;flex:1"><button class="btn sm sec" id="importPasteBtn">Paste instead</button></div>
+      <div class="row"><input type="file" id="importFile" aria-label="Import a save file" style="width:auto;flex:1"><button class="btn sm sec" id="importPasteBtn">Paste instead</button></div>
       <textarea id="importText" hidden placeholder="Paste the exported JSON here" style="margin-top:8px"></textarea>
       <button class="btn sm" id="importGo" hidden style="margin-top:8px">Import</button>
       <textarea id="exportBox" hidden readonly style="margin-top:8px;font-family:var(--mono);font-size:11.5px"></textarea>
@@ -8020,6 +8030,24 @@ function wireSaves(){
   const f=$("#importFile"); if(f) f.onchange=()=>{ const file=f.files&&f.files[0]; if(!file) return; const r=new FileReader(); r.onload=()=>importSave(String(r.result),msg); r.onerror=()=>{msg.textContent="Couldn't read that file.";}; r.readAsText(file); };
   const ip=$("#importPasteBtn"); if(ip) ip.onclick=()=>{ $("#importText").hidden=false; $("#importGo").hidden=false; $("#importText").focus(); };
   const ig=$("#importGo"); if(ig) ig.onclick=()=>importSave($("#importText").value,msg);
+  if(!presetIdx) loadPresetIndex();
+  const pg=$("#presetGo"); if(pg) pg.onclick=async()=>{ const f=$("#presetPick").value; if(!f){ msg.textContent="Choose a restaurant first."; return; }
+    pg.disabled=true; msg.textContent="Loading…";
+    try{ const r=await fetch("presets/"+encodeURIComponent(f),{cache:"no-cache"}); if(!r.ok) throw new Error(String(r.status)); const t=await r.text(); msg.textContent=""; if(S) save(); importSave(t,msg,true); }
+    catch(e){ msg.textContent="That preset couldn't be loaded. Check your connection and try again."; }
+    finally{ if(pg.isConnected) pg.disabled=false; } };
+}
+/* the presets ship next to the published page (presets/index.json and one file each); a downloaded copy has none, so the picker hides itself */
+let presetIdx=null;
+async function loadPresetIndex(){
+  presetIdx={loading:true};
+  try{ const r=await fetch("presets/index.json",{cache:"no-cache"}); if(!r.ok) throw new Error(String(r.status)); const j=await r.json();
+    const list=(Array.isArray(j&&j.presets)?j.presets:[]).filter(p=>p&&/^[\w.-]+\.json$/.test(String(p.file))).map(p=>({file:String(p.file),name:String(p.name||p.file),setting:String(p.setting||"")}));
+    presetIdx=list.length?{list}:{failed:true}; }
+  catch(e){ presetIdx={failed:true}; }
+  const blk=$("#presetBlock"); if(!blk) return;
+  if(presetIdx.failed){ blk.hidden=true; return; }
+  const sel=$("#presetPick"); if(sel) sel.innerHTML=`<option value="">Choose a restaurant…</option>`+presetIdx.list.map(p=>`<option value="${esc(p.file)}">${esc(p.name)} · ${esc(p.setting)}</option>`).join("");
 }
 
 /* ------------------------------------------------------------
