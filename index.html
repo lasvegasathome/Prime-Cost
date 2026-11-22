@@ -251,6 +251,8 @@ details.kitgrp[open]{padding-bottom:8px}
 @media(max-width:700px){.kitrow{grid-template-columns:30px minmax(0,1fr) 70px}.kr-act{grid-column:2/-1;justify-content:flex-start}.kr-main .note{white-space:normal}}
 #auditToast{position:fixed;right:16px;bottom:16px;max-width:min(420px,calc(100vw - 32px));background:var(--panel);color:var(--ink);border:1px solid var(--rule2);border-left:4px solid var(--warn,#b8860b);padding:10px 14px;font-size:13px;line-height:1.45;box-shadow:0 6px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(160%);opacity:0;transition:transform .25s,opacity .25s;cursor:pointer}
 #auditToast.show{transform:none;opacity:1}#auditToast b{display:block;margin-bottom:4px}
+#rateToast{position:fixed;right:16px;top:calc(12px + env(safe-area-inset-top,0px));max-width:min(420px,calc(100vw - 32px));background:var(--panel);color:var(--ink);border:1px solid var(--rule2);border-left:4px solid var(--bad,#b3261e);padding:10px 14px;font-size:13px;line-height:1.45;box-shadow:0 6px 24px rgba(0,0,0,.18);z-index:9999;transform:translateY(-160%);opacity:0;transition:transform .25s,opacity .25s;cursor:pointer}
+#rateToast.show{transform:none;opacity:1}#rateToast b{display:block;margin-bottom:4px}#rateToast div+div{margin-top:4px}
 .spin{display:inline-block;width:10px;height:10px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-1px}@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===== polish pass: same ledger, finer finish ===== */
@@ -479,9 +481,9 @@ const TRAITS={
 };
 const PROGRAMS={
   bar:{name:"Full bar programme",cost:48000,blurb:"Liquor licence, back bar, a bartender who knows what they're doing. Alcohol carries a 78% margin, which is where restaurants actually make money.",req:l=>l.seats>0},
-  brunch:{name:"Weekend brunch",cost:9000,blurb:"Two extra services a week at high margin. Also two more shifts your staff have to cover, which they'll resent.",req:l=>l.seats>0},
+  brunch:{name:"Weekend brunch",cost:9000,blurb:"A weekend daytime service of its own, with its own crowd, its own seats to fill and its own staffing level. You pick the days under Opening hours. Each brunch day is another shift your staff have to cover, which they'll resent.",req:l=>l.seats>0},
   delivery:{name:"Third-party delivery",cost:2500,blurb:"Orders cooked with the kitchen's spare capacity, not the dining room's seats. The apps take 15-30% of every order depending on your plan, and own the customer relationship.",req:()=>true},
-  catering:{name:"Catering & private events",cost:16000,blurb:"Booked weeks ahead, paid in advance, and flat through the seasons. Eats kitchen capacity on weekdays.",req:()=>true}
+  catering:{name:"Catering & private events",cost:16000,blurb:"Booked weeks ahead, paid in advance, and steadier through the seasons than the dining room. How hard you chase it and what you charge are yours to set: at a steady pace it fits around service, and chasing every lead takes paid event crews and eats weekday kitchen capacity.",req:()=>true}
 };
 const STAFFING=[
   {k:"skeleton",name:"Skeleton",mult:.76,blurb:"You're personally on the line and the dish pit is always behind."},
@@ -681,7 +683,7 @@ function forecastCovers(S,loc,cal){
 }
 
 /* ---- the week: days, dayparts and opening hours ---- */
-const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"], SVCS=["breakfast","lunch","dinner","late"], SVC_NAMES={breakfast:"Breakfast",lunch:"Lunch",dinner:"Dinner",late:"Late night"};
+const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"], SVCS=["breakfast","lunch","dinner","late"], SVC_NAMES={breakfast:"Breakfast",lunch:"Lunch",dinner:"Dinner",late:"Late night",brunch:"Brunch"};
 const WEEK_PROFILES={
   fine:{day:[.6,.75,.85,1,1.4,1.55,.85],part:[0,0,1,0]}, bistro:{day:[.75,.8,.9,1.05,1.35,1.45,1],part:[0,.3,.7,0]},
   diner:{day:[.9,.9,.9,.95,1.05,1.25,1.2],part:[.35,.35,.3,0]}, fast:{day:[1,1,1,1,1.1,1,.9],part:[0,.5,.4,.1]},
@@ -705,19 +707,95 @@ function hoursOfInner(loc){
   return loc.hours;
 }
 function svcDaysLabel(a){ const on=DAYS.filter((d,i)=>a[i]); return on.length===3&&a[4]&&a[5]&&a[6]?"Fri–Sun":on.join(", "); }
+let crewOpen={};
+function crewPlanHTML(l,D){
+  const G=STAFFING.find(x=>x.k===S.dials.staffing)||STAFFING[2], P=l.crewPlan||{}, sl=D.slots||[];
+  const svs=SVCS.concat(["brunch"]).filter(sv=>sl.some(x=>x.sv===sv)); if(!svs.length) return "";
+  const nSet=Object.keys(P).reduce((a,sv)=>a+CREW_GROUPS.filter(([g])=>P[sv]&&P[sv][g]).length,0);
+  const cell=(sv,g)=>{ const xs=sl.filter(x=>x.sv===sv&&crewGroup(x.d)===g); if(!xs.length) return `<td class="note" style="text-align:center;padding:4px">·</td>`;
+    const cur=(P[sv]&&P[sv][g])||"", last=(l.lastSvc||{})[sv+"|"+g], full=xs.filter(x=>x.dem>x.cap*1.02).length, sw=xs.reduce((a,x)=>a+crewSwing(x),0)/xs.length;
+    const word=full===xs.length?"fully booked, so predictable":sw<.7?"steady trade":sw<1.2?"some swing":"swings a lot";
+    return `<td style="padding:4px 4px 8px;vertical-align:top"><select data-crew="${l.id}|${sv}|${g}" aria-label="${SVC_NAMES[sv]} crew, ${g==="we"?"Friday to Sunday":"Monday to Thursday"}" style="width:100%;max-width:100%">
+      <option value="">Group · ${esc(G.name)}</option>${STAFFING.map(x=>`<option value="${x.k}" ${cur===x.k?"selected":""}>${esc(x.name)}</option>`).join("")}</select>
+      <div class="note" style="font-size:11.5px;margin-top:3px">${word}${last?`<br><span${last.c<.97?' style="color:var(--bad)"':""}>last month ${Math.round(last.c*100)}% staffed${last.lost>0?`, about ${last.lost.toLocaleString()} guests lost`:""}${last.extra>0?`, ${last.extra.toLocaleString()} more seated`:""}</span>`:""}</div></td>`; };
+  return `<details data-crewd="${l.id}" style="margin-top:10px"${crewOpen[l.id]||nSet&&crewOpen[l.id]!==false?" open":""}><summary class="note" style="cursor:pointer;font-weight:700">Crews by service${nSet?` · ${nSet} set by hand`:" · all at the group level"}</summary>
+    <div style="overflow-x:auto;margin-top:6px"><table style="border-collapse:collapse;font-size:12px;width:100%;table-layout:fixed"><tr><th style="width:74px"></th>${CREW_GROUPS.map(([g,n])=>`<th class="note" style="padding:2px 4px;text-align:left">${n}</th>`).join("")}</tr>
+      ${svs.map(sv=>`<tr><td class="note" style="padding:8px 6px 4px 0;white-space:nowrap;vertical-align:top">${SVC_NAMES[sv]}</td>${CREW_GROUPS.map(([g])=>cell(sv,g)).join("")}</tr>`).join("")}</table></div>
+    <div class="hint">Each service runs at the group staffing level unless you set its own here. When the month comes in above or below forecast, the miss lands hardest on the services that swing most: late nights and weekend dinners more than breakfast or a weekday lunch. A fully booked service is the one you can plan for${S.menu&&S.menu.format==="tasting"?"":", and a deep bench on it resets tables faster and seats a few more guests"}. A quiet service already carries its opening crew, so running it lean risks little.</div></details>`;
+}
 function hoursHTML(){
   return `<div class="panel" style="margin-bottom:14px"><div class="hd"><h3>Opening hours</h3></div><div class="bd">`+
-    S.locations.filter(l=>l.status!=="closed").map(l=>{ const _c=enterLoc(l); try{ const H=hoursOf(l), P=weekProfile(), D=demandCore(S,l,S.calMonth), svcs=SVCS.filter((sv,k)=>P.part[k]>0||H.svc[sv]);
+    S.locations.filter(l=>l.status!=="closed").map(l=>{ const _c=enterLoc(l); try{ const H=hoursOf(l), P=weekProfile(), D=demandCore(S,l,S.calMonth), svcs=SVCS.filter((sv,k)=>P.part[k]>0||H.svc[sv]).concat((D.slots||[]).some(q=>q.sv==="brunch")?["brunch"]:[]);
       const cell=(d,sv)=>{ const x=(D.slots||[]).find(q=>q.d===d&&q.sv===sv); if(!x) return `<td class="note" style="text-align:center;padding:4px">·</td>`;
         const f=clamp(x.cap>0?x.cov/x.cap:0,0,1), full=x.dem>x.cap*1.02, mix=Math.round(5+f*37); return `<td class="c${full?" full":""}" style="background:color-mix(in srgb,var(--accent) ${mix}%,var(--panel))" title="${esc(SVC_NAMES[sv])}, ${DAYS[d]}: ${full?"full, with a waitlist":Math.round(f*100)+"% of seats"}">${full?"full":Math.round(f*100)+"%"}</td>`; };
       return `<div style="margin-bottom:12px"><b style="font-weight:600">${esc(l.name)}</b>
         <div class="seg" style="margin-top:6px;flex-wrap:wrap">${DAYS.map((d,i)=>`<button data-hday="${l.id}|${i}" aria-pressed="${H.days[i]}">${d}</button>`).join("")}</div>
         <div class="seg" style="margin-top:6px;flex-wrap:wrap">${SVCS.map(sv=>`<button data-hsvc="${l.id}|${sv}" aria-pressed="${!!H.svc[sv]}">${SVC_NAMES[sv]}${H.svc[sv]&&H.svcDays&&H.svcDays[sv]?` <span style="font-weight:400">(${svcDaysLabel(H.svcDays[sv])})</span>`:""}</button>`).join("")}</div>
+        ${brunchLive(l)?`<div class="seg" style="margin-top:6px;flex-wrap:wrap">${BRUNCH_DAYS.map((d,i)=>`<button data-hbr="${l.id}|${i}" aria-pressed="${brunchDays(l).includes(d)}">${DAYS[d]} brunch</button>`).join("")}</div>`:""}
         <div class="seg" style="margin-top:6px;flex-wrap:wrap"><button data-hcash="${l.id}" aria-pressed="${!!l.cashOnly}">Cash only</button></div>
         <div style="overflow-x:auto;margin-top:8px"><table class="occ"><tr><th><span class="vh">Service</span></th>${DAYS.map(d=>`<th class="note" style="padding:2px 4px">${d}</th>`).join("")}</tr>
           ${svcs.map(sv=>`<tr><td class="note" style="padding:4px 6px 4px 0;white-space:nowrap">${SVC_NAMES[sv]}</td>${DAYS.map((d,i)=>cell(i,sv)).join("")}</tr>`).join("")}</table></div>
         <div class="occkey"><span>empty</span><i></i><span>every seat taken</span><span style="margin-left:8px;padding:0 5px;border-radius:2px;box-shadow:inset 0 0 0 1.5px var(--ink);font-family:var(--mono);color:var(--ink)">full</span><span>waitlist</span></div>
-        <div class="hint">How full each service is expected to be this month. "Full" means every seat is booked and extra requests go to the waitlist. A cash-only store pays no card fees, only the cost of handling the cash. Opening a service costs a minimum crew however quiet it is; guests who find you closed partly come back another day.</div></div>`; } finally { exitLoc(_c); } }).join("")+`</div></div>`;
+        <div class="hint">How full each service is expected to be this month. "Full" means every seat is booked and extra requests go to the waitlist. A cash-only store pays no card fees, only the cost of handling the cash. Opening a service costs a minimum crew however quiet it is; guests who find you closed partly come back another day.</div>
+        ${crewPlanHTML(l,D)}</div>`; } finally { exitLoc(_c); } }).join("")+`</div></div>`;
+}
+/* ---- crews by service: every service can run its own staffing level, weekdays and weekends apart.
+   A service with nothing set follows the group level, so a plan with no entries is the single dial it replaced. ---- */
+const CREW_SWING={breakfast:.6,brunch:.9,lunch:.8,dinner:1.1,late:1.6};   // how far a service's trade strays from what you planned for
+const CREW_GROUPS=[["wk","Mon–Thu"],["we","Fri–Sun"]];
+const crewGroup=d=>d>=4?"we":"wk";
+function crewLevel(loc,sv,d){ const p=loc&&loc.crewPlan&&loc.crewPlan[sv], k=p&&p[crewGroup(d)];
+  return (k&&STAFFING.find(x=>x.k===k))||STAFFING.find(x=>x.k===S.dials.staffing)||STAFFING[2]; }
+function crewSwing(x){ return x.dem>x.cap*1.02? .3 : (CREW_SWING[x.sv]||1)*(x.d>=4?1.25:1); }   // a fully booked service is the one you can count on
+/* the month's labour, service by service. `forecast` is what you scheduled against and D what actually came:
+   the miss lands hardest on the services that swing most, and each service is short or covered on its own. */
+function crewMonth(loc,D,o){
+  const sl=D.slots||[], tot=sl.reduce((a,x)=>a+x.cov,0), w=30.4/7, G=STAFFING.find(x=>x.k===S.dials.staffing)||STAFFING[2];
+  const idleOf=x=>x.sv==="brunch"?0:Math.max(0,o.minCrew*w-x.cov*o.hpc);   // brunch is opened by the day crew coming in early, so it has no opening crew of its own
+  const idleHours=sl.reduce((a,x)=>a+idleOf(x),0), reqHours=D.covers*o.h+idleHours*.8;
+  if(!(tot>0)||!(D.covers>0)){ const schedHours=o.forecast*o.h*G.mult+idleHours*.8;
+    return {schedHours,reqHours,idleHours,coverage:clamp(schedHours/Math.max(reqHours,1),.45,1.6),penalty:0,lost:0,extra:0,svcCov:1,mult:G.mult,by:{}}; }
+  const k=D.covers/tot, r=o.forecast/D.covers;   // k: guests who shifted days are spread over the services they shifted to
+  const vm=sl.reduce((a,x)=>a+x.cov*crewSwing(x),0)/tot||1;
+  const g=sl.map(x=>Math.max(.2,1+(r-1)*crewSwing(x)/vm)), gs=sl.reduce((a,x,i)=>a+x.cov*k*g[i],0)||1, gk=o.forecast/gs;
+  let sched=0, lost=0, short=0, extra=0, cw=0, mh=0, fh=0; const by={};
+  sl.forEach((x,i)=>{ const cov=x.cov*k, L=crewLevel(loc,x.sv,x.d), f=cov*g[i]*gk, idle=idleOf(x)*.8;
+    const sh=f*o.h*L.mult+idle, rq=cov*o.h+idle, c=clamp(sh/Math.max(rq,1e-6),.45,1.6);
+    sched+=sh; mh+=f*o.h*L.mult; fh+=f*o.h;
+    const sp=Math.max(0,1-c), l=cov*sp*.65; lost+=l; short+=cov*sp; cw+=cov*clamp(c,0,1.05);
+    // a deep bench on a service that's turning people away resets tables faster: a few more covers out of the same seats
+    let ex=0; if(o.turns&&L.mult>=1.15&&c>1.05&&x.dem>x.cap) ex=Math.min(x.dem-x.cap,cov*Math.min(.05,(c-1.05)*.4)); extra+=ex;
+    const key=x.sv+"|"+crewGroup(x.d), b=by[key]||(by[key]={sv:x.sv,g:crewGroup(x.d),cov:0,sh:0,rq:0,lost:0,extra:0,full:0,n:0,level:L.k});
+    b.cov+=cov; b.sh+=sh; b.rq+=rq; b.lost+=l; b.extra+=ex; b.n++; if(x.dem>x.cap*1.02) b.full++; });
+  for(const key in by){ const b=by[key]; b.c=clamp(b.sh/Math.max(b.rq,1e-6),.45,1.6); }
+  const schedHours=sched;   // the idle crew is already inside each service's hours
+  return {schedHours,reqHours,idleHours,coverage:clamp(schedHours/Math.max(reqHours,1),.45,1.6),penalty:short/D.covers,lost,extra,svcCov:cw/D.covers,mult:fh>0?mh/fh:G.mult,by};
+}
+function crewPlanText(loc){ const P=loc.crewPlan||{}, out=[];
+  for(const sv in P) for(const [g,gn] of CREW_GROUPS){ const L=P[sv]&&STAFFING.find(x=>x.k===P[sv][g]); if(L) out.push(`${(SVC_NAMES[sv]||sv).toLowerCase()} ${gn} ${L.name.toLowerCase()}`); }
+  return out.join(", "); }
+/* ---- weekend brunch: its own service on the days you choose, not a lift spread over the whole week ---- */
+const BRUNCH_DAYS=[5,6];
+function brunchDays(loc){ const b=loc&&loc.hours&&loc.hours.brunch; return BRUNCH_DAYS.filter((d,i)=>!Array.isArray(b)||b[i]!==false); }
+function brunchLive(loc){ return !!(S.programs&&S.programs.brunch&&loc&&loc.seats>0&&!(CONCEPTS[S.concept]||{}).truck); }
+/* ---- catering and private events: how hard you chase the work, and what you charge for it ---- */
+const CATER_PACE={
+  fits:{name:"Only what fits",vol:.6,demand:.04,cap:0,paid:0,morale:2,desk:.06,blurb:"You take the easy bookings and turn the rest away. Less money, and a crew that isn't stretched."},
+  steady:{name:"Steady",vol:1,demand:.07,cap:0,paid:0,morale:0,desk:.12,blurb:"A regular book of events that the kitchen works around service."},
+  chase:{name:"Chase every lead",vol:1.6,demand:.10,cap:.08,paid:.375,morale:-3,desk:.2,blurb:"Every office lunch and rehearsal dinner you can find. The extra work needs paid event crews and takes kitchen capacity from Monday to Thursday."}};
+const CATER_PRICES=[[.9,"Sharp"],[1,"House prices"],[1.2,"Premium"]];
+const CATER_SEASON=[.8,.85,.95,1,1.1,1.15,.9,.9,1,1.05,1.05,1.25];   // December parties, wedding season in early summer, a dead January
+function caterOf(){ const c=S.catering=S.catering&&typeof S.catering==="object"?S.catering:{}; if(!CATER_PACE[c.pace]) c.pace="steady"; c.price=clamp(Number(c.price)||1,.7,1.6); return c; }
+function caterOn(){ return !!(S.programs&&S.programs.catering); }
+/* guests book on price until the name carries it: a well-regarded house loses few bookings by charging more */
+function caterElast(loc){ return clamp(2.2-(loc.rep||50)*.012,.9,2.2); }
+function caterMonth(loc,grossFB,check,calMonth){
+  if(!caterOn()) return {rev:0,cogs:0,laborShare:0,events:0,guests:0};
+  const c=caterOf(), P=CATER_PACE[c.pace], p=c.price, base=loc.catBase>0?loc.catBase:grossFB;
+  loc.catBase=base+(grossFB-base)*.25;   // the event book follows the business, a few months behind the dining room
+  const rev=.09*base*CATER_SEASON[calMonth]*P.vol*Math.pow(p,1-caterElast(loc));
+  const perHead=Math.max(1,(check||30)*1.1*p), guests=rev/perHead, size=clamp(Math.round((loc.seats||90)*.45),15,120);
+  return {rev,cogs:rev*.28/p,laborShare:P.paid*.3/p,guests,events:guests>0?Math.max(1,Math.round(guests/size)):0};
 }
 function demandCore(S,loc,calMonth){ const _c=enterLoc(loc); try{ return demandCoreInner(S,loc,calMonth); } finally { exitLoc(_c); } }
 function demandCoreInner(S,loc,calMonth){
@@ -736,8 +814,9 @@ function demandCoreInner(S,loc,calMonth){
   const accMult = 1 + .16*(loc.stars||0) + (loc.bib?.08:0) + (loc.selected&&!loc.stars?.03:0) + (loc.green?.02:0);
   const attMult = .88 + .12*(effAttention(S,loc)/70 > 1 ? 1 : effAttention(S,loc)/70);
   let progMult=1;
-  if(S.programs.brunch) progMult*=1.08;
-  if(S.programs.catering) progMult*=1.07;
+  const brunch=brunchLive(loc);
+  if(S.programs.brunch&&!brunch) progMult*=1.08;   // nowhere to seat a brunch: it stays a general lift
+  if(S.programs.catering) progMult*=1+CATER_PACE[caterOf().pace].demand;
   if(S.programs.bar) progMult*=1.05;
   const breadthMult = .94 + .12*menuStats().breadth;
   const li=S.locations.indexOf(loc);
@@ -762,21 +841,29 @@ function demandCoreInner(S,loc,calMonth){
   const weekly = perDay*(daysOpen/30.4)*7;
   const capShare=P.part.map(v=>Math.sqrt(v)); const cs=capShare.reduce((a,b)=>a+b,0)||1;
   let demand=0, capacity=0, covers=0, openSlots=0, spill=0, slots=[];
+  const isOpen=(d,sv)=>H.days[d]&&H.svc[sv]&&!(H.svcDays&&H.svcDays[sv]&&!H.svcDays[sv][d]);
+  const brDays=brunch?brunchDays(loc):[], raw=[];
+  const caterCap=S.programs.catering? CATER_PACE[caterOf().pace].cap : 0;
   for(let d=0;d<7;d++){
     let dayLost=0; const daySlots=[];
     for(let k=0;k<4;k++){ const sv=SVCS[k], share=P.day[d]/7*P.part[k]; if(share<=0) continue;
       const dem=weekly*share;
-      if(!H.days[d]||!H.svc[sv]||(H.svcDays&&H.svcDays[sv]&&!H.svcDays[sv][d])){ dayLost+=dem; continue; }   // svcDays: a service run on some days only (lunch Friday to Sunday)
+      if(!isOpen(d,sv)){ dayLost+=dem; continue; }   // svcDays: a service run on some days only (lunch Friday to Sunday)
       const turns=tasting? (sv==="dinner"?Math.min(2,turnCap):sv==="lunch"?1:0) : turnCap*capShare[k]/cs*(P.part.filter(x=>x>0).length>1?1.25:1);
       let cap=(C.seats>0? loc.seats*turns : C.truckCap*1.25*capShare[k]/cs)*capMult;
       if(tasting&&C.seats>0) cap=Math.min(cap,loc.seats*2*(1-closed));   // two full seatings is the physical ceiling
+      if(caterCap&&d<4) cap*=1-caterCap;   // event prep has the kitchen on weekdays
       daySlots.push({d,sv,dem,cap}); }
     // some guests who find you closed come another time
     const open=daySlots.reduce((a,x)=>a+x.dem,0);
     for(const x of daySlots){ if(open>0) x.dem+=dayLost*.35*x.dem/open; }
     spill+=dayLost*(open>0?.35:.25);
-    for(const x of daySlots){ const c=Math.min(x.dem,x.cap); demand+=x.dem*weeks; capacity+=x.cap*weeks; covers+=c*weeks; openSlots+=weeks; slots.push({d:x.d,sv:x.sv,dem:x.dem*weeks,cap:x.cap*weeks,cov:c*weeks}); }
+    for(const x of daySlots) raw.push(x);
   }
+  // brunch draws about 8% on top of the week's trade, split between its days; one day alone picks up part of the other's crowd
+  if(brDays.length){ const wk=raw.reduce((a,x)=>a+x.dem,0)+Math.max(0,spill*.4), dem=wk*.08/BRUNCH_DAYS.length*(brDays.length<BRUNCH_DAYS.length?1.3:1);
+    if(dem>0) for(const d of brDays) raw.push({d,sv:"brunch",dem,cap:loc.seats*(tasting?1:Math.max(1,turnCap*.45))*capMult}); }
+  for(const x of raw){ const c=Math.min(x.dem,x.cap); demand+=x.dem*weeks; capacity+=x.cap*weeks; covers+=c*weeks; openSlots+=weeks; slots.push({d:x.d,sv:x.sv,dem:x.dem*weeks,cap:x.cap*weeks,cov:c*weeks}); }
   if(!slots.length) return {demand:0,capacity:0,covers:0,season,perDay,slots,openSlots:0};
   // guests who find you closed on the day they wanted, but whose day you're open another time, shift
   const extra=Math.max(0,spill*weeks*.4); const room=Math.max(0,capacity-covers); const shifted=Math.min(extra,room); covers+=shifted; demand+=extra;
@@ -826,19 +913,25 @@ function simulateMonth(S){
     const hpc = C.hrsPerCover*ms.laborMult*(1-featSum(loc,"labor"));
     const forecast = loc.lastForecast || D.covers;
     const minCrew = (C.seats>0? Math.max(8,loc.seats*.15) : 6)*(S.menu&&S.menu.format==="tasting"?1.6:1);   // staff-hours to open a service at all
-    const idleHours = (D.slots||[]).reduce((a,x)=>a+Math.max(0,minCrew*(30.4/7)-x.cov*hpc),0);   // a quiet service still needs a crew on the floor
-    const reqHours = D.covers*hpc*(1+.10*ms.breadth)/(0.72+0.46*(loc.skill/100)) + idleHours*.8;
-    const schedHours = forecast*hpc*(1+.10*ms.breadth)/(0.72+0.46*(loc.skill/100))*ST.mult + idleHours*.8;
-    const coverage = clamp(schedHours/Math.max(reqHours,1), .45, 1.6);
+    // each service is staffed at its own level against its share of the forecast; a quiet service still needs a crew on the floor
+    const CM = crewMonth(loc,D,{forecast,hpc,minCrew,h:hpc*(1+.10*ms.breadth)/(0.72+0.46*(loc.skill/100)),turns:C.seats>0&&!(S.menu&&S.menu.format==="tasting")});
+    const schedHours = CM.schedHours, coverage = CM.coverage;
 
-    // understaffing costs you covers and goodwill
-    let servicePenalty=0, realCovers=D.covers;
-    if(coverage<1){ servicePenalty=(1-coverage); realCovers*= (1-servicePenalty*0.65); }   // long waits: walkouts, and people who don't come back
-    const serviceScore = clamp( (0.3 + 0.5*clamp(coverage,0,1.05)) * (0.55+0.45*(loc.morale/100)) * (0.60+0.40*(loc.skill/100)) * (0.8+0.4*(loc.foh/100)), 0, 1);
+    // understaffing costs you covers and goodwill, in the services where it happened
+    const servicePenalty=CM.penalty;   // the share of guests who met a short-handed service, weighted by how short
+    let realCovers=D.covers-CM.lost+CM.extra;   // long waits: walkouts, and people who don't come back
+    lc=Math.max(0,lc-CM.extra);
+    const serviceScore = clamp( (0.3 + 0.5*CM.svcCov) * (0.55+0.45*(loc.morale/100)) * (0.60+0.40*(loc.skill/100)) * (0.8+0.4*(loc.foh/100)), 0, 1);
+    loc.lastCrewMult=CM.mult;
+    loc.lastSvc={}; for(const key in CM.by){ const b=CM.by[key]; loc.lastSvc[key]={c:Math.round(b.c*100)/100,lost:Math.round(b.lost),extra:Math.round(b.extra),full:b.full>0}; }
+    { const worst=Object.values(CM.by).filter(b=>b.lost>=Math.max(25,D.covers*.025)).sort((a,b)=>b.lost-a.lost)[0];
+      if(worst) R.events.push({tone:"warn",text:`${SVC_NAMES[worst.sv]||worst.sv} on ${worst.g==="we"?"Friday to Sunday":"Monday to Thursday"} ran short-handed at ${loc.name}: about ${Math.round(worst.lost).toLocaleString()} guests walked out or never got seated.`});
+      const turned=Object.values(CM.by).reduce((a,b)=>a+b.extra,0);
+      if(turned>=10) R.events.push({tone:"good",text:`The deep bench at ${loc.name} turned tables faster on its fully booked services: about ${Math.round(turned).toLocaleString()} more guests seated.`}); }
 
     // revenue: the menu sets the food cheque, the cellar and the somm set the drink
     const M=MARKETS[loc.market];
-    const rushed = coverage<1? 1-(1-coverage)*.3 : 1;   // no time to sell the second drink, the dessert, the special
+    const rushed = 1-servicePenalty*.3;   // no time to sell the second drink, the dessert, the special
     const foodCheck = rushed*ms.foodCheck*S.dials.price*(1+modSum("check",li))*(1+featSum(loc,"check"))*(1+tipCheck())*segCheckFactor(loc);
     let alcShare = clamp(C.alcohol+(S.programs.bar?Math.min(C.alcohol*.85,.04):0),0,.9);
     if(C.truck) alcShare=0;
@@ -862,13 +955,15 @@ function simulateMonth(S){
       deliv=delOrders*foodCheck*(1+dMark);
     }
     const side = grossFB*(modSum("sideline",li)+featSum(loc,"sideline")+kitEffects(loc).side);
-    const locRev = grossFB + (S.programs.catering? grossFB*0.09 : 0) + side + deliv;
+    const CT = caterMonth(loc,grossFB,check,S.calMonth);   // events: their own book, their own prices
+    loc.lastCater = caterOn()? {rev:Math.round(CT.rev),events:CT.events,guests:Math.round(CT.guests)} : null;
+    const locRev = grossFB + CT.rev + side + deliv;
     sideRev+=side;
 
     // food cost
     const KE=kitEffects(loc);
     let fp = ms.foodPct * S.inflation / S.dials.price / (1+featSum(loc,"check"));
-    let waste = .028 - dailySpecialRelief() - commWaste(loc) + .045*ms.breadth + .055*(1-loc.skill/100) + (coverage<1?.028:0) + (effAttention(S,loc)<45?.030:0);
+    let waste = .028 - dailySpecialRelief() - commWaste(loc) + .045*ms.breadth + .055*(1-loc.skill/100) + .028*clamp(servicePenalty*100,0,1) + (effAttention(S,loc)<45?.030:0);
     fp *= (1+waste);
     fp += loc.tempFood + modSum("foodcost",li) + short.foodcost + KE.foodcost - (officeOf("purchasing")? .004+officeOf("purchasing").skill/20000 : 0) - commFood(loc);
     _commAcc+=food*(commWaste(loc)+commFood(loc));
@@ -876,7 +971,7 @@ function simulateMonth(S){
     const bevCogs = alcVol/S.cellar.markup + rare.cost;
     // drinks poured beyond what's on the shelf were bought and drunk the same month (a busy bar empties its stock every week); they still get paid for
     { const drawn=alcVol/S.cellar.markup; S.cellar.boughtThrough=(S.cellar.boughtThrough||0)+Math.max(0,drawn-S.cellar.value); S.cellar.value=Math.max(0,S.cellar.value-drawn); }
-    const cateringCogs = (S.programs.catering? grossFB*0.09 : 0)*0.28 + side*0.32 + (deliv? deliv/(1+dMark)*clamp(fp,.12,.75) + deliv*.04 : 0);   // delivery food, plus packaging
+    const cateringCogs = CT.cogs + side*0.32 + (deliv? deliv/(1+dMark)*clamp(fp,.12,.75) + deliv*.04 : 0);   // delivery food, plus packaging
 
     // labour
     const wage = M.wage*(1+loc.wagePremium)*(1+ (loc.skill-55)/100*0.22 )*(1+.05*(loc.stars||0));
@@ -892,7 +987,7 @@ function simulateMonth(S){
     const salaried = named + (li===0? (S.office||[]).reduce((a,o)=>a+o.salary,0)/12 : 0)
       + (C.truck?0:((here.some(m=>m.role==="chef")?0:(li>0?C.chef:0)/12) + (here.some(m=>m.role==="maitre")?0:(li>0?C.gm:0)/12))*localPay(loc));
     const burden = (hourly+salaried)*countryOf(loc).payrollBurden;   // payroll tax, social charges, insurance: the country decides
-    const delivLabor = delOrders*hpc*.4*wage*1.168;   // kitchen time only: no server, no busser
+    const delivLabor = delOrders*hpc*.4*wage*1.168 + CT.rev*CT.laborShare;   // delivery is kitchen time only: no server, no busser. Chased events need crews hired in for the day
     loc.lastCrewHours = schedHours + delOrders*hpc*.4;
     const locLabor = hourly+salaried+burden+delivLabor;
 
@@ -918,7 +1013,7 @@ function simulateMonth(S){
     covers+=realCovers; lostCovers+=lc;
 
     // ---- the plate, as an inspector would taste it ----
-    const crit = mealCriteria(loc,{coverage,short:short.consistency});
+    const crit = mealCriteria(loc,{coverage:servicePenalty>0?Math.min(coverage,1-servicePenalty):coverage,short:short.consistency});
     loc.lastCrit = crit;
     const foodScore = clamp((crit.overall-8)/100, 0, 1);
     loc.lastFoodScore = foodScore;
@@ -937,8 +1032,10 @@ function simulateMonth(S){
     loc.rep=clamp(loc.rep+MK.rep,3,99);
     loc.awareness += (awareTarget-loc.awareness)*0.27;
 
-    let moraleT = 52 + (coverage-1)*46 + (loc.wagePremium*120) + (effAttention(S,loc)-60)*0.22 - (ms.breadth-0.5)*10 - 2.5*(loc.stars||0) + uniformEffects().morale*2 + policyEffects().morale*2;
-    if(S.programs.brunch) moraleT-=5;
+    // a crew that's slammed every Saturday isn't consoled by a quiet Tuesday
+    let moraleT = 52 + (coverage-Math.max(0,servicePenalty-Math.max(0,1-coverage))*.5-1)*46 + (loc.wagePremium*120) + (effAttention(S,loc)-60)*0.22 - (ms.breadth-0.5)*10 - 2.5*(loc.stars||0) + uniformEffects().morale*2 + policyEffects().morale*2;
+    if(S.programs.brunch) moraleT-=brunchLive(loc)? 2.5*brunchDays(loc).length : 5;
+    if(caterOn()) moraleT+=CATER_PACE[caterOf().pace].morale;
     loc.morale += (clamp(moraleT,5,96)-loc.morale)*0.3;
     if(loc.morale<32 && Math.random()<0.4){
       loc.skill-=rnd(2,6); loc.turnover=(loc.turnover||0)+1;
@@ -1225,6 +1322,7 @@ function advanceMonth(){
   envTick(R);
   leaseDecision();
   mediaDecision();
+  cateringDecision();
   tickHighEnd(R);
   settleGuidePending(R);
   if(R.calMonth===0&&S.world.guideAuto!==false&&michelinKnown()){ const on=michelinHere();   // the Guide arrives in, or leaves, the city
@@ -1275,7 +1373,7 @@ function advanceMonth(){
   // critics publish a few days later; guests post as the month goes
   for(const rv of R.reviews){ const loc=S.locations.find(l=>l.id===rv.locId); if(loc&&sampleFn) setTimeout(()=>writeReview(rv,loc),1500); }
   if(R.michelinPending) for(const l of S.locations) if(l.guidePending) setTimeout(()=>michelinDecide(l),900);
-  if(sampleFn) for(const l of S.locations) if(l.status==="open") setTimeout(()=>writeGuestReviews(l),800);
+  if(sampleFn) setTimeout(writeGuestReviewsAll,800);
 }
 
 function closingOverlay(R){
@@ -1613,7 +1711,8 @@ Cash on hand: ${money(S.cash)}. Credit line: ${money(S.creditLine.drawn)} drawn 
 Sales tax held but not yet remitted: ${money(S.salesTaxHeld)}. Debt: ${loans}.
 Outside equity: ${pct(S.equityInvestor,0)}${S.investorName?`, held by ${S.investorName}`:""}.
 Current settings: price adjustment across the menu ${pct(S.dials.price-1,0)}, staffing "${STAFFING.find(s=>s.k===S.dials.staffing).name}", marketing ${money(mktTotal())}/mo (${S.locations.map(l=>`${l.name}: `+Object.entries(mktOf(l)).filter(([k,v])=>+v>0).map(([k,v])=>`${mktName(k).toLowerCase()} ${money(v)}`).concat(mktCampaigns(l).map(c=>`the owner's own campaign "${c.name}" ${money(c.monthly)} (${c.pitch})`)).join(", ")).join("; ")||"none"}), owner's draw ${money(S.dials.draw)}/mo.
-Programmes running: ${Object.keys(S.programs).filter(k=>S.programs[k]).map(k=>PROGRAMS[k].name).join(", ")||"none"}.
+Programmes running: ${Object.keys(S.programs).filter(k=>S.programs[k]).map(k=>PROGRAMS[k].name+(k==="catering"?` (pace: ${CATER_PACE[caterOf().pace].name.toLowerCase()}; priced at ${Math.round(caterOf().price*100)}% of the dining-room cheque${S.locations.some(l=>l.lastCater)?`; last month ${S.locations.reduce((a,l)=>a+((l.lastCater||{}).events||0),0)} events worth ${money(S.locations.reduce((a,l)=>a+((l.lastCater||{}).rev||0),0))}`:""})`:k==="brunch"?` (${S.locations.filter(l=>l.status!=="closed"&&l.seats>0).map(l=>`${l.name}: ${brunchDays(l).map(d=>DAYS[d]).join(" and ")||"no days"}`).join("; ")})`:"")).join(", ")||"none"}.
+CREWS BY SERVICE (set by hand; every other service runs at the group staffing level): ${S.locations.filter(l=>l.crewPlan&&crewPlanText(l)).map(l=>`${l.name}: ${crewPlanText(l)}`).join(" | ")||"none"}.${S.locations.some(l=>l.lastSvc&&Object.values(l.lastSvc).some(b=>b.c<.97))?` Short-handed last month: ${S.locations.filter(l=>l.lastSvc).map(l=>Object.entries(l.lastSvc).filter(([k,b])=>b.c<.97).map(([k,b])=>`${l.name} ${(SVC_NAMES[k.split("|")[0]]||k).toLowerCase()} ${k.endsWith("we")?"Fri–Sun":"Mon–Thu"} (${Math.round(b.c*100)}% staffed, ${b.lost} guests lost)`).join(", ")).filter(Boolean).join("; ")}.`:""}
 LOCATIONS:
 ${L}
 RECENT MONTHS:
@@ -2318,7 +2417,7 @@ function effectTagsHTML(effects){
 function sampleError(e,what){
   if(e&&e.code==="cancelled") return "";
   if(e&&(e.code==="not_granted"||e.code==="sampling_disabled")){ sampleFn=null; setTimeout(render,0); return "Claude isn't available for this page, so this feature is off. Everything else works."; }
-  if(e&&e.code==="rate_limited") return "You've hit your Claude usage limit for now. Try again later.";
+  if(e&&e.code==="rate_limited") return "Claude is rate limiting this page right now, so that didn't go through. Give it a minute and try again.";
   if(e&&e.code==="invalid_json") return `The ${what} came back garbled. Try again.`;
   return `Couldn't reach Claude for the ${what} just now.`;
 }
@@ -2529,6 +2628,23 @@ function mediaDecision(){
       {label:"No comment",blurb:"Discretion is its own kind of reputation.",effects:[{op:"rep",locIndex:0,delta:2}]}]}
   ];
   const o=pick(opts); offerDecision(Object.assign(o,{when:`${dateName(S.calMonth,S.year)}`}));
+}
+/* now and then someone wants the whole room: a real choice between the cheque and the guests who'd have had those tables */
+function cateringDecision(){
+  if(!caterOn()||deskCount()>=DESK_MAX) return;
+  const l=S.locations.find(x=>x.status==="open"&&x.seats>0), li=S.locations.indexOf(l); if(!l) return;
+  if(Math.random()>CATER_PACE[caterOf().pace].desk) return;
+  const h=S.history[S.history.length-1], spend=h&&h.covers>0? h.rev/h.covers : refFoodCheck(l)*1.3, guests=clamp(Math.round(l.seats*.8),12,400);
+  const fee=Math.round(guests*spend*1.3*caterOf().price/100)*100, net=Math.round(fee*.45/100)*100, cal=S.calMonth;
+  const who=cal>=9? pick(["A law firm wants the whole room for its holiday party","An insurance broker wants a year-end dinner for the whole office"])
+    : cal>=3&&cal<=7? pick(["A couple wants the whole room for their rehearsal dinner","A family wants the whole room for a graduation dinner"])
+    : pick(["A software company wants the whole room for a launch dinner","A charity wants the whole room for its donors' dinner"]);
+  const night=pick(["Friday","Saturday"]), alt=pick(["Tuesday","Wednesday"]), agrees=Math.random()<.55;
+  offerDecision({title:`${who}`,when:when(),
+    text:`${who}: ${guests} guests at ${l.name} on a ${night} next month, at ${money(fee)} paid in advance. After food and the extra hands that's about ${money(net)}. It's also a ${night} your own guests can't book, and some of them will hear "private event" at the door.`,
+    choices:[{label:`Take the ${night}`,blurb:"The whole cheque, and a room full of strangers on your busiest night.",effects:[{op:"cash",amount:net,why:"a private buyout, after food and extra staff"},{op:"mod",kind:"demand",locIndex:li,label:"Regulars turned away for a private event",value:-.02,months:2},{op:"rep",locIndex:li,delta:-1}]},
+      {label:`Offer them a ${alt} for less`,blurb:"A quiet night filled if they agree. They may book somewhere else.",effects:agrees?[{op:"cash",amount:Math.round(net*.8/100)*100,why:`a private buyout on a ${alt}, after food and extra staff`}]:[]},
+      {label:"Turn it down",blurb:"",effects:[]}]});
 }
 function resolveDecision(i,auto){
   const D=S.decision; if(!D||!D.choices) return null;
@@ -3228,7 +3344,7 @@ async function judgeDishKit(){
   _kitJudging=true; let changed=false;
   try{
     for(let i=0;i<todo.length;i+=16){ const batch=todo.slice(i,i+16);
-      const r=await sampleFn.json(`${DISHKIT_RULES}\n\nEQUIPMENT KEYS:\n${dishKitKeys()}\n\nRESTAURANT: ${esc((CONCEPTS[S.concept]||{}).name||"")}\n\n${worldBrief().slice(0,2500)}\nRead the dishes as this world would cook them: its own ingredients, kit and slang.\n\nDISHES:\n${batch.map(d=>`- id ${d.id}: ${d.name} (${d.course}): ${d.desc||""}`).join("\n")}`);
+      const r=await sampleFn.json(`${DISHKIT_RULES}\n\nEQUIPMENT KEYS:\n${dishKitKeys()}\n\nRESTAURANT: ${esc((CONCEPTS[S.concept]||{}).name||"")}\n\n${worldBrief().slice(0,2500)}\nRead the dishes as this world would cook them: its own ingredients, kit and slang.\n\nDISHES:\n${batch.map(d=>`- id ${d.id}: ${d.name} (${d.course}): ${d.desc||""}`).join("\n")}`,{bg:true,what:"the check of which equipment your dishes need"});
       const list=(r&&Array.isArray(r.dishes))?r.dishes:null; if(!list) throw new Error("no verdict");
       const got=new Map(list.map(x=>[String(x&&x.id),x]));
       for(const d of batch){ const x=got.get(String(d.id)); d.needs=sanitizeNeeds(x&&x.needs); const w=Number(x&&x.work); d.work=Number.isFinite(w)?Math.round(clamp(w,0,3)*100)/100:offlineWork(d); d.kitJ=dishKitSig(d); changed=true; }
@@ -4087,7 +4203,7 @@ function crewHoursEst(loc){
   const C=CONCEPTS[S.concept]||{}, ms=menuStats(), D=demandCore(S,loc,S.calMonth);
   const hpc=(C.hrsPerCover||.4)*(ms.laborMult||1)*(1-featSum(loc,"labor"));
   const minCrew=(C.seats>0? Math.max(8,loc.seats*.15) : 6)*(S.menu&&S.menu.format==="tasting"?1.6:1);
-  const idle=(D.slots||[]).reduce((a,x)=>a+Math.max(0,minCrew*(30.4/7)-x.cov*hpc),0);
+  const idle=(D.slots||[]).reduce((a,x)=>a+(x.sv==="brunch"?0:Math.max(0,minCrew*(30.4/7)-x.cov*hpc)),0);
   return D.covers*hpc*(1+.10*ms.breadth)/(0.72+0.46*(loc.skill/100)) + idle*.8; }
 function crewOf(loc){
   if(!loc.crew){ const C=CONCEPTS[S.concept]||{}; let f=loc.lastForecast, lm=1;
@@ -4107,7 +4223,7 @@ function crewTick(loc,R){
     const c=cr[k], want=Math.max(1,Math.round(need*CREWS[k].share));
     const short=Math.max(0,want-c.n)/want;
     const policy=k==="floor"?tp.floor:k==="kitchen"?tp.kitchen:0;
-    const thin=Math.max(0,1-(STAFFING.find(x=>x.k===S.dials.staffing)||{mult:1}).mult);
+    const thin=Math.max(0,1-(loc.lastCrewMult||(STAFFING.find(x=>x.k===S.dials.staffing)||{mult:1}).mult));
     c.morale=clamp(c.morale+((loc.morale+policy-short*30-thin*60+(loc.wagePremium||0)*60)-c.morale)*.25,3,99);
     const quitRate=clamp(.075-(c.morale-55)*.0012-(loc.wagePremium||0)*.08+short*.05,.01,.25)*(officeOf("hr")?.8:1)*(1+policyEffects().quit);
     const q=Math.round(c.n*quitRate*rnd(.6,1.4)); quits+=q; c.n=Math.max(0,c.n-q);
@@ -4208,6 +4324,7 @@ function pressVisits(loc,crit,R){
     // an outlet reviews a chain, not each of its stores: once one of them has been written up, the others wait their year
     chainFresh=c=>S.locations.every(o=>o===loc||!o.press||!o.press.criticLast||o.press.criticLast[c]==null||S.monthIdx-o.press.criticLast[c]>=12);
   const cheap=locTier(loc)==="low";
+  // a save can name its own outlets (S.world.critics): criticList() puts them first, so a restaurant the ordinary press can't find is reviewed by the people who can
   const CL=criticList(), pool=CL.filter(pr=>fresh(pr.name)&&chainFresh(pr.name)&&(!pr.minAware||loc.awareness>=pr.minAware)&&(!pr.minAlc||(CONCEPTS[S.concept].alcohol||0)>=pr.minAlc)).map(pr=>pr.name);
   if(pool.length && since>=2 && loc.monthsOpen>=2 && Math.random()<(.08+loc.awareness/600)*(1+mktEffects(loc).press*1.5)*(locTier(loc)==="high"?1.3:cheap?.5:1)){
     const P2=loc.perf||{}, critic=pick(pool), pr=CL.find(x=>x.name===critic)||CRITIC_PROFILES[critic]||{food:1}; P.criticLast[critic]=S.monthIdx;
@@ -6735,7 +6852,7 @@ function tickHighEnd(R){
     const crewShort=loc0&&loc0.crewChurn? loc0.crewChurn.quits/Math.max(8,Object.values(crewOf(loc0)).reduce((a,c)=>a+c.n,0)) : 0;
     const missing=ROLE_KEYS.filter(r=>!S.team.some(t=>t.role===r)).length;
     const sousN=S.team.filter(t=>t.role==="sous").length, kitchenLoad=(m.role==="chef"||m.role==="sous")? (sousN>=2?-10:sousN===0&&CONCEPTS[S.concept].chef>0?6:0) : 0;
-    const thinS=Math.max(0,1-(STAFFING.find(x=>x.k===S.dials.staffing)||{mult:1}).mult);
+    const thinS=Math.max(0,1-((loc0&&loc0.lastCrewMult)||(STAFFING.find(x=>x.k===S.dials.staffing)||{mult:1}).mult));
     const sTarget=clamp((28+kitchenLoad+thinS*70+lostR*120+crewShort*80+missing*4+((CONCEPTS[S.concept].hrsPerCover||0)>1?6:0)-((loc0?loc0.morale:55)-55)*.3+PE.stress*2)*(tr.stress||1),5,100);
     m.stress=clamp((m.stress||30)+(sTarget-(m.stress||30))*.25,0,100);
     if(m.stress>88&&!m.away&&Math.random()<.12){ m.away=true; m.burnout=1; m.stress=60;
@@ -6824,13 +6941,27 @@ const GR_LINES={
 };
 function grLines(){ if(!GR_LINES.__merged){ for(const k in GR_MORE) for(const g of ["good","bad"]) GR_LINES[k][g]=GR_LINES[k][g].concat(GR_MORE[k][g]); GR_LINES.__merged=true; } return GR_LINES; }
 const GUEST_RULES=`You write the short reviews real guests leave about a restaurant inside a realistic simulation: posted online, written in a guest book, sent as a letter or passed on by word of mouth, whichever this world and its year actually have. For each review below, the guest, their star rating and what they're mostly writing about are already decided; write what they posted. One to three sentences each, in that person's own voice (a tourist writes differently from a regular or a high roller), specific to this place: name dishes, the room, the staff, the setting. Vary length, tone and phrasing; no two should sound alike, and none should repeat the earlier reviews listed. A full reservation book is never a flaw of the restaurant. Plain text, no hashtags or emoji. Reply with ONLY JSON: {"reviews":[{"id":"","text":""}]}`;
-async function writeGuestReviews(loc){
-  const drafts=(loc.grRecent||[]).filter(g=>g.draft); if(!sampleFn||!drafts.length) return;
+/* guest reviews are written a few stores to a request, one request at a time: a fourteen-store group asks three times, not fourteen */
+let _grBusy=false;
+async function writeGuestReviewsAll(){
+  if(!S||!sampleFn||_grBusy) return;
+  const locs=S.locations.filter(l=>l.status==="open"&&(l.grRecent||[]).some(g=>g.draft)); if(!locs.length) return;
+  _grBusy=true;
+  try{ for(let i=0;i<locs.length;i+=5) if(!await writeGuestReviews(locs.slice(i,i+5))) break; } finally{ _grBusy=false; }
+}
+async function writeGuestReviews(locs){
+  locs=(Array.isArray(locs)?locs:[locs]).filter(l=>l&&(l.grRecent||[]).some(g=>g.draft)); if(!sampleFn||!locs.length) return true;
+  const drafts=[]; for(const l of locs) for(const g of l.grRecent) if(g.draft) drafts.push(g);
+  const block=loc=>`RESTAURANT: ${loc.name}. ${envOf(loc).name}: ${envOf(loc).desc}\nAMBIENCE ${Math.round(ambience(loc))}/100; features: ${(loc.features||[]).map(f=>f.name).join(", ")||"the original fit-out"}`;
+  const asks=loc=>`EARLIER REVIEWS (don't repeat these):\n${(loc.grRecent||[]).filter(g=>!g.draft).map(g=>`- ${g.text}`).join("\n")||"none"}\n\nWRITE THESE:\n${loc.grRecent.filter(g=>g.draft).map(g=>`- id ${g.id}: ${g.stars} stars, one of the ${(SEGMENTS[g.who]||{name:"guests"}).name.toLowerCase()}, mostly about ${({food:"the food",service:"the service",value:"value for money",room:"the room and atmosphere",cons:"how it compared with an earlier visit"})[g.about]||"the meal"}`).join("\n")}`;
   try{
-    const r=await sampleFn.json(`${GUEST_RULES}\n\n${STYLE_NOTE}\n\nRESTAURANT: ${loc.name}. ${envOf(loc).name}: ${envOf(loc).desc}\nAMBIENCE ${Math.round(ambience(loc))}/100; features: ${(loc.features||[]).map(f=>f.name).join(", ")||"the original fit-out"}\n${highEndDigest()}${houseRules()}\n\nEARLIER REVIEWS (don't repeat these):\n${(loc.grRecent||[]).filter(g=>!g.draft).map(g=>`- ${g.text}`).join("\n")||"none"}\n\nWRITE THESE:\n${drafts.map(g=>`- id ${g.id}: ${g.stars} stars, one of the ${(SEGMENTS[g.who]||{name:"guests"}).name.toLowerCase()}, mostly about ${({food:"the food",service:"the service",value:"value for money",room:"the room and atmosphere",cons:"how it compared with an earlier visit"})[g.about]||"the meal"}`).join("\n")}`,{cache:false,modelTier:"quick"});
+    const body=locs.length===1? `${block(locs[0])}\n${highEndDigest()}${houseRules()}\n\n${asks(locs[0])}`
+      : `There are ${locs.length} restaurants below, all part of ${S.bizName}. Each review belongs to the restaurant it is listed under.\n${highEndDigest()}${houseRules()}\n\n${locs.map(l=>`${block(l)}\n${asks(l)}`).join("\n\n")}`;
+    const r=await sampleFn.json(`${GUEST_RULES}\n\n${STYLE_NOTE}\n\n${body}`,{cache:false,modelTier:"quick",bg:true,what:"this month's guest reviews"});
     for(const x of (r&&Array.isArray(r.reviews)?r.reviews:[])){ const g=drafts.find(d=>d.id===String(x.id)); if(g&&x.text){ g.text=clip(String(x.text).trim(),600); delete g.draft; } }
     save(); if(view==="press"){ const y=window.scrollY; render(); window.scrollTo(0,y); }
-  }catch(e){}
+    return true;
+  }catch(e){ return !(e&&e.code==="rate_limited"); }   // refused: leave the rest as they are until next month
 }
 function guestReviewTick(loc){ grLines();
   const P=loc.perf; if(!P) return;
@@ -6888,6 +7019,44 @@ function rememberCall(input,out){
   S.aiMemory.push({when:`${dateName(S.calMonth,S.year)}`,kind:who?`one-on-one with ${who}`:m[1].replace(/^THE /,"").toLowerCase(),ask,result:result.replace(/\s+/g," ").slice(0,700)});
   if(S.aiMemory.length>120) S.aiMemory=S.aiMemory.slice(-120);
 }
+/* ---- every Claude request waits its turn here. The platform runs a couple of calls at once for a viewer, lets a few more
+   wait, and refuses a flood with `rate_limited`; a month-end used to send one request per store in the same second.
+   Two run at a time. Things the game writes by itself (guest reviews, critics' reviews, dish checks) go one at a time behind
+   anything the player asked for, and stand down for a while after a refusal. Nothing is ever retried from here. ---- */
+const SQ={live:0,bgLive:0,q:[],max:2,gap:350,last:0,cool:0,coolFor:90000,timer:null,blocked:0,noted:0};
+function sampleQueued(run,o){
+  o=o||{};
+  return new Promise((res,rej)=>{ const job={run,res,rej,bg:!!o.bg,what:o.what||""};
+    if(job.bg&&(Date.now()<SQ.cool||SQ.q.filter(j=>j.bg).length>=24)){ rej({code:"rate_limited",message:"held back by the page",local:true}); return; }
+    if(job.bg) SQ.q.push(job); else { const i=SQ.q.findIndex(j=>j.bg); if(i<0) SQ.q.push(job); else SQ.q.splice(i,0,job); }
+    samplePump(); });
+}
+function samplePump(){
+  for(;;){
+    if(SQ.live>=SQ.max||!SQ.q.length) return;
+    const i=SQ.q.findIndex(j=>!j.bg||SQ.bgLive<1); if(i<0) return;
+    const wait=SQ.last+SQ.gap-Date.now();
+    if(wait>0){ if(!SQ.timer) SQ.timer=setTimeout(()=>{ SQ.timer=null; samplePump(); },wait); return; }
+    const job=SQ.q.splice(i,1)[0]; SQ.live++; if(job.bg) SQ.bgLive++; SQ.last=Date.now();
+    let pr; try{ pr=Promise.resolve(job.run()); }catch(e){ pr=Promise.reject(e); }
+    pr.then(job.res,e=>{ if(e&&e.code==="rate_limited"&&!e.local) rateLimited(job); job.rej(e); })
+      .finally(()=>{ SQ.live--; if(job.bg) SQ.bgLive--; samplePump(); });
+  }
+}
+/* Claude refused a request for being one too many: say so, and stop sending the game's own background requests for a while */
+function rateLimited(job){
+  const now=Date.now(), fresh=now>=SQ.cool; if(fresh) SQ.blocked=0;
+  SQ.cool=now+SQ.coolFor; SQ.blocked++;
+  const dropped=SQ.q.filter(j=>j.bg); SQ.q=SQ.q.filter(j=>!j.bg);
+  for(const j of dropped) j.rej({code:"rate_limited",message:"held back by the page",local:true});
+  const what=job.what||(job.bg?"something the game was writing in the background":"your last request");
+  try{
+    if(S&&now-SQ.noted>SQ.coolFor){ SQ.noted=now; logIt("warn",`Claude turned down a request because of a rate limit: ${what}. ${job.bg?"The game carries on without it.":"Give it a minute or two and try again."}`); save(); }
+    let t=document.getElementById("rateToast"); if(!t){ t=document.createElement("div"); t.id="rateToast"; t.setAttribute("role","status"); document.body.appendChild(t); }
+    t.innerHTML=`<b>Claude rate limit</b><div>Blocked: ${esc(what)}. This page has sent Claude too many requests for now, or you've reached your usage limit.${SQ.blocked>1?` ${SQ.blocked} requests have been blocked in the last couple of minutes.`:""}</div><div>The game's own background writing (guest reviews, critics' reviews, dish checks) is paused for ${Math.round(SQ.coolFor/1000)} seconds${dropped.length?`, and ${dropped.length} queued request${dropped.length>1?"s were":" was"} dropped`:""}. Anything you ask for yourself is still sent; if it's refused too, wait a minute and try again.</div>`;
+    t.className="show"; clearTimeout(rateLimited._t); rateLimited._t=setTimeout(()=>{ t.className=""; },16000); t.onclick=()=>{ t.className=""; };
+  }catch(e){}
+}
 function wrapSample(s){
   const LIMIT=60000;
   const prep=input=>langPrep(input,()=>usdify(prep0(input)));   // langPrep: the player's interface language (see INTERFACE LANGUAGE)
@@ -6898,11 +7067,12 @@ function wrapSample(s){
     const m=base.match(OWNER_TEXT);   // memory goes before the owner's new request, so the request is the last thing read
     return m? base.slice(0,m.index)+mem+base.slice(m.index) : base+mem;
   };
-  const opts=o=>Object.assign({modelTier:"complex"},o||{});
+  // `bg` and `what` are for the queue, not for Claude: bg marks something the game writes unasked, what names it in the rate-limit notice
+  const opts=o=>{ const x=Object.assign({modelTier:"complex"},o||{}); delete x.bg; delete x.what; return x; };
   /* a reply that lands after the player loaded, imported or rewound to another state belongs to the old one: drop it, so it can't be written into this save (interface translations don't belong to a save) */
   const same=(s0,input)=>{ if(S!==s0&&!(typeof input==="string"&&input.startsWith(LANG_TAG))){ const e=new Error("the game changed while Claude was answering"); e.code="cancelled"; throw e; } };
-  const f=async(input,o)=>{ const s0=S, r=await s(prep(input),opts(o)); same(s0,input); rememberCall(input,r&&r.text); return r; };
-  f.json=async(input,o)=>{ const s0=S, r=await s.json(prep(input),opts(o)); same(s0,input); rememberCall(input,r); return r; };
+  const f=async(input,o)=>{ const s0=S, r=await sampleQueued(()=>s(prep(input),opts(o)),o); same(s0,input); rememberCall(input,r&&r.text); return r; };
+  f.json=async(input,o)=>{ const s0=S, r=await sampleQueued(()=>s.json(prep(input),opts(o)),o); same(s0,input); rememberCall(input,r); return r; };
   return f;
 }
 function ctxBlock(){ return `\n\nTHE BUSINESS\n${stateDigest(S)}\n\nLocation indices: ${S.locations.map((l,i)=>`${i}=${l.name}`).join(", ")}${houseRules()}`; }
@@ -7322,7 +7492,9 @@ worldCat("house_suppliers",{base:HOUSE_SUPPLIERS,what:"suppliers a new restauran
   enums:{id:["sp_broad","sp_green","sp_harbor","sp_ridge"]},notes:'- Exactly four items, one per "id", in the same order and the same role as the defaults. Only "name" and "blurb" change.',after:applyHouseSuppliers});
 /* critics and outlets: who reviews restaurants here, what each cares about, and the words their verdicts use */
 const CRITIC_BASE=()=>CRITICS.map(c=>Object.assign({name:c},CRITIC_PROFILES[c],{verdicts:CRITIC_WORDS}));
-function criticList(){ return wcList("critics"); }
+/* a save can name its own outlets (S.world.critics); each is matched to a catalogue entry by name, or reviews on the default weights */
+function criticList(){ const CL=wcList("critics"), own=S&&S.world&&Array.isArray(S.world.critics)?S.world.critics.map(x=>String(x).trim()).filter(Boolean):[];
+  return own.length? own.map(n=>CL.find(c=>c.name===n)||Object.assign({name:n,food:1},CRITIC_PROFILES[n]||{},{verdicts:CRITIC_WORDS.slice()})) : CL; }
 worldCat("critics",{base:CRITIC_BASE,what:"critics, publications and outlets whose reviews move trade",n:[5,10],
   notes:'- Each item is an outlet or reviewer that exists in this world: a paper, a broadcaster, a feed, a guidebook, an official inspectorate or Party organ, a gossip sheet. "name" is how a sentence names it, the way the defaults do ("The city paper\'s critic").\n- The weights food, pers (the chef\'s personality), service, room, value and wine say what they care about; leave out the ones they ignore. "minAware" (0-80) is how well known a restaurant must be before they bother; "minAlc" only for a drinks-led outlet.\n- "verdicts" is five words or short phrases their scale runs through, worst to best, in this world\'s idiom.',
   fix:(x,it)=>{ x.minAware=x.minAware?clamp(Math.round(x.minAware),0,100):undefined; if(x.minAware===undefined) delete x.minAware;
@@ -8788,6 +8960,12 @@ function wireOperate(){
     if(H.days[+i]&&H.days.filter(Boolean).length<=1) return; H.days[+i]=!H.days[+i]; re(); });
   document.querySelectorAll("[data-hsvc]").forEach(b=>b.onclick=()=>{ const [lid,sv]=b.dataset.hsvc.split("|"), l=S.locations.find(x=>x.id===lid); if(!l) return; const H=hoursOf(l);
     if(H.svc[sv]&&SVCS.filter(x=>H.svc[x]).length<=1) return; H.svc[sv]=!H.svc[sv]; if(H.svcDays) delete H.svcDays[sv]; re(); });
+  document.querySelectorAll("[data-hbr]").forEach(b=>b.onclick=()=>{ const [lid,i]=b.dataset.hbr.split("|"), l=S.locations.find(x=>x.id===lid); if(!l) return; const H=hoursOf(l);
+    const cur=BRUNCH_DAYS.map(d=>brunchDays(l).includes(d)); cur[+i]=!cur[+i]; H.brunch=cur; re(); });
+  document.querySelectorAll("[data-crew]").forEach(x=>x.onchange=()=>{ const [lid,sv,g]=x.dataset.crew.split("|"), l=S.locations.find(q=>q.id===lid); if(!l) return;
+    const P=l.crewPlan=l.crewPlan||{}; P[sv]=P[sv]||{}; if(STAFFING.some(q=>q.k===x.value)) P[sv][g]=x.value; else delete P[sv][g];
+    if(!Object.keys(P[sv]).length) delete P[sv]; if(!Object.keys(P).length) delete l.crewPlan; crewOpen[lid]=true; re(); });
+  document.querySelectorAll("[data-crewd]").forEach(x=>x.ontoggle=()=>{ crewOpen[x.dataset.crewd]=x.open; });
   document.querySelectorAll("[data-hcash]").forEach(b=>b.onclick=()=>{ const l=S.locations.find(x=>x.id===b.dataset.hcash); if(!l) return; l.cashOnly=!l.cashOnly;
     logIt("warn",l.cashOnly?`${l.name} is cash only now: no card fees, but someone has to count it, bank it and keep it safe.`:`${l.name} takes cards again.`); re(); });
   document.querySelectorAll("[data-lpshare]").forEach(x=>x.onchange=()=>{ const l=S.locations.find(q=>q.id===x.dataset.lpshare); if(!l) return; l.price=x.checked?null:S.dials.price; re(); });
@@ -9102,6 +9280,7 @@ function growthHTML(){
       <div class="dial"><div class="lab"><b>${esc(p.name)}</b>
         <span class="val">${S.programs[k]?'<span class="pill g">running</span>':money(p.cost)}</span></div>
         <div class="hint">${esc(p.blurb)}</div>
+        ${S.programs[k]?progRunningHTML(k):""}
         ${S.programs[k]?"":`<button class="btn sm sec" data-prog="${k}" style="margin-top:8px" ${S.cash<p.cost||!p.req(S.locations[0])?"disabled":""}>${S.cash<p.cost?"Not enough cash":!p.req(S.locations[0])?"Not possible for this concept":`Invest ${money(p.cost)}`}</button>`}
       </div>`).join("")}
   </div></div>
@@ -9181,7 +9360,27 @@ function opportunitiesHTML(){
     </div></div>
   </div>`;
 }
+/* what a running programme lets you set */
+function caterBest(loc){ const e=caterElast(loc); return CATER_PRICES.map(([p,n])=>[Math.pow(p,1-e)*(1-.28/p),n,p]).sort((a,b)=>b[0]-a[0])[0]; }
+function progRunningHTML(k){
+  if(k==="brunch"){ const ls=S.locations.filter(l=>l.status!=="closed"&&brunchLive(l)); if(!ls.length) return "";
+    return `<div class="kv" style="margin-top:8px"><span>Running on</span><span class="n">${ls.map(l=>(S.locations.length>1?esc(l.name)+": ":"")+(brunchDays(l).map(d=>DAYS[d]).join(" & ")||"no days")).join(" · ")}</span></div>
+      <button class="btn sm sec" data-goto="operate" style="margin-top:8px">Set its days and crew</button>`; }
+  if(k==="catering"){ const c=caterOf(), l0=S.locations.find(l=>l.status==="open")||S.locations[0], best=caterBest(l0), last=S.locations.map(l=>l.lastCater).filter(Boolean);
+    const rev=last.reduce((a,x)=>a+x.rev,0), ev=last.reduce((a,x)=>a+x.events,0), gu=last.reduce((a,x)=>a+x.guests,0);
+    return `${rev>0?`<div class="kv" style="margin-top:8px"><span>Last month</span><span class="n">${ev} event${ev===1?"":"s"} · ${gu.toLocaleString()} guests · ${money(rev)}</span></div>`:""}
+      <div class="lab" style="margin-top:10px"><b style="font-size:13px">How hard you chase it</b></div>
+      <div class="seg" style="flex-wrap:wrap">${Object.entries(CATER_PACE).map(([pk,P])=>`<button data-catpace="${pk}" aria-pressed="${c.pace===pk}">${esc(P.name)}</button>`).join("")}</div>
+      <div class="hint">${esc(CATER_PACE[c.pace].blurb)}</div>
+      <div class="lab" style="margin-top:10px"><b style="font-size:13px">What you charge</b></div>
+      <div class="seg" style="flex-wrap:wrap">${CATER_PRICES.map(([p,n])=>`<button data-catprice="${p}" aria-pressed="${Math.abs(c.price-p)<.001}">${n}</button>`).join("")}</div>
+      <div class="hint">Events are priced against your dining-room cheque. People book a caterer on price until the name carries it: with ${esc(l0.name)}'s reputation at ${Math.round(l0.rep)}, ${best[2]>1?"your name carries a premium and charging it earns the most":best[2]<1?"sharp prices win enough extra bookings to earn the most":"house prices earn the most"}.</div>`; }
+  return "";
+}
 function wireGrowth(){ wireCommissary(); wireGhost();
+  document.querySelectorAll("[data-catpace]").forEach(b=>b.onclick=()=>{ const c=caterOf(); if(!CATER_PACE[b.dataset.catpace]||c.pace===b.dataset.catpace) return; c.pace=b.dataset.catpace;
+    logIt("warn",`Catering and events: ${CATER_PACE[c.pace].name.toLowerCase()}.`); keepY(); });
+  document.querySelectorAll("[data-catprice]").forEach(b=>b.onclick=()=>{ const c=caterOf(), p=Number(b.dataset.catprice); if(!(p>0)||Math.abs(c.price-p)<.001) return; c.price=p; keepY(); });
   const sc=$("#scout"); if(sc) sc.onclick=()=>scoutOffers(sc,$("#scoutOut"));
   const pg=$("#pitchGo"); if(pg) pg.onclick=()=>{ const t=$("#pitchT").value.trim(); if(!t){$("#pitchOut").textContent="Describe what you want first.";return;} pitchOffer(t,pg,$("#pitchOut")); };
   document.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{
@@ -10334,7 +10533,7 @@ async function writeReview(rv,loc,btn){
   if(!sampleFn||rv.text) return;
   if(btn) btn.disabled=true;
   try{
-    const {text}=await sampleFn(`${REVIEW_RULES}\n\n${STYLE_NOTE}\n\nCRITIC: ${rv.src}\nSTAR RATING: ${rv.stars} of 4 (${rv.verdict||CRITIC_WORDS[rv.stars]})\nWHAT THEY TASTED (0-100): ingredients ${rv.crit.ingredients}, technique ${rv.crit.technique}, harmony ${rv.crit.harmony}, personality ${rv.crit.personality}, consistency ${rv.crit.consistency}${rv.aspects?`\nWHAT ELSE THEY WEIGHED (0-100): service ${rv.aspects.service}, the room ${rv.aspects.room}, value for money ${rv.aspects.value}, the wine list ${rv.aspects.wine}`:""}\nRESTAURANT: ${loc.name}, ambience ${Math.round(ambience(loc))}/100, front of house ${Math.round(loc.foh)}/100\n${highEndDigest()}${houseRules()}`,{cache:false,modelTier:"quick"});
+    const {text}=await sampleFn(`${REVIEW_RULES}\n\n${STYLE_NOTE}\n\nCRITIC: ${rv.src}\nSTAR RATING: ${rv.stars} of 4 (${rv.verdict||CRITIC_WORDS[rv.stars]})\nWHAT THEY TASTED (0-100): ingredients ${rv.crit.ingredients}, technique ${rv.crit.technique}, harmony ${rv.crit.harmony}, personality ${rv.crit.personality}, consistency ${rv.crit.consistency}${rv.aspects?`\nWHAT ELSE THEY WEIGHED (0-100): service ${rv.aspects.service}, the room ${rv.aspects.room}, value for money ${rv.aspects.value}, the wine list ${rv.aspects.wine}`:""}\nRESTAURANT: ${loc.name}, ambience ${Math.round(ambience(loc))}/100, front of house ${Math.round(loc.foh)}/100\n${highEndDigest()}${houseRules()}`,{cache:false,modelTier:"quick",bg:!btn,what:"a critic's review"});
     rv.text=clip(String(text||"").trim().replace(/^#+[^\n]*\n+/,"").replace(/[*_#]{1,3}/g,""),4800); save();
     if(view==="press"){ const y=window.scrollY; render(); window.scrollTo(0,y); }
   }catch(e){ if(btn){ btn.disabled=false; btn.textContent=sampleError(e,"review")||"Try again"; } }

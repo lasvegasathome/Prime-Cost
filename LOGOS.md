@@ -1,9 +1,10 @@
 # Logos in the preset saves
 
-Each preset save carries its restaurant's logo so the game can show it. The logos are trademarks of their owners and are used here only to identify the restaurants the presets depict; this project is not affiliated with or endorsed by any of them. Logos were scaled to at most 320 pixels and stored in the save files as images. The logos are not covered by this project's MIT license: each keeps the terms of its source listed below (public domain, CC BY-SA 4.0, or used as a fair-use identifier).
+Each preset save carries its restaurant's logo so the game can show it. The logos are trademarks of their owners and are used here only to identify the restaurants the presets depict; this project is not affiliated with or endorsed by any of them. Logos were scaled to at most 320 pixels and stored in the save files as images. The logos are not covered by this project's MIT license: each keeps the terms of its source listed below (public domain, CC BY-SA 3.0 or 4.0, or used as a fair-use identifier).
 
 | Restaurant | Source |
 |---|---|
+| Ambrose Restaurants (fictional, from the SCP Wiki) | ["Ambrose Restaurants"](https://www.deviantart.com/sunnyclockwork/art/Ambrose-Restaurants-830983193) by SunnyClockwork (CC BY-SA 3.0), as used on the SCP Wiki page [Do you like Huey Lewis and the News?](https://scp-wiki.wikidot.com/do-you-like-huey-lewis-and-the-news) ([ambrose-logo.png](https://scp-wiki.wdfiles.com/local--files/do-you-like-huey-lewis-and-the-news/ambrose-logo.png)), scaled from 640 to 320 pixels |
 | The Cheesecake Factory | [The Cheesecake Factory (logo, stacked).svg](https://en.wikipedia.org/wiki/File:The_Cheesecake_Factory_(logo,_stacked).svg) on Wikipedia / Wikimedia Commons (PD) |
 | Chick-fil-A | [Chick-fil-A Logo.svg](https://commons.wikimedia.org/wiki/File:Chick-fil-A_Logo.svg) on Wikipedia / Wikimedia Commons (Public domain) |
 | Crumbl | [Crumbl.png](https://commons.wikimedia.org/wiki/File:Crumbl.png) on Wikimedia Commons (Public domain) |
